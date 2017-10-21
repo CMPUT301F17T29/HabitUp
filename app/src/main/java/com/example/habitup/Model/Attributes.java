@@ -6,7 +6,15 @@ import java.util.Map;
 /**
  * Created by sharibarboza on 2017-10-21.
  *
- * Attribute container for
+ * Attribute container to hold a user's attributes. The number of attributes and the attribute
+ * names will be the same for every user. If attribute names are changed or if more attributes
+ * need to be added, just update the static attributeNames list.
+ *
+ * Implementation uses a linked hash map, with the attribute name as the key and an integer
+ * number (representing the attribute's points) as the value. A hash map is used to allow quick
+ * access to any attribute, such as when only one attribute's value needs to be retrieved/updated.
+ * A linked hash map is used to maintain the order of the attributes when they need to be displayed
+ * on screen.
  */
 
 public class Attributes {
