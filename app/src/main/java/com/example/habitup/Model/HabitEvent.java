@@ -3,6 +3,7 @@ package com.example.habitup.Model;
 
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.util.GregorianCalendar;
@@ -23,14 +24,24 @@ public class HabitEvent {
     public void setLocation(Map location){
         this.location =  location;
     }
-    public void setImage(Picture Image){
+    public void setImage(String pathOfImage){
+        Image= BitmapFactory.decodeFile(pathOfImage);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        Image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         ImageByteArray = stream.toByteArray();
         ByteCount = ImageByteArray.length;
-        if (ByteCount >= 65536){
-
-        }else
-            { }
+        while(true){
+            if (ByteCount >= 65536) {
+                resizeImage(Image);
+            }
+            else{
+                break;
+            }
+        }
+    }
+    private void resizeImage(Bitmap bp) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bp.compress(Bitmap.CompressFormat.JPEG, 70, stream);
     }
 
     public void setComment(String comment){
