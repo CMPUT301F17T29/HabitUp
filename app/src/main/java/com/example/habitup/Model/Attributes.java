@@ -1,6 +1,6 @@
 package com.example.habitup.Model;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -10,19 +10,17 @@ import java.util.Map;
  * names will be the same for every user. If attribute names are changed or if more attributes
  * need to be added, just update the static attributeNames list.
  *
- * Implementation uses a linked hash map, with the attribute name as the key and an integer
+ * Implementation uses a hash map, with the attribute name as the key and an integer
  * number (representing the attribute's points) as the value. A hash map is used to allow quick
  * access to any attribute, such as when only one attribute's value needs to be retrieved/updated.
- * A linked hash map is used to maintain the order of the attributes when they need to be displayed
- * on screen.
  */
 
 public class Attributes {
 
     // Static members
     private final static String[] attributeNames = {
-        "Intelligence",
-        "Strength",
+        "Mental",
+        "Physical",
         "Social",
         "Discipline"
     };
@@ -35,7 +33,7 @@ public class Attributes {
      * and populates an initialized attributeMap with default values of 0.
      */
     public Attributes() {} {
-        attributeMap = new LinkedHashMap<String,Integer>();
+        attributeMap = new HashMap<String,Integer>();
 
         for (String name : attributeNames) {
             attributeMap.put(name, 0);
@@ -43,12 +41,19 @@ public class Attributes {
     }
 
     /**
-     * Returns the attributes linked hash map, which can be iterated
-     * in the same order as the attributeNames list.
-     * @return
+     * Return the list of attribute names
+     * @return the string list of attribute names
      */
-    public Map<String,Integer> getAttributes() {
-        return attributeMap;
+    public static String[] getAttributeNames() {
+        return attributeNames;
+    }
+
+    /**
+     * Return the number of attributes
+     * @return the list length of attribute names
+     */
+    public static int getSize() {
+        return attributeNames.length;
     }
 
     /**
