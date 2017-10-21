@@ -9,8 +9,8 @@ import com.example.habitup.Model.UserAccount;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.assertTrue;
-
+import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.assertFalse;
 
 /**
  * Created by gojeffcho on 2017-10-20.

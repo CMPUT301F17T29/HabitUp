@@ -33,7 +33,7 @@ public class HabitEventList {
      * Add a HabitEvent to the list
      * @param eventToAdd
      */
-    public void addHabitEvent(HabitEvent eventToAdd) {
+    public void add(HabitEvent eventToAdd) {
         habitList.add(eventToAdd);
     }
 
