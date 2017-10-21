@@ -1,12 +1,15 @@
 package com.example.habitup;
 
-import android.app.Activity;
 import android.media.Image;
-import android.test.ActivityInstrumentationTestCase2;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.UserAccount;
-import com.robotium.solo.Solo;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -14,38 +17,24 @@ import com.robotium.solo.Solo;
  *
  * Tests implementation of UserAccount and runs it through its various paces.
  */
+@RunWith(AndroidJUnit4.class)
+public class UserAccountTest {
 
-public class UserAccountTest extends ActivityInstrumentationTestCase2<UserAccount> {
-
-    private Solo solo;
-
-    public UserAccountTest() {
-        super(com.example.habitup.Model.UserAccount.class);
-    }
-
-    /**
-     * Runs before starting tests
-     * @throws Exception
-     */
-    public void setUp() throws Exception {
-        solo = new Solo(getInstrumentation(), getActivity());
-    }
-
-    public void testStart() throws Exception {
-        Activity activity = getActivity();
-    }
 
     // Test to ensure set username is equal to the String given
+    @Test
     public void testSetUsernameSuccessful() {
 
         String u1 = "gojeffcho";
         String u2 = "Jeff Cho";
+        Image photo = null;
         UserAccount testAccount = new UserAccount(u1, u2, photo);
 
         assertTrue(testAccount.getUsername() == u1);
     }
 
     // Test to ensure username is not set if it is too long
+    @Test
     public void testSetUsernameLengthLimit() {
 
         String u1 = "gojeffchowritesareallylongusernamethatisillegal";
@@ -66,6 +55,7 @@ public class UserAccountTest extends ActivityInstrumentationTestCase2<UserAccoun
     }
 
     // Test to ensure set realname is equal to the String given
+    @Test
     public void testSetRealname() {
 
         String u1 = "gojeffcho";
@@ -76,6 +66,7 @@ public class UserAccountTest extends ActivityInstrumentationTestCase2<UserAccoun
     }
 
     // Test to ensure set realname is within character limits
+    @Test
     public void testSetRealnameLengthLimit() {
 
         String u1 = "gojeffcho";
@@ -98,6 +89,7 @@ public class UserAccountTest extends ActivityInstrumentationTestCase2<UserAccoun
     // TODO: test photo?
 
     // Test incrementLevel()
+    @Test
     public void testIncrementLevel() {
 
         // Level == 1 on init
@@ -110,6 +102,7 @@ public class UserAccountTest extends ActivityInstrumentationTestCase2<UserAccoun
     }
 
     // Test incrementLevel() at int boundary
+    @Test
     public void testIncrementLevelMax() {
 
         // Level == 1 on init
@@ -129,6 +122,7 @@ public class UserAccountTest extends ActivityInstrumentationTestCase2<UserAccoun
     }
 
     // Test increaseXP
+    @Test
     public void testIncreaseXP() {
 
         // XP == 0 on init
@@ -145,6 +139,7 @@ public class UserAccountTest extends ActivityInstrumentationTestCase2<UserAccoun
     }
 
     // Test increaseXP upper bound
+    @Test
     public void testIncreaseXPMax() {
 
         // XP == 0 on init
@@ -160,6 +155,7 @@ public class UserAccountTest extends ActivityInstrumentationTestCase2<UserAccoun
     }
 
     // Test setXPtoNext()
+    @Test
     public void testSetXPtoNext() {
 
         // Get first XP bar to next level
@@ -174,6 +170,7 @@ public class UserAccountTest extends ActivityInstrumentationTestCase2<UserAccoun
     }
 
     // Test addRequest()
+    @Test
     public void testAddRequest() {
 
         // Set up UserAccount, requestingUser
@@ -191,6 +188,7 @@ public class UserAccountTest extends ActivityInstrumentationTestCase2<UserAccoun
     }
 
     // Test addRequest() does not add duplicates
+    @Test
     public void testAddRequestNoDuplicates() {
 
         // Set up UserAccount, requestingUser
@@ -203,10 +201,11 @@ public class UserAccountTest extends ActivityInstrumentationTestCase2<UserAccoun
 
         // Verify that it only actioned once by removing once then checking for user
         testAccount.getRequestsPending().remove(testAccount2);
-        assertFalse(testAccount.getRequestsPending().contains(testAccount2));
+        assertTrue(!testAccount.getRequestsPending().contains(testAccount2));
     }
 
     // Test approveRequest()
+    @Test
     public void testApproveRequest() {
 
         // Set up UserAccount, requestingUser
@@ -218,11 +217,12 @@ public class UserAccountTest extends ActivityInstrumentationTestCase2<UserAccoun
         testAccount.approveRequest(testAccount2);
 
         // Request no longer in requestsPending, user in friendsList
-        assertFalse(testAccount.getRequestsPending().contains(testAccount2));
+        assertTrue(!testAccount.getRequestsPending().contains(testAccount2));
         assertTrue(testAccount.getFriendsList().contains(testAccount2));
     }
 
     // Test approveRequest() only approves if user is in requestsPending
+    @Test
     public void testApproveRequestOnlyIfInPending() {
 
         // Set up UserAccount, requestingUser
@@ -236,10 +236,11 @@ public class UserAccountTest extends ActivityInstrumentationTestCase2<UserAccoun
 
         // Check that account2 is still in pending, account3 is not in friends
         assertTrue(testAccount.getRequestsPending().contains(testAccount2));
-        assertFalse(testAccount.getFriendsList().contains(testAccount3));
+        assertTrue(!testAccount.getFriendsList().contains(testAccount3));
     }
 
     // Test addHabit
+    @Test
     public void testAddHabit() {
 
         // Set up UserAccount, Habit
@@ -255,6 +256,7 @@ public class UserAccountTest extends ActivityInstrumentationTestCase2<UserAccoun
     }
 
     // Test deleteHabit
+    @Test
     public void testDeleteHabit() {
 
         // Set up UserAccount, Habit
@@ -266,16 +268,7 @@ public class UserAccountTest extends ActivityInstrumentationTestCase2<UserAccoun
         testAccount.deleteHabit(testHabit);
 
         // Make sure Habit got deleted
-        assertFalse(testAccount.getHabits().contains(testHabit));
-    }
-
-    /**
-     * Runs after tests
-     * @throws Exception
-     */
-    @Override
-    public void tearDown() throws Exception {
-        solo.finishOpenedActivities();
+        assertTrue(!testAccount.getHabits().contains(testHabit));
     }
 
 }
