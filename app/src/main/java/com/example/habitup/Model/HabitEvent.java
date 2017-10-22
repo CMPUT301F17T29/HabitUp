@@ -27,10 +27,11 @@ public class HabitEvent {
     public void setImage(String pathOfImage){
         Image= BitmapFactory.decodeFile(pathOfImage);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        Image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        ImageByteArray = stream.toByteArray();
-        ByteCount = ImageByteArray.length;
+
         while(true){
+            Image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            ImageByteArray = stream.toByteArray();
+            ByteCount = ImageByteArray.length;
             if (ByteCount >= 65536) {
                 resizeImage(Image);
             }
