@@ -1,23 +1,21 @@
 package com.example.habitup;
 
-
-
-
-import android.test.ActivityInstrumentationTestCase2;
-
-
 import com.example.habitup.Model.HabitEvent;
-
 import com.example.habitup.Model.Map;
 
+import org.junit.Test;
 
 import java.util.GregorianCalendar;
 
-public class HabitEventTest extends ActivityInstrumentationTestCase2 {
-    public HabitEventTest() {
-        super(HabitEventTest.class);
-    }
+import static org.junit.Assert.*;
 
+/**
+ * Example local unit test, which will execute on the development machine (host).
+ *
+ * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+ */
+public class HabitEventTest {
+    @Test
     public void testHabitEventSetterGetter(){
         HabitEvent event1= new HabitEvent();
         event1.setCompletedate(new GregorianCalendar(2017,10,2,15,16,17));
@@ -37,8 +35,8 @@ public class HabitEventTest extends ActivityInstrumentationTestCase2 {
         }
 
 
+
+
     }
-
-
 
 }
