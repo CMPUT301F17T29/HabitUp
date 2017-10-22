@@ -4,5 +4,5 @@ package com.example.habitup.Model;
  * Created by gojeffcho on 2017-10-20.
  */
 
-class Attributes {
+public class Attributes {
 }
