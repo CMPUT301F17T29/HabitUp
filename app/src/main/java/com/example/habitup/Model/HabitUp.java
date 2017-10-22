@@ -25,6 +25,11 @@ public class HabitUp {
         // get array list from elastic search
         // load local data into file
         // check connectivity
+
+        users = new ArrayList<UserAccount>();
+        currentUser = null;
+        this.checkConnectivity();
+        this.loadFile();
     }
 
     public ArrayList<UserAccount> getUsers(){
@@ -41,6 +46,22 @@ public class HabitUp {
 
     public UserAccount getCurrentUser(){
         return this.currentUser;
+    }
+
+    public void setUsersList(ArrayList<UserAccount> users_){
+        this.users = users_;
+    }
+
+    public void setLocalData(File localData_){
+        this.localData = localData_
+    }
+
+    public void setElasticConnectivity(boolean x){
+        this.elasticConnectivity = x;
+    }
+
+    public void setCurrentUser(UserAccount currentUser_){
+        this.currentUser = currentUser_
     }
 
     /**
@@ -66,6 +87,13 @@ public class HabitUp {
     public ArrayList<UserAccount> searchUsers(String searchTerm){
         //placeholder
         return this.getUsers();
+    }
+
+    /**
+     * Checks elastic connectivity and sets the value for HabitUp instance
+     */
+    public void checkConnectivity(){
+        //check connectivity
     }
 
     /**
