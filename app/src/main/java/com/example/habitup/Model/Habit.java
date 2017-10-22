@@ -66,7 +66,7 @@ public class Habit {
 
     public String getHabitSchedule() {
 
-        ArrayList<String> days = new ArrayList<String>;
+        ArrayList<String> days = new ArrayList<String>();
         days.add("Monday");
         days.add("Tuesday");
         days.add("Wednesday");
@@ -120,11 +120,30 @@ public class Habit {
 
     public ArrayList<HabitEvent> getHabitEvents() {return this.habitEvents;}
 
+    /**
+     * setHabitName
+     * Sets the Habit's name into String name
+     * @param name String for the desired new name
+     * @throws IllegalArgumentException
+     */
+
     public void setHabitName(String name) throws IllegalArgumentException{
 
         this.name = name;
         //TODO: Implement prevention of using existing Habit name and limit length
     }
+
+    /**
+     * setSchedule
+     * Changes the schedule accordingly by changing the Boolean values
+     * @param Mon Boolean entry signifying if the Habit is schedule for Monday
+     * @param Tue Boolean entry signifying if the Habit is schedule for Tuesday
+     * @param Wed Boolean entry signifying if the Habit is schedule for Wednesday
+     * @param Thu Boolean entry signifying if the Habit is schedule for Thursday
+     * @param Fri Boolean entry signifying if the Habit is schedule for Friday
+     * @param Sat Boolean entry signifying if the Habit is schedule for Saturday
+     * @param Sun Boolean entry signifying if the Habit is schedule for Sunday
+     */
 
     public void setSchedule(Boolean Mon, Boolean Tue, Boolean Wed, Boolean Thu,
                             Boolean Fri, Boolean Sat, Boolean Sun) {
@@ -138,6 +157,14 @@ public class Habit {
         this.schedule.set(6, Sun);
     }
 
+    /**
+     * setReason
+     * Sets the Habit's reason as the provided String
+     * @param reason String to represent the new desired reason
+     * @throws IllegalArgumentException
+     * @throws IllegalStateException
+     */
+
     public void setReason(String reason) throws IllegalArgumentException,
             IllegalStateException{
 
@@ -145,13 +172,38 @@ public class Habit {
         //TODO: Implement reason length limit
     }
 
+    /**
+     * setAttribute
+     * Sets the Habit's attribute into the provided
+     * @param attribute Attributes object to be associated to the Habit
+     * @throws IllegalArgumentException
+     */
+
     public void setAttribute(Attributes attribute) throws IllegalArgumentException{
 
         this.attribute = attribute;
     }
 
+    /**
+     * addHabitEvent
+     * Adds a new HabitEvent into the Habit's ArrayList
+     * @param habitEvent HabitEvent to be added into the Habit
+     */
 
+    public void addHabitEvent(HabitEvent habitEvent){
 
+        this.habitEvents.add(habitEvent);
+    }
 
+    /**
+     * removeHabitEvent
+     * Removes the specified HabitEvent from the Habit's ArrayList
+     * @param habitEvent HabitEvent to be removed
+     */
+
+    public void removeHabitEvent(HabitEvent habitEvent){
+
+        this.habitEvents.remove(habitEvent);
+    }
 
 }
