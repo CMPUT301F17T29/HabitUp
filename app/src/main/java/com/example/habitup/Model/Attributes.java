@@ -92,5 +92,4 @@ public class Attributes {
         Integer oldValue = this.getValue(name);
         attributeMap.put(name, oldValue + value);
     }
-
 }
