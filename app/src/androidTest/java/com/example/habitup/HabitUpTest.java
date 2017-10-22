@@ -91,6 +91,7 @@ public class HabitUpTest {
 
     }
 
+
     // Tests that the login method appropriately sets current user
     @Test
     public void testLogin(){
@@ -129,6 +130,7 @@ public class HabitUpTest {
         assertTrue(testHabitUp.getElasticConnectivity());
     }
 
+    // Tests checkConnectivity() when connection not possible
     @Test
     public void testCheckConnectivityFail(){
         HabitUp testHabitUp = new HabitUp();

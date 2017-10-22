@@ -73,7 +73,7 @@ public class HabitUp {
 
     /**
      * Takes a new user and adds them to the arrayList users
-     * @param user
+     * @param UserAccount user
      */
     public void addNewUser(UserAccount user){
 
@@ -81,8 +81,8 @@ public class HabitUp {
 
     /**
      * Returns a list of Users who match the search term
-     * @param searchTerm
-     * @return
+     * @param searchTerm string to be searched for
+     * @return Arraylist of UserAccounts who match the search term
      */
     public ArrayList<UserAccount> searchUsers(String searchTerm){
         //placeholder
