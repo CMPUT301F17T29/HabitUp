@@ -1,21 +1,25 @@
 package com.example.habitup;
 
-import com.example.habitup.Model.Habit;
+import android.support.test.runner.AndroidJUnit4;
+
 import com.example.habitup.Model.HabitEvent;
 import com.example.habitup.Model.Map;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.GregorianCalendar;
 
-import static org.junit.Assert.*;
+import static junit.framework.Assert.assertTrue;
 
 /**
- * Example local unit test, which will execute on the development machine (host).
+ * @author acysl
  *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+ * Modified by @gojeffcho 2017-10-22
  */
+@RunWith(AndroidJUnit4.class)
 public class HabitEventTest {
+
     @Test
     public void testHabitEventSetterGetter() {
         HabitEvent event1 = new HabitEvent();
@@ -31,10 +35,12 @@ public class HabitEventTest {
             assertTrue(event1.getImage() != null);
             assertTrue(event1.getComment().equals("abcdef"));
         } catch (Exception e) {
-            fail();
+            assertTrue(Boolean.FALSE);
+            return;
         }
-    }
 
+        assertTrue(Boolean.TRUE);
+    }
 
     @Test
     public void testCommentLimited(){
@@ -45,10 +51,12 @@ public class HabitEventTest {
 
         } catch (IllegalArgumentException e){
             assertTrue(Boolean.TRUE);
+            return;
         }
 
-
+        assertTrue(Boolean.FALSE);
     }
+    
     @Test
     public void testCompleteDateRestrict(){
         GregorianCalendar date1 = new GregorianCalendar(2016, 10, 2, 15, 16, 17);
@@ -57,13 +65,13 @@ public class HabitEventTest {
             event2.setCompletedate(date1);
         } catch (IllegalArgumentException e){
             assertTrue(Boolean.TRUE);
+            return;
         }
 
+        assertTrue(Boolean.FALSE);
     }
 
-
-
-    }
+}
 
 
 

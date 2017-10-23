@@ -9,8 +9,11 @@ import java.io.ByteArrayOutputStream;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-
+/**
+ * @author acysl
+ */
 public class HabitEvent {
+  
     private GregorianCalendar completedate;
     private Map location;
     private Bitmap Image;
@@ -29,6 +32,12 @@ public class HabitEvent {
 //        this.pathofimage = image;
 //        this.habit = habit;
     }
+  
+      // Copy Constructor
+    public HabitEvent(HabitEvent e) {
+        // Copy all members over
+    }
+
 
     public void setCompletedate (GregorianCalendar completedate) throws IllegalArgumentException {
         this.completedate = completedate;
@@ -83,6 +92,5 @@ public class HabitEvent {
     public Bitmap getImage(){
         return Image;
     }
-
 
 }
