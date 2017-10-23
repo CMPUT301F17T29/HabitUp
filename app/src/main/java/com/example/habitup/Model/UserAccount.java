@@ -1,12 +1,13 @@
 package com.example.habitup.Model;
 
-
 import android.media.Image;
 
 import java.util.ArrayList;
 
 /**
+ * @author gojeffcho
  *
+ * The system representation of a User.
  */
 public class UserAccount {
 
