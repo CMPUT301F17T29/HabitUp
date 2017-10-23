@@ -38,15 +38,15 @@ public class HabitUpTest {
         
         testHabitUp.setUsersList(user1);
         
-        assertTrue(testList == user1.getUsers());
+        assertTrue(testList == testHabitUp.getUsers());
     }
     
     @Test
     public void testSetElasticConnectivity(){
         
         HabitUp testHabitUp = new HabitUp();
-        testHabitUp.setElasticSearch(true);
-        assertTrue(testHabitUp.getElasticSearch());
+        testHabitUp.setElasticConnectivity(true);
+        assertTrue(testHabitUp.getElasticConenectivity());
         
     }
     
@@ -62,7 +62,7 @@ public class HabitUpTest {
         
         testHabitUp.setCurrentUser(user1);
         
-        assertTrue(testHabitUp.getCurrentUser == user1);
+        assertTrue(testHabitUp.getCurrentUser() == user1);
         
     }
     
