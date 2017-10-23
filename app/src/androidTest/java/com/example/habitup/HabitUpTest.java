@@ -36,7 +36,7 @@ public class HabitUpTest {
         UserAccountList testList = new UserAccountList();
         testList.add(user1);
         
-        testHabitUp.setUsersList(user1);
+        testHabitUp.setUsersList(testList);
         
         assertTrue(testList == testHabitUp.getUsers());
     }
