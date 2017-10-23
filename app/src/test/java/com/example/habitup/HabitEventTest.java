@@ -18,7 +18,6 @@ import static org.junit.Assert.*;
 public class HabitEventTest {
     @Test
     public void testHabitEventSetterGetter() {
-        Habit h = new Habit();
         HabitEvent event1 = new HabitEvent();
         event1.setCompletedate(new GregorianCalendar(2017, 10, 2, 15, 16, 17));
         event1.setLocation(new Map());
@@ -40,9 +39,10 @@ public class HabitEventTest {
     @Test
     public void testCommentLimited(){
         String c1 = "saasdfaskfdasfasfsafsafasfavsadfsdfsa";
-        Habit h = new Habit();
+        HabitEvent event1 = new HabitEvent();
         try {
-            HabitEvent event1 = new HabitEvent();
+            event1.setComment(c1);
+
         } catch (IllegalArgumentException e){
             assertTrue(Boolean.TRUE);
         }
@@ -51,10 +51,10 @@ public class HabitEventTest {
     }
     @Test
     public void testCompleteDateRestrict(){
-        Habit h = new Habit();
         GregorianCalendar date1 = new GregorianCalendar(2016, 10, 2, 15, 16, 17);
+        HabitEvent event2 = new HabitEvent();
         try {
-            HabitEvent event2 = new HabitEvent();
+            event2.setCompletedate(date1);
         } catch (IllegalArgumentException e){
             assertTrue(Boolean.TRUE);
         }
