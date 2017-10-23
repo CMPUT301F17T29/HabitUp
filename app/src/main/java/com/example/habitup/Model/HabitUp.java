@@ -1,9 +1,6 @@
 package com.example.habitup.Model;
 
-import android.media.Image;
-
 import java.io.File;
-import java.util.ArrayList;
 
 /**
  * Created by Ty on 2017-10-21.
@@ -16,23 +13,21 @@ public class HabitUp {
 
     //Members
 
-    private ArrayList<UserAccount> users;
+    private UserAccountList users;
     private File localData;
     private Boolean elasticConnectivity;
     private UserAccount currentUser;
 
     public HabitUp(){
-        // get array list from elastic search
-        // load local data into file
-        // check connectivity
+        //TODO implement boundary checking
 
-        users = new ArrayList<UserAccount>();
+        users = new UserAccountList();
         currentUser = null;
         this.checkConnectivity();
         this.loadFile();
     }
 
-    public ArrayList<UserAccount> getUsers(){
+    public UserAccountList getUsers(){
         return this.users;
     }
 
@@ -48,12 +43,12 @@ public class HabitUp {
         return this.currentUser;
     }
 
-    public void setUsersList(ArrayList<UserAccount> users_){
+    public void setUsersList(UserAccountList users_){
         this.users = users_;
     }
 
     public void setLocalData(File localData_){
-        this.localData = localData_
+        this.localData = localData_;
     }
 
     public void setElasticConnectivity(boolean x){
@@ -61,7 +56,7 @@ public class HabitUp {
     }
 
     public void setCurrentUser(UserAccount currentUser_){
-        this.currentUser = currentUser_
+        this.currentUser = currentUser_;
     }
 
     /**
@@ -69,24 +64,6 @@ public class HabitUp {
      */
     public void login(String username)throws IllegalArgumentException {
 
-    }
-
-    /**
-     * Takes a new user and adds them to the arrayList users
-     * @param UserAccount user
-     */
-    public void addNewUser(UserAccount user){
-
-    }
-
-    /**
-     * Returns a list of Users who match the search term
-     * @param searchTerm string to be searched for
-     * @return Arraylist of UserAccounts who match the search term
-     */
-    public ArrayList<UserAccount> searchUsers(String searchTerm){
-        //placeholder
-        return this.getUsers();
     }
 
     /**
