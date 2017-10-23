@@ -29,6 +29,13 @@ public class Habit {
      * @author @alido8592
      */
 
+    /**
+     * Empty constructor
+     */
+    public Habit() {
+
+    }
+
     public Habit(String name, Boolean Sun, Boolean Mon, Boolean Tue, Boolean Wed, Boolean Thu,
                  Boolean Fri, Boolean Sat, String reason, String attribute)
             throws IllegalArgumentException, IllegalStateException {
