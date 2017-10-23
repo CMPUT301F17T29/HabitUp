@@ -9,8 +9,8 @@ public class Habit {
     private String name;
     private ArrayList<Boolean> schedule;
     private String reason;
-    private Attributes attribute;
-    private ArrayList<HabitEvent> habitEvents;
+    private String attribute;
+    private HabitEventList habitEvents;
 
     /**
      * Habit constructor
@@ -29,24 +29,26 @@ public class Habit {
      * @author @alido8592
      */
 
-    public Habit(String name, Boolean Mon, Boolean Tue, Boolean Wed, Boolean Thu,
-                 Boolean Fri, Boolean Sat, Boolean Sun, String reason, Attributes attribute)
+    public Habit(String name, Boolean Sun, Boolean Mon, Boolean Tue, Boolean Wed, Boolean Thu,
+                 Boolean Fri, Boolean Sat, String reason, String attribute)
             throws IllegalArgumentException, IllegalStateException {
 
-        //TODO: limits for name length and reason length
+        //TODO:
+        // limits for name length and unique name and reason length and minimum 1 day scheduled
+        // String attribute must be from Attributes
 
         this.name = name;
         this.schedule = new ArrayList<Boolean>(7);
-        this.schedule.set(0, Mon);
-        this.schedule.set(1, Tue);
-        this.schedule.set(2, Wed);
-        this.schedule.set(3, Thu);
-        this.schedule.set(4, Fri);
-        this.schedule.set(5, Sat);
-        this.schedule.set(6, Sun);
+        this.schedule.set(0, Sun);
+        this.schedule.set(1, Mon);
+        this.schedule.set(2, Tue);
+        this.schedule.set(3, Wed);
+        this.schedule.set(4, Thu);
+        this.schedule.set(5, Fri);
+        this.schedule.set(6, Sat);
         this.reason = reason;
         this.attribute = attribute;
-        habitEvents = new ArrayList<HabitEvent>();
+        habitEvents = new HabitEventList();
 
     }
 
@@ -67,13 +69,13 @@ public class Habit {
     public String getHabitSchedule() {
 
         ArrayList<String> days = new ArrayList<String>();
+        days.add("Sunday");
         days.add("Monday");
         days.add("Tuesday");
         days.add("Wednesday");
         days.add("Thursday");
         days.add("Friday");
         days.add("Saturday");
-        days.add("Sunday");
 
         StringBuilder scheduleBuilder = new StringBuilder();
 
@@ -107,10 +109,10 @@ public class Habit {
     /**
      * getHabitAttribute
      * Gets the associated attribute of the Habit
-     * @return Attributes
+     * @return String
      */
 
-    public Attributes getHabitAttribute() {return this.attribute;}
+    public String getHabitAttribute() {return this.attribute;}
 
     /**
      * getHabitEvents
@@ -118,7 +120,7 @@ public class Habit {
      * @return ArrayList<HabitEvent>
      */
 
-    public ArrayList<HabitEvent> getHabitEvents() {return this.habitEvents;}
+    public HabitEventList getHabitEvents() {return this.habitEvents;}
 
     /**
      * setHabitName
@@ -130,7 +132,7 @@ public class Habit {
     public void setHabitName(String name) throws IllegalArgumentException{
 
         this.name = name;
-        //TODO: Implement prevention of using existing Habit name and limit length
+        //TODO: Implement unique Habit name and limit length
     }
 
     /**
@@ -146,7 +148,9 @@ public class Habit {
      */
 
     public void setSchedule(Boolean Mon, Boolean Tue, Boolean Wed, Boolean Thu,
-                            Boolean Fri, Boolean Sat, Boolean Sun) {
+                            Boolean Fri, Boolean Sat, Boolean Sun) throws IllegalStateException{
+
+        //TODO: minimum 1 day scheduled
 
         this.schedule.set(0, Mon);
         this.schedule.set(1, Tue);
@@ -162,11 +166,9 @@ public class Habit {
      * Sets the Habit's reason as the provided String
      * @param reason String to represent the new desired reason
      * @throws IllegalArgumentException
-     * @throws IllegalStateException
      */
 
-    public void setReason(String reason) throws IllegalArgumentException,
-            IllegalStateException{
+    public void setReason(String reason) throws IllegalArgumentException {
 
         this.reason = reason;
         //TODO: Implement reason length limit
@@ -179,9 +181,14 @@ public class Habit {
      * @throws IllegalArgumentException
      */
 
-    public void setAttribute(Attributes attribute) throws IllegalArgumentException{
+    public void setAttribute(String attribute) throws IllegalArgumentException{
+        //TODO: String attribute must be from Attributes.attributeNames
 
         this.attribute = attribute;
+    }
+
+    public void updateSchedule() {
+        //TODO: implement
     }
 
     /**

@@ -15,6 +15,58 @@ import static junit.framework.Assert.assertFalse;
 
 public class HabitTest {
 
+    //Test Habit construction error long name
+    public void testHabitConstLongNameErr() {
+        String name = "123456789abcdefjhijklmnop";
+        String reason = "I wanna be the very best";
+        Attributes attribute = new Attributes();
+        Boolean t = Boolean.TRUE;
+
+        try{
+            Habit testHabit = new Habit(name,t,t,t,t,t,t,t,reason,attribute);
+        }
+        catch (IllegalArgumentException err) {
+            assertTrue(Boolean.TRUE);
+            return;
+        }
+        assertTrue(Boolean.FALSE); //failed to reproduce the error
+    }
+
+    //Test Habit construction error long reason
+    public void testHabitConstLongReasonErr(){
+        String name = "name";
+        String reason = "123456789123456789123456789101010";
+        Attributes attribute = new Attributes();
+        Boolean t = Boolean.TRUE;
+
+        try{
+            Habit testHabit = new Habit(name,t,t,t,t,t,t,t,reason,attribute);
+        }
+        catch (IllegalArgumentException err) {
+            assertTrue(Boolean.TRUE);
+            return;
+        }
+        assertTrue(Boolean.FALSE); //failed to reproduce the error
+    }
+
+    //Test Habit construction error no schedule
+    public void testHabitConstSchedErr(){
+        String name = "name";
+        String reason = "I wanna be the very best";
+        Attributes attribute = new Attributes();
+        Boolean t = Boolean.TRUE;
+        Boolean f = Boolean.FALSE;
+
+        try{
+            Habit testHabit = new Habit(name,f,f,f,f,f,f,f,reason,attribute);
+        }
+        catch (IllegalStateException err) {
+            assertTrue(Boolean.TRUE);
+            return;
+        }
+        assertTrue(Boolean.FALSE); //failed to reproduce the error
+    }
+
     //Test setHabitName actually sets/replaces the name
     public void testSetHabitNameSuccess() {
         String name = "name";
@@ -33,7 +85,6 @@ public class HabitTest {
     public void testSetHabitNameErr(){
         String name = "name";
         String habitName = "sampleHabit";
-        String habitName2 = "name";
         String reason = "I wanna be the very best";
         Attributes attribute = new Attributes();
         Boolean t = Boolean.TRUE;
@@ -41,13 +92,13 @@ public class HabitTest {
         Habit testHabit2 = new Habit(habitName,t,t,t,t,t,t,t,reason,attribute);
 
         try{
-            testHabit2.setHabitName(habitName2);
+            testHabit2.setHabitName(name);
         }
         catch (IllegalStateException err) {
             assertTrue(Boolean.TRUE);
             return;
         }
-        assertTrue(Boolean.FALSE); //failed to reproduce error
+        assertTrue(Boolean.FALSE); //failed to reproduce error (same as testHabit)
     }
 
     //Tests setHabitName to not exceed 20 characters, expects an error
@@ -73,9 +124,8 @@ public class HabitTest {
     //Tests that setReason sets
     public void testSetReason() {
         String name = "name";
-        String habitName = "sampleHabit";
         String reason = "reason";
-        String reason2 = "I wanna be the very best"
+        String reason2 = "I wanna be the very best";
         Attributes attribute = new Attributes();
         Boolean t = Boolean.TRUE;
         Habit testHabit = new Habit(name,t,t,t,t,t,t,t,reason,attribute);
@@ -108,7 +158,6 @@ public class HabitTest {
     //Tests setSchedule sets
     public void testSetSchedule(){
         String name = "name";
-        String habitName = "sampleHabit";
         String reason = "I wanna be the very best";
         Attributes attribute = new Attributes();
         Boolean t = Boolean.TRUE;
@@ -117,13 +166,12 @@ public class HabitTest {
 
         testHabit.setSchedule(f,f,f,f,f,f,t);
 
-        assertTrue(testHabit.getHabitSchedule()== "Sunday "); //check if schedule was set to Sunday
+        assertTrue(testHabit.getHabitSchedule()== "Saturday "); //check if schedule was set to Saturday
     }
 
     //Test setAttribute actually sets an attribute
     public void testSetAttribute(){
         String name = "name";
-        String habitName = "sampleHabit";
         String reason = "I wanna be the very best";
         Attributes attribute = new Attributes();
         Attributes attribute2 = new Attributes();
@@ -138,7 +186,6 @@ public class HabitTest {
     public void testAddHabitEvent(){
         HabitEvent habitEvent = new HabitEvent();
         String name = "name";
-        String habitName = "sampleHabit";
         String reason = "I wanna be the very best";
         Attributes attribute = new Attributes();
         Boolean t = Boolean.TRUE;
@@ -153,7 +200,6 @@ public class HabitTest {
     public void testRemoveHabitEvent(){
         HabitEvent habitEvent = new HabitEvent();
         String name = "name";
-        String habitName = "sampleHabit";
         String reason = "I wanna be the very best";
         Attributes attribute = new Attributes();
         Boolean t = Boolean.TRUE;
