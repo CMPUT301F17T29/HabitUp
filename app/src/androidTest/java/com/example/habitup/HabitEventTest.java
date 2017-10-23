@@ -19,6 +19,7 @@ import static junit.framework.Assert.assertTrue;
  */
 @RunWith(AndroidJUnit4.class)
 public class HabitEventTest {
+
     @Test
     public void testHabitEventSetterGetter() {
         HabitEvent event1 = new HabitEvent();
@@ -41,7 +42,6 @@ public class HabitEventTest {
         assertTrue(Boolean.TRUE);
     }
 
-
     @Test
     public void testCommentLimited(){
         String c1 = "saasdfaskfdasfasfsafsafasfavsadfsdfsa";
@@ -56,6 +56,7 @@ public class HabitEventTest {
 
         assertTrue(Boolean.FALSE);
     }
+    
     @Test
     public void testCompleteDateRestrict(){
         GregorianCalendar date1 = new GregorianCalendar(2016, 10, 2, 15, 16, 17);
