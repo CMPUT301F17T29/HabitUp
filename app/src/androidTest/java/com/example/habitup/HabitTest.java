@@ -19,7 +19,7 @@ public class HabitTest {
     public void testHabitConstLongNameErr() {
         String name = "123456789abcdefjhijklmnop";
         String reason = "I wanna be the very best";
-        Attributes attribute = new Attributes();
+        String attribute = "Mental";
         Boolean t = Boolean.TRUE;
 
         try{
@@ -36,7 +36,7 @@ public class HabitTest {
     public void testHabitConstLongReasonErr(){
         String name = "name";
         String reason = "123456789123456789123456789101010";
-        Attributes attribute = new Attributes();
+        String attribute = "Mental";
         Boolean t = Boolean.TRUE;
 
         try{
@@ -53,7 +53,7 @@ public class HabitTest {
     public void testHabitConstSchedErr(){
         String name = "name";
         String reason = "I wanna be the very best";
-        Attributes attribute = new Attributes();
+        String attribute = "Mental";
         Boolean t = Boolean.TRUE;
         Boolean f = Boolean.FALSE;
 
@@ -72,7 +72,7 @@ public class HabitTest {
         String name = "name";
         String habitName = "sampleHabit";
         String reason = "I wanna be the very best";
-        Attributes attribute = new Attributes();
+        String attribute = "Mental";
         Boolean t = Boolean.TRUE;
         Habit testHabit = new Habit(name,t,t,t,t,t,t,t,reason,attribute);
 
@@ -86,7 +86,7 @@ public class HabitTest {
         String name = "name";
         String habitName = "sampleHabit";
         String reason = "I wanna be the very best";
-        Attributes attribute = new Attributes();
+        String attribute = "Mental";
         Boolean t = Boolean.TRUE;
         Habit testHabit = new Habit(name,t,t,t,t,t,t,t,reason,attribute);
         Habit testHabit2 = new Habit(habitName,t,t,t,t,t,t,t,reason,attribute);
@@ -106,7 +106,7 @@ public class HabitTest {
         String name = "name";
         String habitName = "123456789abcdefghijklmnop";
         String reason = "I wanna be the very best";
-        Attributes attribute = new Attributes();
+        String attribute = "Mental";
         Boolean t = Boolean.TRUE;
         Habit testHabit = new Habit(name,t,t,t,t,t,t,t,reason,attribute);
 
@@ -126,7 +126,7 @@ public class HabitTest {
         String name = "name";
         String reason = "reason";
         String reason2 = "I wanna be the very best";
-        Attributes attribute = new Attributes();
+        String attribute = "Mental";
         Boolean t = Boolean.TRUE;
         Habit testHabit = new Habit(name,t,t,t,t,t,t,t,reason,attribute);
 
@@ -141,7 +141,7 @@ public class HabitTest {
         String habitName = "sampleHabit";
         String reason = "I wanna be the very best";
         String reason2 = "123456789123456789123456789101010";
-        Attributes attribute = new Attributes();
+        String attribute = "Mental";
         Boolean t = Boolean.TRUE;
         Habit testHabit = new Habit(name,t,t,t,t,t,t,t,reason,attribute);
 
@@ -159,7 +159,7 @@ public class HabitTest {
     public void testSetSchedule(){
         String name = "name";
         String reason = "I wanna be the very best";
-        Attributes attribute = new Attributes();
+        String attribute = "Mental";
         Boolean t = Boolean.TRUE;
         Boolean f = Boolean.FALSE;
         Habit testHabit = new Habit(name,t,t,t,t,t,t,t,reason,attribute);
@@ -173,8 +173,8 @@ public class HabitTest {
     public void testSetAttribute(){
         String name = "name";
         String reason = "I wanna be the very best";
-        Attributes attribute = new Attributes();
-        Attributes attribute2 = new Attributes();
+        String attribute = "Mental";
+        String attribute2 = "Physical";
         Boolean t = Boolean.TRUE;
         Habit testHabit = new Habit(name,t,t,t,t,t,t,t,reason,attribute);
 
@@ -187,7 +187,7 @@ public class HabitTest {
         HabitEvent habitEvent = new HabitEvent();
         String name = "name";
         String reason = "I wanna be the very best";
-        Attributes attribute = new Attributes();
+        String attribute = "Mental";
         Boolean t = Boolean.TRUE;
         Habit testHabit = new Habit(name,t,t,t,t,t,t,t,reason,attribute);
 
@@ -201,7 +201,7 @@ public class HabitTest {
         HabitEvent habitEvent = new HabitEvent();
         String name = "name";
         String reason = "I wanna be the very best";
-        Attributes attribute = new Attributes();
+        String attribute = "Mental";
         Boolean t = Boolean.TRUE;
         Habit testHabit = new Habit(name,t,t,t,t,t,t,t,reason,attribute);
 
