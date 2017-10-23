@@ -9,7 +9,9 @@ import java.io.ByteArrayOutputStream;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-
+/**
+ * @author acysl
+ */
 public class HabitEvent {
   
     private GregorianCalendar completedate;
