@@ -19,7 +19,7 @@ public class HabitEventTest {
     @Test
     public void testHabitEventSetterGetter() {
         Habit h = new Habit();
-        HabitEvent event1 = new HabitEvent(null,null,null,null,h);
+        HabitEvent event1 = new HabitEvent();
         event1.setCompletedate(new GregorianCalendar(2017, 10, 2, 15, 16, 17));
         event1.setLocation(new Map());
         event1.setPathofimage("/Users/abcdefg");
@@ -42,7 +42,7 @@ public class HabitEventTest {
         String c1 = "saasdfaskfdasfasfsafsafasfavsadfsdfsa";
         Habit h = new Habit();
         try {
-            HabitEvent event1 = new HabitEvent(null,null,null,c1,h);
+            HabitEvent event1 = new HabitEvent();
         } catch (IllegalArgumentException e){
             assertTrue(Boolean.TRUE);
         }
@@ -54,7 +54,7 @@ public class HabitEventTest {
         Habit h = new Habit();
         GregorianCalendar date1 = new GregorianCalendar(2016, 10, 2, 15, 16, 17);
         try {
-            HabitEvent event2 = new HabitEvent(date1,null,null,null,h);
+            HabitEvent event2 = new HabitEvent();
         } catch (IllegalArgumentException e){
             assertTrue(Boolean.TRUE);
         }

@@ -21,13 +21,13 @@ public class HabitEvent {
     private Habit habit;
 
 
-    public HabitEvent (GregorianCalendar completedate, Map location, String image, String comment,Habit habit){
-        this.comment = comment;
-        this.completedate = completedate;
-        this.location = location;
-        this.comment = comment;
-        this.pathofimage = image;
-        this.habit = habit;
+    public HabitEvent (){
+//        this.comment = comment;
+//        this.completedate = completedate;
+//        this.location = location;
+//        this.comment = comment;
+//        this.pathofimage = image;
+//        this.habit = habit;
     }
 
     public void setCompletedate (GregorianCalendar completedate) throws IllegalArgumentException {
