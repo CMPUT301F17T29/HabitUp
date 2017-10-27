@@ -2,12 +2,42 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/home"
-            android:title="Home"
+            android:id="@+id/profile"
+            android:title="Profile"
+            android:icon="@drawable/ic_profile"/>
+        <item
+            android:id="@+id/habits"
+            android:title="Habit"
             android:icon="@drawable/ic_habits"/>
         <item
             android:id="@+id/events"
             android:title="Events"
             android:icon="@drawable/ic_events"/>
+        <item
+            android:id="@+id/friends"
+            android:title="Friends"
+            android:icon="@drawable/ic_find"/>
+
+        <item
+            android:id="@+id/requests"
+            android:title="Friends Requests"
+            android:icon="@drawable/ic_requests"/>
+
+        <item
+            android:id="@+id/finds"
+            android:title="Find A User"
+            android:icon="@drawable/ic_find"/>
+
+        <item
+            android:id="@+id/map"
+            android:title="Map"
+            android:icon="@drawable/ic_map"/>
+
+        <item
+            android:id="@+id/logout"
+            android:title="Log Out"
+            android:icon="@drawable/ic_logout"/>
+
+
     </group>
 </menu>

@@ -1,17 +1,21 @@
 package com.example.habitup.View;
 
+import android.content.Intent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.habitup.R;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
@@ -37,8 +41,28 @@ public class MainActivity extends AppCompatActivity {
                 int id = menuItem.getItemId();
 
                 switch (id){
-                    case R.id.home:
-                        Toast.makeText(getApplicationContext(),"Home",Toast.LENGTH_SHORT).show();
+                    case R.id.profile:
+                        drawerLayout.closeDrawers();
+                        break;
+                    case R.id.habits:
+                        drawerLayout.closeDrawers();
+                        break;
+                    case R.id.events:
+                        drawerLayout.closeDrawers();
+                        break;
+                    case R.id.friends:
+                        drawerLayout.closeDrawers();
+                        break;
+                    case R.id.requests:
+                        drawerLayout.closeDrawers();
+                        break;
+                    case R.id.finds:
+                        drawerLayout.closeDrawers();
+                        break;
+                    case R.id.map:
+                        drawerLayout.closeDrawers();
+                        break;
+                    case R.id.logout:
                         drawerLayout.closeDrawers();
                         break;
                 }
@@ -47,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         });
         View header = navigationView.getHeaderView(0);
         drawerLayout = (DrawerLayout)findViewById(R.id.drawer);
+
 
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.drawer_open,R.string.drawer_close){
 
