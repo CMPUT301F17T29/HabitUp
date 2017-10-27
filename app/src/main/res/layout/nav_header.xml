@@ -2,13 +2,13 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
+    android:id="@+id/profile_banner"
     android:paddingTop="30dp"
     android:paddingLeft="12dp"
     android:background="@color/colorPrimary"
     android:layout_width="match_parent"
     android:layout_height="150dp"
     android:weightSum="1">
-
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/drawer_pic"

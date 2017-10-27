@@ -1,5 +1,6 @@
 package com.example.habitup.View;
 
+import android.content.Intent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -40,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
                 int id = menuItem.getItemId();
 
                 switch (id){
+                    case R.id.profile:
+                        drawerLayout.closeDrawers();
+                        break;
                     case R.id.habits:
                         drawerLayout.closeDrawers();
                         break;
