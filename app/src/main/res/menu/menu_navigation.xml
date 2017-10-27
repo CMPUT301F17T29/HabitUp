@@ -5,5 +5,9 @@
             android:id="@+id/home"
             android:title="Home"
             android:icon="@drawable/ic_habits"/>
+        <item
+            android:id="@+id/events"
+            android:title="Events"
+            android:icon="@drawable/ic_events"/>
     </group>
 </menu>
