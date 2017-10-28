@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="24sp"
+            android:text="Habits" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/lightgray"
+            android:textSize="12sp"
+            android:text="Select a habit below" />
+
+        <ListView
+            android:id="@+id/OldLists"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bottom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"  >
+        <Button
+            android:id="@+id/add_habits"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableTop="@drawable/ic_add"
+            android:text="Add Habit"
+            android:textSize="12sp"
+            android:layout_weight="1"
+            android:layout_marginTop="2dip"
+            android:backgroundTint="@color/colorPrimary"
+            />
+        <Button
+            android:id="@+id/view_habits"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableTop="@drawable/ic_view"
+            android:text="View"
+            android:textSize="12sp"
+            android:layout_weight="1"
+            android:layout_marginTop="2dip"
+            android:backgroundTint="@color/colorPrimary"
+            />
+
+        <Button
+            android:id="@+id/edit_habits"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimary"
+            android:layout_marginTop="2dip"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_edit"
+            android:text="Edit"
+            />
+
+        <Button
+            android:id="@+id/delete_habits"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginTop="2dip"
+            android:drawableTop="@drawable/ic_delete"
+            android:text="Delete"
+            android:backgroundTint="@color/colorPrimary"
+            />
+    </LinearLayout>
+
+</RelativeLayout>
