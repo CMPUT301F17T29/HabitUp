@@ -16,7 +16,7 @@
         <item
             android:id="@+id/friends"
             android:title="Friends"
-            android:icon="@drawable/ic_find"/>
+            android:icon="@drawable/ic_friends"/>
 
         <item
             android:id="@+id/requests"
