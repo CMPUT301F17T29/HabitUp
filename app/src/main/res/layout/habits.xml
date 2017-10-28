@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -30,7 +30,7 @@
             android:text="Select a habit below" />
 
         <ListView
-            android:id="@+id/OldLists"
+            android:id="@+id/OldHabitLists"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true" />
@@ -56,30 +56,29 @@
             android:layout_marginTop="2dip"
             android:backgroundTint="@color/colorPrimary"
             />
+
         <Button
             android:id="@+id/view_habits"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="2dip"
+            android:layout_weight="1"
+            android:backgroundTint="@color/colorPrimary"
             android:drawableTop="@drawable/ic_view"
             android:text="View"
             android:textColor="@color/white"
-            android:textSize="12sp"
-            android:layout_weight="1"
-            android:layout_marginTop="2dip"
-            android:backgroundTint="@color/colorPrimary"
-            />
+            android:textSize="12sp" />
 
         <Button
             android:id="@+id/edit_habits"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorPrimary"
             android:layout_marginTop="2dip"
             android:layout_weight="1"
+            android:backgroundTint="@color/colorPrimary"
             android:drawableTop="@drawable/ic_habit_edit"
             android:text="Edit"
-            android:textColor="@color/white"
-            />
+            android:textColor="@color/white" />
 
         <Button
             android:id="@+id/delete_habits"
