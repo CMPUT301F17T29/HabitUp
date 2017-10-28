@@ -50,6 +50,7 @@
             android:layout_height="wrap_content"
             android:drawableTop="@drawable/ic_add"
             android:text="Add Habit"
+            android:textColor="@color/white"
             android:textSize="12sp"
             android:layout_weight="1"
             android:layout_marginTop="2dip"
@@ -61,6 +62,7 @@
             android:layout_height="wrap_content"
             android:drawableTop="@drawable/ic_view"
             android:text="View"
+            android:textColor="@color/white"
             android:textSize="12sp"
             android:layout_weight="1"
             android:layout_marginTop="2dip"
@@ -74,8 +76,9 @@
             android:backgroundTint="@color/colorPrimary"
             android:layout_marginTop="2dip"
             android:layout_weight="1"
-            android:drawableTop="@drawable/ic_edit"
+            android:drawableTop="@drawable/ic_habit_edit"
             android:text="Edit"
+            android:textColor="@color/white"
             />
 
         <Button
@@ -86,6 +89,7 @@
             android:layout_marginTop="2dip"
             android:drawableTop="@drawable/ic_delete"
             android:text="Delete"
+            android:textColor="@color/white"
             android:backgroundTint="@color/colorPrimary"
             />
     </LinearLayout>
