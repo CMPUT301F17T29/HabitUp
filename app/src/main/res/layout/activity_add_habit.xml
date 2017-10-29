@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:background="@color/white"
+    tools:context="com.example.habitup.View.AddHabitActivity">
+
+    <TextView
+        android:id="@+id/addhabit_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/add_habit"
+        android:textColor="@color/darkgray"
+        android:textSize="20sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/habit_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/addhabit_title"
+        app:layout_constraintLeft_toLeftOf="@+id/habit_name"
+        android:labelFor="@id/habit_name"
+        android:text="@string/habit_label"
+        android:textSize="17sp"
+        android:textColor="@color/darkgray"
+        android:layout_marginTop="20dp"
+        tools:layout_constraintLeft_creator="1" />
+
+    <EditText
+        android:id="@+id/habit_name"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:background="@drawable/text_input"
+        android:hint="@string/habit_hint"
+        android:textColorHint="@color/lightgray"
+        android:paddingLeft="10dp"
+        android:textSize="17sp"
+        app:layout_constraintTop_toBottomOf="@+id/habit_label"
+        android:inputType="text"
+        tools:layout_constraintRight_creator="1"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        android:id="@+id/reason_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/habit_name"
+        app:layout_constraintLeft_toLeftOf="@+id/habit_reason"
+        android:text="@string/reason_label"
+        android:textSize="17sp"
+        android:textColor="@color/darkgray"
+        android:layout_marginTop="20dp" />
+
+    <EditText
+        android:id="@+id/habit_reason"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:background="@drawable/text_input"
+        android:hint="@string/reason_hint"
+        android:textColorHint="@color/lightgray"
+        android:paddingLeft="10dp"
+        android:textSize="17sp"
+        app:layout_constraintTop_toBottomOf="@+id/reason_label"
+        android:inputType="text"
+        tools:layout_constraintRight_creator="1"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+
+    <TextView
+        android:id="@+id/date_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/habit_date_label"
+        android:textSize="17sp"
+        app:layout_constraintTop_toBottomOf="@+id/habit_reason"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/darkgray"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        app:layout_constraintTop_toBottomOf="@+id/date_label"
+        android:id="@+id/date_layout"
+        tools:layout_editor_absoluteX="0dp">
+
+        <Button
+            android:id="@+id/date_button"
+            android:layout_width="145dp"
+            android:layout_height="wrap_content"
+            android:text="Current date"
+            android:gravity="start|center_vertical"
+            android:paddingLeft="10dp"
+            android:background="@color/whitegray"
+            tools:layout_editor_absoluteY="246dp" />
+
+        <ImageView
+            android:layout_width="44dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_calendar"
+            android:background="@color/teal"
+            android:layout_gravity="center"
+            android:tint="@color/white"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/attr_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/habit_attr_label"
+        android:textSize="17sp"
+        android:textColor="@color/darkgray"
+        app:layout_constraintTop_toBottomOf="@+id/habit_reason"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/date_label"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="10dp"
+        app:layout_constraintHorizontal_bias="0.709"
+        android:layout_marginEnd="10dp" />
+
+    <LinearLayout
+        android:layout_width="145dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/attr_label"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/date_layout"
+        android:layout_marginLeft="8dp"
+        android:background="@color/whitegray"
+        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_marginRight="8dp"
+        android:paddingRight="10dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp">
+
+        <Spinner
+            style="@style/Widget.AppCompat.DropDownItem.Spinner"
+            android:id="@+id/habit_attr_spinner"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/schedule_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/habit_sched_label"
+        app:layout_constraintTop_toBottomOf="@+id/date_layout"
+        android:layout_marginTop="20dp"
+        android:textSize="17sp"
+        android:textColor="@color/darkgray"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <LinearLayout
+        android:id="@+id/schedule"
+        android:layout_width="328dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/schedule_label"
+        android:weightSum="7"
+        tools:layout_editor_absoluteX="8dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <CheckBox
+                android:id="@+id/monday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:theme="@style/GreenCheckBox"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mon" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <CheckBox
+                android:id="@+id/tuesday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:theme="@style/GreenCheckBox"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tue" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <CheckBox
+                android:id="@+id/wednesday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:theme="@style/GreenCheckBox"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/wed" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <CheckBox
+                android:id="@+id/thursday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:theme="@style/GreenCheckBox"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/thu" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <CheckBox
+                android:id="@+id/friday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:theme="@style/GreenCheckBox"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fri" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <CheckBox
+                android:id="@+id/saturday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:theme="@style/GreenCheckBox"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sat" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <CheckBox
+                android:id="@+id/sunday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:theme="@style/GreenCheckBox"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sun" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/save_habit"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/primary_button"
+        android:text="@string/save"
+        android:textColor="@color/white"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/schedule" />
+
+
+</android.support.constraint.ConstraintLayout>

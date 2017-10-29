@@ -14,7 +14,11 @@
     </style>
 
     <style name="WhiteCheckBox">
-        <item name="colorAccent">#FFFFFF</item>
+        <item name="colorAccent">@color/white</item>
+    </style>
+
+    <style name="GreenCheckBox">
+        <item name="colorAccent">@color/green</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
