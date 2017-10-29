@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:checkableBehavior="single">
+    <group android:checkableBehavior="single" android:id="@+id/main_group">
         <item
             android:id="@+id/profile"
             android:title="Profile"
@@ -13,6 +13,14 @@
             android:id="@+id/events"
             android:title="Habit Events"
             android:icon="@drawable/ic_events"/>
+        <item
+            android:id="@+id/map"
+            android:title="Map"
+            android:icon="@drawable/ic_map"/>
+    </group>
+
+    <group android:checkableBehavior="single" android:id="@+id/friends_group">
+
         <item
             android:id="@+id/friends"
             android:title="Friends"
@@ -28,16 +36,10 @@
             android:title="Find A User"
             android:icon="@drawable/ic_find"/>
 
-        <item
-            android:id="@+id/map"
-            android:title="Map"
-            android:icon="@drawable/ic_map"/>
-
-        <item
-            android:id="@+id/logout"
-            android:title="Log Out"
-            android:icon="@drawable/ic_logout"/>
-
-
     </group>
+
+    <item
+        android:id="@+id/logout"
+        android:title="Log Out"
+        android:icon="@drawable/ic_logout"/>
 </menu>
