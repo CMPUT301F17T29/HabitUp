@@ -74,9 +74,9 @@
             android:layout_height="60dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="10dp"
             android:adjustViewBounds="false"
-            android:src="@drawable/ic_default_user"
+            android:src="@drawable/default_user"
             android:scaleX="1"
             android:scaleY="1"
             android:alpha="255" />
@@ -88,7 +88,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/drawer_pic"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="2dp"
             android:text="User's Name"
             android:textColor="@color/white"
             android:textSize="16sp"/>
@@ -99,7 +99,7 @@
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
             android:layout_centerHorizontal="true"
@@ -115,7 +115,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/progress_bar"
-            android:layout_marginLeft="40dp">
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="1dp">
 
             <ImageView
                 android:id="@+id/level_star"
@@ -140,7 +141,8 @@
             android:layout_below="@id/progress_bar"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginRight="40dp">
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="1dp">
 
             <TextView
                 android:id="@+id/x_value"
