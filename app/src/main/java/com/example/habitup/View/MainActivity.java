@@ -1,11 +1,7 @@
 package com.example.habitup.View;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.support.design.widget.NavigationView;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -14,8 +10,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -58,36 +52,6 @@ public class MainActivity extends AppCompatActivity {
 
         habitList = new ArrayList<Habit>();
 
-        // Create dummy habit objects
-        Habit habit1 = new Habit();
-        habit1.setHabitName("Go to the gym");
-        habit1.setAttribute("Physical");
-
-        Habit habit2 = new Habit();
-        habit2.setHabitName("Study for CMPUT 301");
-        habit2.setAttribute("Mental");
-
-        Habit habit3 = new Habit();
-        habit3.setHabitName("Practice piano");
-        habit3.setAttribute("Discipline");
-
-        Habit habit4 = new Habit();
-        habit4.setHabitName("Attend CMPUT 469");
-        habit4.setAttribute("Social");
-
-        Habit habit5 = new Habit();
-        habit5.setHabitName("Clean room");
-        habit5.setAttribute("Discipline");
-
-        habitList.add(habit1);
-        habitList.add(habit2);
-        habitList.add(habit3);
-        habitList.add(habit4);
-        habitList.add(habit5);
-
-        // Change transparency of profile image
-        ImageView profileImage = (ImageView) findViewById(R.id.drawer_pic);
-        profileImage.setAlpha(1f);
 
     }
 
@@ -145,6 +109,8 @@ public class MainActivity extends AppCompatActivity {
         View header = navigationView.getHeaderView(0);
         drawerLayout = (DrawerLayout)findViewById(R.id.drawer);
 
+        // Highlight profile list item
+        navigationView.getMenu().getItem(0).setChecked(true);
 
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.drawer_open,R.string.drawer_close){
 

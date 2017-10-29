@@ -7,20 +7,20 @@
             android:icon="@drawable/ic_profile"/>
         <item
             android:id="@+id/habits"
-            android:title="Habit"
+            android:title="Habits"
             android:icon="@drawable/ic_habits"/>
         <item
             android:id="@+id/events"
-            android:title="Events"
+            android:title="Habit Events"
             android:icon="@drawable/ic_events"/>
         <item
             android:id="@+id/friends"
             android:title="Friends"
-            android:icon="@drawable/ic_find"/>
+            android:icon="@drawable/ic_friends"/>
 
         <item
             android:id="@+id/requests"
-            android:title="Friends Requests"
+            android:title="Friend Requests"
             android:icon="@drawable/ic_requests"/>
 
         <item
