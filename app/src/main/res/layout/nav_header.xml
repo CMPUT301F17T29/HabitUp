@@ -15,6 +15,7 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:adjustViewBounds="false"
+        android:layout_marginTop="15dp"
         android:src="@drawable/ic_default_user"
         android:layout_weight="0.20"
         android:scaleX="1"
@@ -24,7 +25,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="5dp"
+        android:textSize="15sp"
         android:text="Username" />
 
 </LinearLayout>

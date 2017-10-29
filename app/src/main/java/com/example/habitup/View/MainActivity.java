@@ -72,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
         View header = navigationView.getHeaderView(0);
         drawerLayout = (DrawerLayout)findViewById(R.id.drawer);
 
+        // Highlight profile list item
+        navigationView.getMenu().getItem(0).setChecked(true);
 
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.drawer_open,R.string.drawer_close){
 
