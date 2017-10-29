@@ -1,7 +1,9 @@
 package com.example.habitup.View;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.habitup.Model.Attributes;
@@ -51,22 +54,6 @@ public class ProfileHabitsAdapter extends ArrayAdapter<Habit> {
                 habitNameView.setTextColor(Color.parseColor(attributeColour));
             }
         }
-
-        LinearLayout checkArea = v.findViewById(R.id.habit_checkarea);
-
-        checkArea.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                view.setBackgroundColor(Color.parseColor("#39B8B8"));
-
-                CheckBox checkBox = view.findViewById(R.id.today_habit_checkbox);
-                checkBox.setChecked(true);
-
-                if (checkBox.isChecked()) {
-                    checkBox.setClickable(false);
-                }
-            }
-        });
 
         return v;
     }

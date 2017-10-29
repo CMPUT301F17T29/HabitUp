@@ -52,7 +52,10 @@ public class MainActivity extends AppCompatActivity {
 
         habitList = new ArrayList<Habit>();
 
-
+        Habit habit1 = new Habit();
+        habit1.setHabitName("Go to the gym");
+        habit1.setAttribute("Physical");
+        habitList.add(habit1);
     }
 
     @Override

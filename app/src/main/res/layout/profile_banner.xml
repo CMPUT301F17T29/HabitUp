@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -22,6 +22,7 @@
                 android:id="@+id/edit_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:contentDescription="Edit icon"
                 android:layout_centerHorizontal="true"
 
                 android:tint="@color/teal"
@@ -55,6 +56,7 @@
                 android:tint="@color/teal"
                 android:minWidth="38dp"
                 android:minHeight="38dp"
+                android:contentDescription="Profile picture"
                 app:srcCompat="@drawable/ic_stats" />
             <TextView
                 android:id="@+id/stats_text"
@@ -110,61 +112,54 @@
             android:progressDrawable="@drawable/custom_progress"/>
 
         <!-- User's level -->
-        <LinearLayout
-            android:id="@+id/user_level"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/progress_bar"
+
+        <ImageView
+            android:id="@+id/level_star"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_events"
+            android:layout_below="@+id/progress_bar"
             android:layout_marginLeft="40dp"
-            android:layout_marginTop="1dp">
-
-            <ImageView
-                android:id="@+id/level_star"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_events"
-                android:tint="@color/yellow" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="15sp"
-                android:text="Level 1"/>
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/level_status"
+            android:tint="@color/yellow" />
+        <TextView
+            android:id="@+id/level_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/progress_bar"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginRight="40dp"
-            android:layout_marginTop="1dp">
+            android:textColor="@color/white"
+            android:layout_below="@+id/progress_bar"
+            android:layout_toRightOf="@+id/level_star"
+            android:textSize="15sp"
+            android:text="Level 1"/>
 
-            <TextView
-                android:id="@+id/x_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:text="50" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:text="/" />
-            <TextView
-                android:id="@+id/y_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:text="100" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/x_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:layout_below="@+id/progress_bar"
+            android:layout_toLeftOf="@+id/slash"
+            android:textSize="15sp"
+            android:text="50" />
+        <TextView
+            android:id="@+id/slash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:layout_below="@+id/progress_bar"
+            android:layout_toLeftOf="@+id/y_value"
+            android:textSize="15sp"
+            android:text="/" />
+        <TextView
+            android:id="@+id/y_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:layout_below="@+id/progress_bar"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="40dp"
+            android:textSize="15sp"
+            android:text="100" />
 
         <!-- Attributes -->
         <LinearLayout
@@ -172,12 +167,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_below="@id/level_status"
+            android:layout_below="@id/level_star"
             android:layout_marginTop="10dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.25"
@@ -201,10 +196,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Physical"
+                    android:layout_below="@+id/attribute1_value"
                     android:textColor="@color/white"/>
-            </LinearLayout>
+            </RelativeLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.25"
@@ -228,10 +224,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Mental"
+                    android:layout_below="@+id/attribute2_value"
                     android:textColor="@color/white"/>
-            </LinearLayout>
+            </RelativeLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.25"
@@ -255,10 +252,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Social"
+                    android:layout_below="@+id/attribute3_value"
                     android:textColor="@color/white"/>
-            </LinearLayout>
+            </RelativeLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.25"
@@ -281,8 +279,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Discipline"
+                    android:layout_below="@+id/attribute4_value"
                     android:textColor="@color/white"/>
-            </LinearLayout>
+            </RelativeLayout>
 
         </LinearLayout>
 
@@ -311,4 +310,4 @@
         android:textSize="13sp"
         android:text="@string/todays_instructions"/>
 
-</LinearLayout>
+</RelativeLayout>
