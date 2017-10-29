@@ -11,4 +11,4 @@ local.properties
 # Gradle files
 .gradle
 
-.sample
+sample/
