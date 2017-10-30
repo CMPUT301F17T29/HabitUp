@@ -56,7 +56,7 @@ public class HabitEventTest {
 
         assertTrue(Boolean.FALSE);
     }
-    
+
     @Test
     public void testCompleteDateRestrict(){
         GregorianCalendar date1 = new GregorianCalendar(2016, 10, 2, 15, 16, 17);

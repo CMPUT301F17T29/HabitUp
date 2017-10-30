@@ -29,6 +29,13 @@ public class Habit {
      * @author @alido8592
      */
 
+    /**
+     * Empty constructor
+     */
+    public Habit() {
+
+    }
+
     public Habit(String name, Boolean Sun, Boolean Mon, Boolean Tue, Boolean Wed, Boolean Thu,
                  Boolean Fri, Boolean Sat, String reason, String attribute)
             throws IllegalArgumentException, IllegalStateException {
@@ -57,7 +64,6 @@ public class Habit {
      * Gets the String of the Habit's name
      * @return String
      */
-
     public String getHabitName() {return this.name;}
 
     /**
@@ -65,7 +71,6 @@ public class Habit {
      * Forms a String of days of when the Habit is scheduled
      * @return String
      */
-
     public String getHabitSchedule() {
 
         ArrayList<String> days = new ArrayList<String>();
@@ -103,7 +108,6 @@ public class Habit {
      * Gets the Habit's reason as a String
      * @return String
      */
-
     public String getHabitReason() {return this.reason;}
 
     /**
@@ -111,7 +115,6 @@ public class Habit {
      * Gets the associated attribute of the Habit
      * @return String
      */
-
     public String getHabitAttribute() {return this.attribute;}
 
     /**
@@ -119,7 +122,6 @@ public class Habit {
      * Gets the associated ArrayList of HabitEvent objects for the Habit
      * @return ArrayList<HabitEvent>
      */
-
     public HabitEventList getHabitEvents() {return this.habitEvents;}
 
     /**
@@ -128,7 +130,6 @@ public class Habit {
      * @param name String for the desired new name
      * @throws IllegalArgumentException
      */
-
     public void setHabitName(String name) throws IllegalArgumentException{
 
         this.name = name;
@@ -146,7 +147,6 @@ public class Habit {
      * @param Sat Boolean entry signifying if the Habit is schedule for Saturday
      * @param Sun Boolean entry signifying if the Habit is schedule for Sunday
      */
-
     public void setSchedule(Boolean Mon, Boolean Tue, Boolean Wed, Boolean Thu,
                             Boolean Fri, Boolean Sat, Boolean Sun) throws IllegalStateException{
 
@@ -167,7 +167,6 @@ public class Habit {
      * @param reason String to represent the new desired reason
      * @throws IllegalArgumentException
      */
-
     public void setReason(String reason) throws IllegalArgumentException {
 
         this.reason = reason;
@@ -180,7 +179,6 @@ public class Habit {
      * @param attribute Attributes object to be associated to the Habit
      * @throws IllegalArgumentException
      */
-
     public void setAttribute(String attribute) throws IllegalArgumentException{
         //TODO: String attribute must be from Attributes.attributeNames
 
@@ -196,7 +194,6 @@ public class Habit {
      * Adds a new HabitEvent into the Habit's ArrayList
      * @param habitEvent HabitEvent to be added into the Habit
      */
-
     public void addHabitEvent(HabitEvent habitEvent){
 
         this.habitEvents.add(habitEvent);
@@ -207,7 +204,6 @@ public class Habit {
      * Removes the specified HabitEvent from the Habit's ArrayList
      * @param habitEvent HabitEvent to be removed
      */
-
     public void removeHabitEvent(HabitEvent habitEvent){
 
         this.habitEvents.remove(habitEvent);
