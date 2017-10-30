@@ -6,6 +6,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
@@ -42,11 +43,6 @@ public class MainActivity extends BaseActivity {
         progressBar.setMax(100);
 
         habitList = new ArrayList<Habit>();
-
-        Habit habit1 = new Habit();
-        habit1.setHabitName("Go to the gym");
-        habit1.setAttribute("Physical");
-        habitList.add(habit1);
     }
 
     @Override
