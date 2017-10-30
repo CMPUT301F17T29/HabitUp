@@ -2,4 +2,17 @@
     <string name="app_name">HabitUp</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
+    <string name="habits_title">Habits</string>
+    <string name="edit">Edit</string>
+    <string name="stats">Stats</string>
+    <string name="add_habit">Add Habit</string>
+    <string name="view">View</string>
+    <string name="delete">Delete</string>
+    <string name="todays_habits">Today\'s Habits</string>
+    <string name="todays_instructions">Check on a box to create an event for that habit.</string>
+    <string name="no_habits">You have no habits today.</string>
+    <string name="title_activity_habits">HabitsActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 </resources>

@@ -1,5 +1,7 @@
 package com.example.habitup.Model;
 
+import android.content.res.Resources;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,11 +21,19 @@ public class Attributes {
 
     // Static members
     private final static String[] attributeNames = {
-        "Mental",
         "Physical",
+        "Mental",
         "Social",
         "Discipline"
     };
+
+    private final static String[] attributeColours = {
+        "#D32F2F",
+        "#7B1FA2",
+        "#1E88E5",
+        "#1A9B1A"
+    };
+    private final static Map<String,String> colourMap = createColourMap();
 
     // Members
     private Map<String,Integer> attributeMap;
@@ -35,9 +45,35 @@ public class Attributes {
     public Attributes() {} {
         attributeMap = new HashMap<String,Integer>();
 
-        for (String name : attributeNames) {
+        for (int i = 0; i < Attributes.getSize(); i++) {
+            String name = attributeNames[i];
             attributeMap.put(name, 0);
         }
+    }
+
+    /**
+     * Creates a static hash map of attributes that correspond with a specific colour,
+     * with the key being the attribute name and the hex colou code being the value.
+     * @return the hash map of attibute names corresponding to a specific colour
+     */
+    public static Map<String,String> createColourMap() {
+        Map<String,String> map = new HashMap<String,String>();
+
+        for (int i = 0; i < Attributes.getSize(); i++) {
+            String name = attributeNames[i];
+            map.put(name, attributeColours[i]);
+        }
+
+        return map;
+    }
+
+    /**
+     * Gets the colour associated with an attribute
+     * @param name the name of the attribute
+     * @return the colour hex code
+     */
+    public static String getColour(String name) {
+        return colourMap.get(name);
     }
 
     /**
