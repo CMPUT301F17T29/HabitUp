@@ -27,6 +27,7 @@ public class HabitList {
         // Test for Habit not already in list
         // Throw exception if it is
         // Add habit to list
+        return true;
     }
 
     /**
@@ -38,6 +39,7 @@ public class HabitList {
         // Check if habit is in list
         // If not, throw exception
         // If yes, delete it
+        return true;
     }
 
     /**
