@@ -2,6 +2,8 @@ package com.example.habitup.Model;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class Habit {
 
@@ -11,6 +13,7 @@ public class Habit {
     private String reason;
     private String attribute;
     private HabitEventList habitEvents;
+    private Date start_date;
 
     /**
      * Habit constructor
@@ -44,6 +47,7 @@ public class Habit {
         // limits for name length and unique name and reason length and minimum 1 day scheduled
         // String attribute must be from Attributes
 
+        Date today = Calendar.getInstance().getTime();
         this.name = name;
         this.schedule = new ArrayList<Boolean>(7);
         this.schedule.set(0, Sun);
@@ -56,6 +60,7 @@ public class Habit {
         this.reason = reason;
         this.attribute = attribute;
         habitEvents = new HabitEventList();
+        this.start_date = today;
 
     }
 
@@ -123,6 +128,13 @@ public class Habit {
      * @return ArrayList<HabitEvent>
      */
     public HabitEventList getHabitEvents() {return this.habitEvents;}
+
+    /**
+     * getStartDate
+     * Gets the Habit's start date
+     * @return Date
+     */
+    public Date getStartDate() {return this.start_date;}
 
     /**
      * setHabitName
