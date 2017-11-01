@@ -30,15 +30,6 @@ public class ViewHabitActivity extends BaseActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         habits = new ArrayList<Habit>();
-        Habit habit1 = new Habit();
-        habit1.setHabitName("Go to the gym");
-        habit1.setAttribute("Physical");
-        habits.add(habit1);
-
-        Habit habit2 = new Habit();
-        habit2.setHabitName("Play piano");
-        habit2.setAttribute("Discipline");
-        habits.add(habit2);
 
         // Initialize habits list view
         habitListView = (ListView) findViewById(R.id.OldHabitLists);
