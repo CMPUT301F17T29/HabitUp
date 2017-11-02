@@ -44,24 +44,78 @@ public class Habit {
             throws IllegalArgumentException, IllegalStateException {
 
         //TODO:
-        // limits for name length and unique name and reason length and minimum 1 day scheduled
+        // unique name (HabitList?)
         // String attribute must be from Attributes
 
+
+
         Date today = Calendar.getInstance().getTime();
-        this.name = name;
+        setHabitName(name);
+        //this.name = name;
         this.schedule = new ArrayList<Boolean>(7);
-        this.schedule.set(0, Sun);
+        setSchedule(Sun,Mon,Tue,Wed,Thu,Fri,Sat);
+        /**this.schedule.set(0, Sun);
         this.schedule.set(1, Mon);
         this.schedule.set(2, Tue);
         this.schedule.set(3, Wed);
         this.schedule.set(4, Thu);
         this.schedule.set(5, Fri);
-        this.schedule.set(6, Sat);
-        this.reason = reason;
-        this.attribute = attribute;
+        this.schedule.set(6, Sat);*/
+        setReason(reason);
+        //this.reason = reason;
+        //this.attribute = attribute;
+        setAttribute(attribute);
         habitEvents = new HabitEventList();
         this.start_date = today;
 
+    }
+
+    /**
+     * isLegalNameLength
+     * Checks for Habit name length between 1 - 20
+     * @param name
+     * @return Boolean
+     */
+    public Boolean isLegalNameLength(String name){
+        return !((name.trim().length()==0)||(name.trim().length()>20));
+    }
+
+    /**
+     * isLegalReasonLength
+     * Checks for Habit reason length between 1 - 30
+     * @param reason
+     * @return Boolean
+     */
+    public Boolean isLegalReasonLength(String reason){
+        return !((reason.trim().length()==0)||(name.trim().length()>30));
+    }
+
+    /**
+     * isLegalSchedule
+     * Checks for Habit schedule containing at least 1 day schedule for the Habit
+     * @param schedule
+     * @return
+     */
+    public Boolean isLegalSchedule(ArrayList<Boolean> schedule){
+        if (schedule.contains(Boolean.TRUE)) return true;
+        else return false;
+    }
+
+    /**
+     * isLegalAttribute
+     * Checks for Habit attribute is from the established list of attributes
+     * @param attribute
+     * @return
+     */
+    public Boolean isLegalAttribute(String attribute){
+        //temporary as unsure of using Attributes.contains(attribute)
+        ArrayList<String> attributesList = new ArrayList<>(4);
+        attributesList.set(0, "Mental");
+        attributesList.set(1, "Physical");
+        attributesList.set(2, "Social");
+        attributesList.set(3, "Discipline");
+        if(attributesList.contains(attribute)) return true;
+        else return false;
     }
 
     /**
@@ -144,8 +198,14 @@ public class Habit {
      */
     public void setHabitName(String name) throws IllegalArgumentException{
 
-        this.name = name;
-        //TODO: Implement unique Habit name and limit length
+        if(isLegalNameLength(name)){
+            this.name = name;
+        }
+        else{
+            throw new IllegalArgumentException("Error: Name length has to be within " +
+                    "1 - 20 characters");
+        }
+        //TODO: Implement unique Habit name in HabitList?
     }
 
     /**
@@ -159,18 +219,29 @@ public class Habit {
      * @param Sat Boolean entry signifying if the Habit is schedule for Saturday
      * @param Sun Boolean entry signifying if the Habit is schedule for Sunday
      */
-    public void setSchedule(Boolean Mon, Boolean Tue, Boolean Wed, Boolean Thu,
-                            Boolean Fri, Boolean Sat, Boolean Sun) throws IllegalStateException{
+    public void setSchedule(Boolean Sun, Boolean Mon, Boolean Tue, Boolean Wed,
+                            Boolean Thu, Boolean Fri, Boolean Sat) throws IllegalStateException{
 
-        //TODO: minimum 1 day scheduled
+        ArrayList<Boolean> s = new ArrayList<>(7);
+        s.set(0, Sun);
+        s.set(1, Mon);
+        s.set(2, Tue);
+        s.set(3, Wed);
+        s.set(4, Thu);
+        s.set(5, Fri);
+        s.set(6, Sat);
+        if (isLegalSchedule(s)){
 
-        this.schedule.set(0, Mon);
-        this.schedule.set(1, Tue);
-        this.schedule.set(2, Wed);
-        this.schedule.set(3, Thu);
-        this.schedule.set(4, Fri);
-        this.schedule.set(5, Sat);
-        this.schedule.set(6, Sun);
+            this.schedule.set(0, Sun);
+            this.schedule.set(1, Mon);
+            this.schedule.set(2, Tue);
+            this.schedule.set(3, Wed);
+            this.schedule.set(4, Thu);
+            this.schedule.set(5, Fri);
+            this.schedule.set(6, Sat);}
+        else{
+            throw new IllegalStateException("Error: Minimum one day scheduled required.");
+        }
     }
 
     /**
@@ -181,8 +252,12 @@ public class Habit {
      */
     public void setReason(String reason) throws IllegalArgumentException {
 
-        this.reason = reason;
-        //TODO: Implement reason length limit
+        if (isLegalReasonLength(reason)){
+            this.reason = reason;}
+        else{
+            throw new IllegalArgumentException("Error: Reason length has to be between " +
+                    "1 - 30 characters.");
+        }
     }
 
     /**
@@ -192,9 +267,12 @@ public class Habit {
      * @throws IllegalArgumentException
      */
     public void setAttribute(String attribute) throws IllegalArgumentException{
-        //TODO: String attribute must be from Attributes.attributeNames
-
-        this.attribute = attribute;
+        if(isLegalAttribute(attribute)){
+            this.attribute = attribute;}
+        else{
+            throw new IllegalArgumentException("Error: Attribute is not from " +
+                    "the provided attributes.");
+        }
     }
 
     public void updateSchedule() {

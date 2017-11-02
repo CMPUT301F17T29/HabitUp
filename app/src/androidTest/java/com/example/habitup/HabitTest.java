@@ -13,9 +13,11 @@ import org.junit.runner.RunWith;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.assertFalse;
 
+@RunWith(AndroidJUnit4.class)
 public class HabitTest {
 
     //Test Habit construction error long name
+    @Test
     public void testHabitConstLongNameErr() {
         String name = "123456789abcdefjhijklmnop";
         String reason = "I wanna be the very best";
@@ -33,6 +35,7 @@ public class HabitTest {
     }
 
     //Test Habit construction error long reason
+    @Test
     public void testHabitConstLongReasonErr(){
         String name = "name";
         String reason = "123456789123456789123456789101010";
@@ -50,6 +53,7 @@ public class HabitTest {
     }
 
     //Test Habit construction error no schedule
+    @Test
     public void testHabitConstSchedErr(){
         String name = "name";
         String reason = "I wanna be the very best";
@@ -68,6 +72,7 @@ public class HabitTest {
     }
 
     //Test setHabitName actually sets/replaces the name
+    @Test
     public void testSetHabitNameSuccess() {
         String name = "name";
         String habitName = "sampleHabit";
@@ -82,6 +87,7 @@ public class HabitTest {
     }
 
     //Tests that setHabitName does not accept the same name of an existing habit
+    @Test
     public void testSetHabitNameErr(){
         String name = "name";
         String habitName = "sampleHabit";
@@ -102,6 +108,7 @@ public class HabitTest {
     }
 
     //Tests setHabitName to not exceed 20 characters, expects an error
+    @Test
     public void testHabitNameLength() {
         String name = "name";
         String habitName = "123456789abcdefghijklmnop";
@@ -122,6 +129,7 @@ public class HabitTest {
     }
 
     //Tests that setReason sets
+    @Test
     public void testSetReason() {
         String name = "name";
         String reason = "reason";
@@ -136,6 +144,7 @@ public class HabitTest {
     }
 
     //Tests setReason to not exceed 30 characters, expecting an error
+    @Test
     public void testSetReasonLength() {
         String name = "name";
         String habitName = "sampleHabit";
@@ -156,6 +165,7 @@ public class HabitTest {
     }
 
     //Tests setSchedule sets
+    @Test
     public void testSetSchedule(){
         String name = "name";
         String reason = "I wanna be the very best";
@@ -170,6 +180,7 @@ public class HabitTest {
     }
 
     //Test setAttribute actually sets an attribute
+    @Test
     public void testSetAttribute(){
         String name = "name";
         String reason = "I wanna be the very best";
@@ -183,6 +194,7 @@ public class HabitTest {
     }
 
     //Tests addHabitEvent adds a HabitEvent to the Habit
+    @Test
     public void testAddHabitEvent(){
         HabitEvent habitEvent = new HabitEvent();
         String name = "name";
@@ -197,6 +209,7 @@ public class HabitTest {
     }
 
     //Tests removeHabitEvent if it successfully removes a habitEvent
+    @Test
     public void testRemoveHabitEvent(){
         HabitEvent habitEvent = new HabitEvent();
         String name = "name";
