@@ -21,30 +21,36 @@ public class HabitList {
      * Add a Habit to the HabitList if it is not already there
      * Return True if unique and added; return False if not
      * @param h Habit
-     * @return Boolean
+     * @return -1 if already in list, 0 if successful
      */
-    public Boolean add(Habit h) {
+    public int add(Habit h) {
         // Test for Habit not already in list
-        // Throw exception if it is
-        // Add habit to list
-        return true;
+        if (habits.contains(h)) {
+            return -1;
+        } else {
+            habits.add(h);
+            return 0;
+        }
     }
 
     /**
      * Delete a habit from the list if it exists and returns True, otherwise returns False
-     * @param h
-     * @return Boolean
+     * @param h Habit
+     * @return 0 if successful, -1 if not in list
      */
-    public Boolean remove(Habit h) {
+    public int remove(Habit h) {
         // Check if habit is in list
-        // If not, throw exception
-        // If yes, delete it
-        return true;
+        if (habits.contains(h)) {
+            habits.remove(h);
+            return 0;
+        } else {
+            return -1;
+        }
     }
 
     /**
      * Checks to see if habit is in HabitList
-     * @param h
+     * @param h Habit
      * @return Boolean
      */
     public Boolean contains(Habit h) {
@@ -57,6 +63,20 @@ public class HabitList {
      */
     public ArrayList<Habit> getHabits() {
         return this.habits;
+    }
+
+    /**
+     * Gets the Habit object being requested by name
+     * @param habitName String
+     * @return null if not found, otherwise Habit
+     */
+    public Habit getHabit(String habitName) {
+        for (Habit habit : habits) {
+            if (habit.getHabitName() == habitName) {
+                return habit;
+            }
+        }
+        return null;
     }
 
     /**
