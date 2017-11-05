@@ -43,6 +43,16 @@ public class MainActivity extends BaseActivity {
         progressBar.setMax(100);
 
         habitList = new ArrayList<Habit>();
+
+        Habit habit1 = new Habit();
+        habit1.setHabitName("Go to the gym");
+        habit1.setAttribute("Physical");
+        habitList.add(habit1);
+
+        Habit habit2 = new Habit();
+        habit2.setHabitName("Study for CMPUT 301");
+        habit2.setAttribute("Mental");
+        habitList.add(habit2);
     }
 
     @Override
@@ -56,5 +66,11 @@ public class MainActivity extends BaseActivity {
             TextView subHeading = (TextView) findViewById(R.id.today_subheading);
             subHeading.setText(getString(R.string.no_habits));
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.profile, menu);
+        return true;
     }
 }

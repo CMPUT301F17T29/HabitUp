@@ -7,13 +7,13 @@
 
     <RelativeLayout
         android:layout_width="0dp"
-        android:layout_height="50dp"
+        android:layout_height="60dp"
         android:layout_weight="0.85"
         android:background="@color/white"
         android:layout_marginRight="1dp"
         android:paddingLeft="10dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp">
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
 
         <TextView
             android:id="@+id/todays_habit_name"
@@ -50,7 +50,7 @@
     <RelativeLayout
         android:id="@+id/habit_checkarea"
         android:layout_width="0dp"
-        android:layout_height="50dp"
+        android:layout_height="60dp"
         android:layout_weight="0.15"
         android:background="@color/white"
         android:gravity="center">
