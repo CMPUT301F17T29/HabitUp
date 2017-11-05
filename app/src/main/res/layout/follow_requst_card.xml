@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view ="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/cv"
+    android:layout_margin="5dp"
+    card_view:cardElevation="8dp"
+    card_view:cardCornerRadius="7dp"
+    card_view:contentPadding="2dp"
+    android:clickable = "true"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        >
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/person_photo"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:adjustViewBounds="false"
+            android:layout_marginLeft="0dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/default_user"
+            />
+
+        <TextView
+            android:id="@+id/person_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/person_photo"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp"
+            android:text="UserName"
+            android:textSize="20sp"
+            />
+
+        <TextView
+            android:id="@+id/person_nick_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/person_photo"
+            android:text = "display name"
+            android:layout_marginLeft="10dp"
+            android:layout_below="@+id/person_name"
+            />
+        <Button
+            android:id="@+id/accpet_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/person_name"
+            android:layout_centerVertical="true"
+            android:text="Accept"/>
+        <Button
+            android:id="@+id/ignore_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/accpet_button"
+            android:layout_centerVertical="true"
+            android:text="Ignore"/>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>
