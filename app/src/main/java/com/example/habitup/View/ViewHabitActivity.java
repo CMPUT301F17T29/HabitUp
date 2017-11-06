@@ -3,12 +3,11 @@ package com.example.habitup.View;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.habitup.Model.Habit;
 import com.example.habitup.R;
@@ -30,15 +29,11 @@ public class ViewHabitActivity extends BaseActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         habits = new ArrayList<Habit>();
-        Habit habit1 = new Habit();
-        habit1.setHabitName("Go to the gym");
-        habit1.setAttribute("Physical");
-        habits.add(habit1);
 
-        Habit habit2 = new Habit();
-        habit2.setHabitName("Play piano");
-        habit2.setAttribute("Discipline");
-        habits.add(habit2);
+        if (habits.size() == 0) {
+            TextView subHeading = (TextView) findViewById(R.id.habits_subheading);
+            subHeading.setText("You currently have no habits.");
+        }
 
         // Initialize habits list view
         habitListView = (ListView) findViewById(R.id.OldHabitLists);
