@@ -36,7 +36,9 @@ public class Habit {
      * Empty constructor
      */
     public Habit() {
-
+        Date today = Calendar.getInstance().getTime();
+        habitEvents = new HabitEventList();
+        this.start_date = today;
     }
 
     public Habit(String name, Boolean Sun, Boolean Mon, Boolean Tue, Boolean Wed, Boolean Thu,
@@ -44,8 +46,7 @@ public class Habit {
             throws IllegalArgumentException, IllegalStateException {
 
         //TODO:
-        // unique name (HabitList?)
-        // String attribute must be from Attributes
+        // unique name (HabitList?) or controller
 
 
 
@@ -54,7 +55,7 @@ public class Habit {
         //this.name = name;
         this.schedule = new ArrayList<Boolean>(7);
         setSchedule(Sun,Mon,Tue,Wed,Thu,Fri,Sat);
-        /**this.schedule.set(0, Sun);
+        /*this.schedule.set(0, Sun);
         this.schedule.set(1, Mon);
         this.schedule.set(2, Tue);
         this.schedule.set(3, Wed);
@@ -109,11 +110,12 @@ public class Habit {
      */
     public Boolean isLegalAttribute(String attribute){
         //temporary as unsure of using Attributes.contains(attribute)
-        ArrayList<String> attributesList = new ArrayList<>(4);
+        Attributes attributesList = new Attributes();
+        /*ArrayList<String> attributesList = new ArrayList<>(4);
         attributesList.set(0, "Mental");
         attributesList.set(1, "Physical");
         attributesList.set(2, "Social");
-        attributesList.set(3, "Discipline");
+        attributesList.set(3, "Discipline");*/
         if(attributesList.contains(attribute)) return true;
         else return false;
     }
@@ -205,7 +207,7 @@ public class Habit {
             throw new IllegalArgumentException("Error: Name length has to be within " +
                     "1 - 20 characters");
         }
-        //TODO: Implement unique Habit name in HabitList?
+        //TODO: Implement unique Habit name in HabitList? or controller
     }
 
     /**
