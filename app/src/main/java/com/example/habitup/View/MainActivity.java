@@ -42,17 +42,8 @@ public class MainActivity extends BaseActivity {
         progressBar.setProgress(50);
         progressBar.setMax(100);
 
+        // TODO: Retrieve habits from HabitList model
         habitList = new ArrayList<Habit>();
-
-        Habit habit1 = new Habit();
-        habit1.setHabitName("Go to the gym");
-        habit1.setAttribute("Physical");
-        habitList.add(habit1);
-
-        Habit habit2 = new Habit();
-        habit2.setHabitName("Study for CMPUT 301");
-        habit2.setAttribute("Mental");
-        habitList.add(habit2);
     }
 
     @Override

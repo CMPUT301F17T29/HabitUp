@@ -95,9 +95,10 @@
         android:id="@+id/attributes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
         android:orientation="horizontal"
         android:background="@color/whitegray"
-        android:paddingBottom="10dp"
+        android:paddingBottom="2dp"
         android:layout_below="@id/profile_banner">
 
         <RelativeLayout
@@ -106,6 +107,7 @@
             android:layout_weight="0.25"
             android:orientation="vertical"
             android:background="@color/purple"
+            android:layout_marginRight="1dp"
             android:paddingBottom="5dp">
 
             <TextView
@@ -121,8 +123,10 @@
                 android:id="@+id/attribute2_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Mental"
+                android:text="MENTAL"
                 android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="13sp"
                 android:layout_below="@+id/attribute2_value"
                 android:textColor="@color/white"/>
         </RelativeLayout>
@@ -133,6 +137,7 @@
             android:layout_weight="0.25"
             android:orientation="vertical"
             android:background="@color/red"
+            android:layout_marginRight="1dp"
             android:paddingBottom="5dp">
 
             <TextView
@@ -148,7 +153,9 @@
                 android:id="@+id/attribute1_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Physical"
+                android:text="PHYSICAL"
+                android:textStyle="bold"
+                android:textSize="13sp"
                 android:gravity="center"
                 android:layout_below="@+id/attribute1_value"
                 android:textColor="@color/white"/>
@@ -160,6 +167,7 @@
             android:layout_weight="0.25"
             android:orientation="vertical"
             android:background="@color/green"
+            android:layout_marginRight="1dp"
             android:paddingBottom="5dp">
 
             <TextView
@@ -175,7 +183,9 @@
                 android:id="@+id/attribute4_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Discipline"
+                android:text="DISCIPLINE"
+                android:textStyle="bold"
+                android:textSize="13sp"
                 android:gravity="center"
                 android:layout_below="@+id/attribute4_value"
                 android:textColor="@color/white"/>
@@ -202,7 +212,9 @@
                 android:id="@+id/attribute3_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Social"
+                android:text="SOCIAL"
+                android:textStyle="bold"
+                android:textSize="13sp"
                 android:gravity="center"
                 android:layout_below="@+id/attribute3_value"
                 android:textColor="@color/white"/>
