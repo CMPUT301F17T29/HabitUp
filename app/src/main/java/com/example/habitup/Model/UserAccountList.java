@@ -31,10 +31,16 @@ public class UserAccountList {
     /**
      * Add a UserAccount to the list
      * @param userToAdd
+     * @return -1 if already in list, 0 if successfully added
      */
-    public void add(UserAccount userToAdd) {
-        //TODO: Check that user is not a duplicate
-        userList.add(userToAdd);
+    public int add(UserAccount userToAdd) {
+
+        if (this.contains(userToAdd)) {
+            return -1;
+        } else {
+            userList.add(userToAdd);
+            return 0;
+        }
     }
 
     /**

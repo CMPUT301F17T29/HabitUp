@@ -22,9 +22,9 @@ public class UserAccount {
     private int level;
     private int XP;
     private int XPtoNext;
-    private ArrayList<UserAccount> friendsList;
-    private ArrayList<UserAccount> requestsPending;
-    private ArrayList<Habit> habits;
+    private UserAccountList friendsList;
+    private UserAccountList requestsPending;
+    private HabitList habits;
 
     /**
      * UserAccount Constructor
@@ -43,9 +43,9 @@ public class UserAccount {
         level = 1;
         XP = 0;
         XPtoNext = 20;
-        friendsList = new ArrayList<>();
-        requestsPending = new ArrayList<>();
-        habits = new ArrayList<>();
+        friendsList = new UserAccountList();
+        requestsPending = new UserAccountList();
+        habits = new HabitList();
     }
 
     /**
@@ -94,19 +94,19 @@ public class UserAccount {
      * Gets approved friends of UserAccount
      * @return ArrayList<UserAccount>
      */
-    public ArrayList<UserAccount> getFriendsList() { return this.friendsList; }
+    public UserAccountList getFriendsList() { return this.friendsList; }
 
     /**
      * Returns current unapproved friend requests to UserAccount
      * @return ArrayList<UserAccount>
      */
-    public ArrayList<UserAccount> getRequestsPending() { return this.requestsPending; }
+    public UserAccountList getRequestsPending() { return this.requestsPending; }
 
     /**
      * Gets Habits defined by the UserAccount
      * @return ArrayList<Habit>
      */
-    public ArrayList<Habit> getHabits() { return this.habits; }
+    public HabitList getHabits() { return this.habits; }
 
     /**
      * Method to update realname
@@ -114,7 +114,15 @@ public class UserAccount {
      * @throws IllegalArgumentException
      */
     public void setRealname(String realname) throws IllegalArgumentException {
-        // TODO: IMPLEMENT
+
+        // Catch invalid real names
+        if (realname.length() == 0) {
+            throw new IllegalArgumentException();
+
+        // Otherwise, legal: set the name
+        } else {
+            this.realname = realname;
+        }
     }
 
     /**
@@ -122,7 +130,18 @@ public class UserAccount {
      * @param photo
      */
     public void setPhoto(Image photo) {
-        // TODO: IMPLEMENT
+        if (photo != null) {
+            this.photo = photo;
+        }
+    }
+
+    /**
+     * Delete the associated photo, if one exists
+     */
+    public void deletePhoto() {
+       if (photo != null) {
+           this.photo = null;
+       }
     }
 
     /**
@@ -150,17 +169,26 @@ public class UserAccount {
     /**
      * Add a friend request from the requestingUser
      * @param requestingUser
+     * @return -1 if already in list; 0 if successfully added
      */
-    public void addRequest(UserAccount requestingUser) {
-        // TODO: IMPLEMENT
+    public int addRequest(UserAccount requestingUser) {
+
+        return requestsPending.add(requestingUser);
     }
 
     /**
      * Approve an existing request in requestsPending
      * @param requestingUser
+     * @return -1 if unsuccessful,
      */
-    public void approveRequest(UserAccount requestingUser) {
-        // TODO: IMPLEMENT
+    public int approveRequest(UserAccount requestingUser) {
+        if (requestsPending.contains(requestingUser)) {
+            requestsPending.remove(requestingUser);
+            return friendsList.add(requestingUser);
+        } else {
+            return -1;
+        }
+
     }
 
     /**
@@ -168,7 +196,7 @@ public class UserAccount {
      * @param habit
      */
     public void addHabit(Habit habit) {
-        // TODO: IMPLEMENT
+        habits.add(habit);
     }
 
     /**
@@ -182,8 +210,14 @@ public class UserAccount {
     /**
      * Delete an existing Habit associated with the UserAccount
      * @param habit
+     * @return 0 if successful, -1 if not in list
      */
-    public void deleteHabit(Habit habit) {
-        // TODO: IMPLEMENT
+    public int deleteHabit(Habit habit) {
+        if (habits.contains(habit)) {
+            habits.remove(habit);
+            return 0;
+        } else {
+            return -1;
+        }
     }
 }
