@@ -27,9 +27,6 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Highlight profile in drawer
-        navigationView.setCheckedItem(R.id.profile);
-
         // Initialize list view for today's habits
         habitListView = (ListView) findViewById(R.id.habit_listview);
         LayoutInflater inflater = this.getLayoutInflater();
@@ -48,6 +45,9 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        // Highlight profile in drawer
+        navigationView.setCheckedItem(R.id.profile);
 
         adapter = new ProfileHabitsAdapter(this, R.layout.todays_habits, habitList);
         habitListView.setAdapter(adapter);

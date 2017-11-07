@@ -24,9 +24,6 @@ public class ViewHabitActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habits);
 
-        // Highlight habits in drawer
-        navigationView.setCheckedItem(R.id.habits);
-
         // Get bottom navigation
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.habit_bottom_nav);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -62,6 +59,14 @@ public class ViewHabitActivity extends BaseActivity {
         }
 
     };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Highlight habits in drawer
+        navigationView.setCheckedItem(R.id.habits);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
