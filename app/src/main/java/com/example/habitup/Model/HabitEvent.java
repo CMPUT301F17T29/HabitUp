@@ -93,4 +93,6 @@ public class HabitEvent {
         return Image;
     }
 
+    public Habit getHabit() { return this.habit;}
+
 }
