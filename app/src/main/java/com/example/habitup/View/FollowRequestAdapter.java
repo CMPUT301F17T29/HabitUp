@@ -37,8 +37,8 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
     @Override
     public FollowRequestHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.follow_requst_card, viewGroup, false);
-        FollowRequestHolder pvh = new FollowRequestHolder(v);
-        return pvh;
+        FollowRequestHolder frh = new FollowRequestHolder(v);
+        return frh;
     }
 
     @Override
