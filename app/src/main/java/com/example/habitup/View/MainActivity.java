@@ -1,7 +1,6 @@
 package com.example.habitup.View;
 
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;

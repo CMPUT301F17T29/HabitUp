@@ -1,5 +1,6 @@
 package com.example.habitup.View;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -78,6 +79,8 @@ public class ViewHabitActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add_action_bar:
+                Intent addHabitIntent = new Intent(ViewHabitActivity.this, AddHabitActivity.class);
+                startActivity(addHabitIntent);
                 return true;
         }
 
