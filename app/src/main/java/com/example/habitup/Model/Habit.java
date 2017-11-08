@@ -9,6 +9,7 @@ import java.util.Date;
 public class Habit {
 
     // Members
+    private int uid;
     private String name;
     private Boolean[] schedule = new Boolean[8];
     private String reason;
@@ -19,6 +20,7 @@ public class Habit {
     /**
      * Habit constructor
      *
+     * @param uid int for id to associate habits and habitevents with user
      * @param name String for the Habit name
      * @param reason String for the reason of Habit
      * @param attribute Attributes object to identify the associated attribute with the Habit
@@ -35,12 +37,13 @@ public class Habit {
 
     }
 
-    public Habit(String name, String reason, String attribute, LocalDate startDate, Boolean[] schedule)
+    public Habit(int uid, String name, String reason, String attribute, LocalDate startDate, Boolean[] schedule)
             throws IllegalArgumentException, IllegalStateException {
 
         //TODO:
         // unique name (HabitList?) or controller
 
+        setUID(uid);
         setHabitName(name);
         setReason(reason);
         setAttribute(attribute);
@@ -102,6 +105,13 @@ public class Habit {
     }
 
     /**
+     * getUID
+     * Gets the int uid of habit
+     * @return int
+     */
+    public int getUID() {return this.uid;}
+
+    /**
      * getHabitName
      * Gets the String of the Habit's name
      * @return String
@@ -142,6 +152,13 @@ public class Habit {
      * @return Date
      */
     public LocalDate getStartDate() {return this.startDate;}
+
+    /**
+     * setUID
+     * sets the Habit's uid into the input uid
+     * @param uid int uid associated with user
+     */
+    public void setUID(int uid) {this.uid = uid;}
 
     /**
      * setHabitName
@@ -233,4 +250,11 @@ public class Habit {
         this.habitEvents.remove(habitEvent);
     }
 
+    /**
+     * Returns True if this Habit is set for today in its schedule
+     * @return Boolean
+     */
+    public Boolean isTodayHabit() {
+        return schedule[LocalDate.now().getDayOfWeek().getValue()];
+    }
 }
