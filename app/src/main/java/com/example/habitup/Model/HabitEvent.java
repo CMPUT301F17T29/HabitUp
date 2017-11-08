@@ -95,14 +95,10 @@ public class HabitEvent implements Comparable<HabitEvent> {
         return Image;
     }
 
-<<<<<<< HEAD
-    public Habit getHabit() { return this.habit;}
-=======
     public Habit getHabit() { return habit; }
 
     public int compareTo(HabitEvent e) {
         return this.completedate.compareTo(e.getCompletedate());
     }
->>>>>>> origin/development
 
 }
