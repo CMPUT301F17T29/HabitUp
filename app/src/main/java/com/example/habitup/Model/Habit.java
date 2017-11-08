@@ -11,7 +11,7 @@ public class Habit {
     // Members
     private int uid;
     private String name;
-    private Boolean[] schedule = new Boolean[8];
+    private Boolean[] schedule;
     private String reason;
     private String attribute;
     private HabitEventList habitEvents;
@@ -49,6 +49,7 @@ public class Habit {
         setAttribute(attribute);
         habitEvents = new HabitEventList(); //temporary
         this.startDate = startDate;
+        schedule = new Boolean[8];
         setSchedule(schedule);
 
     }
@@ -60,7 +61,7 @@ public class Habit {
      * @return Boolean
      */
     public Boolean isLegalNameLength(String name){
-        return !((name.trim().length()==0)||(name.trim().length()>20));
+        return ((name.trim().length()>0)&&(name.trim().length()<=20));
     }
 
     /**
@@ -70,7 +71,7 @@ public class Habit {
      * @return Boolean
      */
     public Boolean isLegalReasonLength(String reason){
-        return !((reason.trim().length()==0)||(name.trim().length()>30));
+        return ((reason.trim().length()>0)||(name.trim().length()<=30));
     }
 
     /**
@@ -93,15 +94,8 @@ public class Habit {
      * @return
      */
     public Boolean isLegalAttribute(String attribute){
-        //temporary as unsure of using Attributes.contains(attribute)
         Attributes attributesList = new Attributes();
-        /*ArrayList<String> attributesList = new ArrayList<>(4);
-        attributesList.set(0, "Mental");
-        attributesList.set(1, "Physical");
-        attributesList.set(2, "Social");
-        attributesList.set(3, "Discipline");*/
-        if(attributesList.contains(attribute)) return true;
-        else return false;
+        return attributesList.contains(attribute);
     }
 
     /**
