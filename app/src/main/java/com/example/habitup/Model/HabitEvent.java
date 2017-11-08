@@ -1,30 +1,28 @@
 package com.example.habitup.Model;
 
 
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.time.LocalDate;
+
+// NOTE: @gojeffcho changed GregorianCalendar to LocalDate, added Comparator for sorting on date
 
 /**
  * @author acysl
  */
-public class HabitEvent {
+public class HabitEvent implements Comparable<HabitEvent> {
   
-    private GregorianCalendar completedate;
+    private LocalDate completedate;
     private Map location;
     private Bitmap Image;
     private String pathofimage;
     private String comment;
-    private byte[] ImageByteArray;
-    private int ByteCount;
     private Habit habit;
 
 
-    public HabitEvent (){
+    public HabitEvent () {
 //        this.comment = comment;
 //        this.completedate = completedate;
 //        this.location = location;
@@ -33,13 +31,19 @@ public class HabitEvent {
 //        this.habit = habit;
     }
   
-      // Copy Constructor
+    // Copy Constructor - @gojeffcho
     public HabitEvent(HabitEvent e) {
         // Copy all members over
+        this.completedate = e.getCompletedate();
+        this.location = e.getLocation();
+        this.Image = e.getImage();
+//        this.pathofimage = ??
+        this.comment = e.getComment();
+        this.habit = e.getHabit();
     }
 
 
-    public void setCompletedate (GregorianCalendar completedate) throws IllegalArgumentException {
+    public void setCompletedate (LocalDate completedate) throws IllegalArgumentException {
         this.completedate = completedate;
 
     }
@@ -58,9 +62,7 @@ public class HabitEvent {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         Image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         while(true){
-            ImageByteArray = stream.toByteArray();
-            ByteCount = ImageByteArray.length;
-            if (ByteCount >= 65536) {
+            if (stream.toByteArray().length >= 65536) {
                 resizeImage(Image);
             }
             else{
@@ -77,7 +79,7 @@ public class HabitEvent {
         this.comment = comment;
     }
 
-    public GregorianCalendar getCompletedate(){
+    public LocalDate getCompletedate(){
         return completedate;
     }
 
@@ -93,6 +95,14 @@ public class HabitEvent {
         return Image;
     }
 
+<<<<<<< HEAD
     public Habit getHabit() { return this.habit;}
+=======
+    public Habit getHabit() { return habit; }
+
+    public int compareTo(HabitEvent e) {
+        return this.completedate.compareTo(e.getCompletedate());
+    }
+>>>>>>> origin/development
 
 }
