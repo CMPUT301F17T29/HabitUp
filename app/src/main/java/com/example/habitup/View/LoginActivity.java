@@ -2,21 +2,23 @@ package com.example.habitup.View;
 
 
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
-import com.example.habitup.Controller.HabitUpController;
-import com.example.habitup.Model.UserAccount;
+import android.widget.ImageView;
 
-public class LoginActivity extends BaseActivity {
+import com.example.habitup.R;
 
-    HabitUpController hupCtl;
-
+public class LoginActivity extends AppCompatActivity {
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.login);
 
-        hupCtl = new HabitUpController();
+        ImageView imageView = (ImageView) findViewById(R.id.title_image);
+        imageView.setImageResource(R.drawable.habitup);
+//
+//        Button signInButton = (Button) findViewById(R.id.login_button);
+
 
     }
-
-
-
 }
