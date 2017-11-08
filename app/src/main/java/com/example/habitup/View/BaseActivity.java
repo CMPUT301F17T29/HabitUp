@@ -1,5 +1,7 @@
 package com.example.habitup.View;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -14,9 +16,11 @@ import com.example.habitup.R;
 
 public class BaseActivity extends AppCompatActivity {
 
-    public DrawerLayout drawerLayout;
-    public ActionBarDrawerToggle drawerToggle;
+    protected NavigationView navigationView;
+    protected DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle drawerToggle;
     private Toolbar toolbar;
+    private Context context = BaseActivity.this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +43,7 @@ public class BaseActivity extends AppCompatActivity {
     public void initNavigationDrawer() {
 
         // Taken from https://www.learn2crack.com/2016/03/android-material-design-sliding-navigation-drawer.html
-        NavigationView navigationView = (NavigationView)findViewById(R.id.navigation_view);
+        navigationView = (NavigationView)findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -48,9 +52,13 @@ public class BaseActivity extends AppCompatActivity {
 
                 switch (id){
                     case R.id.profile:
+                        Intent profileIntent = new Intent(context, MainActivity.class);
+                        startActivity(profileIntent);
                         drawerLayout.closeDrawers();
                         break;
                     case R.id.habits:
+                        Intent habitsIntent = new Intent(context, ViewHabitActivity.class);
+                        startActivity(habitsIntent);
                         drawerLayout.closeDrawers();
                         break;
                     case R.id.events:
@@ -72,15 +80,13 @@ public class BaseActivity extends AppCompatActivity {
                         drawerLayout.closeDrawers();
                         break;
                 }
+
                 return true;
             }
         });
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         View header = navigationView.getHeaderView(0);
-
-        // Highlight profile list item
-        navigationView.getMenu().getItem(0).setChecked(true);
 
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.drawer_open,R.string.drawer_close){
 

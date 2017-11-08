@@ -2,14 +2,15 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.example.habitup"
-        minSdkVersion 15
+        minSdkVersion 26
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -29,4 +30,5 @@ dependencies {
     compile 'com.jayway.android.robotium:robotium-solo:5.6.3'
     compile 'com.android.support:design:26.+'
     compile 'de.hdodenhof:circleimageview:2.2.0'
+    compile 'com.android.support:support-vector-drawable:26.+'
 }

@@ -12,4 +12,6 @@
     <color name="yellow">#F2E200</color>
     <color name="lightgray">#888888</color>
     <color name="darkgray">#4A4A4A</color>
+    <color name="whitegray">#F5F5F5</color>
+    <color name="tintgray">#D5D5D5</color>
 </resources>
