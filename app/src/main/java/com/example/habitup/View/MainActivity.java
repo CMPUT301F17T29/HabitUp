@@ -29,6 +29,7 @@ public class MainActivity extends BaseActivity {
 
         // DEBUG
         HabitUpController hupCtl = new HabitUpController();
+        hupCtl.testAccount();
         // DEBUG
 
         // Initialize list view for today's habits
@@ -37,8 +38,12 @@ public class MainActivity extends BaseActivity {
         View profileView = inflater.inflate(R.layout.profile_banner, habitListView, false);
         habitListView.addHeaderView(profileView);
 
-        // TODO: Retrieve habits from HabitList model
-        habitsArrayList = new ArrayList<>();
+        // Set up the array and adapter
+        habitsArrayList = HabitUpController.getCurrentUser().getHabits().getTodaysHabitArrayList();
+        adapter = new ProfileHabitsAdapter(this, R.layout.todays_habits, habitsArrayList);
+        habitListView.setAdapter(adapter);
+
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -47,9 +52,6 @@ public class MainActivity extends BaseActivity {
 
         // Highlight profile in drawer
         navigationView.setCheckedItem(R.id.profile);
-
-        adapter = new ProfileHabitsAdapter(this, R.layout.todays_habits, habitsArrayList);
-        habitListView.setAdapter(adapter);
 
         // Set user's photo
 //        findViewById(R.id.drawer_pic).setBackground(); // TODO: PHOTO
@@ -64,7 +66,7 @@ public class MainActivity extends BaseActivity {
 
         // Set user's level up in
         TextView levelUpField = (TextView) findViewById(R.id.level_title);
-        levelUpField.setText("Level up in " + String.valueOf(HabitUpController.getCurrentUser().getXPtoNext()) + " XP");
+        levelUpField.setText("Level up in " + String.valueOf(HabitUpController.getCurrentUser().getXPtoNext() - HabitUpController.getCurrentUser().getXP()) + " XP");
 
         // Set progress bar
         ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
@@ -87,7 +89,9 @@ public class MainActivity extends BaseActivity {
         TextView attr4Field = (TextView) findViewById(R.id.attribute4_value);
         attr4Field.setText(String.valueOf(HabitUpController.getCurrentUser().getAttributes().getValue("Discipline")));
 
-
+        // Retrieve habits from HabitList model
+        habitsArrayList = HabitUpController.getCurrentUser().getHabits().getTodaysHabitArrayList();
+        adapter.notifyDataSetChanged();
 
         if (habitsArrayList.size() == 0) {
             TextView subHeading = (TextView) findViewById(R.id.today_subheading);
