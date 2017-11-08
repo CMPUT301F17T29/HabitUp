@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="?attr/actionBarSize"
+    android:background="@color/white"
+    tools:context="com.example.habitup.View.ViewHabitActivity">
+
+    <TextView
+        android:id="@+id/habits_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:textColor="@color/darkgray"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:text="Habits" />
+    <TextView
+        android:id="@+id/habits_subheading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/habits_title"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:textColor="@color/lightgray"
+        android:textSize="15sp"
+        android:text="Select a habit below" />
+
+    <ListView
+        android:id="@+id/OldHabitLists"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/habits_subheading"
+        android:clickable="true" />
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/habit_bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:itemBackground="@color/colorPrimary"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
+        app:menu="@menu/habit_bottom_nav" />
+
+</RelativeLayout>
