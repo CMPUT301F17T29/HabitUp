@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:textSize="40dp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:text="Sign up"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="50dp"
+            android:text="Enter username"
+            android:textColor="@color/white"/>
+
+        <EditText
+            android:id="@+id/signup_username"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:scrollbars="horizontal"
+            android:inputType="text"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="50dp"
+            android:hint="  Enter unique username"
+            android:background="@color/white"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="20dp"
+            android:text="Enter display name"
+            android:textColor="@color/white"/>
+
+        <EditText
+            android:id="@+id/signup_displayname"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:scrollbars="horizontal"
+            android:inputType="text"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="50dp"
+            android:hint="  Enter full name"
+            android:background="@color/white"/>
+
+
+        <Button
+            android:id="@+id/add_profile_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="25dp"
+            android:background="@color/colorPrimary"
+            android:drawableTop="@drawable/ic_add_photo"
+            android:scaleX="2"
+            android:scaleY="2"
+            android:textColor="#FFFFFF"
+            android:textSize="5sp"
+            android:paddingTop="10sp"
+            android:text="ADD PROFILE PICTURE"/>
+
+        <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+            <Button
+                android:id="@+id/link_signup"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:text="SIGN UP"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/green"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="35dp" />
+
+            <Button
+                android:id="@+id/lin_signup"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:text="cancel"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/lightgray"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="35dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>
