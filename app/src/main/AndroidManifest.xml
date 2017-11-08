@@ -21,9 +21,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".View.ViewHabitActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".View.AddHabitActivity" />
+            android:name=".View.LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
