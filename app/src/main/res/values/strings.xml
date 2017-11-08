@@ -1,3 +1,29 @@
 <resources>
     <string name="app_name">HabitUp</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+    <string name="habits_title">Habits</string>
+    <string name="edit">Edit</string>
+    <string name="stats">Stats</string>
+    <string name="add_habit">Add Habit</string>
+    <string name="view">View</string>
+    <string name="delete">Delete</string>
+    <string name="todays_habits">Today\'s Habits</string>
+    <string name="todays_instructions">Check on a box to create an event for that habit.</string>
+    <string name="no_habits">You have no habits today.</string>
+    <string name="habit_label">Habit name *</string>
+    <string name="habit_hint">Enter name of habit</string>
+    <string name="reason_label">Reason *</string>
+    <string name="reason_hint">Enter reason for habit</string>
+    <string name="habit_date_label">Start date *</string>
+    <string name="habit_attr_label">Attribute *</string>
+    <string name="habit_sched_label">Schedule *</string>
+    <string name="mon">Mon</string>
+    <string name="tue">Tue</string>
+    <string name="wed">Wed</string>
+    <string name="thu">Thu</string>
+    <string name="fri">Fri</string>
+    <string name="sat">Sat</string>
+    <string name="sun">Sun</string>
+    <string name="save">Save</string>
 </resources>
