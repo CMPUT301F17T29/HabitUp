@@ -1,6 +1,7 @@
 package com.example.habitup.Model;
 
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -9,25 +10,20 @@ public class Habit {
 
     // Members
     private String name;
-    private ArrayList<Boolean> schedule;
+    private Boolean[] schedule = new Boolean[8];
     private String reason;
     private String attribute;
     private HabitEventList habitEvents;
-    private Date start_date;
+    private LocalDate startDate;
 
     /**
      * Habit constructor
      *
      * @param name String for the Habit name
-     * @param Mon Boolean entry signifying if the Habit is schedule for Mon
-     * @param Tue Boolean entry signifying if the Habit is schedule for Tue
-     * @param Wed Boolean entry signifying if the Habit is schedule for Wed
-     * @param Thu Boolean entry signifying if the Habit is schedule for Thu
-     * @param Fri Boolean entry signifying if the Habit is schedule for Fri
-     * @param Sat Boolean entry signifying if the Habit is schedule for Sat
-     * @param Sun Boolean entry signifying if the Habit is schedule for Sun
      * @param reason String for the reason of Habit
      * @param attribute Attributes object to identify the associated attribute with the Habit
+     * @param startDate LocalDate for startDate to associate with Habit
+     * @param schedule Boolean[8] for the schedule regarding the days the Habit is active
      *
      * @author @alido8592
      */
@@ -36,38 +32,21 @@ public class Habit {
      * Empty constructor
      */
     public Habit() {
-        Date today = Calendar.getInstance().getTime();
-        habitEvents = new HabitEventList();
-        this.start_date = today;
+
     }
 
-    public Habit(String name, Boolean Sun, Boolean Mon, Boolean Tue, Boolean Wed, Boolean Thu,
-                 Boolean Fri, Boolean Sat, String reason, String attribute)
+    public Habit(String name, String reason, String attribute, LocalDate startDate, Boolean[] schedule)
             throws IllegalArgumentException, IllegalStateException {
 
         //TODO:
         // unique name (HabitList?) or controller
 
-
-
-        Date today = Calendar.getInstance().getTime();
         setHabitName(name);
-        //this.name = name;
-        this.schedule = new ArrayList<Boolean>(7);
-        setSchedule(Sun,Mon,Tue,Wed,Thu,Fri,Sat);
-        /*this.schedule.set(0, Sun);
-        this.schedule.set(1, Mon);
-        this.schedule.set(2, Tue);
-        this.schedule.set(3, Wed);
-        this.schedule.set(4, Thu);
-        this.schedule.set(5, Fri);
-        this.schedule.set(6, Sat);*/
         setReason(reason);
-        //this.reason = reason;
-        //this.attribute = attribute;
         setAttribute(attribute);
-        habitEvents = new HabitEventList();
-        this.start_date = today;
+        habitEvents = new HabitEventList(); //temporary
+        this.startDate = startDate;
+        setSchedule(schedule);
 
     }
 
@@ -94,12 +73,14 @@ public class Habit {
     /**
      * isLegalSchedule
      * Checks for Habit schedule containing at least 1 day schedule for the Habit
-     * @param schedule
-     * @return
+     * @param schedule Boolean[8]
+     * @return Boolean
      */
-    public Boolean isLegalSchedule(ArrayList<Boolean> schedule){
-        if (schedule.contains(Boolean.TRUE)) return true;
-        else return false;
+    public Boolean isLegalSchedule(Boolean[] schedule){
+        int trueCount = 0;
+        for (Boolean s : schedule) if (s){trueCount++;}
+        if (trueCount>=1){return Boolean.TRUE;}
+        else return Boolean.FALSE;
     }
 
     /**
@@ -132,37 +113,7 @@ public class Habit {
      * Forms a String of days of when the Habit is scheduled
      * @return String
      */
-    public String getHabitSchedule() {
-
-        ArrayList<String> days = new ArrayList<String>();
-        days.add("Sunday");
-        days.add("Monday");
-        days.add("Tuesday");
-        days.add("Wednesday");
-        days.add("Thursday");
-        days.add("Friday");
-        days.add("Saturday");
-
-        StringBuilder scheduleBuilder = new StringBuilder();
-
-        Integer i = 0;
-
-        while (i<7) {
-
-            if (this.schedule.get(i)) {
-
-                scheduleBuilder.append(days.get(i));
-                scheduleBuilder.append(" ");
-                i++;
-            }
-
-            else {i++;}
-
-        }
-
-        String stringSchedule = scheduleBuilder.toString();
-        return stringSchedule;
-    }
+    public Boolean[] getHabitSchedule() {return this.schedule;}
 
     /**
      * getHabitReason
@@ -190,7 +141,7 @@ public class Habit {
      * Gets the Habit's start date
      * @return Date
      */
-    public Date getStartDate() {return this.start_date;}
+    public LocalDate getStartDate() {return this.startDate;}
 
     /**
      * setHabitName
@@ -212,35 +163,12 @@ public class Habit {
 
     /**
      * setSchedule
-     * Changes the schedule accordingly by changing the Boolean values
-     * @param Mon Boolean entry signifying if the Habit is schedule for Monday
-     * @param Tue Boolean entry signifying if the Habit is schedule for Tuesday
-     * @param Wed Boolean entry signifying if the Habit is schedule for Wednesday
-     * @param Thu Boolean entry signifying if the Habit is schedule for Thursday
-     * @param Fri Boolean entry signifying if the Habit is schedule for Friday
-     * @param Sat Boolean entry signifying if the Habit is schedule for Saturday
-     * @param Sun Boolean entry signifying if the Habit is schedule for Sunday
+     * Changes the schedule accordingly with input schedule
+     * @param schedule Boolean[8]
      */
-    public void setSchedule(Boolean Sun, Boolean Mon, Boolean Tue, Boolean Wed,
-                            Boolean Thu, Boolean Fri, Boolean Sat) throws IllegalStateException{
-
-        ArrayList<Boolean> s = new ArrayList<>(7);
-        s.set(0, Sun);
-        s.set(1, Mon);
-        s.set(2, Tue);
-        s.set(3, Wed);
-        s.set(4, Thu);
-        s.set(5, Fri);
-        s.set(6, Sat);
-        if (isLegalSchedule(s)){
-
-            this.schedule.set(0, Sun);
-            this.schedule.set(1, Mon);
-            this.schedule.set(2, Tue);
-            this.schedule.set(3, Wed);
-            this.schedule.set(4, Thu);
-            this.schedule.set(5, Fri);
-            this.schedule.set(6, Sat);}
+    public void setSchedule(Boolean[] schedule) throws IllegalStateException{
+        if (isLegalSchedule(schedule)){
+            this.schedule = schedule;}
         else{
             throw new IllegalStateException("Error: Minimum one day scheduled required.");
         }
@@ -279,6 +207,10 @@ public class Habit {
 
     public void updateSchedule() {
         //TODO: implement
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
     }
 
     /**
