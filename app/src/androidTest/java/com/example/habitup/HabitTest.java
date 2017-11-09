@@ -1,4 +1,4 @@
-package com.example.habitup;
+/*package com.example.habitup;
 
 import android.support.test.espresso.core.deps.guava.primitives.Booleans;
 import android.support.test.runner.AndroidJUnit4;
@@ -252,3 +252,4 @@ public class HabitTest {
     }
 
 }
+*/
