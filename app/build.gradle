@@ -31,4 +31,5 @@ dependencies {
     compile 'com.android.support:design:26.+'
     compile 'de.hdodenhof:circleimageview:2.2.0'
     compile 'com.android.support:support-vector-drawable:26.+'
+    compile 'io.searchbox:jest-droid:2.0.0'
 }
