@@ -7,6 +7,7 @@ public class Habit {
 
     // Members
     private int uid;
+    private int hid;
     private String name;
     private Boolean[] schedule;
     private String reason;
@@ -40,6 +41,7 @@ public class Habit {
         //TODO:
         // unique name (HabitList?) or controller
         setUID(uid);
+        setUniqueHID();
         setHabitName(name);
         setReason(reason);
         setAttribute(attribute);
@@ -104,10 +106,17 @@ public class Habit {
 
     /**
      * getUID
-     * Gets the int uid of habit
-     * @return int
+     * Gets the uid of habit
+     * @return int Associated UID
      */
     public int getUID() { return this.uid; }
+
+    /**
+     * getHID
+     * Gets the unique identifier of habit
+     * @return int habitID
+     */
+    public int getHID() { return this.hid; }
 
     /**
      * getHabitName
@@ -156,7 +165,24 @@ public class Habit {
      * sets the Habit's uid into the input uid
      * @param uid int uid associated with user
      */
-    public void setUID(int uid) { this.uid = uid; } // TODO: uniqueness check
+    public void setUID(int uid) { this.uid = uid; }
+
+    public void setUniqueHID() {
+        // Do ElasticSearch stuff
+        int hid;
+
+        // DEBUG - suppress error
+        hid = 0;
+
+        // Set the HID
+        setHID(hid);
+    }
+
+    /**
+     * setHID
+     * Sets the Habit's unique identifier
+     */
+    public void setHID(int hid) { this.hid = hid; }
 
     /**
      * setHabitName
