@@ -49,7 +49,9 @@
         android:layout_below="@+id/history_title"
         android:paddingTop="5dp"
         android:paddingBottom="15dp"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="10dp"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true">
 
         <TextView
             android:id="@+id/filter_title"

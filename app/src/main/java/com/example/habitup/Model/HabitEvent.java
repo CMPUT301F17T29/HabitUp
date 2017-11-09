@@ -4,6 +4,8 @@ package com.example.habitup.Model;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import com.example.habitup.Controller.HabitUpController;
+
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 
@@ -14,12 +16,14 @@ import java.time.LocalDate;
  */
 public class HabitEvent implements Comparable<HabitEvent> {
 
-    private LocalDate completedate;
-    private Map location;
-    private Bitmap Image;
-    private String pathofimage;
-    private String comment;
+    private int uid;
     private Habit habit;
+    private String comment;
+    private LocalDate completedate;
+    private Bitmap Image;
+    private Map location;
+
+    private String pathofimage;
 
 
     public HabitEvent () {
@@ -31,17 +35,33 @@ public class HabitEvent implements Comparable<HabitEvent> {
 //        this.habit = habit;
     }
 
+    public HabitEvent(int uid, Habit habit, String comment, LocalDate completedate) {
+        this.setUID(uid);
+        this.setHabit(habit);
+        this.setComment(comment);
+        this.setCompletedate(completedate);
+    }
+
     // Copy Constructor - @gojeffcho
     public HabitEvent(HabitEvent e) {
         // Copy all members over
-        this.completedate = e.getCompletedate();
-        this.location = e.getLocation();
-        this.Image = e.getImage();
+        this.setUID(e.getUID());
+        this.setHabit(getHabit());
+        this.setComment(e.getComment());
+        this.setCompletedate(e.getCompletedate());
+        this.setLocation(e.getLocation());
+        this.setImage(e.getImage());
 //        this.pathofimage = ??
-        this.comment = e.getComment();
-        this.habit = e.getHabit();
+
     }
 
+    public void setUID(int uid) { this.uid = uid; }
+
+    public void setHabit(Habit h) { this.habit = h; }
+
+    public void setComment (String comment) throws IllegalArgumentException {
+        this.comment = comment;
+    }
 
     public void setCompletedate (LocalDate completedate) throws IllegalArgumentException {
         this.completedate = completedate;
@@ -70,14 +90,19 @@ public class HabitEvent implements Comparable<HabitEvent> {
             }
         }
     }
+
+    // TODO: IMPLEMENT
+    private void setImage(Bitmap image) {
+
+    }
+
     private void resizeImage(Bitmap bp) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bp.compress(Bitmap.CompressFormat.JPEG, 70, stream);
     }
 
-    public void setComment (String comment) throws IllegalArgumentException {
-        this.comment = comment;
-    }
+
+    public int getUID() { return this.uid; }
 
     public LocalDate getCompletedate(){
         return completedate;
@@ -99,10 +124,6 @@ public class HabitEvent implements Comparable<HabitEvent> {
 
     public int compareTo(HabitEvent e) {
         return this.completedate.compareTo(e.getCompletedate());
-    }
-
-    public void setHabit(Habit habit) {
-        this.habit = habit;
     }
 
     public boolean hasImage() {

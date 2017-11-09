@@ -62,7 +62,7 @@ public class HabitList {
      * Gets the HabitList
      * @return ArrayList<Habit>
      */
-    public ArrayList<Habit> getHabits() {
+    public ArrayList<Habit> getHabitArrayList() {
         return this.habits;
     }
 
@@ -86,6 +86,20 @@ public class HabitList {
      */
     public int size() {
         return this.habits.size();
+    }
+
+    /**
+     * Return an ArrayList containing only today's Habits
+     * @return
+     */
+    public ArrayList<Habit> getTodaysHabitArrayList() {
+        ArrayList<Habit> returnList = new ArrayList<>();
+
+        for (Habit h : habits) {
+            if (h.isTodayHabit()) { returnList.add(h); }
+        }
+
+        return returnList;
     }
 
 }
