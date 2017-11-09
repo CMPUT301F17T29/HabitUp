@@ -1,24 +1,24 @@
 package com.example.habitup.Model;
 
-import java.util.ArrayList;
+import java.util.PriorityQueue;
 
 /**
  * Created by gojeffcho on 2017-10-20.
  *
  * HabitEventList: container for HabitEvents, used for things like HabitHistory
- * Current implementation uses ArrayList
+ * Current implementation uses PriorityQueue sorted on Date
  */
-
 public class HabitEventList {
 
     // Members
-    private ArrayList<HabitEvent> habitList;
+//    private ArrayList<HabitEvent> habitList;
+    private PriorityQueue<HabitEvent> habitList;
 
     /**
      * Constructor: create new ArrayList<> (current implementation)
      */
     public HabitEventList() {
-        habitList = new ArrayList<>();
+        habitList = new PriorityQueue<>();
     }
 
     /**
@@ -55,16 +55,14 @@ public class HabitEventList {
     }
 
     /**
-     * Return an ArrayList of HabitEvents represented by the HabitEventList
+     * Return an PriorityQueue of HabitEvents represented by the HabitEventList
      * @return
      */
-    public ArrayList<HabitEvent> getHabitEvents() {
-        ArrayList<HabitEvent> returnList = new ArrayList<>(habitList.size());
+    public PriorityQueue<HabitEvent> getHabitEvents() {
+        PriorityQueue<HabitEvent> returnList = new PriorityQueue<>(habitList.size());
         for (HabitEvent e : habitList) {
             returnList.add(new HabitEvent(e));
         }
         return returnList;
     }
-
-
 }

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false">
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_weight="0.85"
+        android:background="@color/white"
+        android:layout_marginRight="1dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:id="@+id/todays_habit_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="Example habit name" />
+
+        <TextView
+            android:id="@+id/todays_habit_x"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/todays_habit_name"
+            android:textSize="13dp"
+            android:text="x" />
+        <TextView
+            android:id="@+id/slash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/todays_habit_x"
+            android:layout_below="@+id/todays_habit_name"
+            android:textSize="13dp"
+            android:text="/"/>
+        <TextView
+            android:id="@+id/todays_habit_y"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/slash"
+            android:layout_below="@+id/todays_habit_name"
+            android:textSize="13dp"
+            android:text="y"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/habit_checkarea"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_weight="0.15"
+        android:background="@color/white"
+        android:gravity="center">
+
+        <CheckBox
+            android:id="@+id/today_habit_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+</LinearLayout>

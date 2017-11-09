@@ -62,6 +62,8 @@ public class BaseActivity extends AppCompatActivity {
                         drawerLayout.closeDrawers();
                         break;
                     case R.id.events:
+                        Intent eventsIntent = new Intent(context, ViewHabitEventActivity.class);
+                        startActivity(eventsIntent);
                         drawerLayout.closeDrawers();
                         break;
                     case R.id.friends:
