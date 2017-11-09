@@ -1,7 +1,9 @@
 package com.example.habitup.View;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,16 +14,18 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Attributes;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.R;
 
 import java.text.DateFormatSymbols;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -47,7 +51,7 @@ public class AddHabitActivity extends AppCompatActivity {
         day_x = cal.get(Calendar.DAY_OF_MONTH);
 
         // Get clickable region for calendar on-click listern
-        LinearLayout dateLayout = (LinearLayout) findViewById(R.id.date_layout);
+        ImageView dateLayout = (ImageView) findViewById(R.id.habit_date_button);
 
         // Set selected date
         setDateString();
@@ -86,8 +90,9 @@ public class AddHabitActivity extends AppCompatActivity {
             String habitReason = ((EditText) findViewById(R.id.habit_reason)).getText().toString();
 
             // Get Habit start date
-            TextView dateView = (TextView) findViewById(R.id.date_text);
-            LocalDate startDate = LocalDate.parse(dateView.getText().toString());
+//            TextView dateView = (TextView) findViewById(R.id.date_text);
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM d, yyyy");
+//            LocalDate startDate = LocalDate.parse(dateView.getText().toString(), formatter);
 
             // Get Habit's associated Attribute
             String attribute = ((Spinner) findViewById(R.id.habit_attr_spinner)).getSelectedItem().toString();
@@ -111,10 +116,22 @@ public class AddHabitActivity extends AppCompatActivity {
             schedule[7] = checkBoxSun.isChecked();
 
             // Create the Habit
-            Habit newHabit = new Habit(habitName, habitReason, attribute, startDate, schedule);
+            Habit newHabit = new Habit();
+            newHabit.setHabitName(habitName);
+            newHabit.setReason(habitReason);
+            // set start date
+//            newHabit.setStartDate(startDate);
+            newHabit.setAttribute(attribute);
+            newHabit.setSchedule(schedule);
 
             // Pass to the controller
-            // ??
+            HabitUpController hupCtl = new HabitUpController();
+            if (hupCtl.addHabit(newHabit) == 0) {
+                Intent result = new Intent();
+                setResult(Activity.RESULT_OK, result);
+                finish();
+
+            }
 
             }
         });

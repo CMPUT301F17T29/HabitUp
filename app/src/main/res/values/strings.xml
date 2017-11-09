@@ -11,6 +11,10 @@
     <string name="todays_habits">Today\'s Habits</string>
     <string name="todays_instructions">Check on a box to create an event for that habit.</string>
     <string name="no_habits">You have no habits today.</string>
+    <string name="title_activity_habits">HabitsActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
     <string name="habit_label">Habit name *</string>
     <string name="habit_hint">Enter name of habit</string>
     <string name="reason_label">Reason *</string>

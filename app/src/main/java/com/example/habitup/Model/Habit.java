@@ -42,7 +42,6 @@ public class Habit {
 
         //TODO:
         // unique name (HabitList?) or controller
-
         setUID(uid);
         setHabitName(name);
         setReason(reason);
@@ -245,7 +244,7 @@ public class Habit {
     }
 
     /**
-     * Returns True if this Habit is set for today in its schedule
+     * Returns True if this Habit is set for today in its schedule.
      * @return Boolean
      */
     public Boolean isTodayHabit() {
