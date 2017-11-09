@@ -8,6 +8,7 @@ import com.example.habitup.Model.Map;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.time.LocalDate;
 import java.util.GregorianCalendar;
 
 import static junit.framework.Assert.assertTrue;
@@ -23,12 +24,13 @@ public class HabitEventTest {
     @Test
     public void testHabitEventSetterGetter() {
         HabitEvent event1 = new HabitEvent();
-        event1.setCompletedate(new GregorianCalendar(2017, 10, 2, 15, 16, 17));
+        LocalDate eventDate = LocalDate.of(2017,10,2);
+        event1.setCompletedate(eventDate);
         event1.setLocation(new Map());
         event1.setPathofimage("/Users/abcdefg");
         event1.setComment("abcdef");
         try {
-            GregorianCalendar date1 = new GregorianCalendar(2017, 10, 2, 15, 16, 17);
+            LocalDate date1 = LocalDate.of(2017,10,2);
             Map location1 = new Map();
             assertTrue(event1.getLocation().equals(location1));
             assertTrue((event1.getCompletedate()).compareTo(date1) == 0);
@@ -59,7 +61,7 @@ public class HabitEventTest {
 
     @Test
     public void testCompleteDateRestrict(){
-        GregorianCalendar date1 = new GregorianCalendar(2016, 10, 2, 15, 16, 17);
+        LocalDate date1 = LocalDate.of(2016,10,2);
         HabitEvent event2 = new HabitEvent();
         try {
             event2.setCompletedate(date1);
