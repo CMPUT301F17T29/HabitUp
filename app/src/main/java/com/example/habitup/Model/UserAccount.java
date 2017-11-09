@@ -15,6 +15,7 @@ public class UserAccount {
     private final static int xpIncrease = 25;
 
     // Members
+    private int uid;
     private String username;
     private String realname;
     private Image photo;
@@ -36,17 +37,27 @@ public class UserAccount {
      */
     public UserAccount(String username, String realname, Image photo) throws
             IllegalArgumentException, IllegalStateException {
-        this.username = username;
-        this.realname = realname;
-        this.photo = photo;
+
+        this.setUniqueUID();
+        this.setUsername(username);
+        this.setRealname(realname);
+        this.setPhoto(photo);
+
         attributes = new Attributes();
         level = 1;
         XP = 0;
         XPtoNext = 20;
+
         friendsList = new UserAccountList();
         requestsPending = new UserAccountList();
         habits = new HabitList();
     }
+
+    /**
+     * Gets the UID
+     * @return int uid
+     */
+    public int getUID() { return this.uid; }
 
     /**
      * Gets unique String of UserAccount's username
@@ -109,6 +120,23 @@ public class UserAccount {
     public HabitList getHabits() { return this.habits; }
 
     /**
+     * Method to update username
+     * @param username
+     * @throws IllegalArgumentException
+     */
+    public void setUsername(String username) throws IllegalArgumentException {
+
+        // Catch invalid real names
+        if (username.length() == 0) {
+            throw new IllegalArgumentException();
+
+        // Otherwise, legal: set the name
+        } else {
+            this.username = username;
+        }
+    }
+
+    /**
      * Method to update realname
      * @param realname
      * @throws IllegalArgumentException
@@ -142,6 +170,20 @@ public class UserAccount {
        if (photo != null) {
            this.photo = null;
        }
+    }
+
+    /**
+     * Get the next unique UID, then set it to this user
+     */
+    public void setUniqueUID() {
+        // ElasticSearch query: highest UID in use
+        int id = 0;
+
+        // Increment it
+        ++id;
+
+        // Set it to this user's uid
+        this.uid = id;
     }
 
     /**
@@ -189,22 +231,6 @@ public class UserAccount {
             return -1;
         }
 
-    }
-
-    /**
-     * Add a new Habit and associated it with the UserAccount
-     * @param habit
-     */
-    public void addHabit(Habit habit) {
-        habits.add(habit);
-    }
-
-    /**
-     * Edit an existing Habit associated with the UserAccount
-     * @param habit
-     */
-    public void editHabit(Habit habit) {
-        // TODO: IMPLEMENT
     }
 
     /**
