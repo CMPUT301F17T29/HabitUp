@@ -4,6 +4,8 @@ import com.example.habitup.Controller.ElasticSearchController;
 
 import com.example.habitup.Model.UserAccount;
 
+import org.junit.Test;
+
 
 /**
  * Created by Ty on 2017-11-08.
@@ -11,15 +13,18 @@ import com.example.habitup.Model.UserAccount;
 
 public class ElasticSearchControllerTest {
 
-    private UserAccount u1 = new UserAccount("theise", "Tyler Heise", null);
-    private UserAccount u2 = new UserAccount("ezakirova", "E Z", null);
 
-    //private ArrayList<UserAccount> userList = new ArrayList<UserAccount>();
-    String x = u1.getUsername();
-    String y = u2.getUsername();
+    @Test
+    public void testAddUsersTask() {
+        UserAccount u1 = new UserAccount("theise", "Tyler Heise", null);
+        UserAccount u2 = new UserAccount("ezakirova", "E Z", null);
 
-    ElasticSearchController.AddUsersTask addUsersTask = new ElasticSearchController.AddUsersTask();
+        //private ArrayList<UserAccount> userList = new ArrayList<UserAccount>();
+        String x = u1.getUsername();
+        String y = u2.getUsername();
 
-    addUsersTask.execute(u1);
+        ElasticSearchController.AddUsersTask addUsersTask = new ElasticSearchController.AddUsersTask();
 
+        addUsersTask.execute(u1);
+    }
 }

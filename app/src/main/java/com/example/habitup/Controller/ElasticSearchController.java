@@ -18,10 +18,11 @@ import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 
+// http://cmput301.softwareprocess.es:8080/team29_habitup/
+
 public class ElasticSearchController {
     private static JestDroidClient client;
 
-    //http://cmput301.softwareprocess.es:8080/team29_habitup/
 
     public static class AddUsersTask extends AsyncTask<UserAccount, Void, Void> {
 
