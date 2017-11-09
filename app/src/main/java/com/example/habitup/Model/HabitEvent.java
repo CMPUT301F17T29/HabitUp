@@ -41,7 +41,7 @@ public class HabitEvent implements Comparable<HabitEvent> {
         this.setComment(comment);
         this.setCompletedate(completedate);
     }
-  
+
     // Copy Constructor - @gojeffcho
     public HabitEvent(HabitEvent e) {
         // Copy all members over
@@ -124,6 +124,14 @@ public class HabitEvent implements Comparable<HabitEvent> {
 
     public int compareTo(HabitEvent e) {
         return this.completedate.compareTo(e.getCompletedate());
+    }
+
+    public boolean hasImage() {
+        return this.Image != null;
+    }
+
+    public boolean hasLocation() {
+        return this.location != null;
     }
 
 }

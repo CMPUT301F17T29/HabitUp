@@ -14,7 +14,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -51,7 +51,7 @@ public class AddHabitActivity extends AppCompatActivity {
         day_x = cal.get(Calendar.DAY_OF_MONTH);
 
         // Get clickable region for calendar on-click listern
-        LinearLayout dateLayout = (LinearLayout) findViewById(R.id.date_layout);
+        ImageView dateLayout = (ImageView) findViewById(R.id.habit_date_button);
 
         // Set selected date
         setDateString();
