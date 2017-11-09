@@ -2,9 +2,6 @@ package com.example.habitup.Model;
 
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 public class Habit {
 
@@ -46,11 +43,9 @@ public class Habit {
         setHabitName(name);
         setReason(reason);
         setAttribute(attribute);
-        habitEvents = new HabitEventList(); //temporary
+        habitEvents = new HabitEventList();
         this.startDate = startDate;
-        schedule = new Boolean[8];
         setSchedule(schedule);
-
     }
 
     /**
@@ -60,7 +55,7 @@ public class Habit {
      * @return Boolean
      */
     public Boolean isLegalNameLength(String name){
-        return ((name.trim().length()>0)&&(name.trim().length()<=20));
+        return ( (name.trim().length() > 0) && (name.trim().length() <= 20) );
     }
 
     /**
@@ -70,7 +65,7 @@ public class Habit {
      * @return Boolean
      */
     public Boolean isLegalReasonLength(String reason){
-        return ((reason.trim().length()>0)||(name.trim().length()<=30));
+        return ( (reason.trim().length() > 0) && (name.trim().length() <= 30) );
     }
 
     /**
@@ -81,9 +76,12 @@ public class Habit {
      */
     public Boolean isLegalSchedule(Boolean[] schedule){
         int trueCount = 0;
-        for (Boolean s : schedule) if (s){trueCount++;}
-        if (trueCount>=1){return Boolean.TRUE;}
-        else return Boolean.FALSE;
+
+        for (Boolean s : schedule) {
+            if (s) { trueCount++; }
+        }
+
+        return trueCount > 0;
     }
 
     /**
@@ -93,8 +91,15 @@ public class Habit {
      * @return
      */
     public Boolean isLegalAttribute(String attribute){
-        Attributes attributesList = new Attributes();
-        return attributesList.contains(attribute);
+
+        String[] attrNames = Attributes.getAttributeNames();
+        for (String name : attrNames) {
+            if (name == attribute) {
+                return Boolean.TRUE;
+            }
+        }
+
+        return Boolean.FALSE;
     }
 
     /**
@@ -102,56 +107,56 @@ public class Habit {
      * Gets the int uid of habit
      * @return int
      */
-    public int getUID() {return this.uid;}
+    public int getUID() { return this.uid; }
 
     /**
      * getHabitName
      * Gets the String of the Habit's name
      * @return String
      */
-    public String getHabitName() {return this.name;}
+    public String getHabitName() { return this.name; }
 
     /**
      * getHabitSchedule
      * Forms a String of days of when the Habit is scheduled
      * @return String
      */
-    public Boolean[] getHabitSchedule() {return this.schedule;}
+    public Boolean[] getHabitSchedule() { return this.schedule; }
 
     /**
      * getHabitReason
      * Gets the Habit's reason as a String
      * @return String
      */
-    public String getHabitReason() {return this.reason;}
+    public String getHabitReason() { return this.reason; }
 
     /**
      * getHabitAttribute
      * Gets the associated attribute of the Habit
      * @return String
      */
-    public String getHabitAttribute() {return this.attribute;}
+    public String getHabitAttribute() { return this.attribute; }
 
     /**
      * getHabitEvents
      * Gets the associated ArrayList of HabitEvent objects for the Habit
      * @return ArrayList<HabitEvent>
      */
-    public HabitEventList getHabitEvents() {return this.habitEvents;}
+    public HabitEventList getHabitEvents() { return this.habitEvents; } // TODO: should be copy?
 
     /**
      * getStartDate
      * Gets the Habit's start date
      * @return Date
      */
-    public LocalDate getStartDate() {return this.startDate;}
+    public LocalDate getStartDate() { return this.startDate; }
 
     /**
      * setUID
      * sets the Habit's uid into the input uid
      * @param uid int uid associated with user
      */
-    public void setUID(int uid) {this.uid = uid;}
+    public void setUID(int uid) { this.uid = uid; } // TODO: uniqueness check
 
     /**
      * setHabitName
@@ -161,12 +166,11 @@ public class Habit {
      */
     public void setHabitName(String name) throws IllegalArgumentException{
 
-        if(isLegalNameLength(name)){
+        if (isLegalNameLength(name)) {
             this.name = name;
-        }
-        else{
-            throw new IllegalArgumentException("Error: Name length has to be within " +
-                    "1 - 20 characters");
+        } else {
+            String errorStr = "Error: Name length must be within 1 - 20 characters";
+            throw new IllegalArgumentException(errorStr);
         }
         //TODO: Implement unique Habit name in HabitList? or controller
     }
@@ -177,9 +181,9 @@ public class Habit {
      * @param schedule Boolean[8]
      */
     public void setSchedule(Boolean[] schedule) throws IllegalStateException{
-        if (isLegalSchedule(schedule)){
-            this.schedule = schedule;}
-        else{
+        if (isLegalSchedule(schedule)) {
+            this.schedule = schedule;
+        } else {
             throw new IllegalStateException("Error: Minimum one day scheduled required.");
         }
     }
@@ -192,11 +196,11 @@ public class Habit {
      */
     public void setReason(String reason) throws IllegalArgumentException {
 
-        if (isLegalReasonLength(reason)){
-            this.reason = reason;}
-        else{
-            throw new IllegalArgumentException("Error: Reason length has to be between " +
-                    "1 - 30 characters.");
+        if (isLegalReasonLength(reason)) {
+            this.reason = reason;
+        } else {
+            String errStr = "Error: Reason length has to be between 1 - 30 characters.";
+            throw new IllegalArgumentException(errStr);
         }
     }
 
@@ -207,11 +211,11 @@ public class Habit {
      * @throws IllegalArgumentException
      */
     public void setAttribute(String attribute) throws IllegalArgumentException{
-        if(isLegalAttribute(attribute)){
-            this.attribute = attribute;}
-        else{
-            throw new IllegalArgumentException("Error: Attribute is not from " +
-                    "the provided attributes.");
+        if (isLegalAttribute(attribute)) {
+            this.attribute = attribute;
+        } else {
+            String errStr = "Error: Attribute is invalid.";
+            throw new IllegalArgumentException(errStr);
         }
     }
 
@@ -220,6 +224,7 @@ public class Habit {
     }
 
     public void setStartDate(LocalDate startDate) {
+        // TODO: potential error checking, e.g. startDate cannot be after today?
         this.startDate = startDate;
     }
 
@@ -228,6 +233,7 @@ public class Habit {
      * Adds a new HabitEvent into the Habit's ArrayList
      * @param habitEvent HabitEvent to be added into the Habit
      */
+    // TODO: possibly unnecessary once refactored
     public void addHabitEvent(HabitEvent habitEvent){
 
         this.habitEvents.add(habitEvent);
@@ -238,6 +244,7 @@ public class Habit {
      * Removes the specified HabitEvent from the Habit's ArrayList
      * @param habitEvent HabitEvent to be removed
      */
+    // TODO: possibly unnecessary once refactored
     public void removeHabitEvent(HabitEvent habitEvent){
 
         this.habitEvents.remove(habitEvent);
