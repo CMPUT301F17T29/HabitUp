@@ -2,9 +2,9 @@ package com.example.habitup.View;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -17,7 +17,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.habitup.Model.Attributes;
-import com.example.habitup.Model.Habit;
 import com.example.habitup.R;
 
 import java.text.DateFormatSymbols;
@@ -111,7 +110,7 @@ public class AddHabitActivity extends AppCompatActivity {
             schedule[7] = checkBoxSun.isChecked();
 
             // Create the Habit
-            Habit newHabit = new Habit(habitName, habitReason, attribute, startDate, schedule);
+            //Habit newHabit = new Habit(habitName, habitReason, attribute, startDate, schedule);
 
             // Pass to the controller
             // ??

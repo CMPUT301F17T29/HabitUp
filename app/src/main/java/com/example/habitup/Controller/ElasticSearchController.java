@@ -10,8 +10,13 @@ import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
+import io.searchbox.core.Search;
+import io.searchbox.core.SearchResult;
 
 public class ElasticSearchController {
     private static JestDroidClient client;
@@ -32,12 +37,16 @@ public class ElasticSearchController {
                 try {
                     // where is the client?
                     DocumentResult result = client.execute(index);
-                    if (!result.isSucceeded()) {
+                    if (result.isSucceeded()) {
 
-                        Log.i("Error", "Elasticsearch was not able to add the tweet");
+                        //set id of user
+                    }
+
+                    else{
+                        Log.i("Error", "Elasticsearch was not able to add the User");
                     }
                 } catch (Exception e) {
-                    Log.i("Error", "The application failed to build and send the tweets");
+                    Log.i("Error", "The application failed to build and send the User");
                 }
             }
 
@@ -62,10 +71,10 @@ public class ElasticSearchController {
                     DocumentResult result = client.execute(index);
                     if (!result.isSucceeded()) {
 
-                        Log.i("Error", "Elasticsearch was not able to add the tweet");
+                        Log.i("Error", "Elasticsearch was not able to add the Habit");
                     }
                 } catch (Exception e) {
-                    Log.i("Error", "The application failed to build and send the tweets");
+                    Log.i("Error", "The application failed to build and send the Habit");
                 }
             }
 
@@ -84,22 +93,60 @@ public class ElasticSearchController {
             for (HabitEvent habitEvent : habitEvents) {
                 Index index = new Index.Builder(habitEvent).index("Team29_HabitUp").type("habitEvent").build();
 
-
                 try {
                     // where is the client?
                     DocumentResult result = client.execute(index);
                     if (!result.isSucceeded()) {
 
-                        Log.i("Error", "Elasticsearch was not able to add the tweet");
+                        Log.i("Error", "Elasticsearch was not able to add the Habit Event");
                     }
                 } catch (Exception e) {
-                    Log.i("Error", "The application failed to build and send the tweets");
+                    Log.i("Error", "The application failed to build and send the Habit Event");
                 }
             }
 
             return null;
         }
 
+    }
+
+    public static class GetUserTask extends AsyncTask<String, Void, ArrayList<UserAccount>>{
+
+        @Override
+        protected ArrayList<UserAccount> doInBackground(String... usernames) {
+            verifySettings();
+
+            ArrayList<UserAccount> users = new ArrayList<UserAccount>();
+
+            //Build the query
+            String query = "{\n" +
+                    " \"query\": { \"term\": {\"username\":\"" + usernames[0] + "\"} }\n" +"}";
+
+            Search search = new Search.Builder(usernames[0]).addIndex("Team29_HabitUp").addType("user").build();
+
+            try {
+
+                // TODO get the results of the query
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()) {
+                    List<UserAccount> foundUser = result.getSourceAsObjectList(UserAccount.class);
+                    users.addAll(foundUser);
+
+                    // DEBUG: print the tweets we got
+                    for (UserAccount user : users) {
+                        Log.i("user:", user.getUsername());
+                    }
+
+                } else {
+                    Log.i("Error2", "Something went wrong when we tried to communicate with the elasticsearch server");
+                }
+            }
+            catch (Exception e) {
+                Log.i("Error1", "Something went wrong when we tried to communicate with the elasticsearch server!");
+            }
+
+            return users;
+        }
     }
 
     public static void verifySettings() {
