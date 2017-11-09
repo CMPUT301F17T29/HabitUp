@@ -1,5 +1,5 @@
 package com.example.habitup;
-/*
+
 import android.support.test.runner.AndroidJUnit4;
 
 import com.example.habitup.Model.HabitEvent;
@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.time.LocalDate;
-import java.util.GregorianCalendar;
 
 import static junit.framework.Assert.assertTrue;
 
@@ -17,7 +16,7 @@ import static junit.framework.Assert.assertTrue;
  * @author acysl
  *
  * Modified by @gojeffcho 2017-10-22
- 
+ */
 @RunWith(AndroidJUnit4.class)
 public class HabitEventTest {
 
@@ -74,7 +73,7 @@ public class HabitEventTest {
     }
 
 }
-*/
+
 
 
 

@@ -1,4 +1,4 @@
-/*package com.example.habitup;
+package com.example.habitup;
 
 import android.media.Image;
 import android.support.test.runner.AndroidJUnit4;
@@ -16,6 +16,7 @@ import static junit.framework.Assert.assertFalse;
  * Created by gojeffcho on 2017-10-20.
  *
  * Tests implementation of UserAccount and runs it through its various paces.
+*/
 
 @RunWith(AndroidJUnit4.class)
 public class UserAccountTest {
@@ -272,4 +273,3 @@ public class UserAccountTest {
     }
 
 }
-*/
