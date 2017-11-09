@@ -22,6 +22,50 @@ import static junit.framework.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 public class HabitUpTest {
 
+    //Tests setters
+    @Test 
+    public void testSetUsersList(){
+        String u1 = "tyiscool";
+        String u2 = "Tyler Heise";
+        Image photo = null;
+
+        HabitUp testHabitUp = new HabitUp();
+
+        UserAccount user1 = new UserAccount(u1, u2, photo);
+        
+        UserAccountList testList = new UserAccountList();
+        testList.add(user1);
+        
+        testHabitUp.setUsersList(testList);
+        
+        assertTrue(testList == testHabitUp.getUsers());
+    }
+    
+    @Test
+    public void testSetElasticConnectivity(){
+        
+        HabitUp testHabitUp = new HabitUp();
+        testHabitUp.setElasticConnectivity(true);
+        assertTrue(testHabitUp.getElasticConenectivity());
+        
+    }
+    
+    @Test
+    public void testSetCurrentUser(){
+        String u1 = "tyiscool";
+        String u2 = "Tyler Heise";
+        Image photo = null;
+
+        HabitUp testHabitUp = new HabitUp();
+
+        UserAccount user1 = new UserAccount(u1, u2, photo);
+        
+        testHabitUp.setCurrentUser(user1);
+        
+        assertTrue(testHabitUp.getCurrentUser() == user1);
+        
+    }
+    
     // Tests that the login method appropriately sets current user
     @Test
     public void testLogin(){
