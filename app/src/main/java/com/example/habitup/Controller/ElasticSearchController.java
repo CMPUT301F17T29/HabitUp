@@ -21,7 +21,7 @@ import io.searchbox.core.SearchResult;
 public class ElasticSearchController {
     private static JestDroidClient client;
 
-    //http://cmput301.softwareprocess.es:8080/Team29_HabitUp/
+    //http://cmput301.softwareprocess.es:8080/team29_habitup/
 
     public static class AddUsersTask extends AsyncTask<UserAccount, Void, Void> {
 
@@ -31,7 +31,7 @@ public class ElasticSearchController {
             verifySettings();
 
             for (UserAccount user : users) {
-                Index index = new Index.Builder(user).index("Team29_HabitUp").type("user").build();
+                Index index = new Index.Builder(user).index("team29_habitup").type("user").build();
 
 
                 try {
