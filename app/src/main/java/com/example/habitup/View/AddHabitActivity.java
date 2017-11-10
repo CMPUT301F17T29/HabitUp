@@ -37,6 +37,8 @@ public class AddHabitActivity extends AppCompatActivity {
     private int year_x, month_x, day_x;
     private static final int DIALOG_ID = 0;
 
+    private TextView dateView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +56,7 @@ public class AddHabitActivity extends AppCompatActivity {
 
         // Get clickable region for calendar on-click listern
         ImageView dateLayout = (ImageView) findViewById(R.id.habit_date_button);
+        dateView = (TextView) findViewById(R.id.date_text);
 
         // Set selected date
         setDateString();
@@ -67,8 +70,16 @@ public class AddHabitActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         attrSpinner.setAdapter(adapter);
 
-        // Open the date picker dialog
+        // Open the date picker dialog clicking calendar button
         dateLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog(DIALOG_ID);
+            }
+        });
+
+        // Open the date picker dialog clicking date field
+        dateView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showDialog(DIALOG_ID);
@@ -223,8 +234,6 @@ public class AddHabitActivity extends AppCompatActivity {
      * Updates the date string in the date text view
      */
     private void setDateString() {
-        TextView dateView = (TextView) findViewById(R.id.date_text);
-
         String monthName = new DateFormatSymbols().getShortMonths()[month_x];
         String dateString = (monthName) + " " + day_x + ", " + year_x;
         dateView.setText(dateString);

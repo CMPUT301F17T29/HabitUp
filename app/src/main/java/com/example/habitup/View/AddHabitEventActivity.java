@@ -1,17 +1,12 @@
 package com.example.habitup.View;
 
-
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -20,10 +15,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -44,16 +36,17 @@ import java.util.Locale;
 public class AddHabitEventActivity extends AppCompatActivity {
 
     // Event completion date
+    private TextView dateView;
     private int year_x, month_x, day_x;
     private static final int DIALOG_ID = 1;
 
     // Clickable image
     private static final int REQUEST_CODE = 1;
-    Bitmap imageBitMap;
-    Button imageButton;
-    ImageView image;
+    private Bitmap imageBitMap;
+    private Button imageButton;
+    private ImageView image;
 
-    Button saveButton;
+    private Button saveButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +65,7 @@ public class AddHabitEventActivity extends AppCompatActivity {
 
         // Get date click button
         ImageView dateClicker = (ImageView) findViewById(R.id.event_date_button);
+        dateView = (TextView) findViewById(R.id.event_date_text);
 
         // Set selected date
         setDateString();
@@ -109,8 +103,16 @@ public class AddHabitEventActivity extends AppCompatActivity {
             }
         });
 
-        // Open the date picker dialog
+        // Open the date picker dialog when clicking calendar button
         dateClicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog(DIALOG_ID);
+            }
+        });
+
+        // Open the date picke dialog when clicking date field
+        dateView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showDialog(DIALOG_ID);
@@ -205,8 +207,6 @@ public class AddHabitEventActivity extends AppCompatActivity {
      * Updates the date string in the date text view
      */
     private void setDateString() {
-        TextView dateView = (TextView) findViewById(R.id.event_date_text);
-
         String monthName = new DateFormatSymbols().getShortMonths()[month_x];
         String dateString = (monthName) + " " + day_x + ", " + year_x;
         dateView.setText(dateString);
