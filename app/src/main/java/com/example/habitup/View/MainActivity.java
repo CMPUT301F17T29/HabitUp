@@ -8,8 +8,10 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
+import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
 import java.util.ArrayList;
@@ -30,7 +32,13 @@ public class MainActivity extends BaseActivity {
         // DEBUG
         HabitUpController hupCtl = new HabitUpController();
         hupCtl.testAccount();
+
+        ElasticSearchController.AddUsersTask addUser = new ElasticSearchController.AddUsersTask();
+        UserAccount newUser = new UserAccount("tester", "Test Account", null);
+        addUser.execute(newUser);
         // DEBUG
+
+
 
         // Initialize list view for today's habits
         habitListView = (ListView) findViewById(R.id.habit_listview);
