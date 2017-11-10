@@ -202,11 +202,11 @@ public class Habit {
      * Changes the schedule accordingly with input schedule
      * @param schedule Boolean[8]
      */
-    public void setSchedule(Boolean[] schedule) throws IllegalStateException{
+    public void setSchedule(Boolean[] schedule) throws IllegalArgumentException {
         if (isLegalSchedule(schedule)) {
             this.schedule = schedule;
         } else {
-            throw new IllegalStateException("Error: Minimum one day scheduled required.");
+            throw new IllegalArgumentException("Error: Minimum one day scheduled required.");
         }
     }
 
@@ -245,7 +245,7 @@ public class Habit {
         //TODO: implement
     }
 
-    public void setStartDate(LocalDate startDate) {
+    public void setStartDate(LocalDate startDate) throws IllegalArgumentException {
         // TODO: potential error checking, e.g. startDate cannot be after today?
         this.startDate = startDate;
     }

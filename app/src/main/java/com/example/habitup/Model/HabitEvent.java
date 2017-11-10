@@ -27,7 +27,9 @@ public class HabitEvent implements Comparable<HabitEvent> {
     private String pathofimage;
 
 
-    public HabitEvent () {
+    public HabitEvent (int uid, int hid) {
+        this.uid = uid;
+        this.hid = hid;
 //        this.comment = comment;
 //        this.completedate = completedate;
 //        this.location = location;

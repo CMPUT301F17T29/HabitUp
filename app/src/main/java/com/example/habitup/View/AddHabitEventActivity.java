@@ -6,6 +6,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.Image;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -13,6 +14,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -26,11 +28,15 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
+import com.example.habitup.Model.HabitEvent;
 import com.example.habitup.R;
 
 import java.text.DateFormatSymbols;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
@@ -113,6 +119,37 @@ public class AddHabitEventActivity extends AppCompatActivity {
 
         // Save button
         saveButton = (Button) findViewById(R.id.save_event);
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                String habitType = ((Spinner) findViewById(R.id.event_habit_spinner)).getSelectedItem().toString();
+                // String habitComment = ((TextView) findViewById(R.id.event_comment)).getText().toString();
+
+                String completeDateString = ((TextView) findViewById(R.id.event_date_text)).getText().toString();
+                // TODO: Parse completeDate into a LocalDate
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy");
+                LocalDate completeDate = LocalDate.parse(completeDateString, formatter);
+
+                Log.i("DATE:", completeDate.toString()); // TODO REMOVE
+
+                // TODO: M5 get location here
+                Bitmap photo = ((BitmapDrawable) ((ImageView) findViewById(R.id.taken_image)).getDrawable()).getBitmap();
+
+                int uid = HabitUpController.getCurrentUID();
+                int hid = 0;
+//                int hid = ElasticSearchController (look up habit to get hid);
+
+                HabitEvent newEvent = new HabitEvent(uid, hid);
+//                newEvent.setComment(habitComment);
+                newEvent.setCompletedate(completeDate);
+//                newEvent.setImage
+
+            }
+
+        });
     }
 
     /**

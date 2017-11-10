@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -17,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Attributes;
@@ -24,6 +26,8 @@ import com.example.habitup.Model.Habit;
 import com.example.habitup.R;
 
 import java.text.DateFormatSymbols;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -88,9 +92,11 @@ public class AddHabitActivity extends AppCompatActivity {
                 String habitReason = ((EditText) findViewById(R.id.habit_reason)).getText().toString();
 
                 // Get Habit start date
-//            TextView dateView = (TextView) findViewById(R.id.date_text);
-//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM d, yyyy");
-//            LocalDate startDate = LocalDate.parse(dateView.getText().toString(), formatter);
+                String dateString = ((TextView) findViewById(R.id.date_text)).getText().toString();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy");
+                LocalDate startDate = LocalDate.parse(dateString, formatter);
+
+                Log.i("DATE:", startDate.toString()); // TODO REMOVE
 
                 // Get Habit's associated Attribute
                 String attribute = ((Spinner) findViewById(R.id.habit_attr_spinner)).getSelectedItem().toString();
@@ -105,6 +111,7 @@ public class AddHabitActivity extends AppCompatActivity {
                 CheckBox checkBoxSat = (CheckBox) findViewById(R.id.saturday);
                 CheckBox checkBoxSun = (CheckBox) findViewById(R.id.sunday);
 
+                schedule[0] = Boolean.FALSE;
                 schedule[1] = checkBoxMon.isChecked();
                 schedule[2] = checkBoxTue.isChecked();
                 schedule[3] = checkBoxWed.isChecked();
@@ -115,20 +122,56 @@ public class AddHabitActivity extends AppCompatActivity {
 
                 // Create the Habit
                 Habit newHabit = new Habit();
-                newHabit.setHabitName(habitName);
-                newHabit.setReason(habitReason);
-                // set start date
-//            newHabit.setStartDate(startDate);
-                newHabit.setAttribute(attribute);
-                newHabit.setSchedule(schedule);
+                Boolean habitOK = Boolean.TRUE;
 
-                // Pass to the controller
-                HabitUpController hupCtl = new HabitUpController();
-                if (hupCtl.addHabit(newHabit) == 0) {
-                    Intent result = new Intent();
-                    setResult(Activity.RESULT_OK, result);
-                    finish();
+                try {
+                    newHabit.setHabitName(habitName);
+                } catch (IllegalArgumentException e) {
+                    // do stuff
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    habitOK = Boolean.FALSE;
+                }
 
+                try {
+                    newHabit.setReason(habitReason);
+                } catch (IllegalArgumentException e) {
+                    // do stuff
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    habitOK = Boolean.FALSE;
+                }
+
+                try {
+                    newHabit.setStartDate(startDate);
+                } catch (IllegalArgumentException e) {
+                    // do stuff
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    habitOK = Boolean.FALSE;
+                }
+
+                try {
+                    newHabit.setAttribute(attribute);
+                } catch (IllegalArgumentException e) {
+                    // do stuff
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    habitOK = Boolean.FALSE;
+                }
+
+                try {
+                    newHabit.setSchedule(schedule);
+                } catch (IllegalArgumentException e) {
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    habitOK = Boolean.FALSE;
+                }
+
+                if (habitOK) {
+                    // Pass to the controller
+                    HabitUpController hupCtl = new HabitUpController();
+                    if (hupCtl.addHabit(newHabit) == 0) {
+                        Intent result = new Intent();
+                        setResult(Activity.RESULT_OK, result);
+                        finish();
+
+                    }
                 }
 
             }
