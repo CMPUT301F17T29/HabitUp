@@ -17,11 +17,12 @@ import java.time.LocalDate;
 public class HabitEvent implements Comparable<HabitEvent> {
 
     private int uid;
-    private Habit habit;
+    private int hid;
     private String comment;
     private LocalDate completedate;
     private Bitmap Image;
     private Map location;
+    private Boolean scheduled;
 
     private String pathofimage;
 
@@ -35,29 +36,45 @@ public class HabitEvent implements Comparable<HabitEvent> {
 //        this.habit = habit;
     }
 
-    public HabitEvent(int uid, Habit habit, String comment, LocalDate completedate) {
+    public HabitEvent(int uid, int hid, String comment, LocalDate completedate) {
         this.setUID(uid);
-        this.setHabit(habit);
+        this.setHabit(hid);
         this.setComment(comment);
         this.setCompletedate(completedate);
+        this.setScheduled();
     }
 
     // Copy Constructor - @gojeffcho
     public HabitEvent(HabitEvent e) {
         // Copy all members over
         this.setUID(e.getUID());
-        this.setHabit(getHabit());
+        this.setHabit(e.getHID());
         this.setComment(e.getComment());
         this.setCompletedate(e.getCompletedate());
-        this.setLocation(e.getLocation());
         this.setImage(e.getImage());
+        this.setLocation(e.getLocation());
+        this.scheduled = e.getScheduled();
 //        this.pathofimage = ??
 
     }
 
     public void setUID(int uid) { this.uid = uid; }
 
-    public void setHabit(Habit h) { this.habit = h; }
+    public void setHabit(int hid) { this.hid = hid; }
+
+    public void setScheduled() {
+
+        // Get Habit corresponding to hid from ES
+
+        // Get schedule from Habit
+
+        // Check if completedate is a scheduled date
+
+            // If yes, set TRUE
+
+            // If not, set FALSE
+
+    }
 
     public void setComment (String comment) throws IllegalArgumentException {
         this.comment = comment;
@@ -104,6 +121,10 @@ public class HabitEvent implements Comparable<HabitEvent> {
 
     public int getUID() { return this.uid; }
 
+    public int getHID() { return hid; }
+
+    public Boolean getScheduled() { return this.scheduled; }
+
     public LocalDate getCompletedate(){
         return completedate;
     }
@@ -119,8 +140,6 @@ public class HabitEvent implements Comparable<HabitEvent> {
     public Bitmap getImage(){
         return Image;
     }
-
-    public Habit getHabit() { return habit; }
 
     public int compareTo(HabitEvent e) {
         return this.completedate.compareTo(e.getCompletedate());
