@@ -36,13 +36,16 @@ public class Attributes {
     private final static Map<String,String> colourMap = createColourMap();
 
     // Members
+    private int uid;
     private Map<String,Integer> attributeMap;
 
     /**
      * Attributes constructor, which takes the class variable attributeNames
      * and populates an initialized attributeMap with default values of 0.
      */
-    public Attributes() {} {
+    public Attributes(int uid) {} {
+
+        this.uid = uid;
         attributeMap = new HashMap<String,Integer>();
 
         for (int i = 0; i < Attributes.getSize(); i++) {

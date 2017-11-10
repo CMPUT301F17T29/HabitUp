@@ -43,7 +43,7 @@ public class UserAccount {
         this.setRealname(realname);
         this.setPhoto(photo);
 
-        attributes = new Attributes();
+        attributes = new Attributes(this.uid);
         level = 1;
         XP = 0;
         XPtoNext = 20;
@@ -119,6 +119,25 @@ public class UserAccount {
      */
     public HabitList getHabits() { return this.habits; }
 
+
+    /**
+     * Get the next unique UID, then set it to this user
+     */
+    public void setUniqueUID() {
+        // ElasticSearch query: highest UID in use
+        int id = 0;
+
+        // Increment it
+        ++id;
+
+        // Set it to this user's uid
+        this.uid = id;
+    }
+
+    public void setUID(int uid) {
+        // TODO: Implement
+    }
+
     /**
      * Method to update username
      * @param username
@@ -170,20 +189,6 @@ public class UserAccount {
        if (photo != null) {
            this.photo = null;
        }
-    }
-
-    /**
-     * Get the next unique UID, then set it to this user
-     */
-    public void setUniqueUID() {
-        // ElasticSearch query: highest UID in use
-        int id = 0;
-
-        // Increment it
-        ++id;
-
-        // Set it to this user's uid
-        this.uid = id;
     }
 
     /**
