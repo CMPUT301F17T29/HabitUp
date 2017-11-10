@@ -12,8 +12,12 @@ public class Habit {
     private Boolean[] schedule;
     private String reason;
     private String attribute;
-    private HabitEventList habitEvents;
     private LocalDate startDate;
+
+    private LocalDate lastUpdated;
+    private int habitsDone;
+    private int habitsDoneExtra;
+    private int habitsPossible;
 
     /**
      * Habit constructor
@@ -45,7 +49,6 @@ public class Habit {
         setHabitName(name);
         setReason(reason);
         setAttribute(attribute);
-        habitEvents = new HabitEventList();
         this.startDate = startDate;
         setSchedule(schedule);
     }
@@ -145,13 +148,6 @@ public class Habit {
      * @return String
      */
     public String getHabitAttribute() { return this.attribute; }
-
-    /**
-     * getHabitEvents
-     * Gets the associated ArrayList of HabitEvent objects for the Habit
-     * @return ArrayList<HabitEvent>
-     */
-    public HabitEventList getHabitEvents() { return this.habitEvents; } // TODO: should be copy?
 
     /**
      * getStartDate
@@ -255,32 +251,48 @@ public class Habit {
     }
 
     /**
-     * addHabitEvent
-     * Adds a new HabitEvent into the Habit's ArrayList
-     * @param habitEvent HabitEvent to be added into the Habit
-     */
-    // TODO: possibly unnecessary once refactored
-    public void addHabitEvent(HabitEvent habitEvent){
-
-        this.habitEvents.add(habitEvent);
-    }
-
-    /**
-     * removeHabitEvent
-     * Removes the specified HabitEvent from the Habit's ArrayList
-     * @param habitEvent HabitEvent to be removed
-     */
-    // TODO: possibly unnecessary once refactored
-    public void removeHabitEvent(HabitEvent habitEvent){
-
-        this.habitEvents.remove(habitEvent);
-    }
-
-    /**
      * Returns True if this Habit is set for today in its schedule.
      * @return Boolean
      */
     public Boolean isTodayHabit() {
         return schedule[LocalDate.now().getDayOfWeek().getValue()];
     }
+
+
+    public void updateHabitsPossible() {
+
+        // Get today's date - we will compare this to lastCalculated
+        LocalDate today = LocalDate.now();
+        LocalDate curr = this.lastUpdated;
+
+        // New lastCalculated is today, because we're recalculating.
+        this.lastUpdated = today;
+
+        while (curr != today) {
+
+            // Check if curr is one of the days set for the Habit to be done
+            // NOTE: DayOfWeek is an enum - Mon == 1, Tue == 2, etc.
+            if (this.schedule[curr.getDayOfWeek().getValue()]) {
+
+                // If so, increment habitsPossible
+                ++this.habitsPossible;
+            }
+
+            // Increment to next day
+            // Careful!  Check for month rollover, weird possibilities
+            curr.plusDays(1);
+
+        }
+    }
+
+    public void incrementHabitsDone() { ++this.habitsDone; }
+    public void incrementHabitsDoneExtra() { ++this.habitsDoneExtra; }
+    public void decrementHabitsDone() { --this.habitsDone; }
+    public void decrementHabitsDoneExtra() { --this.habitsDoneExtra; }
+
+    // Use habitsDone / habitsPossible to represent the overall stat (don't want to return
+    // a float or something dumb and messy like that - rational representation)
+    public int getHabitsDone() { return this.habitsDone; }
+    public int getHabitsDoneExtra() { return this.habitsDoneExtra; }
+    public int getHabitsPossible() { return this.habitsPossible; }
 }
