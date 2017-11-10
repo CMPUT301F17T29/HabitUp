@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Attributes;
@@ -121,19 +122,56 @@ public class AddHabitActivity extends AppCompatActivity {
 
                 // Create the Habit
                 Habit newHabit = new Habit();
-                newHabit.setHabitName(habitName);
-                newHabit.setReason(habitReason);
-                newHabit.setStartDate(startDate);
-                newHabit.setAttribute(attribute);
-                newHabit.setSchedule(schedule);
+                Boolean habitOK = Boolean.TRUE;
 
-                // Pass to the controller
-                HabitUpController hupCtl = new HabitUpController();
-                if (hupCtl.addHabit(newHabit) == 0) {
-                    Intent result = new Intent();
-                    setResult(Activity.RESULT_OK, result);
-                    finish();
+                try {
+                    newHabit.setHabitName(habitName);
+                } catch (IllegalArgumentException e) {
+                    // do stuff
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    habitOK = Boolean.FALSE;
+                }
 
+                try {
+                    newHabit.setReason(habitReason);
+                } catch (IllegalArgumentException e) {
+                    // do stuff
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    habitOK = Boolean.FALSE;
+                }
+
+                try {
+                    newHabit.setStartDate(startDate);
+                } catch (IllegalArgumentException e) {
+                    // do stuff
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    habitOK = Boolean.FALSE;
+                }
+
+                try {
+                    newHabit.setAttribute(attribute);
+                } catch (IllegalArgumentException e) {
+                    // do stuff
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    habitOK = Boolean.FALSE;
+                }
+
+                try {
+                    newHabit.setSchedule(schedule);
+                } catch (IllegalArgumentException e) {
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    habitOK = Boolean.FALSE;
+                }
+
+                if (habitOK) {
+                    // Pass to the controller
+                    HabitUpController hupCtl = new HabitUpController();
+                    if (hupCtl.addHabit(newHabit) == 0) {
+                        Intent result = new Intent();
+                        setResult(Activity.RESULT_OK, result);
+                        finish();
+
+                    }
                 }
 
             }
