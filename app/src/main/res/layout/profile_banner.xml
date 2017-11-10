@@ -38,7 +38,7 @@
             android:text="Ken Wong"
             android:textStyle="bold"
             android:textColor="@color/whitegray"
-            android:textSize="18sp"/>
+            android:textSize="20sp"/>
 
         <TextView
             android:id="@+id/user_level"
@@ -69,7 +69,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginTop="10dp"
             android:layout_toRightOf="@+id/star_level"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:layout_below="@+id/user_level"/>
 
         <ProgressBar
@@ -123,10 +123,10 @@
                 android:id="@+id/attribute2_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="MENTAL"
+                android:text="Mental"
                 android:gravity="center"
                 android:textStyle="bold"
-                android:textSize="13sp"
+                android:textSize="15sp"
                 android:layout_below="@+id/attribute2_value"
                 android:textColor="@color/white"/>
         </RelativeLayout>
@@ -153,9 +153,9 @@
                 android:id="@+id/attribute1_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="PHYSICAL"
+                android:text="Physical"
                 android:textStyle="bold"
-                android:textSize="13sp"
+                android:textSize="15sp"
                 android:gravity="center"
                 android:layout_below="@+id/attribute1_value"
                 android:textColor="@color/white"/>
@@ -183,9 +183,9 @@
                 android:id="@+id/attribute4_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="DISCIPLINE"
+                android:text="Discipline"
                 android:textStyle="bold"
-                android:textSize="13sp"
+                android:textSize="15sp"
                 android:gravity="center"
                 android:layout_below="@+id/attribute4_value"
                 android:textColor="@color/white"/>
@@ -212,9 +212,9 @@
                 android:id="@+id/attribute3_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="SOCIAL"
+                android:text="Social"
                 android:textStyle="bold"
-                android:textSize="13sp"
+                android:textSize="15sp"
                 android:gravity="center"
                 android:layout_below="@+id/attribute3_value"
                 android:textColor="@color/white"/>
@@ -232,7 +232,7 @@
         android:layout_marginRight="10dp"
         android:textStyle="bold"
         android:textColor="@color/darkgray"
-        android:textSize="16sp"
+        android:textSize="20sp"
         android:text="@string/todays_habits"/>
     <TextView
         android:id="@+id/today_subheading"
@@ -243,7 +243,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
         android:textColor="@color/lightgray"
-        android:textSize="13sp"
+        android:textSize="15sp"
         android:text="@string/todays_instructions"/>
 
 </RelativeLayout>

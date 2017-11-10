@@ -46,12 +46,29 @@ public class ProfileHabitsAdapter extends ArrayAdapter<Habit> {
         String attributeName = habit.getHabitAttribute();
         String attributeColour = Attributes.getColour(attributeName);
 
-        if (habit != null) {
-            TextView habitNameView = v.findViewById(R.id.todays_habit_name);
+        TextView habitNameView = v.findViewById(R.id.todays_habit_name);
+        if (habitNameView != null) {
+            habitNameView.setText(habit.getHabitName());
+            habitNameView.setTextColor(Color.parseColor(attributeColour));
+        }
 
-            if (habitNameView != null) {
-                habitNameView.setText(habit.getHabitName());
-                habitNameView.setTextColor(Color.parseColor(attributeColour));
+        // Get habit schedule
+        Boolean[] schedule = habit.getHabitSchedule();
+        View monView = v.findViewById(R.id.mon_box);
+        View tueView = v.findViewById(R.id.tue_box);
+        View wedView = v.findViewById(R.id.wed_box);
+        View thuView = v.findViewById(R.id.thu_box);
+        View friView = v.findViewById(R.id.fri_box);
+        View satView = v.findViewById(R.id.sat_box);
+        View sunView = v.findViewById(R.id.sun_box);
+        View[] textViews = {monView, tueView, wedView, thuView, friView, satView, sunView};
+
+        // Display days of the month for the habit's schedule
+        for (int i = 1; i < schedule.length; i++) {
+            if (schedule[i]) {
+                textViews[i-1].setVisibility(View.VISIBLE);
+            } else {
+                textViews[i-1].setVisibility(View.GONE);
             }
         }
 
