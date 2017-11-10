@@ -27,6 +27,7 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpController;
@@ -126,10 +127,9 @@ public class AddHabitEventActivity extends AppCompatActivity {
 
 
                 String habitType = ((Spinner) findViewById(R.id.event_habit_spinner)).getSelectedItem().toString();
-                // String habitComment = ((TextView) findViewById(R.id.event_comment)).getText().toString();
+                String habitComment = ((TextView) findViewById(R.id.event_comment)).getText().toString();
 
                 String completeDateString = ((TextView) findViewById(R.id.event_date_text)).getText().toString();
-                // TODO: Parse completeDate into a LocalDate
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy");
                 LocalDate completeDate = LocalDate.parse(completeDateString, formatter);
 
@@ -139,13 +139,47 @@ public class AddHabitEventActivity extends AppCompatActivity {
                 Bitmap photo = ((BitmapDrawable) ((ImageView) findViewById(R.id.taken_image)).getDrawable()).getBitmap();
 
                 int uid = HabitUpController.getCurrentUID();
-                int hid = 0;
+                int hid = 0; // TODO DEBUG REMOVE
 //                int hid = ElasticSearchController (look up habit to get hid);
 
                 HabitEvent newEvent = new HabitEvent(uid, hid);
-//                newEvent.setComment(habitComment);
-                newEvent.setCompletedate(completeDate);
-//                newEvent.setImage
+                Boolean eventOK = Boolean.TRUE;
+
+                newEvent.setHabit(hid);  // TODO: get actual HID from habitType
+
+                try {
+                    newEvent.setComment(habitComment);
+                } catch (IllegalArgumentException e) {
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    eventOK = Boolean.FALSE;
+                }
+
+                try {
+                    newEvent.setCompletedate(completeDate);
+                } catch (IllegalArgumentException e) {
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    eventOK = Boolean.FALSE;
+                }
+
+                try {
+                    newEvent.setImage(photo);
+                } catch (IllegalArgumentException e) {
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    eventOK = Boolean.FALSE;
+                }
+
+                newEvent.setScheduled();
+
+                if (eventOK) {
+                    // Pass to the controller
+                    HabitUpController hupCtl = new HabitUpController();
+                    if (hupCtl.addHabitEvent(newEvent) == 0) {
+                        Intent result = new Intent();
+                        setResult(Activity.RESULT_OK, result);
+                        finish();
+
+                    }
+                }
 
             }
 
