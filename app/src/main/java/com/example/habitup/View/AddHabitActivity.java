@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -24,6 +25,8 @@ import com.example.habitup.Model.Habit;
 import com.example.habitup.R;
 
 import java.text.DateFormatSymbols;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -88,9 +91,11 @@ public class AddHabitActivity extends AppCompatActivity {
                 String habitReason = ((EditText) findViewById(R.id.habit_reason)).getText().toString();
 
                 // Get Habit start date
-//            TextView dateView = (TextView) findViewById(R.id.date_text);
-//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM d, yyyy");
-//            LocalDate startDate = LocalDate.parse(dateView.getText().toString(), formatter);
+                String dateString = ((TextView) findViewById(R.id.date_text)).getText().toString();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy");
+                LocalDate startDate = LocalDate.parse(dateString, formatter);
+
+                Log.i("DATE:", startDate.toString()); // TODO REMOVE
 
                 // Get Habit's associated Attribute
                 String attribute = ((Spinner) findViewById(R.id.habit_attr_spinner)).getSelectedItem().toString();
@@ -105,6 +110,7 @@ public class AddHabitActivity extends AppCompatActivity {
                 CheckBox checkBoxSat = (CheckBox) findViewById(R.id.saturday);
                 CheckBox checkBoxSun = (CheckBox) findViewById(R.id.sunday);
 
+                schedule[0] = Boolean.FALSE;
                 schedule[1] = checkBoxMon.isChecked();
                 schedule[2] = checkBoxTue.isChecked();
                 schedule[3] = checkBoxWed.isChecked();
@@ -117,8 +123,7 @@ public class AddHabitActivity extends AppCompatActivity {
                 Habit newHabit = new Habit();
                 newHabit.setHabitName(habitName);
                 newHabit.setReason(habitReason);
-                // set start date
-//            newHabit.setStartDate(startDate);
+                newHabit.setStartDate(startDate);
                 newHabit.setAttribute(attribute);
                 newHabit.setSchedule(schedule);
 
