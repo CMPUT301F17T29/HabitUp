@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -24,8 +24,6 @@ import com.example.habitup.Model.Habit;
 import com.example.habitup.R;
 
 import java.text.DateFormatSymbols;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -83,55 +81,55 @@ public class AddHabitActivity extends AppCompatActivity {
              * @param v View
              */
             public void onClick(View v) {
-            setResult(RESULT_OK);
+                setResult(RESULT_OK);
 
-            // Get Habit name and Reason
-            String habitName = ((EditText) findViewById(R.id.habit_name)).getText().toString();
-            String habitReason = ((EditText) findViewById(R.id.habit_reason)).getText().toString();
+                // Get Habit name and Reason
+                String habitName = ((EditText) findViewById(R.id.habit_name)).getText().toString();
+                String habitReason = ((EditText) findViewById(R.id.habit_reason)).getText().toString();
 
-            // Get Habit start date
+                // Get Habit start date
 //            TextView dateView = (TextView) findViewById(R.id.date_text);
 //            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM d, yyyy");
 //            LocalDate startDate = LocalDate.parse(dateView.getText().toString(), formatter);
 
-            // Get Habit's associated Attribute
-            String attribute = ((Spinner) findViewById(R.id.habit_attr_spinner)).getSelectedItem().toString();
+                // Get Habit's associated Attribute
+                String attribute = ((Spinner) findViewById(R.id.habit_attr_spinner)).getSelectedItem().toString();
 
-            // Get Schedule array
-            Boolean schedule[] = new Boolean[8];
-            CheckBox checkBoxMon = (CheckBox) findViewById(R.id.monday);
-            CheckBox checkBoxTue = (CheckBox) findViewById(R.id.tuesday);
-            CheckBox checkBoxWed = (CheckBox) findViewById(R.id.wednesday);
-            CheckBox checkBoxThu = (CheckBox) findViewById(R.id.thursday);
-            CheckBox checkBoxFri = (CheckBox) findViewById(R.id.friday);
-            CheckBox checkBoxSat = (CheckBox) findViewById(R.id.saturday);
-            CheckBox checkBoxSun = (CheckBox) findViewById(R.id.sunday);
+                // Get Schedule array
+                Boolean schedule[] = new Boolean[8];
+                CheckBox checkBoxMon = (CheckBox) findViewById(R.id.monday);
+                CheckBox checkBoxTue = (CheckBox) findViewById(R.id.tuesday);
+                CheckBox checkBoxWed = (CheckBox) findViewById(R.id.wednesday);
+                CheckBox checkBoxThu = (CheckBox) findViewById(R.id.thursday);
+                CheckBox checkBoxFri = (CheckBox) findViewById(R.id.friday);
+                CheckBox checkBoxSat = (CheckBox) findViewById(R.id.saturday);
+                CheckBox checkBoxSun = (CheckBox) findViewById(R.id.sunday);
 
-            schedule[1] = checkBoxMon.isChecked();
-            schedule[2] = checkBoxTue.isChecked();
-            schedule[3] = checkBoxWed.isChecked();
-            schedule[4] = checkBoxThu.isChecked();
-            schedule[5] = checkBoxFri.isChecked();
-            schedule[6] = checkBoxSat.isChecked();
-            schedule[7] = checkBoxSun.isChecked();
+                schedule[1] = checkBoxMon.isChecked();
+                schedule[2] = checkBoxTue.isChecked();
+                schedule[3] = checkBoxWed.isChecked();
+                schedule[4] = checkBoxThu.isChecked();
+                schedule[5] = checkBoxFri.isChecked();
+                schedule[6] = checkBoxSat.isChecked();
+                schedule[7] = checkBoxSun.isChecked();
 
-            // Create the Habit
-            Habit newHabit = new Habit();
-            newHabit.setHabitName(habitName);
-            newHabit.setReason(habitReason);
-            // set start date
+                // Create the Habit
+                Habit newHabit = new Habit();
+                newHabit.setHabitName(habitName);
+                newHabit.setReason(habitReason);
+                // set start date
 //            newHabit.setStartDate(startDate);
-            newHabit.setAttribute(attribute);
-            newHabit.setSchedule(schedule);
+                newHabit.setAttribute(attribute);
+                newHabit.setSchedule(schedule);
 
-            // Pass to the controller
-            HabitUpController hupCtl = new HabitUpController();
-            if (hupCtl.addHabit(newHabit) == 0) {
-                Intent result = new Intent();
-                setResult(Activity.RESULT_OK, result);
-                finish();
+                // Pass to the controller
+                HabitUpController hupCtl = new HabitUpController();
+                if (hupCtl.addHabit(newHabit) == 0) {
+                    Intent result = new Intent();
+                    setResult(Activity.RESULT_OK, result);
+                    finish();
 
-            }
+                }
 
             }
         });

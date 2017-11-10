@@ -15,7 +15,7 @@ import static junit.framework.Assert.assertTrue;
 
 /**
  * Created by gojeffcho on 2017-10-21.
- */
+*/
 
 @RunWith(AndroidJUnit4.class)
 public class HabitListTest {
