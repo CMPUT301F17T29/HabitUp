@@ -44,6 +44,7 @@
         <activity android:name=".View.ViewHabitEventActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".View.AddHabitActivity" />
+        <activity android:name=".View.AddHabitEventActivity" />
     </application>
 
 </manifest>

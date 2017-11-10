@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="30dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:layout_marginBottom="20dp"
+    tools:context="com.example.habitup.View.AddHabitEventActivity">
+
+    <TextView
+        android:id="@+id/event_habit_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Habit type *"
+        android:textColor="@color/teal"
+        android:textStyle="bold"
+        android:textSize="16sp"/>
+
+    <LinearLayout
+        android:id="@+id/event_habit_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        app:layout_constraintTop_toBottomOf="@+id/event_habit_label"
+        android:background="@color/whitegray">
+
+        <Spinner
+            style="@style/Widget.AppCompat.DropDownItem.Spinner"
+            android:id="@+id/event_habit_spinner"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/date_location_labels"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/event_habit_type"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="5dp">
+
+        <TextView
+            android:id="@+id/completion_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.50"
+            android:text="Completion date *"
+            android:textSize="16sp"
+            android:textColor="@color/teal"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/location_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.50"
+            android:text="Location"
+            android:textSize="16sp"
+            android:textColor="@color/teal"
+            android:textStyle="bold"
+            android:layout_marginLeft="10dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/event_date_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1"
+        app:layout_constraintTop_toBottomOf="@+id/date_location_labels">
+
+        <TextView
+            android:id="@+id/event_date_text"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_weight="0.40"
+            android:text="Current date"
+            android:textSize="16sp"
+            android:gravity="start|center_vertical"
+            android:paddingLeft="10dp"
+            android:background="@color/whitegray"
+            tools:layout_editor_absoluteY="246dp" />
+
+        <ImageView
+            android:id="@+id/event_date_button"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_weight="0.10"
+            android:src="@drawable/ic_calendar"
+            android:background="@color/lightgray"
+            android:layout_gravity="center"
+            android:contentDescription="Date picker calendar"
+            android:tint="@color/white"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_weight="0.2"
+            android:background="@color/whitegray"
+            android:gravity="start|center_vertical"
+            android:paddingLeft="3dp"
+            android:layout_marginLeft="10dp"
+            android:textSize="16sp"
+            android:drawableLeft="@drawable/ic_map"
+            android:drawableTint="@color/green"/>
+
+        <Switch
+            android:id="@+id/location_switch"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_weight="0.3"
+            android:background="@color/whitegray"
+            android:paddingRight="5dp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/photo_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/event_date_layout"
+        android:text="Photo"
+        android:textColor="@color/teal"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_marginTop="20dp"/>
+
+    <RelativeLayout
+        android:id="@+id/photo_display"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/photo_label"
+        android:gravity="center"
+        android:background="@color/whitegray"
+        android:paddingTop="5dp"
+        android:paddingBottom="10dp">
+
+        <Button
+            android:id="@+id/photo_icon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_add_photo"
+            android:background="@color/whitegray"
+            android:paddingTop="5dp"
+            android:text="Take Photo"
+            android:textColor="@color/lightgray"
+            android:textSize="13sp"
+            style="?android:attr/borderlessButtonStyle"
+            android:drawableTop="@drawable/ic_add_photo"
+            android:drawableTint="@color/lightgray" />
+
+        <ImageView
+            android:id="@+id/taken_image"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_below="@+id/photo_icon"
+            android:scaleType="fitCenter"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="5dp"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/save_event"
+        android:layout_width="0dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/primary_button"
+        android:text="@string/save"
+        android:textColor="@color/white"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/photo_display" />
+
+</android.support.constraint.ConstraintLayout>

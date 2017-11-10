@@ -1,5 +1,6 @@
 package com.example.habitup.View;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -19,6 +20,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class ViewHabitEventActivity extends BaseActivity {
+
+    static final int NEW_EVENT = 1;
 
     private ArrayList<HabitEvent> events;
     private ListView eventListView;
@@ -96,6 +99,8 @@ public class ViewHabitEventActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add_action_bar:
+                Intent addEventIntent = new Intent(ViewHabitEventActivity.this, AddHabitEventActivity.class);
+                startActivityForResult(addEventIntent, NEW_EVENT);
                 return true;
         }
 
