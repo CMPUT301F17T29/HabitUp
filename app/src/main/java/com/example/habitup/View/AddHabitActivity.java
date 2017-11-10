@@ -170,7 +170,8 @@ public class AddHabitActivity extends AppCompatActivity {
                         Intent result = new Intent();
                         setResult(Activity.RESULT_OK, result);
                         finish();
-
+                    } else {
+                        Toast.makeText(getBaseContext(), "There was an error adding the new Habit.", Toast.LENGTH_LONG).show();
                     }
                 }
 
