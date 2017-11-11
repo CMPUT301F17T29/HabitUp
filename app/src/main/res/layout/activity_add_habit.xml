@@ -139,7 +139,6 @@
 
             <Spinner
                 android:id="@+id/habit_attr_spinner"
-                style="@style/Widget.AppCompat.DropDownItem.Spinner"
                 android:layout_width="match_parent"
                 android:layout_height="35dp" />
 

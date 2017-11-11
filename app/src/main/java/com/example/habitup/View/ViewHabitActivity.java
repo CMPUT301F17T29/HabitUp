@@ -25,7 +25,8 @@ public class ViewHabitActivity extends BaseActivity {
 
     final private Context context = ViewHabitActivity.this;
     static final int NEW_HABIT = 1;
-    static final int EDIT_HABIT = 2;
+    static final int VIEW_HABIT = 2;
+    static final int EDIT_HABIT = 3;
 
     // Position of habit in list view
     private int position = -1;
@@ -82,12 +83,10 @@ public class ViewHabitActivity extends BaseActivity {
             } else {
                 switch (item.getItemId()) {
                     case R.id.habit_menu_view:
+                        goToEditActivity(VIEW_HABIT);
                         return true;
                     case R.id.habit_menu_edit:
-                        setResult(RESULT_OK);
-                        Intent editIntent = new Intent(context, EditHabitActivity.class);
-                        editIntent.putExtra("position", position);
-                        startActivityForResult(editIntent, EDIT_HABIT);
+                        goToEditActivity(EDIT_HABIT);
                         return true;
                     case R.id.habit_menu_delete:
                         return true;
@@ -98,6 +97,14 @@ public class ViewHabitActivity extends BaseActivity {
         }
 
     };
+
+    private void goToEditActivity(int requestCode) {
+        setResult(RESULT_OK);
+        Intent editIntent = new Intent(context, EditHabitActivity.class);
+        editIntent.putExtra("position", position);
+        editIntent.putExtra("action", requestCode);
+        startActivityForResult(editIntent, requestCode);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -145,8 +152,6 @@ public class ViewHabitActivity extends BaseActivity {
 
     private void highlightItem(View view) {
         view.setBackgroundColor(ContextCompat.getColor(context, R.color.whitegray));
-        //TextView habitName = (TextView) view.findViewById(R.id.habit_name);
-        //habitName.setTextColor(ContextCompat.getColor(context, R.color.white));
     }
 
     private void unhighlightItem(View view) {
