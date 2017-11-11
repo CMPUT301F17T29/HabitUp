@@ -33,6 +33,8 @@ import com.example.habitup.R;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class ViewHabitEventActivity extends BaseActivity {
 
@@ -77,6 +79,16 @@ public class ViewHabitEventActivity extends BaseActivity {
 
         // Date format for displaying event date
         DateTimeFormatter dateFmt = DateTimeFormatter.ofPattern("MMM d, yyyy");
+
+        //sort by completedate
+        Collections.sort(events, new Comparator<HabitEvent>() {
+            @Override
+            public int compare(HabitEvent e1, HabitEvent e2) {
+                return e1.getCompletedate().compareTo(e2.getCompletedate());
+            }
+        });
+        Collections.reverse(events);
+
 
         // Set up list view adapter for habit events
         eventAdapter = new EventListAdapter(this, R.layout.event_list_item, events);
