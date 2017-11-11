@@ -1,6 +1,8 @@
 package com.example.habitup.View;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -160,6 +162,24 @@ public class ViewHabitActivity extends BaseActivity {
                         goToEditActivity(EDIT_HABIT, hid);
                         return true;
                     case R.id.habit_menu_delete:
+                        AlertDialog.Builder alert = new AlertDialog.Builder(ViewHabitActivity.this);
+                        alert.setTitle("Delete");
+                        alert.setMessage("Are you sure you want to delete this habit?");
+                        alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                adapter.remove(adapter.getItem(position));
+                                adapter.notifyDataSetChanged();
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        alert.show();
                         return true;
                 }
             }
