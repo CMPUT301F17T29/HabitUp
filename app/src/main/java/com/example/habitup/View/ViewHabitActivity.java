@@ -162,6 +162,7 @@ public class ViewHabitActivity extends BaseActivity {
                         goToEditActivity(EDIT_HABIT, hid);
                         return true;
                     case R.id.habit_menu_delete:
+                        //TODO: ES delete
                         AlertDialog.Builder alert = new AlertDialog.Builder(ViewHabitActivity.this);
                         alert.setTitle("Delete");
                         alert.setMessage("Are you sure you want to delete this habit?");

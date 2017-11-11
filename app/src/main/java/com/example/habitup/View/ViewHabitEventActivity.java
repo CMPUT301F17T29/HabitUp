@@ -8,12 +8,15 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -46,6 +49,7 @@ public class ViewHabitEventActivity extends BaseActivity {
     private ArrayList<HabitEvent> events;
     private ListView eventListView;
     private ArrayAdapter eventAdapter;
+    private EditText commentFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +68,8 @@ public class ViewHabitEventActivity extends BaseActivity {
         } catch (Exception e) {
             Log.i("HabitUpDEBUG", "ViewHabitEvent - Couldn't get HabitEvents");
         }
+
+        commentFilter = (EditText) findViewById(R.id.filter_comment);
 
         eventListView = (ListView) findViewById(R.id.event_list);
 
@@ -109,6 +115,24 @@ public class ViewHabitEventActivity extends BaseActivity {
                         unhighlightItem(eventListView.getChildAt(i));
                     }
                 }
+            }
+        });
+
+        // comment filter through list
+        commentFilter.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                ViewHabitEventActivity.this.eventAdapter.getFilter().filter(charSequence);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
     }
@@ -171,12 +195,16 @@ public class ViewHabitEventActivity extends BaseActivity {
                         goToEditActivity(EDIT_EVENT);
                         return true;
                     case R.id.habit_menu_delete:
+                        //TODO: ES delete
                         AlertDialog.Builder alert = new AlertDialog.Builder(ViewHabitEventActivity.this);
                         alert.setTitle("Delete");
                         alert.setMessage("Are you sure you want to delete this habit event?");
                         alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
+                                int uid = HabitUpApplication.getCurrentUID();
+                                int hid = ((HabitEvent) eventAdapter.getItem(position)).getHID();
+                                String eid = ((HabitEvent) eventAdapter.getItem(position)).getEID();
                                 eventAdapter.remove(eventAdapter.getItem(position));
                                 eventAdapter.notifyDataSetChanged();
                                 dialogInterface.dismiss();
