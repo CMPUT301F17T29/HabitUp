@@ -31,10 +31,14 @@ import java.util.ArrayList;
 
 public class ViewHabitEventActivity extends BaseActivity {
 
-    final private Context context = ViewHabitEventActivity.this;
-    static final int NEW_EVENT = 1;
-    static final int VIEW_EVENT = 2;
-    static final int EDIT_EVENT = 3;
+    private final Context context = ViewHabitEventActivity.this;
+    public static final int NEW_EVENT = 1;
+    public static final int VIEW_EVENT = 2;
+    public static final int EDIT_EVENT = 3;
+    public static final String HABIT_EVENT_UID = "HABIT_EVENT_UID";
+    public static final String HABIT_EVENT_HID = "HABIT_EVENT_HID";
+    public static final String HABIT_EVENT_EID = "HABIT_EVENT_EID";
+    public static final String HABIT_EVENT_ACTION = "HABIT_EVENT_ACTION";
 
     // Position of event in list view
     private int position = -1;
@@ -196,8 +200,14 @@ public class ViewHabitEventActivity extends BaseActivity {
     private void goToEditActivity(int requestCode) {
         setResult(RESULT_OK);
         Intent editIntent = new Intent(context, EditHabitEventActivity.class);
-        editIntent.putExtra("position", position);
-        editIntent.putExtra("action", requestCode);
+        int uid = HabitUpApplication.getCurrentUID();
+        int hid = ((HabitEvent) eventAdapter.getItem(position)).getHID();
+        String eid = ((HabitEvent) eventAdapter.getItem(position)).getEID();
+        
+        editIntent.putExtra(HABIT_EVENT_UID, uid);
+        editIntent.putExtra(HABIT_EVENT_HID, hid);
+        editIntent.putExtra(HABIT_EVENT_EID, eid);
+        editIntent.putExtra(HABIT_EVENT_ACTION, requestCode);
         startActivityForResult(editIntent, requestCode);
     }
 
