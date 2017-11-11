@@ -27,6 +27,7 @@ import android.widget.TextView;
 import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Model.Habit;
+import com.example.habitup.Model.HabitEvent;
 import com.example.habitup.R;
 
 import java.text.DateFormatSymbols;
@@ -37,8 +38,11 @@ import java.util.Locale;
 
 public class EditHabitEventActivity extends AppCompatActivity {
 
-    private int position;
     private int action;
+    private int uid;
+    private int hid;
+    private String eid;
+    private HabitEvent event;
 
     // Event completion date
     private int year_x, month_x, day_x;
@@ -77,8 +81,11 @@ public class EditHabitEventActivity extends AppCompatActivity {
 
         // Get the habit from intent
         Intent intent = getIntent();
-        position = intent.getExtras().getInt("position");
-        action = intent.getExtras().getInt("action");
+        action = intent.getExtras().getInt(ViewHabitEventActivity.HABIT_EVENT_ACTION);
+        uid = intent.getExtras().getInt(ViewHabitEventActivity.HABIT_EVENT_UID);
+        hid = intent.getExtras().getInt(ViewHabitEventActivity.HABIT_EVENT_HID);
+
+        ElasticSearchController.GetHabitEvent
 
         // Get current date (for now)
         // TODO: Get the event's date
