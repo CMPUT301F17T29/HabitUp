@@ -140,7 +140,7 @@ public class SignUpActivity extends AppCompatActivity {
      */
 
     private boolean checkUserExist(String uname) {
-        ElasticSearchController.GetUsersTask getUser = new ElasticSearchController.GetUsersTask();
+        ElasticSearchController.GetUser getUser = new ElasticSearchController.GetUser();
         getUser.execute(uname);
         ArrayList<UserAccount> users = new ArrayList<>();
         try {
