@@ -44,7 +44,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".View.AddHabitActivity" />
         <activity android:name=".View.AddHabitEventActivity" />
-        <activity android:name=".View.EditProfileActivity"></activity>
+        <activity android:name=".View.EditProfileActivity" />
+        <activity android:name=".View.EditHabitActivity"></activity>
     </application>
 
 </manifest>

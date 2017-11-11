@@ -1,15 +1,19 @@
 package com.example.habitup.View;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v7.app.ActionBar;
+import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
@@ -19,7 +23,13 @@ import java.util.ArrayList;
 
 public class ViewHabitActivity extends BaseActivity {
 
+    final private Context context = ViewHabitActivity.this;
     static final int NEW_HABIT = 1;
+    static final int VIEW_HABIT = 2;
+    static final int EDIT_HABIT = 3;
+
+    // Position of habit in list view
+    private int position = -1;
 
     private ArrayList<Habit> habits;
     private ListView habitListView;
@@ -43,6 +53,22 @@ public class ViewHabitActivity extends BaseActivity {
         habitListView.setAdapter(adapter);
 
         adapter.notifyDataSetChanged();
+
+        // Handle list view click events
+        habitListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
+                position = pos;
+
+                for (int i = 0; i < habitListView.getChildCount(); i++) {
+                    if (i == pos) {
+                        highlightItem(view);
+                    } else {
+                        unhighlightItem(habitListView.getChildAt(i));
+                    }
+                }
+            }
+        });
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -50,18 +76,45 @@ public class ViewHabitActivity extends BaseActivity {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.habit_menu_view:
-                    return true;
-                case R.id.habit_menu_edit:
-                    return true;
-                case R.id.habit_menu_delete:
-                    return true;
+
+            // Check if list view item is selected
+            if (position < 0) {
+                Toast.makeText(context, "Select a habit first.", Toast.LENGTH_SHORT).show();
+            } else {
+                switch (item.getItemId()) {
+                    case R.id.habit_menu_view:
+                        goToEditActivity(VIEW_HABIT);
+                        return true;
+                    case R.id.habit_menu_edit:
+                        goToEditActivity(EDIT_HABIT);
+                        return true;
+                    case R.id.habit_menu_delete:
+                        return true;
+                }
             }
+
             return false;
         }
 
     };
+
+    private void goToEditActivity(int requestCode) {
+        setResult(RESULT_OK);
+        Intent editIntent = new Intent(context, EditHabitActivity.class);
+        editIntent.putExtra("position", position);
+        editIntent.putExtra("action", requestCode);
+        startActivityForResult(editIntent, requestCode);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Get position and unhighlight selected list item
+        if (requestCode == EDIT_HABIT) {
+            position = data.getExtras().getInt("position");
+        }
+    }
 
     @Override
     protected void onStart() {
@@ -89,12 +142,20 @@ public class ViewHabitActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add_action_bar:
-                Intent addHabitIntent = new Intent(ViewHabitActivity.this, AddHabitActivity.class);
+                Intent addHabitIntent = new Intent(context, AddHabitActivity.class);
                 startActivityForResult(addHabitIntent, NEW_HABIT);
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void highlightItem(View view) {
+        view.setBackgroundColor(ContextCompat.getColor(context, R.color.whitegray));
+    }
+
+    private void unhighlightItem(View view) {
+        view.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
     }
 
 

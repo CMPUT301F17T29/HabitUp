@@ -7,7 +7,7 @@
     android:paddingLeft="20dp"
     android:paddingRight="20dp"
     android:background="@color/white"
-    tools:context="com.example.habitup.View.AddHabitActivity">
+    tools:context="com.example.habitup.View.EditHabitActivity">
 
     <TextView
         android:id="@+id/habit_label"
@@ -139,6 +139,7 @@
 
             <Spinner
                 android:id="@+id/habit_attr_spinner"
+                style="@style/Widget.AppCompat.DropDownItem.Spinner"
                 android:layout_width="match_parent"
                 android:layout_height="35dp" />
 
@@ -315,7 +316,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/save_habit"
+        android:id="@+id/save_edit_habit"
         android:layout_width="0dp"
         android:layout_height="38dp"
         android:layout_marginTop="30dp"
@@ -328,3 +329,4 @@
 
 
 </android.support.constraint.ConstraintLayout>
+
