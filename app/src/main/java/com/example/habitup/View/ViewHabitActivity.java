@@ -2,6 +2,7 @@ package com.example.habitup.View;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
+import com.example.habitup.Model.Attributes;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.R;
 
@@ -75,7 +77,7 @@ public class ViewHabitActivity extends BaseActivity {
                     if (i == pos) {
                         highlightItem(view);
                     } else {
-                        unhighlightItem(habitListView.getChildAt(i));
+                        unhighlightItem(habitListView.getChildAt(i), habits.get(i));
                     }
                 }
             }
@@ -131,10 +133,7 @@ public class ViewHabitActivity extends BaseActivity {
             subHeading.setText("You currently have no habits.");
         }
 
-        // Get position and unhighlight selected list item
-        if (requestCode == EDIT_HABIT) {
-//            position = data.getExtras().getInt("position");
-        }
+        clearHighlightedRows();
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -197,12 +196,27 @@ public class ViewHabitActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void highlightItem(View view) {
-        view.setBackgroundColor(ContextCompat.getColor(context, R.color.whitegray));
+    private void clearHighlightedRows() {
+        for (int i = 0; i < habitListView.getChildCount(); i++) {
+            View view = habitListView.getChildAt(i);
+            unhighlightItem(view, habits.get(i));
+        }
     }
 
-    private void unhighlightItem(View view) {
+    private void highlightItem(View view) {
+        view.setBackgroundColor(ContextCompat.getColor(context, R.color.teal));
+        TextView text = view.findViewById(R.id.habit_name);
+        text.setTextColor(getResources().getColor(R.color.white));
+    }
+
+    private void unhighlightItem(View view, Habit habit) {
         view.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
+        String attribute = habit.getHabitAttribute();
+        String color = Attributes.getColour(attribute);
+
+        TextView text = view.findViewById(R.id.habit_name);
+        text.setTextColor(Color.parseColor(color));
+
     }
 
 
