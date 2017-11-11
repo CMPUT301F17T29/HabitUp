@@ -343,49 +343,6 @@ public class ElasticSearchController {
         }
     }
 
-    // TODO possibly remove
-    public static class GetHabitsByUIDHIDTask extends AsyncTask<String, Void, Integer>{
-
-        @Override
-        protected Integer doInBackground(String... ids) {
-            verifySettings();
-            String UserQuery;
-
-            if (ids[0].equals("") || ids[1].equals("")){
-                UserQuery = ids[0];
-            }
-
-            else{
-                UserQuery = "{\"query\": " +
-                                "{\"match\" : " +
-                                    "{ \"uid\" : \"" + ids[0] + "\" }" +
-                                    "{ \"hid\" : \"" + ids[1] + "\" }" +
-                                "}" +
-                            "}";
-            }
-
-
-            Search search = new Search.Builder(UserQuery).addIndex(db).addType(habitType).build();
-
-            try {
-
-                SearchResult result = client.execute(search);
-                if (result.isSucceeded()) {
-                    List<Habit> foundHabit = result.getSourceAsObjectList(Habit.class);
-//                    habits.addAll(foundHabit);
-
-                } else {
-                    Log.i("Error2", "Something went wrong when we tried to communicate with the elasticsearch server");
-                }
-            }
-            catch (Exception e) {
-                Log.i("Error1", "Something went wrong when we tried to communicate with the elasticsearch server!");
-            }
-
-            return 1;
-        }
-    }
-
     public static class AddHabitEventsTask extends AsyncTask<HabitEvent, Void, Void> {
 
         @Override
@@ -400,8 +357,22 @@ public class ElasticSearchController {
                     // where is the client?
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
+                        Log.i("HabitUpDEBUG", "AddHabitEventTask getId: " + result.getId());
 
-                        habitEvent.setEID(result.getId());
+                        if (habitEvent.getEID() == null) {
+                            habitEvent.setEID(result.getId());
+                            Index reindex = new Index.Builder(habitEvent).index(db).type(habitEventType).id(result.getId()).build();
+                            try {
+                                DocumentResult newResult = client.execute(reindex);
+                                if (newResult.isSucceeded()) {
+                                    Log.i("HabitUpDEBUG", "Update EID OK");
+                                } else {
+                                    Log.i("HabitUpDEBUG", "Update EID failed.");
+                                }
+                            } catch (Exception e) {
+                                Log.i("HabitUpDEBUG", "Exception-ception!!");
+                            }
+                        }
                     }
                     else{
                         Log.i("Error", "Elasticsearch was not able to add the Habit Event");
@@ -414,6 +385,39 @@ public class ElasticSearchController {
             return null;
         }
 
+    }
+
+    //Get HabitEvent by EID
+    public static class GetHabitEventsByEIDTask extends AsyncTask<String, Void, ArrayList<HabitEvent>>{
+
+        @Override
+        protected ArrayList<HabitEvent> doInBackground(String... eids) {
+            verifySettings();
+
+            ArrayList<HabitEvent> habitEvents = new ArrayList<HabitEvent>();
+
+            String query = "{\"query\": {\"match\" : { \"eid\" : \"" + eids[0] + "\" }}}";
+
+            Search search = new Search.Builder(query).addIndex(db).addType(habitEventType).build();
+
+            try {
+
+                // TODO get the results of the query
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()) {
+                    List<HabitEvent> foundHabitEvent = result.getSourceAsObjectList(HabitEvent.class);
+                    habitEvents.addAll(foundHabitEvent);
+
+                } else {
+                    Log.i("Error2", "Something went wrong when we tried to communicate with the elasticsearch server");
+                }
+            }
+            catch (Exception e) {
+                Log.i("Error1", "Something went wrong when we tried to communicate with the elasticsearch server!");
+            }
+
+            return habitEvents;
+        }
     }
 
     //Get HabitEvent by UID

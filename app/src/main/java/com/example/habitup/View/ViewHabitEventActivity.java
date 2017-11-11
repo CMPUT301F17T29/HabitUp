@@ -183,7 +183,9 @@ public class ViewHabitEventActivity extends BaseActivity {
         int uid = HabitUpApplication.getCurrentUID();
         int hid = ((HabitEvent) eventAdapter.getItem(position)).getHID();
         String eid = ((HabitEvent) eventAdapter.getItem(position)).getEID();
-        
+
+        Log.i("HabitUpDEBUG", "ViewHabitEvent eid " + eid);
+
         editIntent.putExtra(HABIT_EVENT_UID, uid);
         editIntent.putExtra(HABIT_EVENT_HID, hid);
         editIntent.putExtra(HABIT_EVENT_EID, eid);

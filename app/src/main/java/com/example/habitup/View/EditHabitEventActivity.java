@@ -86,14 +86,19 @@ public class EditHabitEventActivity extends AppCompatActivity {
         hid = intent.getExtras().getInt(ViewHabitEventActivity.HABIT_EVENT_HID);
         eid = intent.getExtras().getString(ViewHabitEventActivity.HABIT_EVENT_EID);
 
-//        ElasticSearchController.GetHabitEvent
+        ElasticSearchController.GetHabitEventsByEIDTask getHabitEvent = new ElasticSearchController.GetHabitEventsByEIDTask();
+        getHabitEvent.execute(eid);
 
-        // Get current date (for now)
-        // TODO: Get the event's date
-        final Calendar cal = Calendar.getInstance(Locale.CANADA);
-        year_x = cal.get(Calendar.YEAR);
-        month_x = cal.get(Calendar.MONTH);
-        day_x = cal.get(Calendar.DAY_OF_MONTH);
+        try {
+            event = getHabitEvent.get().get(0);
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "EditHabitEvent - couldn't get habit match for eid " + eid);
+        }
+
+        // Get the event's date
+        year_x = event.getCompletedate().getYear();
+        month_x = event.getCompletedate().getMonthValue() - 1;
+        day_x = event.getCompletedate().getDayOfMonth();
 
         // Get date click button
         dateClicker = (ImageView) findViewById(R.id.event_date_button);

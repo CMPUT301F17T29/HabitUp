@@ -155,11 +155,12 @@ public class UserAccount {
     public void setUniqueUID() {
         // ElasticSearch query: highest UID in use
         int newUID = -1;
+
         ElasticSearchController.GetMaxUidTask getMaxUID = new ElasticSearchController.GetMaxUidTask();
         getMaxUID.execute();
         try {
-            newUID = getMaxUID.get();
-            Log.i("HabitUpDEBUG", "UserAccount - UID was set to " + String.valueOf(newUID));
+            newUID = getMaxUID.get().intValue();
+            Log.i("HabitUpDEBUG", "UserAccount - UID was set to " + Integer.toString(newUID));
         } catch (Exception e) {
             Log.i("HabitUpDEBUG", "UserAccount - could not get Max UID");
         }

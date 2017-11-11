@@ -96,11 +96,7 @@ public class EditHabitActivity extends AppCompatActivity {
         editReason = (EditText) findViewById(R.id.habit_reason);
         editReason.setText(habit.getHabitReason());
 
-        // TODO: Get habit's date instead of current date
-        final Calendar cal = Calendar.getInstance(Locale.CANADA);
-//        year_x = cal.get(Calendar.YEAR);
-//        month_x = cal.get(Calendar.MONTH);
-//        day_x = cal.get(Calendar.DAY_OF_MONTH);
+        // Get habit's date
         year_x = habit.getStartDate().getYear();
         month_x = habit.getStartDate().getMonthValue() - 1;
         day_x = habit.getStartDate().getDayOfMonth();
