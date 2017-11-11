@@ -337,14 +337,14 @@ public class EditHabitActivity extends AppCompatActivity {
         attrSpinner.setEnabled(false);
 
         // Disable checkboxes in schedule
-        checkBoxMon.setEnabled(false);
-        checkBoxTue.setEnabled(false);
-        checkBoxWed.setEnabled(false);
-        checkBoxThu.setEnabled(false);
-        checkBoxFri.setEnabled(false);
-        checkBoxSat.setEnabled(false);
-        checkBoxSun.setEnabled(false);
-
+        checkBoxMon.setClickable(false);
+        checkBoxTue.setClickable(false);
+        checkBoxWed.setClickable(false);
+        checkBoxThu.setClickable(false);
+        checkBoxFri.setClickable(false);
+        checkBoxSat.setClickable(false);
+        checkBoxSun.setClickable(false);
+        
         // Hide save button
         saveButton.setVisibility(View.INVISIBLE);
     }
