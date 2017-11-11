@@ -116,7 +116,7 @@ public class AddHabitActivity extends AppCompatActivity {
                 String attribute = ((Spinner) findViewById(R.id.habit_attr_spinner)).getSelectedItem().toString();
 
                 // Get Schedule array
-                Boolean schedule[] = new Boolean[8];
+                boolean schedule[] = new boolean[8];
                 CheckBox checkBoxMon = (CheckBox) findViewById(R.id.monday);
                 CheckBox checkBoxTue = (CheckBox) findViewById(R.id.tuesday);
                 CheckBox checkBoxWed = (CheckBox) findViewById(R.id.wednesday);

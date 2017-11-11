@@ -53,7 +53,7 @@ public class ProfileHabitsAdapter extends ArrayAdapter<Habit> {
         }
 
         // Get habit schedule
-        Boolean[] schedule = habit.getHabitSchedule();
+        boolean[] schedule = habit.getHabitSchedule();
         View monView = v.findViewById(R.id.mon_box);
         View tueView = v.findViewById(R.id.tue_box);
         View wedView = v.findViewById(R.id.wed_box);
