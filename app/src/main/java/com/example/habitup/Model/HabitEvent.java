@@ -4,8 +4,6 @@ package com.example.habitup.Model;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import com.example.habitup.Controller.HabitUpController;
-
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 
@@ -20,6 +18,7 @@ public class HabitEvent implements Comparable<HabitEvent> {
 
     private int uid;
     private int hid;
+    private String eid;
     private String comment;
     private LocalDate completedate;
     private Bitmap image;
@@ -65,6 +64,8 @@ public class HabitEvent implements Comparable<HabitEvent> {
     public void setUID(int uid) { this.uid = uid; }
 
     public void setHabit(int hid) { this.hid = hid; }
+
+    public void setEid(String uuid) { this.eid = uuid; }
 
     public void setImage(Bitmap image) throws IllegalArgumentException {
 
@@ -143,6 +144,8 @@ public class HabitEvent implements Comparable<HabitEvent> {
     public int getUID() { return this.uid; }
 
     public int getHID() { return hid; }
+
+    public String getEid() { return this.eid; }
 
     public Boolean getScheduled() { return this.scheduled; }
 

@@ -14,6 +14,8 @@ import com.searchly.jestdroid.JestDroidClient;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.searchbox.core.Delete;
+import io.searchbox.core.DeleteByQuery;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
@@ -81,6 +83,47 @@ public class ElasticSearchController {
             else{
                 UserQuery = "{\"query\": {\"match\" : { \"username\" : \"" + search_parameters[0] + "\" }}}";
             }
+
+            //Log.i("Debug", "username to search for is: "+ search_parameters[0]);
+
+            Search search = new Search.Builder(UserQuery)
+                    .addIndex(db)
+                    .addType(userType)
+                    .build();
+
+            try {
+                // Send request to the server to get the user
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()){
+
+                    //Log.i("DeBug", "Succeeded in finding a user");
+
+                    List<UserAccount> foundUsers = result.getSourceAsObjectList(UserAccount.class);
+                    accounts.addAll(foundUsers);
+                }
+                else{
+                    Log.i("Error", "The search query failed to find any tweets that matched");
+                }
+            }
+            catch (Exception e) {
+                Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
+            }
+
+            return accounts;
+        }
+    }
+
+    /* Given a username, returns the user object corresponding to it */
+    public static class GetAllUsers extends AsyncTask<Void, Void, ArrayList<UserAccount>> {
+        @Override
+        protected ArrayList<UserAccount> doInBackground(Void... voids) {
+            verifySettings();
+
+            ArrayList<UserAccount> accounts = new ArrayList<>();
+            String UserQuery;
+
+            UserQuery = "{\"query\": {\"match_all\" : {}}}";
+
 
             //Log.i("Debug", "username to search for is: "+ search_parameters[0]);
 
@@ -356,8 +399,11 @@ public class ElasticSearchController {
                 try {
                     // where is the client?
                     DocumentResult result = client.execute(index);
-                    if (!result.isSucceeded()) {
+                    if (result.isSucceeded()) {
 
+                        habitEvent.setESid(result.getId());
+                    }
+                    else{
                         Log.i("Error", "Elasticsearch was not able to add the Habit Event");
                     }
                 } catch (Exception e) {
@@ -525,6 +571,88 @@ public class ElasticSearchController {
             return ++maxHid;
         }
 
+    }
+
+    //given a UID, deletes the corresponding user
+    public static class DeleteUserTask extends AsyncTask<String, Void, Void>{
+
+        @Override
+        protected Void doInBackground(String... uids) {
+            verifySettings();
+
+            for (String uid : uids) {
+
+                String query = "{\"query\": {\"match\" : { \"uid\" : \"" + uid + "\" }}}";
+
+                DeleteByQuery deleteUser = new DeleteByQuery.Builder(query).addIndex(db).addType(userType).build();
+
+                try {
+                    // where is the client?
+                    client.execute(deleteUser);
+                }
+
+                catch (Exception e) {
+                    Log.i("Error", "The application failed to build the query and delete the User");
+
+                }
+            }
+
+            return null;
+        }
+    }
+
+    //given an HID for a habit, delete the corresponding habit
+    public static class DeleteHabitTask extends AsyncTask<String, Void, Void>{
+
+        @Override
+        protected Void doInBackground(String... hids) {
+            verifySettings();
+
+            for (String hid : hids) {
+
+                String query = "{\"query\": {\"match\" : { \"hid\" : \"" + hid + "\" }}}";
+
+                DeleteByQuery deleteHabit = new DeleteByQuery.Builder(query).addIndex(db).addType(habitType).build();
+
+                try {
+                    // where is the client?
+                    client.execute(deleteHabit);
+                }
+
+                catch (Exception e) {
+                    Log.i("Error", "The application failed to build the query and delete the User");
+
+                }
+            }
+
+            return null;
+        }
+    }
+
+    //Given a ESid for a habit event, dletes the corresponding event from ES
+    public static class DeleteHabitEventTask extends AsyncTask<String, Void, Void>{
+
+        @Override
+        protected Void doInBackground(String... ESids) {
+            verifySettings();
+
+            for (String Esid : ESids) {
+
+                Delete deleteHabit = new Delete.Builder(Esid).index(db).type(habitEventType).build();
+
+                try {
+                    // where is the client?
+                    client.execute(deleteHabit);
+                }
+
+                catch (Exception e) {
+                    Log.i("Error", "The application failed to build the query and delete the User");
+
+                }
+            }
+
+            return null;
+        }
     }
 
 

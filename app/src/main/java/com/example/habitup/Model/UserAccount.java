@@ -6,8 +6,6 @@ import android.util.Log;
 
 import com.example.habitup.Controller.ElasticSearchController;
 
-import java.util.ArrayList;
-
 /**
  * @author gojeffcho
  *
