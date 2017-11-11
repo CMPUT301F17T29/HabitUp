@@ -37,39 +37,36 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
-        //set the logo
+        // set the logo
         ImageView imageView = (ImageView) findViewById(R.id.title_image);
         imageView.setImageResource(R.drawable.habitup);
 
-        //get button
+        // get button
         Button logInButton = (Button) findViewById(R.id.login_button);
         Button signUpButton = (Button) findViewById(R.id.link_signup);
 
-        //get login EditText username
-        loginText = (EditText) findViewById(R.id.login_edit);
-
-        //Transfer EditText to string
-        logInName = loginText.getText().toString();
+        // Transfer EditText to string
+        logInName = ((EditText) findViewById(R.id.login_edit)).getText().toString();
 
         logInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(checkUserExist(logInName) && checkInternet()){
+                if (checkUserExist(logInName) && checkInternet()) {
                     Toast.makeText(getApplicationContext(),
-                            logInName + " has logged in on this device.",
+                            logInName + " is now logged in.",
                             Toast.LENGTH_SHORT).show();
 
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
 
-                }else if(!checkInternet()) {
+                } else if (!checkInternet()) {
                     Toast.makeText(getApplicationContext(),
-                            "Please check your internet connection.",
+                            "Error: No connection to the internet.",
                         Toast.LENGTH_SHORT).show();
 
-                }else{
+                } else {
                     Toast.makeText(getApplicationContext(),
-                            "Please check your username.",
+                            "Error: username not found.",
                             Toast.LENGTH_SHORT).show();
                 }
 
@@ -104,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * check whether this username exist or not
      * @param uname the item in the menu
-     * @return true if this user exist,false else.
+     * @return True if this username exists, otherwise False.
      */
     private boolean checkUserExist(String uname) {
         ElasticSearchController.GetUser getUser = new ElasticSearchController.GetUser();
@@ -115,14 +112,8 @@ public class LoginActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.i("Error", "Failed to get the User from the async object");
         }
-        if (users.size() == 0) {
-            return false;
-        } else {
-            return true;
-        }
+
+        return (users.size() != 0);
     }
-
-
-
 }
 
