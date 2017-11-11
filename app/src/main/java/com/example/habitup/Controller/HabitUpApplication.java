@@ -21,8 +21,8 @@ public class HabitUpApplication {
         UserAccountList userList = new UserAccountList();
 
         // ElasticSearch for all users, add to userList
-        ElasticSearchController.GetAllUsersTask allUsers = new ElasticSearchController.GetAllUsersTask();
-        allUsers.execute();
+//        ElasticSearchController.GetAllUsersTask allUsers = new ElasticSearchController.GetAllUsersTask();
+//        allUsers.execute();
 
         // Add to userlist
 

@@ -40,7 +40,7 @@ public class ElasticSearchController {
             verifySettings();
 
             for (UserAccount user : users) {
-                Index index = new Index.Builder(user).index("team29_habitup").type("user").id(Integer.toString(user.getUID())).build();
+                Index index = new Index.Builder(user).index(db).type(userType).id(Integer.toString(user.getUID())).build();
 
                 try {
                     // where is the client?
