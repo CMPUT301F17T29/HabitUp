@@ -3,6 +3,7 @@ package com.example.habitup.View;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -52,7 +53,7 @@ public class MainActivity extends BaseActivity {
         habitListView.addHeaderView(profileView);
 
         // Set up the array and adapter
-        habitsArrayList = HabitUpApplication.getCurrentUser().getHabits().getTodaysHabitArrayList();
+        habitsArrayList = HabitUpController.getTodaysHabits();
         adapter = new ProfileHabitsAdapter(this, R.layout.todays_habits, habitsArrayList);
         habitListView.setAdapter(adapter);
 
@@ -104,8 +105,8 @@ public class MainActivity extends BaseActivity {
         TextView attr4Field = (TextView) findViewById(R.id.attribute4_value);
         attr4Field.setText(String.valueOf(currentUser.getAttributes().getValue("Discipline")));
 
-        // Retrieve habits from HabitList model
-        habitsArrayList = currentUser.getHabits().getTodaysHabitArrayList();
+        // Retrieve today's habits
+        habitsArrayList = HabitUpController.getTodaysHabits();
         adapter.notifyDataSetChanged();
 
         if (habitsArrayList.size() == 0) {
