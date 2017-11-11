@@ -220,7 +220,7 @@ public class ViewHabitEventActivity extends BaseActivity {
         try {
             eventHabit = getHabit.get().get(0);
         } catch (Exception e) {
-            Log.i("HabitUpDEBUG", "EventListAdaptor - couldn't get Habit");
+            Log.i("HabitUpDEBUG", "ViewHabitEventActivity - couldn't get Habit");
             eventHabit = new Habit(-1);
             eventHabit.setHabitName("ERROR");
         }
