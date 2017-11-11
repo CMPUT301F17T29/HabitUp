@@ -110,7 +110,6 @@ public class ElasticSearchController {
         }
     }
 
-
     public static class AddAttrsTask extends AsyncTask<Attributes, Void, Void> {
 
         @Override
@@ -119,7 +118,7 @@ public class ElasticSearchController {
             verifySettings();
 
             for (Attributes attr : attrs) {
-                Index index = new Index.Builder(attr).index(db).type(attrType).build();
+                Index index = new Index.Builder(attr).index(db).type(attrType).id(Integer.toString(attr.getUid())).build();
 
 
                 try {
@@ -127,7 +126,6 @@ public class ElasticSearchController {
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
 
-                        //set id of user
                     }
 
                     else{
@@ -139,6 +137,49 @@ public class ElasticSearchController {
             }
 
             return null;
+        }
+    }
+
+    public static class GetAttributesTask extends AsyncTask<String, Void, ArrayList<Attributes>> {
+        @Override
+        protected ArrayList<Attributes> doInBackground(String... search_parameters) {
+            verifySettings();
+
+            ArrayList<Attributes> attributes = new ArrayList<>();
+            String query;
+
+            if (search_parameters[0].equals("")){
+                query = search_parameters[0];
+            }
+
+            else{
+                query = "{\"query\": {\"match\" : { \"uid\" : \"" + search_parameters[0] + "\" }}}";
+            }
+
+            //Log.i("Debug", "username to search for is: "+ search_parameters[0]);
+
+            Search search = new Search.Builder(query)
+                    .addIndex(db)
+                    .addType(attrType)
+                    .build();
+
+            try {
+                // Send request to the server to get the user
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()){
+
+                    List<Attributes> foundAttr = result.getSourceAsObjectList(Attributes.class);
+                    attributes.addAll(foundAttr);
+                }
+                else{
+                    Log.i("Error", "The search query failed to find any tweets that matched");
+                }
+            }
+            catch (Exception e) {
+                Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
+            }
+
+            return attributes;
         }
     }
 
@@ -240,36 +281,6 @@ public class ElasticSearchController {
             return null;
         }
 
-    }
-
-    public static class GetAttrsTask extends AsyncTask<String, Void, ArrayList<Attributes>>{
-
-        @Override
-        protected ArrayList<Attributes> doInBackground(String... attrsToFind) {
-            verifySettings();
-
-            ArrayList<Attributes> attrs = new ArrayList<>();
-
-            Search search = new Search.Builder(attrsToFind[0]).addIndex(db).addType(attrType).build();
-
-            try {
-
-                // TODO get the results of the query
-                SearchResult result = client.execute(search);
-                if (result.isSucceeded()) {
-                    List<Attributes> foundAttrs = result.getSourceAsObjectList(Attributes.class);
-                    attrs.addAll(foundAttrs);
-
-                } else {
-                    Log.i("Error2", "Something went wrong when we tried to communicate with the elasticsearch server");
-                }
-            }
-            catch (Exception e) {
-                Log.i("Error1", "Something went wrong when we tried to communicate with the elasticsearch server!");
-            }
-
-            return attrs;
-        }
     }
 
     //Get HabitEvent by UID
@@ -428,6 +439,8 @@ public class ElasticSearchController {
         }
 
     }
+
+
 
     public static void verifySettings() {
         if (client == null) {
