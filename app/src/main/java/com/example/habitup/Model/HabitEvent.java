@@ -18,7 +18,7 @@ public class HabitEvent implements Comparable<HabitEvent> {
 
     private int uid;
     private int hid;
-    private String ESid;
+    private String eid;
     private String comment;
     private LocalDate completedate;
     private Bitmap image;
@@ -65,7 +65,7 @@ public class HabitEvent implements Comparable<HabitEvent> {
 
     public void setHabit(int hid) { this.hid = hid; }
 
-    public void setESid(String uuid) { this.ESid = uuid; }
+    public void setEid(String uuid) { this.eid = uuid; }
 
     public void setImage(Bitmap image) throws IllegalArgumentException {
         if (image.getByteCount() <= maxByteCount) {
@@ -139,7 +139,7 @@ public class HabitEvent implements Comparable<HabitEvent> {
 
     public int getHID() { return hid; }
 
-    public String getESid() { return this.ESid; }
+    public String getEid() { return this.eid; }
 
     public Boolean getScheduled() { return this.scheduled; }
 
