@@ -100,7 +100,7 @@ public class EditHabitActivity extends AppCompatActivity {
 //        month_x = cal.get(Calendar.MONTH);
 //        day_x = cal.get(Calendar.DAY_OF_MONTH);
         year_x = habit.getStartDate().getYear();
-        month_x = habit.getStartDate().getMonthValue();
+        month_x = habit.getStartDate().getMonthValue() - 1;
         day_x = habit.getStartDate().getDayOfMonth();
 
         // Get clickable region for calendar on-click listener
