@@ -1,6 +1,10 @@
 package com.example.habitup.Model;
 
+import android.graphics.Bitmap;
 import android.media.Image;
+import android.util.Log;
+
+import com.example.habitup.Controller.ElasticSearchController;
 
 /**
  * @author gojeffcho
@@ -16,14 +20,10 @@ public class UserAccount {
     private int uid;
     private String username;
     private String realname;
-    private Image photo;
-    private Attributes attributes;
+    private Bitmap photo;
     private int level;
     private int XP;
     private int XPtoNext;
-    private UserAccountList friendsList;
-    private UserAccountList requestsPending;
-    private HabitList habits;
 
     /**
      * UserAccount Constructor
@@ -33,7 +33,7 @@ public class UserAccount {
      *
      * @author @gojeffcho
      */
-    public UserAccount(String username, String realname, Image photo) throws
+    public UserAccount(String username, String realname, Bitmap photo) throws
             IllegalArgumentException, IllegalStateException {
 
         this.setUniqueUID();
@@ -41,14 +41,10 @@ public class UserAccount {
         this.setRealname(realname);
         this.setPhoto(photo);
 
-        attributes = new Attributes(this.uid);
         level = 1;
         XP = 0;
         XPtoNext = 20;
 
-        friendsList = new UserAccountList();
-        requestsPending = new UserAccountList();
-        habits = new HabitList();
     }
 
     /**
@@ -73,13 +69,21 @@ public class UserAccount {
      * Gets Image if one is associated to the account, otherwise null
      * @return Image if associated, null if not
      */
-    public Image getPhoto() { return this.photo; }
+    public Bitmap getPhoto() { return this.photo; }
 
     /**
      * Gets Attribute object owned by UserAccount
      * @return Attributes
      */
-    public Attributes getAttributes() { return this.attributes; }
+    public Attributes getAttributes() {
+        // TODO: IMPLEMENT
+
+        // ElasticSearch on uid to get Attributes object
+
+        // Return Attributes object
+
+        return new Attributes(this.uid); // TODO REMOVE
+    }
 
     /**
      * Gets UserAccount's current level
@@ -103,19 +107,46 @@ public class UserAccount {
      * Gets approved friends of UserAccount
      * @return ArrayList<UserAccount>
      */
-    public UserAccountList getFriendsList() { return this.friendsList; }
+    public UserAccountList getFriendsList() {
+
+        // TODO: IMPLEMENT
+
+        // ES on uid to get FriendsList
+
+        // Return FriendsList
+
+        return new UserAccountList(); // TODO REMOVE
+    }
 
     /**
      * Returns current unapproved friend requests to UserAccount
      * @return ArrayList<UserAccount>
      */
-    public UserAccountList getRequestsPending() { return this.requestsPending; }
+    public UserAccountList getRequestsPending() {
+        // TODO: IMPLEMENT
+
+        // ES on uid to get RequestsPending
+
+        // Return RequestsPending
+
+        return new UserAccountList(); // TODO REMOVE
+    }
 
     /**
      * Gets Habits defined by the UserAccount
      * @return ArrayList<Habit>
      */
-    public HabitList getHabits() { return this.habits; }
+    public HabitList getHabits() {
+        // TODO: IMPLEMENT
+
+        // ES on uid to get Habits
+
+        // Add into a HabitList
+
+        // Return HabitList
+
+        return new HabitList(this.uid);  // TODO REMOVE
+    }
 
 
     /**
@@ -123,17 +154,18 @@ public class UserAccount {
      */
     public void setUniqueUID() {
         // ElasticSearch query: highest UID in use
-        int id = 0;
-
-        // Increment it
-        ++id;
+        int newUID = -1;
+        ElasticSearchController.GetMaxUidTask getMaxUID = new ElasticSearchController.GetMaxUidTask();
+        getMaxUID.execute();
+        try {
+            newUID = getMaxUID.get();
+            Log.i("HabitUpDEBUG", "UserAccount - UID was set to " + String.valueOf(newUID));
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "UserAccount - could not get Max UID");
+        }
 
         // Set it to this user's uid
-        this.uid = id;
-    }
-
-    public void setUID(int uid) {this.uid = uid;
-        // TODO: Implement
+        this.uid = newUID;
     }
 
     /**
@@ -174,7 +206,7 @@ public class UserAccount {
      * Set or update UserAccount photo
      * @param photo
      */
-    public void setPhoto(Image photo) {
+    public void setPhoto(Bitmap photo) {
         if (photo != null) {
             this.photo = photo;
         }
@@ -218,7 +250,13 @@ public class UserAccount {
      */
     public int addRequest(UserAccount requestingUser) {
 
-        return requestsPending.add(requestingUser);
+        // ES on uid to get RequestsPending
+
+        // Add requestingUser to RequestsPending
+
+        // Put to ES
+
+        return 0;
     }
 
     /**
@@ -227,12 +265,15 @@ public class UserAccount {
      * @return -1 if unsuccessful,
      */
     public int approveRequest(UserAccount requestingUser) {
-        if (requestsPending.contains(requestingUser)) {
-            requestsPending.remove(requestingUser);
-            return friendsList.add(requestingUser);
-        } else {
-            return -1;
-        }
+
+        // TODO: rework this whole thing
+//        if (requestsPending.contains(requestingUser)) {
+//            requestsPending.remove(requestingUser);
+//            return friendsList.add(requestingUser);
+//        } else {
+//            return -1;
+//        }
+        return 0;
 
     }
 
@@ -242,11 +283,15 @@ public class UserAccount {
      * @return 0 if successful, -1 if not in list
      */
     public int deleteHabit(Habit habit) {
-        if (habits.contains(habit)) {
-            habits.remove(habit);
-            return 0;
-        } else {
-            return -1;
-        }
+
+        // TODO: rework this whole thing
+
+//        if (habits.contains(habit)) {
+//            habits.remove(habit);
+//            return 0;
+//        } else {
+//            return -1;
+//        }
+        return 0;
     }
 }

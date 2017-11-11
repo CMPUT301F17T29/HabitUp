@@ -1,27 +1,24 @@
 package com.example.habitup.View;
 
-
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -30,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.habitup.Controller.ElasticSearchController;
+import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
@@ -40,21 +38,24 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class AddHabitEventActivity extends AppCompatActivity {
 
     // Event completion date
+    private TextView dateView;
     private int year_x, month_x, day_x;
     private static final int DIALOG_ID = 1;
 
     // Clickable image
     private static final int REQUEST_CODE = 1;
-    Bitmap imageBitMap;
-    Button imageButton;
-    ImageView image;
+    private Bitmap imageBitMap;
+    private Button imageButton;
+    private ImageView image;
 
-    Button saveButton;
+    private Button saveButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +74,7 @@ public class AddHabitEventActivity extends AppCompatActivity {
 
         // Get date click button
         ImageView dateClicker = (ImageView) findViewById(R.id.event_date_button);
+        dateView = (TextView) findViewById(R.id.event_date_text);
 
         // Set selected date
         setDateString();
@@ -82,15 +84,28 @@ public class AddHabitEventActivity extends AppCompatActivity {
 
         // Set up habit types list
         ArrayList<String> habitNames = new ArrayList<>();
+        final HashMap<String, Integer> hids = new HashMap<>();
 
-        // TODO: Retrieve habits from current user's HabitList
-        ArrayList<Habit> habitList = new ArrayList<Habit>();
+        // Retrieve habits from current user
+        ArrayList<Habit> habitList;
+        ElasticSearchController.GetUserHabitsTask getUserHabits = new ElasticSearchController.GetUserHabitsTask();
+        getUserHabits.execute(String.valueOf(HabitUpApplication.getCurrentUID()));
+        try {
+            habitList = getUserHabits.get();
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "AddHabitEvent - couldn't get User Habits");
+            habitList = new ArrayList<>();
+        }
+
+        // Populate habitNames, hids for dropdown menu and back-translation to Habit
         for (Habit habit : habitList) {
             habitNames.add(habit.getHabitName());
+            hids.put(habit.getHabitName(), habit.getHID());
         }
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, habitNames);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.spinner_item, habitNames);
         habitSpinner.setAdapter(adapter);
+        habitSpinner.setOnItemSelectedListener(habitListener);
 
         // Get location checkbox
         Switch locationSwitch = (Switch) findViewById(R.id.location_switch);
@@ -99,7 +114,7 @@ public class AddHabitEventActivity extends AppCompatActivity {
         imageButton = (Button) findViewById(R.id.photo_icon);
         image = (ImageView) findViewById(R.id.taken_image);
 
-        // Allow user to take or choose photo when clicking the photo icon
+        // Allow user to take photo when clicking the photo icon
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -110,8 +125,16 @@ public class AddHabitEventActivity extends AppCompatActivity {
             }
         });
 
-        // Open the date picker dialog
+        // Open the date picker dialog when clicking calendar button
         dateClicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog(DIALOG_ID);
+            }
+        });
+
+        // Open the date picke dialog when clicking date field
+        dateView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showDialog(DIALOG_ID);
@@ -133,14 +156,16 @@ public class AddHabitEventActivity extends AppCompatActivity {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy");
                 LocalDate completeDate = LocalDate.parse(completeDateString, formatter);
 
-                Log.i("DATE:", completeDate.toString()); // TODO REMOVE
+                Bitmap photo = null;
 
                 // TODO: M5 get location here
-                Bitmap photo = ((BitmapDrawable) ((ImageView) findViewById(R.id.taken_image)).getDrawable()).getBitmap();
+                if ( ((ImageView) findViewById(R.id.taken_image)).getDrawable() != null ) {
+                    photo = ((BitmapDrawable) ((ImageView) findViewById(R.id.taken_image)).getDrawable()).getBitmap();
+                }
 
-                int uid = HabitUpController.getCurrentUID();
-                int hid = 0; // TODO DEBUG REMOVE
-//                int hid = ElasticSearchController (look up habit to get hid);
+                int uid = HabitUpApplication.getCurrentUID();
+                int hid = hids.get(habitType);
+                Log.i("HabitUpDEBUG", "habitType " + habitType + " is HID " + hid);
 
                 HabitEvent newEvent = new HabitEvent(uid, hid);
                 Boolean eventOK = Boolean.TRUE;
@@ -172,9 +197,7 @@ public class AddHabitEventActivity extends AppCompatActivity {
 
                 if (eventOK) {
                     // Pass to the controller
-                    HabitUpController hupCtl = new HabitUpController();
-
-                    if (hupCtl.addHabitEvent(newEvent) == 0) {
+                    if (HabitUpController.addHabitEvent(newEvent) == 0) {
                         Intent result = new Intent();
                         setResult(Activity.RESULT_OK, result);
                         finish();
@@ -241,8 +264,6 @@ public class AddHabitEventActivity extends AppCompatActivity {
      * Updates the date string in the date text view
      */
     private void setDateString() {
-        TextView dateView = (TextView) findViewById(R.id.event_date_text);
-
         String monthName = new DateFormatSymbols().getShortMonths()[month_x];
         String dateString = (monthName) + " " + day_x + ", " + year_x;
         dateView.setText(dateString);
@@ -259,4 +280,18 @@ public class AddHabitEventActivity extends AppCompatActivity {
             setDateString();
         }
     };
+
+    // Set color of text when habit type is selected
+    private AdapterView.OnItemSelectedListener habitListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            int color = ContextCompat.getColor(AddHabitEventActivity.this, R.color.lightgray);
+            TextView spinnerText = view.findViewById(R.id.spinner_text);
+            spinnerText.setTextColor(color);
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {}
+    };
+
 }

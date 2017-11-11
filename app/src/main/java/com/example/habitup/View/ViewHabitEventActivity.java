@@ -1,16 +1,24 @@
 package com.example.habitup.View;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.habitup.Controller.ElasticSearchController;
+import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
 import com.example.habitup.R;
@@ -21,7 +29,13 @@ import java.util.ArrayList;
 
 public class ViewHabitEventActivity extends BaseActivity {
 
+    final private Context context = ViewHabitEventActivity.this;
     static final int NEW_EVENT = 1;
+    static final int VIEW_EVENT = 2;
+    static final int EDIT_EVENT = 3;
+
+    // Position of event in list view
+    private int position = -1;
 
     private ArrayList<HabitEvent> events;
     private ListView eventListView;
@@ -36,8 +50,15 @@ public class ViewHabitEventActivity extends BaseActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.event_bottom_nav);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        // TODO: Retrieve events from HabitEventList model
-        events = new ArrayList<HabitEvent>();
+        // Retrieve events from ES for user
+        ElasticSearchController.GetHabitEventsByUidTask getHabitEvents = new ElasticSearchController.GetHabitEventsByUidTask();
+        getHabitEvents.execute(HabitUpApplication.getCurrentUIDAsString());
+        try {
+            events = getHabitEvents.get();
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "ViewHabitEvent - Couldn't get HabitEvents");
+        }
+
         eventListView = (ListView) findViewById(R.id.event_list);
 
         // Date format for displaying event date
@@ -46,6 +67,8 @@ public class ViewHabitEventActivity extends BaseActivity {
         // Set up list view adapter for habit events
         eventAdapter = new EventListAdapter(this, R.layout.event_list_item, events);
         eventListView.setAdapter(eventAdapter);
+
+        eventAdapter.notifyDataSetChanged();
 
         // Display if there are no events
         if (events.size() == 0) {
@@ -66,6 +89,22 @@ public class ViewHabitEventActivity extends BaseActivity {
             habitAdapter.add(habit.getHabitName());
         }
         habitSpinner.setAdapter(habitAdapter);
+
+        // Handle list view click events
+        eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
+                position = pos;
+
+                for (int i = 0; i < eventListView.getChildCount(); i++) {
+                    if (i == pos) {
+                        highlightItem(view);
+                    } else {
+                        unhighlightItem(eventListView.getChildAt(i));
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -113,16 +152,40 @@ public class ViewHabitEventActivity extends BaseActivity {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.habit_menu_view:
-                    return true;
-                case R.id.habit_menu_edit:
-                    return true;
-                case R.id.habit_menu_delete:
-                    return true;
+
+            // Check if list view item is selected
+            if (position < 0) {
+                Toast.makeText(context, "Select an event first.", Toast.LENGTH_SHORT).show();
+            } else {
+                switch (item.getItemId()) {
+                    case R.id.habit_menu_view:
+                        goToEditActivity(VIEW_EVENT);
+                        return true;
+                    case R.id.habit_menu_edit:
+                        goToEditActivity(EDIT_EVENT);
+                        return true;
+                    case R.id.habit_menu_delete:
+                        return true;
+                }
             }
             return false;
         }
 
     };
+
+    private void goToEditActivity(int requestCode) {
+        setResult(RESULT_OK);
+        Intent editIntent = new Intent(context, EditHabitEventActivity.class);
+        editIntent.putExtra("position", position);
+        editIntent.putExtra("action", requestCode);
+        startActivityForResult(editIntent, requestCode);
+    }
+
+    private void highlightItem(View view) {
+        view.setBackgroundColor(ContextCompat.getColor(context, R.color.whitegray));
+    }
+
+    private void unhighlightItem(View view) {
+        view.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
+    }
 }

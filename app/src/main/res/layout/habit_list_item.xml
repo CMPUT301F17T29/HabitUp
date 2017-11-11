@@ -11,31 +11,116 @@
     android:baselineAligned="false">
 
     <TextView
-        android:id="@+id/todays_habit_name"
+        android:id="@+id/habit_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Example habit name" />
+        android:text="Example habit name"
+        android:layout_marginBottom="5dp"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
 
     <TextView
-        android:id="@+id/todays_habit_x"
-        android:layout_width="wrap_content"
+        android:id="@+id/mon_box"
+        android:layout_width="40dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/todays_habit_name"
-        android:text="x" />
+        android:text="@string/mon"
+        android:textAllCaps="true"
+        android:gravity="center"
+        android:background="@drawable/day_box"
+        android:layout_below="@id/habit_name"
+        android:layout_marginRight="5dp"
+        android:textColor="@color/lightgray"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
     <TextView
-        android:id="@+id/slash"
-        android:layout_width="wrap_content"
+        android:id="@+id/tue_box"
+        android:layout_width="40dp"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/todays_habit_x"
-        android:layout_below="@+id/todays_habit_name"
-        android:text="/"/>
+        android:text="@string/tue"
+        android:textAllCaps="true"
+        android:gravity="center"
+        android:background="@drawable/day_box"
+        android:layout_below="@id/habit_name"
+        android:layout_toRightOf="@+id/mon_box"
+        android:layout_marginRight="5dp"
+        android:textColor="@color/lightgray"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
     <TextView
-        android:id="@+id/todays_habit_y"
-        android:layout_width="wrap_content"
+        android:id="@+id/wed_box"
+        android:layout_width="40dp"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/slash"
-        android:layout_below="@+id/todays_habit_name"
-        android:text="y"/>
+        android:text="@string/wed"
+        android:textAllCaps="true"
+        android:gravity="center"
+        android:background="@drawable/day_box"
+        android:layout_below="@id/habit_name"
+        android:layout_toRightOf="@+id/tue_box"
+        android:layout_marginRight="5dp"
+        android:textColor="@color/lightgray"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/thu_box"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:text="@string/thu"
+        android:textAllCaps="true"
+        android:gravity="center"
+        android:background="@drawable/day_box"
+        android:layout_below="@id/habit_name"
+        android:layout_toRightOf="@+id/wed_box"
+        android:layout_marginRight="5dp"
+        android:textColor="@color/lightgray"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/fri_box"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:text="@string/fri"
+        android:textAllCaps="true"
+        android:gravity="center"
+        android:background="@drawable/day_box"
+        android:layout_below="@id/habit_name"
+        android:layout_toRightOf="@+id/thu_box"
+        android:layout_marginRight="5dp"
+        android:textColor="@color/lightgray"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/sat_box"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:text="@string/sat"
+        android:textAllCaps="true"
+        android:gravity="center"
+        android:background="@drawable/day_box"
+        android:layout_below="@id/habit_name"
+        android:layout_toRightOf="@+id/fri_box"
+        android:layout_marginRight="5dp"
+        android:textColor="@color/lightgray"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/sun_box"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:text="@string/sun"
+        android:textAllCaps="true"
+        android:gravity="center"
+        android:background="@drawable/day_box"
+        android:layout_below="@id/habit_name"
+        android:layout_toRightOf="@+id/sat_box"
+        android:textColor="@color/lightgray"
+        android:textSize="12sp"
+        android:textStyle="bold" />
 
 
 </RelativeLayout>

@@ -1,6 +1,11 @@
 package com.example.habitup.Model;
 
 
+import android.util.Log;
+import android.widget.Toast;
+
+import com.example.habitup.Controller.ElasticSearchController;
+
 import java.time.LocalDate;
 
 public class Habit {
@@ -9,7 +14,7 @@ public class Habit {
     private int uid;
     private int hid;
     private String name;
-    private Boolean[] schedule;
+    private boolean[] schedule;
     private String reason;
     private String attribute;
     private LocalDate startDate;
@@ -27,7 +32,7 @@ public class Habit {
      * @param reason String for the reason of Habit
      * @param attribute Attributes object to identify the associated attribute with the Habit
      * @param startDate LocalDate for startDate to associate with Habit
-     * @param schedule Boolean[8] for the schedule regarding the days the Habit is active
+     * @param schedule boolean[8] for the schedule regarding the days the Habit is active
      *
      * @author @alido8592
      */
@@ -35,11 +40,12 @@ public class Habit {
     /**
      * Empty constructor
      */
-    public Habit() {
-
+    public Habit(int uid) {
+        this.uid = uid;
+        setUniqueHID();
     }
 
-    public Habit(int uid, String name, String reason, String attribute, LocalDate startDate, Boolean[] schedule)
+    public Habit(int uid, String name, String reason, String attribute, LocalDate startDate, boolean[] schedule)
             throws IllegalArgumentException, IllegalStateException {
 
         //TODO:
@@ -50,6 +56,7 @@ public class Habit {
         setReason(reason);
         setAttribute(attribute);
         this.startDate = startDate;
+        this.schedule = new boolean[8];
         setSchedule(schedule);
     }
 
@@ -70,19 +77,18 @@ public class Habit {
      * @return Boolean
      */
     public Boolean isLegalReasonLength(String reason){
-        return ( (reason.trim().length() > 0) && (name.trim().length() <= 30) );
+        return ( (reason.trim().length() > 0) && (reason.trim().length() <= 30) );
     }
 
     /**
      * isLegalSchedule
      * Checks for Habit schedule containing at least 1 day schedule for the Habit
-     * @param schedule Boolean[8]
+     * @param schedule boolean[8]
      * @return Boolean
      */
-    public Boolean isLegalSchedule(Boolean[] schedule){
+    public Boolean isLegalSchedule(boolean[] schedule){
         int trueCount = 0;
-
-        for (Boolean s : schedule) {
+        for (boolean s : schedule) {
             if (s) { trueCount++; }
         }
 
@@ -95,7 +101,7 @@ public class Habit {
      * @param attribute
      * @return
      */
-    public Boolean isLegalAttribute(String attribute){
+    public Boolean isLegalAttribute(String attribute) {
 
         String[] attrNames = Attributes.getAttributeNames();
         for (String name : attrNames) {
@@ -130,10 +136,10 @@ public class Habit {
 
     /**
      * getHabitSchedule
-     * Forms a String of days of when the Habit is scheduled
-     * @return String
+     * Returns habit schedule
+     * @return boolean[8]
      */
-    public Boolean[] getHabitSchedule() { return this.schedule; }
+    public boolean[] getHabitSchedule() {return this.schedule;}
 
     /**
      * getHabitReason
@@ -165,10 +171,15 @@ public class Habit {
 
     public void setUniqueHID() {
         // Do ElasticSearch stuff
+        ElasticSearchController.GetMaxHidTask maxHid = new ElasticSearchController.GetMaxHidTask();
+        maxHid.execute();
         int hid;
-
-        // DEBUG - suppress error
-        hid = 0;
+        try {
+            hid = maxHid.get();
+        } catch (Exception e) {
+            Log.d("HabitUpDEBUG", "ERROR getting MaxHID");
+            hid = -1;
+        }
 
         // Set the HID
         setHID(hid);
@@ -178,7 +189,7 @@ public class Habit {
      * setHID
      * Sets the Habit's unique identifier
      */
-    public void setHID(int hid) { this.hid = hid; }
+    private void setHID(int hid) { this.hid = hid; }
 
     /**
      * setHabitName
@@ -186,7 +197,7 @@ public class Habit {
      * @param name String for the desired new name
      * @throws IllegalArgumentException
      */
-    public void setHabitName(String name) throws IllegalArgumentException{
+    public void setHabitName(String name) throws IllegalArgumentException {
 
         if (isLegalNameLength(name)) {
             this.name = name;
@@ -200,12 +211,12 @@ public class Habit {
     /**
      * setSchedule
      * Changes the schedule accordingly with input schedule
-     * @param schedule Boolean[8]
+     * @param schedule boolean[8]
      */
-    public void setSchedule(Boolean[] schedule) throws IllegalArgumentException {
-        if (isLegalSchedule(schedule)) {
-            this.schedule = schedule;
-        } else {
+    public void setSchedule(boolean schedule[]) throws IllegalArgumentException {
+        if (isLegalSchedule(schedule)){
+            this.schedule = schedule;}
+        else{
             throw new IllegalArgumentException("Error: Minimum one day scheduled required.");
         }
     }
@@ -232,7 +243,7 @@ public class Habit {
      * @param attribute Attributes object to be associated to the Habit
      * @throws IllegalArgumentException
      */
-    public void setAttribute(String attribute) throws IllegalArgumentException{
+    public void setAttribute(String attribute) throws IllegalArgumentException {
         if (isLegalAttribute(attribute)) {
             this.attribute = attribute;
         } else {

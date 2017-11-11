@@ -5,86 +5,101 @@
     android:background="@color/colorPrimary"
     android:orientation="vertical">
 
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/signup_title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="20dp">
+        android:layout_marginTop="50dp"
+        android:textSize="40dp"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/white"
+        android:text="Sign up"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
-            android:textSize="40dp"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:text="Sign up"/>
+    <TextView
+        android:id="@id/username_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/signup_title"
+        android:layout_marginLeft="35dp"
+        android:layout_marginTop="40dp"
+        android:text="Enter username"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/white" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="50dp"
-            android:layout_marginTop="50dp"
-            android:text="Enter username"
-            android:textColor="@color/white"/>
+    <EditText
+        android:id="@+id/signup_username"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:scrollbars="horizontal"
+        android:inputType="text"
+        android:layout_below="@+id/username_label"
+        android:textSize="16sp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="35dp"
+        android:hint="Enter unique username"
+        android:paddingLeft="5dp"
+        android:background="@color/white"/>
 
-        <EditText
-            android:id="@+id/signup_username"
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:scrollbars="horizontal"
-            android:inputType="text"
-            android:layout_marginLeft="50dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="50dp"
-            android:hint="  Enter unique username"
-            android:background="@color/white"/>
+    <TextView
+        android:id="@+id/full_name_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/signup_username"
+        android:layout_marginLeft="35dp"
+        android:layout_marginTop="20dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:text="Enter display name"
+        android:textColor="@color/white"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="50dp"
-            android:layout_marginTop="20dp"
-            android:text="Enter display name"
-            android:textColor="@color/white"/>
-
-        <EditText
-            android:id="@+id/signup_displayname"
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:scrollbars="horizontal"
-            android:inputType="text"
-            android:layout_marginLeft="50dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="50dp"
-            android:hint="  Enter full name"
-            android:background="@color/white"/>
+    <EditText
+        android:id="@+id/signup_displayname"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:scrollbars="horizontal"
+        android:inputType="text"
+        android:layout_marginLeft="35dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="35dp"
+        android:layout_below="@+id/full_name_label"
+        android:textSize="16sp"
+        android:hint="Enter full name"
+        android:paddingLeft="10dp"
+        android:background="@color/white"/>
 
 
-        <Button
-            android:id="@+id/add_profile_button"
+        <ImageView
+            android:id="@+id/add_profile_pic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="25dp"
             android:background="@color/colorPrimary"
-            android:drawableTop="@drawable/ic_add_photo"
+            android:src = "@drawable/ic_add_photo"
             android:scaleX="2"
             android:scaleY="2"
             android:textColor="#FFFFFF"
-            android:textSize="5sp"
-            android:paddingTop="10sp"
-            android:text="ADD PROFILE PICTURE"/>
+            android:paddingTop="10sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/white"
+            android:layout_gravity="center_horizontal"
+            android:textSize="10sp"
+            android:text="Add Profile photo" />
 
         <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
             <Button
-                android:id="@+id/link_signup"
+                android:id="@+id/signup_button"
                 android:layout_width="150dp"
                 android:layout_height="50dp"
                 android:text="SIGN UP"
@@ -94,7 +109,7 @@
                 android:layout_marginTop="35dp" />
 
             <Button
-                android:id="@+id/lin_signup"
+                android:id="@+id/cancel_signup"
                 android:layout_width="150dp"
                 android:layout_height="50dp"
                 android:text="cancel"
@@ -104,5 +119,14 @@
                 android:layout_marginTop="35dp" />
         </LinearLayout>
 
-    </LinearLayout>
+        <Button
+            android:id="@+id/lin_signup"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_weight="0.5"
+            android:text="cancel"
+            android:layout_marginLeft="5dp"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/lightgray" />
+
 </RelativeLayout>

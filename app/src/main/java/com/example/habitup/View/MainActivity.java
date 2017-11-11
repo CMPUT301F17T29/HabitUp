@@ -1,14 +1,23 @@
 package com.example.habitup.View;
 
+import android.app.AlertDialog;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.habitup.Controller.ElasticSearchController;
+import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.UserAccount;
@@ -30,12 +39,22 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
 
         // DEBUG
-        HabitUpController hupCtl = new HabitUpController();
-        hupCtl.testAccount();
+//        UserAccount testUser = null;
+//        try {
+//            testUser = HabitUpApplication.getUserAccount("gojoffchoo");
+//        } catch (Exception e) {
+//            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+//        }
+//
+//        if (testUser != null) {
+//            HabitUpApplication.setCurrentUser(testUser);
+//        } else {
+//            Log.i("HabitUpDEBUG", "Couldn't get test user.");
+//        }
 
-        ElasticSearchController.AddUsersTask addUser = new ElasticSearchController.AddUsersTask();
-        UserAccount newUser = new UserAccount("tester", "Test Account", null);
-        addUser.execute(newUser);
+        UserAccount testUser = new UserAccount("goojoffchoo", "Joff Choo", null);
+        HabitUpApplication.addUserAccount(testUser);
+        HabitUpApplication.setCurrentUser(testUser);
         // DEBUG
 
 
@@ -47,7 +66,7 @@ public class MainActivity extends BaseActivity {
         habitListView.addHeaderView(profileView);
 
         // Set up the array and adapter
-        habitsArrayList = HabitUpController.getCurrentUser().getHabits().getTodaysHabitArrayList();
+        habitsArrayList = HabitUpController.getTodaysHabits();
         adapter = new ProfileHabitsAdapter(this, R.layout.todays_habits, habitsArrayList);
         habitListView.setAdapter(adapter);
 
@@ -61,44 +80,53 @@ public class MainActivity extends BaseActivity {
         // Highlight profile in drawer
         navigationView.setCheckedItem(R.id.profile);
 
+        // Get the user
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+
         // Set user's photo
-//        findViewById(R.id.drawer_pic).setBackground(); // TODO: PHOTO
+        Bitmap photo =  currentUser.getPhoto();
+
+        if (photo != null) {
+            CircleImageView profilePic = (CircleImageView) findViewById(R.id.drawer_pic);
+            profilePic.setImageBitmap(photo);
+        }
 
         // Set user's display name
         TextView nameField = (TextView) findViewById(R.id.username);
-        nameField.setText(HabitUpController.getCurrentUser().getRealname());
+
+        nameField.setText(currentUser.getRealname());
 
         // Set user's level
         TextView levelField = (TextView) findViewById(R.id.user_level);
-        levelField.setText("Level " + String.valueOf(HabitUpController.getCurrentUser().getLevel()));
+        levelField.setText("Level " + String.valueOf(currentUser.getLevel()));
 
         // Set user's level up in
         TextView levelUpField = (TextView) findViewById(R.id.level_title);
-        levelUpField.setText("Level up in " + String.valueOf(HabitUpController.getCurrentUser().getXPtoNext() - HabitUpController.getCurrentUser().getXP()) + " XP");
+        levelUpField.setText("Level up in " + String.valueOf(currentUser.getXPtoNext() - currentUser.getXP()) + " XP");
 
         // Set progress bar
         ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        progressBar.setProgress(HabitUpController.getCurrentUser().getXP());
-        progressBar.setMax(HabitUpController.getCurrentUser().getXPtoNext());
+        progressBar.setProgress(currentUser.getXP());
+        progressBar.setMax(currentUser.getXPtoNext());
 
         // Set user's Mental value
         TextView attr2Field = (TextView) findViewById(R.id.attribute2_value);
-        attr2Field.setText(String.valueOf(HabitUpController.getCurrentUser().getAttributes().getValue("Mental")));
+        attr2Field.setText(String.valueOf(currentUser.getAttributes().getValue("Mental")));
 
         // Set user's Physical value
         TextView attr1Field = (TextView) findViewById(R.id.attribute1_value);
-        attr1Field.setText(String.valueOf(HabitUpController.getCurrentUser().getAttributes().getValue("Physical")));
+        attr1Field.setText(String.valueOf(currentUser.getAttributes().getValue("Physical")));
 
         // Set user's Discipline value
         TextView attr3Field = (TextView) findViewById(R.id.attribute3_value);
-        attr3Field.setText(String.valueOf(HabitUpController.getCurrentUser().getAttributes().getValue("Social")));
+        attr3Field.setText(String.valueOf(currentUser.getAttributes().getValue("Social")));
 
         // Set user's Social value
         TextView attr4Field = (TextView) findViewById(R.id.attribute4_value);
-        attr4Field.setText(String.valueOf(HabitUpController.getCurrentUser().getAttributes().getValue("Discipline")));
+        attr4Field.setText(String.valueOf(currentUser.getAttributes().getValue("Discipline")));
 
-        // Retrieve habits from HabitList model
-        habitsArrayList = HabitUpController.getCurrentUser().getHabits().getTodaysHabitArrayList();
+        // Retrieve today's habits
+        habitsArrayList = HabitUpController.getTodaysHabits();
         adapter.notifyDataSetChanged();
 
         if (habitsArrayList.size() == 0) {
@@ -111,5 +139,19 @@ public class MainActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.profile, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.edit_profile:
+                Intent editIntent = new Intent(this, EditProfileActivity.class);
+                startActivity(editIntent);
+                return true;
+            case R.id.stats_profile:
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

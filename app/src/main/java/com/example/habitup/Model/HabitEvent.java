@@ -68,6 +68,12 @@ public class HabitEvent implements Comparable<HabitEvent> {
     public void setEid(String uuid) { this.eid = uuid; }
 
     public void setImage(Bitmap image) throws IllegalArgumentException {
+
+        if (image == null) {
+            this.image = null;
+            return;
+        }
+
         if (image.getByteCount() <= maxByteCount) {
             this.image = image;
         } else {

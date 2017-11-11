@@ -4,13 +4,14 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
@@ -20,6 +21,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Attributes;
 import com.example.habitup.Model.Habit;
@@ -36,6 +38,8 @@ public class AddHabitActivity extends AppCompatActivity {
     // Habit start date
     private int year_x, month_x, day_x;
     private static final int DIALOG_ID = 0;
+
+    private TextView dateView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +58,7 @@ public class AddHabitActivity extends AppCompatActivity {
 
         // Get clickable region for calendar on-click listern
         ImageView dateLayout = (ImageView) findViewById(R.id.habit_date_button);
+        dateView = (TextView) findViewById(R.id.date_text);
 
         // Set selected date
         setDateString();
@@ -63,12 +68,20 @@ public class AddHabitActivity extends AppCompatActivity {
 
         // Set up attribute list
         String[] entries = Attributes.getAttributeNames();
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, entries);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        AttributeAdapter adapter = new AttributeAdapter(this, R.layout.spinner_item, entries);
         attrSpinner.setAdapter(adapter);
+        attrSpinner.setOnItemSelectedListener(attributeListener);
 
-        // Open the date picker dialog
+        // Open the date picker dialog clicking calendar button
         dateLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog(DIALOG_ID);
+            }
+        });
+
+        // Open the date picker dialog clicking date field
+        dateView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showDialog(DIALOG_ID);
@@ -102,7 +115,7 @@ public class AddHabitActivity extends AppCompatActivity {
                 String attribute = ((Spinner) findViewById(R.id.habit_attr_spinner)).getSelectedItem().toString();
 
                 // Get Schedule array
-                Boolean schedule[] = new Boolean[8];
+                boolean schedule[] = new boolean[8];
                 CheckBox checkBoxMon = (CheckBox) findViewById(R.id.monday);
                 CheckBox checkBoxTue = (CheckBox) findViewById(R.id.tuesday);
                 CheckBox checkBoxWed = (CheckBox) findViewById(R.id.wednesday);
@@ -121,7 +134,7 @@ public class AddHabitActivity extends AppCompatActivity {
                 schedule[7] = checkBoxSun.isChecked();
 
                 // Create the Habit
-                Habit newHabit = new Habit();
+                Habit newHabit = new Habit(HabitUpApplication.getCurrentUID());
                 Boolean habitOK = Boolean.TRUE;
 
                 try {
@@ -165,8 +178,7 @@ public class AddHabitActivity extends AppCompatActivity {
 
                 if (habitOK) {
                     // Pass to the controller
-                    HabitUpController hupCtl = new HabitUpController();
-                    if (hupCtl.addHabit(newHabit) == 0) {
+                    if (HabitUpController.addHabit(newHabit) == 0) {
                         Intent result = new Intent();
                         setResult(Activity.RESULT_OK, result);
                         finish();
@@ -224,12 +236,25 @@ public class AddHabitActivity extends AppCompatActivity {
      * Updates the date string in the date text view
      */
     private void setDateString() {
-        TextView dateView = (TextView) findViewById(R.id.date_text);
-
         String monthName = new DateFormatSymbols().getShortMonths()[month_x];
         String dateString = (monthName) + " " + day_x + ", " + year_x;
         dateView.setText(dateString);
     }
+
+    private AdapterView.OnItemSelectedListener attributeListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            String[] names = Attributes.getAttributeNames();
+            String attributeName = names[position];
+            String color = Attributes.getColour(attributeName);
+            TextView text = view.findViewById(R.id.spinner_text);
+            text.setTextColor(Color.parseColor(color));
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+        }
+    };
 
 
     public void onSave() {
