@@ -23,6 +23,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Attributes;
 import com.example.habitup.Model.Habit;
@@ -135,7 +136,7 @@ public class AddHabitActivity extends AppCompatActivity {
                 schedule[7] = checkBoxSun.isChecked();
 
                 // Create the Habit
-                Habit newHabit = new Habit();
+                Habit newHabit = new Habit(HabitUpApplication.getCurrentUID());
                 Boolean habitOK = Boolean.TRUE;
 
                 try {
@@ -179,8 +180,7 @@ public class AddHabitActivity extends AppCompatActivity {
 
                 if (habitOK) {
                     // Pass to the controller
-                    HabitUpController hupCtl = new HabitUpController();
-                    if (hupCtl.addHabit(newHabit) == 0) {
+                    if (HabitUpController.addHabit(newHabit) == 0) {
                         Intent result = new Intent();
                         setResult(Activity.RESULT_OK, result);
                         finish();
