@@ -35,9 +35,7 @@ public class Habit {
     /**
      * Empty constructor
      */
-    public Habit() {
-        this.schedule = new boolean[8];
-    }
+    public Habit() { }
 
     public Habit(int uid, String name, String reason, String attribute, LocalDate startDate, boolean[] schedule)
             throws IllegalArgumentException, IllegalStateException {
@@ -95,7 +93,7 @@ public class Habit {
      * @param attribute
      * @return
      */
-    public Boolean isLegalAttribute(String attribute){
+    public Boolean isLegalAttribute(String attribute) {
 
         String[] attrNames = Attributes.getAttributeNames();
         for (String name : attrNames) {
@@ -186,7 +184,7 @@ public class Habit {
      * @param name String for the desired new name
      * @throws IllegalArgumentException
      */
-    public void setHabitName(String name) throws IllegalArgumentException{
+    public void setHabitName(String name) throws IllegalArgumentException {
 
         if (isLegalNameLength(name)) {
             this.name = name;
@@ -202,11 +200,11 @@ public class Habit {
      * Changes the schedule accordingly with input schedule
      * @param schedule boolean[8]
      */
-    public void setSchedule(boolean schedule[]) throws IllegalStateException{
+    public void setSchedule(boolean schedule[]) throws IllegalArgumentException {
         if (isLegalSchedule(schedule)){
             this.schedule = schedule;}
         else{
-            throw new IllegalStateException("Error: Minimum one day scheduled required.");
+            throw new IllegalArgumentException("Error: Minimum one day scheduled required.");
         }
     }
 
@@ -232,7 +230,7 @@ public class Habit {
      * @param attribute Attributes object to be associated to the Habit
      * @throws IllegalArgumentException
      */
-    public void setAttribute(String attribute) throws IllegalArgumentException{
+    public void setAttribute(String attribute) throws IllegalArgumentException {
         if (isLegalAttribute(attribute)) {
             this.attribute = attribute;
         } else {
