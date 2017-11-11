@@ -16,7 +16,9 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -189,6 +191,8 @@ public class AddHabitEventActivity extends AppCompatActivity {
             }
 
         });
+
+        viewMode();
     }
 
     /**
@@ -260,4 +264,47 @@ public class AddHabitEventActivity extends AppCompatActivity {
             setDateString();
         }
     };
+
+    // DELETE FOR LATER AND MOVE TO EditHabitEventActivity
+    private void viewMode() {
+        // Disable habit type spinner
+        Spinner spinner = (Spinner) findViewById(R.id.event_habit_spinner);
+        spinner.setBackgroundResource(0);
+        spinner.setBackgroundColor(getResources().getColor(R.color.white));
+        spinner.setPadding(0, 0, 0, 0);
+        spinner.setEnabled(false);
+
+        // Disable date clickables
+        ImageView dateButton = (ImageView) findViewById(R.id.event_date_button);
+        TextView dateText = (TextView) findViewById(R.id.event_date_text);
+        dateButton.setVisibility(View.INVISIBLE);
+        dateButton.setOnClickListener(null);
+        dateText.setBackgroundResource(0);
+        dateText.setPadding(0, 0, 0, 0);
+        dateText.setOnClickListener(null);
+
+        // Disable location switch
+        Switch locSwitch = (Switch) findViewById(R.id.location_switch);
+        locSwitch.setClickable(false);
+        locSwitch.setBackgroundResource(0);
+        TextView markerLabel = (TextView) findViewById(R.id.marker_label);
+        markerLabel.setBackgroundResource(0);
+
+        // Disable comment field
+        EditText editComment = (EditText) findViewById(R.id.event_comment);
+        editComment.setBackgroundResource(0);
+        editComment.setPadding(0, 0, 0, 0);
+        editComment.setFocusable(false);
+
+        // Disable photo button
+        // TODO: Check whether event has an image, if it does not, remove all photo labels
+        RelativeLayout photoLayout = (RelativeLayout) findViewById(R.id.photo_display);
+        photoLayout.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+        Button photoButton = (Button) findViewById(R.id.photo_icon);
+        photoButton.setVisibility(View.INVISIBLE);
+
+        // Disable save button
+        Button saveButton = (Button) findViewById(R.id.save_event);
+        saveButton.setVisibility(View.INVISIBLE);
+    }
 }

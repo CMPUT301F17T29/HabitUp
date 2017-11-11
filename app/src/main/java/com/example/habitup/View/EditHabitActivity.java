@@ -196,7 +196,7 @@ public class EditHabitActivity extends AppCompatActivity {
         // Disable name edit
         editName.setFocusable(false);
         editName.setBackgroundResource(0);
-        editName.setPadding(0,0, 0, 0);
+        editName.setPadding(0, 0, 0, 0);
 
         // Disable reason edit
         editReason.setFocusable(false);
@@ -214,7 +214,7 @@ public class EditHabitActivity extends AppCompatActivity {
         attrSpinner.setBackgroundResource(0);
         attrSpinner.setBackgroundColor(getResources().getColor(android.R.color.white));
         attrSpinner.setPadding(0, 0, 0, 0);
-        View selectedView = attrSpinner.getSelectedView();
+        attrSpinner.setEnabled(false);
 
         // Disable checkboxes in schedule
         checkBoxMon.setEnabled(false);

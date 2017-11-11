@@ -45,7 +45,8 @@
         <activity android:name=".View.AddHabitActivity" />
         <activity android:name=".View.AddHabitEventActivity" />
         <activity android:name=".View.EditProfileActivity" />
-        <activity android:name=".View.EditHabitActivity"></activity>
+        <activity android:name=".View.EditHabitActivity" />
+        <activity android:name=".View.EditHabitEventActivity"></activity>
     </application>
 
 </manifest>
