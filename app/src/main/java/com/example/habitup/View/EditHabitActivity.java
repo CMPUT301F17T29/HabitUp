@@ -324,7 +324,7 @@ public class EditHabitActivity extends AppCompatActivity {
         editReason.setPadding(0, 0, 0, 0);
 
         // Disable date edit
-        dateLayout.setVisibility(View.GONE);
+        dateLayout.setVisibility(View.INVISIBLE);
         dateLayout.setOnClickListener(null);
         dateView.setBackgroundResource(0);
         dateView.setPadding(0, 0, 0, 0);
