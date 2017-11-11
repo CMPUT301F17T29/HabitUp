@@ -351,10 +351,15 @@ public class ElasticSearchController {
             verifySettings();
 
             for (HabitEvent habitEvent : habitEvents) {
-                Index index = new Index.Builder(habitEvent).index(db).type(habitEventType).build();
+                Index index;
+                if (habitEvent.getEID() == null) {
+                    index = new Index.Builder(habitEvent).index(db).type(habitEventType).build();
+                } else {
+                    index = new Index.Builder(habitEvent).index(db).type(habitEventType).id(habitEvent.getEID()).build();
+                }
 
                 try {
-                    // where is the client?
+
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
                         Log.i("HabitUpDEBUG", "AddHabitEventTask getId: " + result.getId());
@@ -384,7 +389,6 @@ public class ElasticSearchController {
 
             return null;
         }
-
     }
 
     //Get HabitEvent by EID

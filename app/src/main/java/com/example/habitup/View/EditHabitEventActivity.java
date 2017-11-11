@@ -23,14 +23,18 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
+import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
 import com.example.habitup.R;
 
 import java.text.DateFormatSymbols;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -111,6 +115,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
         habitSpinner = (Spinner) findViewById(R.id.event_edit_spinner);
 
         // Set up habit types list
+        int entryIndex = 0;
         ArrayList<String> habitNames = new ArrayList<>();
         final HashMap<String, Integer> hids = new HashMap<>();
 
@@ -118,6 +123,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
         ArrayList<Habit> habitList;
         ElasticSearchController.GetUserHabitsTask getUserHabits = new ElasticSearchController.GetUserHabitsTask();
         getUserHabits.execute(String.valueOf(HabitUpApplication.getCurrentUID()));
+
         try {
             habitList = getUserHabits.get();
         } catch (Exception e) {
@@ -129,21 +135,32 @@ public class EditHabitEventActivity extends AppCompatActivity {
         for (Habit habit : habitList) {
             habitNames.add(habit.getHabitName());
             hids.put(habit.getHabitName(), habit.getHID());
+            if (event.getHID() == habit.getHID()) {
+                entryIndex = habitList.indexOf(habit);
+                Log.i("HabitUpDEBUG", "EditHabitEvent - matched, " + String.valueOf(event.getHID()) + "; index " + String.valueOf(entryIndex));
+            }
         }
 
         ArrayAdapter adapter = new ArrayAdapter(this, R.layout.spinner_item, habitNames);
         habitSpinner.setAdapter(adapter);
         habitSpinner.setOnItemSelectedListener(habitListener);
 
+        // Choose the right Habit in the Habit Type dropdown
+        habitSpinner.setSelection(entryIndex);
+
         // Get location checkbox
         locationSwitch = (Switch) findViewById(R.id.location_switch);
 
         // Comment text
         commentText = (EditText) findViewById(R.id.event_comment);
+        commentText.setText(event.getComment());
 
         // Get photo icon
         imageButton = (Button) findViewById(R.id.photo_icon);
         image = (ImageView) findViewById(R.id.taken_image);
+        if (event.getImage() != null) {
+            image.setImageBitmap(event.getImage());
+        }
 
         // Allow user to take photo when clicking the photo icon
         imageButton.setOnClickListener(new View.OnClickListener() {
@@ -179,6 +196,74 @@ public class EditHabitEventActivity extends AppCompatActivity {
         if (action == 2) {
             viewMode();
         }
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+
+            /**
+             * Activated when save button is clicked
+             * @param v View
+             */
+            public void onClick(View v) {
+                setResult(RESULT_OK);
+
+                // Get all the values
+                String eventType = habitSpinner.getSelectedItem().toString();
+                String eventComment = commentText.getText().toString();
+
+                String dateString = dateView.getText().toString();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy");
+                LocalDate completeDate = LocalDate.parse(dateString, formatter);
+
+                Bitmap photo = imageBitMap;
+
+                Boolean eventOK = Boolean.TRUE;
+
+                try {
+                    event.setHabit(hids.get(eventType));
+                } catch (IllegalArgumentException e) {
+                    // do stuff
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    eventOK = Boolean.FALSE;
+                }
+
+                try {
+                    event.setComment(eventComment);
+                } catch (IllegalArgumentException e) {
+                    // do stuff
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    eventOK = Boolean.FALSE;
+                }
+
+                try {
+                    event.setCompletedate(completeDate); // TODO: store previous completedate and do checks as req
+                } catch (IllegalArgumentException e) {
+                    // do stuff
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    eventOK = Boolean.FALSE;
+                }
+
+                if (photo != null) {
+                    try {
+                        event.setImage(photo);
+                    } catch (IllegalArgumentException e) {
+                        // do stuff
+                        Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        eventOK = Boolean.FALSE;
+                    }
+                }
+
+                if (eventOK) {
+                    // Pass to the controller
+                    if (HabitUpController.editHabitEvent(event) == 0) {
+                        Intent result = new Intent();
+                        setResult(Activity.RESULT_OK, result);
+                        finish();
+                    } else {
+                        Toast.makeText(getBaseContext(), "There was an error updating the HabitEvent.", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
     }
 
     /**
