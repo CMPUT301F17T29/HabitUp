@@ -52,7 +52,7 @@ public class MainActivity extends BaseActivity {
 //            Log.i("HabitUpDEBUG", "Couldn't get test user.");
 //        }
 
-        UserAccount testUser = new UserAccount("goojoffchoo", "Joff Choo", null);
+        UserAccount testUser = new UserAccount("gogojoffchoo", "Jeef Chee", null);
         HabitUpApplication.addUserAccount(testUser);
         HabitUpApplication.setCurrentUser(testUser);
         // DEBUG
