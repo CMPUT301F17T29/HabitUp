@@ -21,6 +21,12 @@ import com.example.habitup.R;
 
 import java.util.ArrayList;
 
+/**
+ * @author Shuyang
+ *
+ * The login activity
+ */
+
 public class LoginActivity extends AppCompatActivity {
     protected EditText loginText;
     private String logInName;
@@ -31,11 +37,18 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
+        //set the logo
         ImageView imageView = (ImageView) findViewById(R.id.title_image);
         imageView.setImageResource(R.drawable.habitup);
 
+        //get button
         Button logInButton = (Button) findViewById(R.id.login_button);
+        Button signUpButton = (Button) findViewById(R.id.link_signup);
+
+        //get login EditText username
         loginText = (EditText) findViewById(R.id.login_edit);
+
+        //Transfer EditText to string
         logInName = loginText.getText().toString();
 
         logInButton.setOnClickListener(new View.OnClickListener() {
@@ -51,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 }else if(!checkInternet()) {
                     Toast.makeText(getApplicationContext(),
-                            "Please check internet connectivity.",
+                            "Please check your internet connection.",
                         Toast.LENGTH_SHORT).show();
 
                 }else{
@@ -61,17 +74,25 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
             }
-
-
-
         });
 
-
+        signUpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
-    //Taken from: https://stackoverflow.com/questions/1560788/how-to-check-internet-access-on-android-inetaddress-never-times-out
 
+
+    /**
+     * check whether Internet is connected
+     */
     private boolean checkInternet(){
+        //Taken from: https://stackoverflow.com/questions/1560788/how-to-check-internet-access-on-android-inetaddress-never-times-out
+        //2017-11-11
         Context context = getApplicationContext();
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
@@ -80,6 +101,11 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * check whether this username exist or not
+     * @param uname the item in the menu
+     * @return true if this user exist,false else.
+     */
     private boolean checkUserExist(String uname) {
         ElasticSearchController.GetUser getUser = new ElasticSearchController.GetUser();
         getUser.execute(uname);
