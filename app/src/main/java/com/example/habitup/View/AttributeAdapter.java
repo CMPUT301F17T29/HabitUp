@@ -35,7 +35,7 @@ public class AttributeAdapter extends ArrayAdapter<String> {
         String attributeName = attributes[position];
         String color = Attributes.getColour(attributeName);
 
-        TextView attributeText = view.findViewById(R.id.attribute_text);
+        TextView attributeText = view.findViewById(R.id.spinner_text);
         attributeText.setTextColor(Color.parseColor(color));
 
         return view;

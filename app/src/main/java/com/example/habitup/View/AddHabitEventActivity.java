@@ -8,15 +8,19 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -99,9 +103,9 @@ public class AddHabitEventActivity extends AppCompatActivity {
             hids.put(habit.getHabitName(), habit.getHID());
         }
 
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, habitNames);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.spinner_item, habitNames);
         habitSpinner.setAdapter(adapter);
+        habitSpinner.setOnItemSelectedListener(habitListener);
 
         // Get location checkbox
         Switch locationSwitch = (Switch) findViewById(R.id.location_switch);
@@ -110,7 +114,7 @@ public class AddHabitEventActivity extends AppCompatActivity {
         imageButton = (Button) findViewById(R.id.photo_icon);
         image = (ImageView) findViewById(R.id.taken_image);
 
-        // Allow user to take or choose photo when clicking the photo icon
+        // Allow user to take photo when clicking the photo icon
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -276,4 +280,18 @@ public class AddHabitEventActivity extends AppCompatActivity {
             setDateString();
         }
     };
+
+    // Set color of text when habit type is selected
+    private AdapterView.OnItemSelectedListener habitListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            int color = ContextCompat.getColor(AddHabitEventActivity.this, R.color.lightgray);
+            TextView spinnerText = view.findViewById(R.id.spinner_text);
+            spinnerText.setTextColor(color);
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {}
+    };
+
 }

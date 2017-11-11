@@ -10,7 +10,7 @@
     android:paddingRight="20dp"
     android:paddingBottom="20dp"
     android:background="@color/white"
-    tools:context="com.example.habitup.View.AddHabitEventActivity">
+    tools:context="com.example.habitup.View.EditHabitEventActivity">
 
     <TextView
         android:id="@+id/event_habit_label"
@@ -30,7 +30,7 @@
         android:background="@color/whitegray">
 
         <Spinner
-            android:id="@+id/event_habit_spinner"
+            android:id="@+id/event_edit_spinner"
             android:layout_width="match_parent"
             android:layout_height="35dp" />
 
@@ -84,10 +84,11 @@
             android:layout_weight="0.40"
             android:text="Current date"
             android:textSize="16sp"
+            android:textColor="@color/lightgray"
             android:gravity="start|center_vertical"
+            android:paddingLeft="5dp"
             android:background="@color/whitegray"
-            tools:layout_editor_absoluteY="246dp"
-            android:paddingLeft="5dp"/>
+            tools:layout_editor_absoluteY="246dp" />
 
         <ImageView
             android:id="@+id/event_date_button"
@@ -141,6 +142,7 @@
         app:layout_constraintTop_toBottomOf="@+id/comment_label"
         android:background="@drawable/text_input"
         android:hint="Add a comment"
+        android:textColorHint="@color/lightgray"
         android:textSize="16sp"
         android:paddingLeft="5dp"/>
 

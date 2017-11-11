@@ -111,7 +111,7 @@
             android:id="@+id/date_text"
             android:layout_width="0dp"
             android:layout_height="35dp"
-            android:layout_weight="0.75"
+            android:layout_weight="0.5"
             android:text="Current date"
             android:textSize="16sp"
             android:gravity="start|center_vertical"
@@ -123,27 +123,26 @@
             android:id="@+id/habit_date_button"
             android:layout_width="0dp"
             android:layout_height="35dp"
-            android:layout_weight="0.15"
+            android:layout_weight="0.1"
             android:src="@drawable/ic_calendar"
             android:background="@color/lightgray"
             android:layout_gravity="center"
             android:contentDescription="Date picker calendar"
             android:tint="@color/white"/>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.1"
+            android:layout_weight="0.4"
             android:background="@color/whitegray"
             android:layout_marginStart="8dp">
 
             <Spinner
                 android:id="@+id/habit_attr_spinner"
-                style="@style/Widget.AppCompat.DropDownItem.Spinner"
                 android:layout_width="match_parent"
                 android:layout_height="35dp" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
     </LinearLayout>
 
