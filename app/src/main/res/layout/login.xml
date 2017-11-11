@@ -49,7 +49,6 @@
                 android:layout_marginRight="50dp"/>
 
             <TextView
-                android:id="@+id/login_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="50dp"
