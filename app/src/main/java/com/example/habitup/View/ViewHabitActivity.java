@@ -197,6 +197,7 @@ public class ViewHabitActivity extends BaseActivity {
     }
 
     private void clearHighlightedRows() {
+        position = -1;
         for (int i = 0; i < habitListView.getChildCount(); i++) {
             View view = habitListView.getChildAt(i);
             unhighlightItem(view, habits.get(i));
