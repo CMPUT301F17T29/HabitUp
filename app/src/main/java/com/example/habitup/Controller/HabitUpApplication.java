@@ -1,6 +1,7 @@
 package com.example.habitup.Controller;
 
 
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.habitup.Model.Attributes;
@@ -37,7 +38,7 @@ public class HabitUpApplication {
 
         ElasticSearchController.AddAttrsTask addAttr = new ElasticSearchController.AddAttrsTask();
         Attributes attrs = new Attributes(user.getUID());
-//        attrs.setValue("Mental", 5); // Test
+        attrs.setValue("Mental", 5); // Test
         addAttr.execute(attrs);
 
         return 0;
@@ -56,15 +57,21 @@ public class HabitUpApplication {
         return userList;
     }
 
-    static public int getUserAccount(String username) {
+    static public UserAccount getUserAccount(String username) {
 
         // ElasticSearch for username
+        ElasticSearchController.GetUser getUser = new ElasticSearchController.GetUser();
+        getUser.execute(username);
+        UserAccount user;
 
-        // if we got it, success
+        try {
+            user = getUser.get().get(0);
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "HUApp/getUserAccount - failed");
+            return null;
+        }
 
-        // if not, failure
-
-        return 0;
+        return user;
     }
 
 }
