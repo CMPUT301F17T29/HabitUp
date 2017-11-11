@@ -112,6 +112,47 @@ public class ElasticSearchController {
         }
     }
 
+    /* Given a username, returns the user object corresponding to it */
+    public static class GetAllUsers extends AsyncTask<Void, Void, ArrayList<UserAccount>> {
+        @Override
+        protected ArrayList<UserAccount> doInBackground(Void... voids) {
+            verifySettings();
+
+            ArrayList<UserAccount> accounts = new ArrayList<>();
+            String UserQuery;
+
+            UserQuery = "{\"query\": {\"match_all\" : {}}}";
+
+
+            //Log.i("Debug", "username to search for is: "+ search_parameters[0]);
+
+            Search search = new Search.Builder(UserQuery)
+                    .addIndex(db)
+                    .addType(userType)
+                    .build();
+
+            try {
+                // Send request to the server to get the user
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()){
+
+                    //Log.i("DeBug", "Succeeded in finding a user");
+
+                    List<UserAccount> foundUsers = result.getSourceAsObjectList(UserAccount.class);
+                    accounts.addAll(foundUsers);
+                }
+                else{
+                    Log.i("Error", "The search query failed to find any tweets that matched");
+                }
+            }
+            catch (Exception e) {
+                Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
+            }
+
+            return accounts;
+        }
+    }
+
     public static class AddAttrsTask extends AsyncTask<Attributes, Void, Void> {
 
         @Override

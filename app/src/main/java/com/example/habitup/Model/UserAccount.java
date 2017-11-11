@@ -2,8 +2,6 @@ package com.example.habitup.Model;
 
 import android.media.Image;
 
-import java.util.ArrayList;
-
 /**
  * @author gojeffcho
  *
@@ -134,7 +132,7 @@ public class UserAccount {
         this.uid = id;
     }
 
-    public void setUID(int uid) {
+    public void setUID(int uid) {this.uid = uid;
         // TODO: Implement
     }
 
