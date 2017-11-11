@@ -133,7 +133,7 @@ public class ViewHabitActivity extends BaseActivity {
 
         // Get position and unhighlight selected list item
         if (requestCode == EDIT_HABIT) {
-            position = data.getExtras().getInt("position");
+//            position = data.getExtras().getInt("position");
         }
     }
 

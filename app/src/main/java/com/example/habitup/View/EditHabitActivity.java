@@ -21,13 +21,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.habitup.Controller.ElasticSearchController;
+import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Attributes;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.R;
 
 import java.text.DateFormatSymbols;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -114,14 +118,20 @@ public class EditHabitActivity extends AppCompatActivity {
         attrSpinner = (Spinner) findViewById(R.id.habit_attr_spinner);
 
         // Set up attribute list
+        int entryIndex = 0;
         String[] entries = Attributes.getAttributeNames();
         AttributeAdapter adapter = new AttributeAdapter(this, R.layout.attribute_item, entries);
         attrSpinner.setAdapter(adapter);
         attrSpinner.setOnItemSelectedListener(attributeListener);
 
-        // TODO: Set spinner attribute to the habit's attribute (get int position from entries)
-        // Just setting it to 2 for now so wrong color will currently be set in View Habit
-        attrSpinner.setSelection(2);
+        // Set spinner attribute to the habit's attribute
+        for (int i = 0; i < entries.length; ++i) {
+            if (entries[i].equals(habit.getHabitAttribute())) {
+                entryIndex = i;
+            }
+        }
+
+        attrSpinner.setSelection(entryIndex);
 
         // Check the boxes according to the habit's schedule
         checkBoxMon = (CheckBox) findViewById(R.id.monday);
@@ -142,7 +152,6 @@ public class EditHabitActivity extends AppCompatActivity {
         checkBoxSat.setChecked(schedule[6]);
         checkBoxSun.setChecked(schedule[7]);
 
-
         // Open the date picker dialog clicking calendar button
         dateLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,13 +168,94 @@ public class EditHabitActivity extends AppCompatActivity {
             }
         });
 
-        // TODO: Implement save button
-        saveButton = (Button) findViewById(R.id.save_edit_habit);
-
         // Disable edit fields if viewing activity
         if (action == ViewHabitActivity.VIEW_HABIT) {
             viewMode();
         }
+
+        // Save button functionality
+        saveButton = (Button) findViewById(R.id.save_edit_habit);
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+
+            /**
+             * Activated when save button is clicked
+             * @param v View
+             */
+            public void onClick(View v) {
+                setResult(RESULT_OK);
+
+                // Get all the values
+                String habitName = editName.getText().toString();
+                String habitReason = editReason.getText().toString();
+                String dateString = dateView.getText().toString();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy");
+                LocalDate startDate = LocalDate.parse(dateString, formatter);
+                String attribute = attrSpinner.getSelectedItem().toString();
+                boolean schedule[] = new boolean[8];
+                schedule[0] = Boolean.FALSE;
+                schedule[1] = checkBoxMon.isChecked();
+                schedule[2] = checkBoxTue.isChecked();
+                schedule[3] = checkBoxWed.isChecked();
+                schedule[4] = checkBoxThu.isChecked();
+                schedule[5] = checkBoxFri.isChecked();
+                schedule[6] = checkBoxSat.isChecked();
+                schedule[7] = checkBoxSun.isChecked();
+
+                Boolean habitOK = Boolean.TRUE;
+
+                try {
+                    habit.setHabitName(habitName);
+                } catch (IllegalArgumentException e) {
+                    // do stuff
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    habitOK = Boolean.FALSE;
+                }
+
+                try {
+                    habit.setReason(habitReason);
+                } catch (IllegalArgumentException e) {
+                    // do stuff
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    habitOK = Boolean.FALSE;
+                }
+
+                try {
+                    habit.setStartDate(startDate);
+                } catch (IllegalArgumentException e) {
+                    // do stuff
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    habitOK = Boolean.FALSE;
+                }
+
+                try {
+                    habit.setAttribute(attribute);
+                } catch (IllegalArgumentException e) {
+                    // do stuff
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    habitOK = Boolean.FALSE;
+                }
+
+                try {
+                    habit.setSchedule(schedule);
+                } catch (IllegalArgumentException e) {
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    habitOK = Boolean.FALSE;
+                }
+
+                if (habitOK) {
+                    // Pass to the controller
+                    if (HabitUpController.addHabit(habit) == 0) {
+                        Intent result = new Intent();
+                        setResult(Activity.RESULT_OK, result);
+                        finish();
+                    } else {
+                        Toast.makeText(getBaseContext(), "There was an error updating the Habit.", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
+
     }
 
     /**
