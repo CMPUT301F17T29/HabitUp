@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.habitup.Controller.ElasticSearchController;
+import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
@@ -141,7 +142,7 @@ public class AddHabitEventActivity extends AppCompatActivity {
                 // TODO: M5 get location here
                 Bitmap photo = ((BitmapDrawable) ((ImageView) findViewById(R.id.taken_image)).getDrawable()).getBitmap();
 
-                int uid = HabitUpController.getCurrentUID();
+                int uid = HabitUpApplication.getCurrentUID();
                 int hid = 0; // TODO DEBUG REMOVE
 //                int hid = ElasticSearchController (look up habit to get hid);
 

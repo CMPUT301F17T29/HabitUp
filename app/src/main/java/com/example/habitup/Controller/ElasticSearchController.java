@@ -46,17 +46,18 @@ public class ElasticSearchController {
                     // where is the client?
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
-
+                        Log.i("HabitUpDEBUG", "AddUsersTask Success");
                     }
 
                     else{
                         Log.i("Error", "Elasticsearch was not able to add the User");
+                        throw new RuntimeException("Failed to add user.");
                     }
                 }
 
                 catch (Exception e) {
                     Log.i("Error", "The application failed to build and send the User");
-
+                    throw new RuntimeException("Failed to add user.");
                 }
             }
 
@@ -125,7 +126,7 @@ public class ElasticSearchController {
                     // where is the client?
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
-
+                        Log.i("HabitUpDEBUG", "AddAttr SUCCESS");
                     }
 
                     else{

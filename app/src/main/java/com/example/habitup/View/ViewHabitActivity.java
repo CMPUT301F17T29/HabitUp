@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.R;
@@ -44,7 +45,7 @@ public class ViewHabitActivity extends BaseActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.habit_bottom_nav);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        habits = HabitUpController.getCurrentUser().getHabits().getHabitArrayList();
+        habits = HabitUpApplication.getCurrentUser().getHabits().getHabitArrayList();
 
         // Initialize habits list view
         habitListView = (ListView) findViewById(R.id.OldHabitLists);
@@ -120,7 +121,7 @@ public class ViewHabitActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
 
-        habits = HabitUpController.getCurrentUser().getHabits().getHabitArrayList();
+        habits = HabitUpApplication.getCurrentUser().getHabits().getHabitArrayList();
         adapter.notifyDataSetChanged();
 
         if (habits.size() == 0) {
