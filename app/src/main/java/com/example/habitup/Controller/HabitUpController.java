@@ -57,6 +57,8 @@ public class HabitUpController {
 
     static public int addHabitEvent(HabitEvent event) {
         Log.d("EVENT:", "Adding HabitEvent to HID #" + String.valueOf(event.getHID()));
+        ElasticSearchController.AddHabitEventsTask addHabitEvent = new ElasticSearchController.AddHabitEventsTask();
+        addHabitEvent.execute(event);
         return 0;
     }
 

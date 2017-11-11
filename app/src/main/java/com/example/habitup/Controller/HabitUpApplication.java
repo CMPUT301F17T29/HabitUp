@@ -14,6 +14,7 @@ public class HabitUpApplication {
 
     static public UserAccount getCurrentUser() { return currentUser; }
     static public int getCurrentUID() { return currentUser.getUID(); }
+    static public String getCurrentUIDAsString() { return String.valueOf(currentUser.getUID()); }
 
     public void testAccount() {
         // DEBUG
