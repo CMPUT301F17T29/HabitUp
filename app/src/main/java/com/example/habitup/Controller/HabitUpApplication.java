@@ -9,6 +9,25 @@ import com.example.habitup.Model.UserAccountList;
 
 public class HabitUpApplication {
 
+    static UserAccount currentUser;
+    static Boolean setupDone = Boolean.FALSE;
+
+    static public UserAccount getCurrentUser() { return currentUser; }
+    static public int getCurrentUID() { return currentUser.getUID(); }
+
+    public void testAccount() {
+        // DEBUG
+        if (!setupDone) {
+            currentUser = new UserAccount("gojeffcho", "Jeff Cho", null);
+            currentUser.getAttributes().setValue("Mental", 5);
+            currentUser.getAttributes().setValue("Discipline", -10);
+            currentUser.increaseXP(4);
+            setupDone = Boolean.TRUE;
+        }
+    }
+
+    static public void setCurrentUser(UserAccount user) { currentUser = user; }
+
     static public int addUserAccount(UserAccount user) {
 
         // Try: ElasticSearch put user
@@ -17,6 +36,7 @@ public class HabitUpApplication {
 
         ElasticSearchController.AddAttrsTask addAttr = new ElasticSearchController.AddAttrsTask();
         Attributes attrs = new Attributes(user.getUID());
+//        attrs.setValue("Mental", 5); // Test
         addAttr.execute(attrs);
 
         return 0;
