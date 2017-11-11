@@ -2,34 +2,46 @@ package com.example.habitup.Controller;
 
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
 import com.example.habitup.Model.UserAccount;
 
+import java.util.ArrayList;
+
 public class HabitUpController {
 
-    static UserAccount currentUser;
-    static Boolean setupDone = Boolean.FALSE;
+
 
     public HabitUpController() {
 
     }
 
-    public void testAccount() {
-        // DEBUG
-        if (!HabitUpController.setupDone) {
-            currentUser = new UserAccount("gojeffcho", "Jeff Cho", null);
-            currentUser.getAttributes().setValue("Mental", 5);
-            currentUser.getAttributes().setValue("Discipline", -10);
-            currentUser.increaseXP(4);
-            HabitUpController.setupDone = Boolean.TRUE;
+    static public ArrayList<Habit> getTodaysHabits() {
+        ArrayList<Habit> habits = new ArrayList<>();
+        ArrayList<Habit> allHabits;
+        ElasticSearchController.GetUserHabitsTask getUserHabits = new ElasticSearchController.GetUserHabitsTask();
+        getUserHabits.execute(String.valueOf(HabitUpApplication.getCurrentUID()));
+
+        try {
+            allHabits = getUserHabits.get();
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "HUCont - couldn't get Habits");
+            return null;
         }
+
+        for (Habit habit : allHabits) {
+            Log.i("HabitUpDEBUG", "getTodaysHabits: " + habit.getHabitName());
+            if (habit.isTodayHabit()) { habits.add(habit); }
+        }
+
+        return habits;
     }
 
     static public int addHabit(Habit h) {
-        currentUser.getHabits().add(h);
-        Log.d("DEBUG", "Adding habit " + h.getHabitName());
+        ElasticSearchController.AddHabitsTask addHabit = new ElasticSearchController.AddHabitsTask();
+        addHabit.execute(h);
         return 0;
     }
 
@@ -45,6 +57,8 @@ public class HabitUpController {
 
     static public int addHabitEvent(HabitEvent event) {
         Log.d("EVENT:", "Adding HabitEvent to HID #" + String.valueOf(event.getHID()));
+        ElasticSearchController.AddHabitEventsTask addHabitEvent = new ElasticSearchController.AddHabitEventsTask();
+        addHabitEvent.execute(event);
         return 0;
     }
 
@@ -58,6 +72,5 @@ public class HabitUpController {
         return 0;
     }
 
-    static public UserAccount getCurrentUser() { return currentUser; }
-    static public int getCurrentUID() { return currentUser.getUID(); }
+
 }

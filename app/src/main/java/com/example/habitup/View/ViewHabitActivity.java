@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +16,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.habitup.Controller.ElasticSearchController;
+import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.R;
@@ -44,7 +47,15 @@ public class ViewHabitActivity extends BaseActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.habit_bottom_nav);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        habits = HabitUpController.getCurrentUser().getHabits().getHabitArrayList();
+//        habits = HabitUpApplication.getCurrentUser().getHabits().getHabitArrayList();
+
+        ElasticSearchController.GetUserHabitsTask getUserHabits = new ElasticSearchController.GetUserHabitsTask();
+        getUserHabits.execute(String.valueOf(HabitUpApplication.getCurrentUID()));
+        try {
+            habits = getUserHabits.get();
+        } catch (Exception e) {
+            Toast.makeText(getBaseContext(), "Error retrieving Habits.", Toast.LENGTH_LONG).show();
+        }
 
         // Initialize habits list view
         habitListView = (ListView) findViewById(R.id.OldHabitLists);
@@ -69,6 +80,58 @@ public class ViewHabitActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+//        habits = HabitUpApplication.getCurrentUser().getHabits().getHabitArrayList();
+
+        ElasticSearchController.GetUserHabitsTask getUserHabits = new ElasticSearchController.GetUserHabitsTask();
+        getUserHabits.execute(String.valueOf(HabitUpApplication.getCurrentUID()));
+        try {
+            habits = getUserHabits.get();
+        } catch (Exception e) {
+            Toast.makeText(getBaseContext(), "Error retrieving Habits.", Toast.LENGTH_LONG).show();
+        }
+
+        adapter.notifyDataSetChanged();
+
+        if (habits.size() == 0) {
+            TextView subHeading = (TextView) findViewById(R.id.habits_subheading);
+            subHeading.setText("You currently have no habits.");
+        }
+
+        // Highlight habits in drawer
+        navigationView.setCheckedItem(R.id.habits);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Log.i("HabitUpDEBUG", "OnActivityResult in HabitView");
+
+        ElasticSearchController.GetUserHabitsTask getUserHabits = new ElasticSearchController.GetUserHabitsTask();
+        getUserHabits.execute(String.valueOf(HabitUpApplication.getCurrentUID()));
+        try {
+            habits = getUserHabits.get();
+        } catch (Exception e) {
+            Toast.makeText(getBaseContext(), "Error retrieving Habits.", Toast.LENGTH_LONG).show();
+        }
+
+        adapter.notifyDataSetChanged();
+
+        if (habits.size() == 0) {
+            TextView subHeading = (TextView) findViewById(R.id.habits_subheading);
+            subHeading.setText("You currently have no habits.");
+        }
+
+        // Get position and unhighlight selected list item
+        if (requestCode == EDIT_HABIT) {
+            position = data.getExtras().getInt("position");
+        }
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -104,32 +167,6 @@ public class ViewHabitActivity extends BaseActivity {
         editIntent.putExtra("position", position);
         editIntent.putExtra("action", requestCode);
         startActivityForResult(editIntent, requestCode);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // Get position and unhighlight selected list item
-        if (requestCode == EDIT_HABIT) {
-            position = data.getExtras().getInt("position");
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        habits = HabitUpController.getCurrentUser().getHabits().getHabitArrayList();
-        adapter.notifyDataSetChanged();
-
-        if (habits.size() == 0) {
-            TextView subHeading = (TextView) findViewById(R.id.habits_subheading);
-            subHeading.setText("You currently have no habits.");
-        }
-
-        // Highlight habits in drawer
-        navigationView.setCheckedItem(R.id.habits);
     }
 
     @Override

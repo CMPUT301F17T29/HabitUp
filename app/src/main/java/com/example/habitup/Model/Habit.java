@@ -1,6 +1,11 @@
 package com.example.habitup.Model;
 
 
+import android.util.Log;
+import android.widget.Toast;
+
+import com.example.habitup.Controller.ElasticSearchController;
+
 import java.time.LocalDate;
 
 public class Habit {
@@ -35,7 +40,10 @@ public class Habit {
     /**
      * Empty constructor
      */
-    public Habit() { }
+    public Habit(int uid) {
+        this.uid = uid;
+        setUniqueHID();
+    }
 
     public Habit(int uid, String name, String reason, String attribute, LocalDate startDate, boolean[] schedule)
             throws IllegalArgumentException, IllegalStateException {
@@ -163,10 +171,15 @@ public class Habit {
 
     public void setUniqueHID() {
         // Do ElasticSearch stuff
+        ElasticSearchController.GetMaxHidTask maxHid = new ElasticSearchController.GetMaxHidTask();
+        maxHid.execute();
         int hid;
-
-        // DEBUG - suppress error
-        hid = 0;
+        try {
+            hid = maxHid.get();
+        } catch (Exception e) {
+            Log.d("HabitUpDEBUG", "ERROR getting MaxHID");
+            hid = -1;
+        }
 
         // Set the HID
         setHID(hid);
@@ -176,7 +189,7 @@ public class Habit {
      * setHID
      * Sets the Habit's unique identifier
      */
-    public void setHID(int hid) { this.hid = hid; }
+    private void setHID(int hid) { this.hid = hid; }
 
     /**
      * setHabitName
