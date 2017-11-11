@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.habitup.Controller.ElasticSearchController;
+import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
@@ -33,7 +34,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class AddHabitEventActivity extends AppCompatActivity {
 
@@ -77,12 +80,25 @@ public class AddHabitEventActivity extends AppCompatActivity {
 
         // Set up habit types list
         ArrayList<String> habitNames = new ArrayList<>();
+        final HashMap<String, Integer> hids = new HashMap<>();
 
-        // TODO: Retrieve habits from current user's HabitList
-        ArrayList<Habit> habitList = new ArrayList<Habit>();
+        // Retrieve habits from current user
+        ArrayList<Habit> habitList;
+        ElasticSearchController.GetUserHabitsTask getUserHabits = new ElasticSearchController.GetUserHabitsTask();
+        getUserHabits.execute(String.valueOf(HabitUpApplication.getCurrentUID()));
+        try {
+            habitList = getUserHabits.get();
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "AddHabitEvent - couldn't get User Habits");
+            habitList = new ArrayList<>();
+        }
+
+        // Populate habitNames, hids for dropdown menu and back-translation to Habit
         for (Habit habit : habitList) {
             habitNames.add(habit.getHabitName());
+            hids.put(habit.getHabitName(), habit.getHID());
         }
+
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, habitNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         habitSpinner.setAdapter(adapter);
@@ -136,14 +152,16 @@ public class AddHabitEventActivity extends AppCompatActivity {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy");
                 LocalDate completeDate = LocalDate.parse(completeDateString, formatter);
 
-                Log.i("DATE:", completeDate.toString()); // TODO REMOVE
+                Bitmap photo = null;
 
                 // TODO: M5 get location here
-                Bitmap photo = ((BitmapDrawable) ((ImageView) findViewById(R.id.taken_image)).getDrawable()).getBitmap();
+                if ( ((ImageView) findViewById(R.id.taken_image)).getDrawable() != null ) {
+                    photo = ((BitmapDrawable) ((ImageView) findViewById(R.id.taken_image)).getDrawable()).getBitmap();
+                }
 
-                int uid = HabitUpController.getCurrentUID();
-                int hid = 0; // TODO DEBUG REMOVE
-//                int hid = ElasticSearchController (look up habit to get hid);
+                int uid = HabitUpApplication.getCurrentUID();
+                int hid = hids.get(habitType);
+                Log.i("HabitUpDEBUG", "habitType " + habitType + " is HID " + hid);
 
                 HabitEvent newEvent = new HabitEvent(uid, hid);
                 Boolean eventOK = Boolean.TRUE;
@@ -175,9 +193,7 @@ public class AddHabitEventActivity extends AppCompatActivity {
 
                 if (eventOK) {
                     // Pass to the controller
-                    HabitUpController hupCtl = new HabitUpController();
-
-                    if (hupCtl.addHabitEvent(newEvent) == 0) {
+                    if (HabitUpController.addHabitEvent(newEvent) == 0) {
                         Intent result = new Intent();
                         setResult(Activity.RESULT_OK, result);
                         finish();

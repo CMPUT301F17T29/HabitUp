@@ -1,7 +1,5 @@
 package com.example.habitup.Model;
 
-import android.content.res.Resources;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,7 +41,7 @@ public class Attributes {
      * Attributes constructor, which takes the class variable attributeNames
      * and populates an initialized attributeMap with default values of 0.
      */
-    public Attributes(int uid) {} {
+    public Attributes(int uid) {
 
         this.uid = uid;
         attributeMap = new HashMap<String,Integer>();
@@ -86,6 +84,8 @@ public class Attributes {
     public static String[] getAttributeNames() {
         return attributeNames;
     }
+
+    public int getUid(){return this.uid;}
 
     /**
      * Return the number of attributes

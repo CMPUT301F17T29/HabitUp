@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Model.Attributes;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
@@ -49,17 +50,28 @@ public class EventListAdapter extends ArrayAdapter<HabitEvent> {
 
         HabitEvent event = events.get(position);
 
-//        Habit eventHabit = event.getHabit();
-//        String eventName = eventHabit.getHabitName();
-//        String eventAttribute = eventHabit.getHabitAttribute();
-//        String attributeColour = Attributes.getColour(eventAttribute);
+        // Get the Habit from the HabitEvent
+        Habit eventHabit;
+        ElasticSearchController.GetHabitsTask getHabit = new ElasticSearchController.GetHabitsTask();
+        getHabit.execute(String.valueOf(event.getHID()));
+        try {
+            eventHabit = getHabit.get().get(0);
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "EventListAdaptor - couldn't get Habit");
+            eventHabit = new Habit(-1);
+            eventHabit.setHabitName("ERROR");
+        }
+
+        String eventName = eventHabit.getHabitName();
+        String eventAttribute = eventHabit.getHabitAttribute();
+        String attributeColour = Attributes.getColour(eventAttribute);
         LocalDate eventDate = event.getCompletedate();
         String eventComment = event.getComment();
 
         // Set habit name
         TextView eventNameView = v.findViewById(R.id.event_name);
-//        eventNameView.setText(eventName);
-//        eventNameView.setTextColor(Color.parseColor(attributeColour));
+        eventNameView.setText(eventName);
+        eventNameView.setTextColor(Color.parseColor(attributeColour));
 
         // Set event date
         TextView eventDateView = v.findViewById(R.id.event_date);

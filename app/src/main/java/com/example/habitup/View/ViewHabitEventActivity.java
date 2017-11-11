@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -11,6 +12,8 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.habitup.Controller.ElasticSearchController;
+import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
 import com.example.habitup.R;
@@ -36,8 +39,15 @@ public class ViewHabitEventActivity extends BaseActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.event_bottom_nav);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        // TODO: Retrieve events from HabitEventList model
-        events = new ArrayList<HabitEvent>();
+        // Retrieve events from ES for user
+        ElasticSearchController.GetHabitEventsByUidTask getHabitEvents = new ElasticSearchController.GetHabitEventsByUidTask();
+        getHabitEvents.execute(HabitUpApplication.getCurrentUIDAsString());
+        try {
+            events = getHabitEvents.get();
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "ViewHabitEvent - Couldn't get HabitEvents");
+        }
+
         eventListView = (ListView) findViewById(R.id.event_list);
 
         // Date format for displaying event date
@@ -46,6 +56,8 @@ public class ViewHabitEventActivity extends BaseActivity {
         // Set up list view adapter for habit events
         eventAdapter = new EventListAdapter(this, R.layout.event_list_item, events);
         eventListView.setAdapter(eventAdapter);
+
+        eventAdapter.notifyDataSetChanged();
 
         // Display if there are no events
         if (events.size() == 0) {

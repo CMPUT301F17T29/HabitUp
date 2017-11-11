@@ -12,14 +12,22 @@ public class HabitEventList {
 
     // Members
 //    private ArrayList<HabitEvent> habitList;
+    private int uid;
+    private int hid;
     private PriorityQueue<HabitEvent> habitList;
 
     /**
      * Constructor: create new ArrayList<> (current implementation)
      */
-    public HabitEventList() {
+    public HabitEventList(int uid, int hid) {
+        this.uid = uid;
+        this.hid = hid;
         habitList = new PriorityQueue<>();
     }
+
+    public int getUID() { return this.uid; }
+
+    public int getHID() { return this.hid; }
 
     /**
      * Get the number of HabitEvents in the HabitEventList

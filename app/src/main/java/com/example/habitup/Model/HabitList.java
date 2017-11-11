@@ -9,18 +9,22 @@ import java.util.ArrayList;
 
 public class HabitList {
 
+    private int uid;
     private ArrayList<Habit> habits;
 
     /**
      * Constructor
      */
-    public HabitList() {
+    public HabitList(int uid) {
+        this.uid = uid;
         habits = new ArrayList<>();
     }
 
+    public int getUID() { return this.uid; }
+
     /**
      * Add a Habit to the HabitList if it is not already there
-     * Return True if unique and added; return False if not
+     * Return 0 if unique and added; return -1 if not
      * @param h Habit
      * @return -1 if already in list, 0 if successful
      */

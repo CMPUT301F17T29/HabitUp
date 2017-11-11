@@ -25,7 +25,7 @@ public class ElasticSearchController {
 
     private static JestDroidClient client;
 
-    private static final String serverURL = "http://cmput301.softwareprocess.es:8080";
+    private static final String serverURL = "http://cmput301.softwareprocess.es:8080/";
     private static final String db = "team29_habitup";
     private static final String userType = "user";
     private static final String attrType = "attributes";
@@ -37,30 +37,77 @@ public class ElasticSearchController {
 
         @Override
         protected Void doInBackground(UserAccount... users) {
-
             verifySettings();
 
             for (UserAccount user : users) {
-                Index index = new Index.Builder(user).index(db).type(userType).build();
-
+                Index index = new Index.Builder(user).index(db).type(userType).id(Integer.toString(user.getUID())).build();
 
                 try {
                     // where is the client?
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
-
-                        //set id of user
+                        Log.i("HabitUpDEBUG", "AddUsersTask Success");
                     }
 
                     else{
                         Log.i("Error", "Elasticsearch was not able to add the User");
+                        throw new RuntimeException("Failed to add user.");
                     }
-                } catch (Exception e) {
+                }
+
+                catch (Exception e) {
                     Log.i("Error", "The application failed to build and send the User");
+                    throw new RuntimeException("Failed to add user.");
                 }
             }
 
             return null;
+        }
+    }
+
+    /* Given a username, returns the user object corresponding to it */
+    public static class GetUser extends AsyncTask<String, Void, ArrayList<UserAccount>> {
+        @Override
+        protected ArrayList<UserAccount> doInBackground(String... search_parameters) {
+            verifySettings();
+
+            ArrayList<UserAccount> accounts = new ArrayList<>();
+            String UserQuery;
+
+            if (search_parameters[0].equals("")){
+                UserQuery = search_parameters[0];
+            }
+
+            else{
+                UserQuery = "{\"query\": {\"match\" : { \"username\" : \"" + search_parameters[0] + "\" }}}";
+            }
+
+            //Log.i("Debug", "username to search for is: "+ search_parameters[0]);
+
+            Search search = new Search.Builder(UserQuery)
+                    .addIndex(db)
+                    .addType(userType)
+                    .build();
+
+            try {
+                // Send request to the server to get the user
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()){
+
+                    //Log.i("DeBug", "Succeeded in finding a user");
+
+                    List<UserAccount> foundUsers = result.getSourceAsObjectList(UserAccount.class);
+                    accounts.addAll(foundUsers);
+                }
+                else{
+                    Log.i("Error", "The search query failed to find any tweets that matched");
+                }
+            }
+            catch (Exception e) {
+                Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
+            }
+
+            return accounts;
         }
     }
 
@@ -72,15 +119,14 @@ public class ElasticSearchController {
             verifySettings();
 
             for (Attributes attr : attrs) {
-                Index index = new Index.Builder(attr).index(db).type(attrType).build();
+                Index index = new Index.Builder(attr).index(db).type(attrType).id(Integer.toString(attr.getUid())).build();
 
 
                 try {
                     // where is the client?
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
-
-                        //set id of user
+                        Log.i("HabitUpDEBUG", "AddAttr SUCCESS");
                     }
 
                     else{
@@ -95,6 +141,49 @@ public class ElasticSearchController {
         }
     }
 
+    public static class GetAttributesTask extends AsyncTask<String, Void, ArrayList<Attributes>> {
+        @Override
+        protected ArrayList<Attributes> doInBackground(String... search_parameters) {
+            verifySettings();
+
+            ArrayList<Attributes> attributes = new ArrayList<>();
+            String query;
+
+            if (search_parameters[0].equals("")){
+                query = search_parameters[0];
+            }
+
+            else{
+                query = "{\"query\": {\"match\" : { \"uid\" : \"" + search_parameters[0] + "\" }}}";
+            }
+
+            //Log.i("Debug", "username to search for is: "+ search_parameters[0]);
+
+            Search search = new Search.Builder(query)
+                    .addIndex(db)
+                    .addType(attrType)
+                    .build();
+
+            try {
+                // Send request to the server to get the user
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()){
+
+                    List<Attributes> foundAttr = result.getSourceAsObjectList(Attributes.class);
+                    attributes.addAll(foundAttr);
+                }
+                else{
+                    Log.i("Error", "The search query failed to find any tweets that matched");
+                }
+            }
+            catch (Exception e) {
+                Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
+            }
+
+            return attributes;
+        }
+    }
+
     public static class AddHabitsTask extends AsyncTask<Habit, Void, Void> {
 
         @Override
@@ -103,7 +192,7 @@ public class ElasticSearchController {
             verifySettings();
 
             for (Habit habit : habits) {
-                Index index = new Index.Builder(habit).index(db).type(habitType).build();
+                Index index = new Index.Builder(habit).index(db).type(habitType).id(Integer.toString(habit.getHID())).build();
 
 
                 try {
@@ -121,6 +210,137 @@ public class ElasticSearchController {
             return null;
         }
 
+    }
+
+    //get Habit by name
+    //returns an arraylist, should be length 1 with arrayList[0] being the ahbit
+    public static class GetHabitsTask extends AsyncTask<String, Void, ArrayList<Habit>>{
+
+        @Override
+        protected ArrayList<Habit> doInBackground(String... Hids) {
+            verifySettings();
+            String UserQuery;
+            ArrayList<Habit> habits = new ArrayList<Habit>();
+
+            //Build the query
+            //String query = "{\n" +
+            //" \"query\": { \"term\": {\"username\":\"" + usernames[0] + "\"} }\n" +"}";
+
+            if (Hids[0].equals("")){
+                UserQuery = Hids[0];
+            }
+
+            else{
+                UserQuery = "{\"query\": {\"match\" : { \"hid\" : \"" + Hids[0] + "\" }}}";
+            }
+
+
+            Search search = new Search.Builder(UserQuery).addIndex(db).addType(habitType).build();
+
+            try {
+
+                // TODO get the results of the query
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()) {
+                    List<Habit> foundHabit = result.getSourceAsObjectList(Habit.class);
+                    habits.addAll(foundHabit);
+
+                } else {
+                    Log.i("Error2", "Something went wrong when we tried to communicate with the elasticsearch server");
+                }
+            }
+            catch (Exception e) {
+                Log.i("Error1", "Something went wrong when we tried to communicate with the elasticsearch server!");
+            }
+
+            return habits;
+        }
+    }
+
+    public static class GetUserHabitsTask extends AsyncTask<String, Void, ArrayList<Habit>>{
+
+        @Override
+        protected ArrayList<Habit> doInBackground(String... uids) {
+            verifySettings();
+            String UserQuery;
+            ArrayList<Habit> habits = new ArrayList<Habit>();
+
+            //Build the query
+            //String query = "{\n" +
+            //" \"query\": { \"term\": {\"username\":\"" + usernames[0] + "\"} }\n" +"}";
+
+            if (uids[0].equals("")){
+                UserQuery = uids[0];
+            }
+
+            else{
+                UserQuery = "{\"query\": {\"match\" : { \"uid\" : \"" + uids[0] + "\" }}}";
+            }
+
+
+            Search search = new Search.Builder(UserQuery).addIndex(db).addType(habitType).build();
+
+            try {
+
+                // TODO get the results of the query
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()) {
+                    List<Habit> foundHabit = result.getSourceAsObjectList(Habit.class);
+                    habits.addAll(foundHabit);
+
+                } else {
+                    Log.i("Error2", "Something went wrong when we tried to communicate with the elasticsearch server");
+                }
+            }
+            catch (Exception e) {
+                Log.i("Error1", "Something went wrong when we tried to communicate with the elasticsearch server!");
+            }
+
+            return habits;
+        }
+    }
+
+    // TODO possibly remove
+    public static class GetHabitsByUIDHIDTask extends AsyncTask<String, Void, Integer>{
+
+        @Override
+        protected Integer doInBackground(String... ids) {
+            verifySettings();
+            String UserQuery;
+
+            if (ids[0].equals("") || ids[1].equals("")){
+                UserQuery = ids[0];
+            }
+
+            else{
+                UserQuery = "{\"query\": " +
+                                "{\"match\" : " +
+                                    "{ \"uid\" : \"" + ids[0] + "\" }" +
+                                    "{ \"hid\" : \"" + ids[1] + "\" }" +
+                                "}" +
+                            "}";
+            }
+
+
+            Search search = new Search.Builder(UserQuery).addIndex(db).addType(habitType).build();
+
+            try {
+
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()) {
+                    List<Habit> foundHabit = result.getSourceAsObjectList(Habit.class);
+//                    habits.addAll(foundHabit);
+
+                } else {
+                    Log.i("Error2", "Something went wrong when we tried to communicate with the elasticsearch server");
+                }
+            }
+            catch (Exception e) {
+                Log.i("Error1", "Something went wrong when we tried to communicate with the elasticsearch server!");
+            }
+
+            return 1;
+        }
     }
 
     public static class AddHabitEventsTask extends AsyncTask<HabitEvent, Void, Void> {
@@ -150,126 +370,27 @@ public class ElasticSearchController {
 
     }
 
-    public static class GetUsersTask extends AsyncTask<String, Void, ArrayList<UserAccount>>{
+    //Get HabitEvent by UID
+    public static class GetHabitEventsByUidTask extends AsyncTask<String, Void, ArrayList<HabitEvent>>{
 
         @Override
-        protected ArrayList<UserAccount> doInBackground(String... usernames) {
-            verifySettings();
-
-            ArrayList<UserAccount> users = new ArrayList<UserAccount>();
-
-            //Build the query
-            //String query = "{\n" +
-                   // " \"query\": { \"term\": {\"username\":\"" + usernames[0] + "\"} }\n" +"}";
-
-            Search search = new Search.Builder(usernames[0]).addIndex(db).addType(userType).build();
-
-            try {
-
-                // TODO get the results of the query
-                SearchResult result = client.execute(search);
-                if (result.isSucceeded()) {
-                    List<UserAccount> foundUser = result.getSourceAsObjectList(UserAccount.class);
-                    users.addAll(foundUser);
-
-                } else {
-                    Log.i("Error2", "Something went wrong when we tried to communicate with the elasticsearch server");
-                }
-            }
-            catch (Exception e) {
-                Log.i("Error1", "Something went wrong when we tried to communicate with the elasticsearch server!");
-            }
-
-            return users;
-        }
-    }
-
-    public static class GetAttrsTask extends AsyncTask<String, Void, ArrayList<Attributes>>{
-
-        @Override
-        protected ArrayList<Attributes> doInBackground(String... attrsToFind) {
-            verifySettings();
-
-            ArrayList<Attributes> attrs = new ArrayList<>();
-
-            Search search = new Search.Builder(attrsToFind[0]).addIndex(db).addType(attrType).build();
-
-            try {
-
-                // TODO get the results of the query
-                SearchResult result = client.execute(search);
-                if (result.isSucceeded()) {
-                    List<Attributes> foundAttrs = result.getSourceAsObjectList(Attributes.class);
-                    attrs.addAll(foundAttrs);
-
-                } else {
-                    Log.i("Error2", "Something went wrong when we tried to communicate with the elasticsearch server");
-                }
-            }
-            catch (Exception e) {
-                Log.i("Error1", "Something went wrong when we tried to communicate with the elasticsearch server!");
-            }
-
-            return attrs;
-        }
-    }
-
-    //get Habit by name
-    //returns an arraylist, should be length 1 with arrayList[0] being the ahbit
-    public static class GetHabitsTask extends AsyncTask<String, Void, ArrayList<Habit>>{
-
-        @Override
-        protected ArrayList<Habit> doInBackground(String... habitnames) {
-            verifySettings();
-
-            ArrayList<Habit> habits = new ArrayList<Habit>();
-
-            //Build the query
-            //String query = "{\n" +
-                    //" \"query\": { \"term\": {\"username\":\"" + usernames[0] + "\"} }\n" +"}";
-
-            Search search = new Search.Builder(habitnames[0]).addIndex(db).addType(habitType).build();
-
-            try {
-
-                // TODO get the results of the query
-                SearchResult result = client.execute(search);
-                if (result.isSucceeded()) {
-                    List<Habit> foundHabit = result.getSourceAsObjectList(Habit.class);
-                    habits.addAll(foundHabit);
-
-                } else {
-                    Log.i("Error2", "Something went wrong when we tried to communicate with the elasticsearch server");
-                }
-            }
-            catch (Exception e) {
-                Log.i("Error1", "Something went wrong when we tried to communicate with the elasticsearch server!");
-            }
-
-            return habits;
-        }
-    }
-
-    //need HabitEvent ID
-    public static class GetHabitEventsTask extends AsyncTask<String, Void, ArrayList<HabitEvent>>{
-
-        @Override
-        protected ArrayList<HabitEvent> doInBackground(String... habitEventIds) {
+        protected ArrayList<HabitEvent> doInBackground(String... Uids) {
             verifySettings();
 
             ArrayList<HabitEvent> habitEvents = new ArrayList<HabitEvent>();
 
-            //Build the query
-            //String query = "{\n" +
-                    //" \"query\": { \"term\": {\"username\":\"" + usernames[0] + "\"} }\n" +"}";
+            Log.i("Debug", Uids[0]);
 
-            Search search = new Search.Builder(habitEventIds[0]).addIndex(db).addType(habitEventType).build();
+            String query = "{\"query\": {\"match\" : { \"uid\" : \"" + Uids[0] + "\" }}}";
+
+            Search search = new Search.Builder(query).addIndex(db).addType(habitEventType).build();
 
             try {
 
                 // TODO get the results of the query
                 SearchResult result = client.execute(search);
                 if (result.isSucceeded()) {
+                    Log.i("DeBug", "found some habit events");
                     List<HabitEvent> foundHabitEvent = result.getSourceAsObjectList(HabitEvent.class);
                     habitEvents.addAll(foundHabitEvent);
 
@@ -285,97 +406,27 @@ public class ElasticSearchController {
         }
     }
 
-    //gets all users in ES
-    public static class GetAllUsersTask extends AsyncTask<Void, Void, ArrayList<UserAccount>>{
+    //Get HabitEvent by UID
+    public static class GetHabitEventsByHidTask extends AsyncTask<String, Void, ArrayList<HabitEvent>>{
 
         @Override
-        protected ArrayList<UserAccount> doInBackground(Void... voids) {
-            verifySettings();
-
-            ArrayList<UserAccount> users = new ArrayList<UserAccount>();
-
-            //Build the query
-            //String query = "{\n" +
-            // " \"query\": { \"term\": {\"username\":\"" + usernames[0] + "\"} }\n" +"}";
-
-            Search search = new Search.Builder("").addIndex(db).addType(userType).build();
-
-            try {
-
-                // TODO get the results of the query
-                SearchResult result = client.execute(search);
-                if (result.isSucceeded()) {
-                    List<UserAccount> foundUser = result.getSourceAsObjectList(UserAccount.class);
-                    users.addAll(foundUser);
-
-                } else {
-                    Log.i("Error2", "Something went wrong when we tried to communicate with the elasticsearch server");
-                }
-            }
-            catch (Exception e) {
-                Log.i("Error1", "Something went wrong when we tried to communicate with the elasticsearch server!");
-            }
-
-            return users;
-        }
-    }
-
-
-    //get all Habits in ES
-    public static class GetAllHabitsTask extends AsyncTask<Void, Void, ArrayList<Habit>>{
-
-        @Override
-        protected ArrayList<Habit> doInBackground(Void ...voids) {
-            verifySettings();
-
-            ArrayList<Habit> habits = new ArrayList<Habit>();
-
-            //Build the query
-            //String query = "{\n" +
-            //" \"query\": { \"term\": {\"username\":\"" + usernames[0] + "\"} }\n" +"}";
-
-            Search search = new Search.Builder("").addIndex(db).addType(habitType).build();
-
-            try {
-
-                // TODO get the results of the query
-                SearchResult result = client.execute(search);
-                if (result.isSucceeded()) {
-                    List<Habit> foundHabit = result.getSourceAsObjectList(Habit.class);
-                    habits.addAll(foundHabit);
-
-                } else {
-                    Log.i("Error2", "Something went wrong when we tried to communicate with the elasticsearch server");
-                }
-            }
-            catch (Exception e) {
-                Log.i("Error1", "Something went wrong when we tried to communicate with the elasticsearch server!");
-            }
-
-            return habits;
-        }
-    }
-
-    //Gets all habit events in ES
-    public static class GetAllHabitEventsTask extends AsyncTask<Void, Void, ArrayList<HabitEvent>>{
-
-        @Override
-        protected ArrayList<HabitEvent> doInBackground(Void... voids) {
+        protected ArrayList<HabitEvent> doInBackground(String... Hids) {
             verifySettings();
 
             ArrayList<HabitEvent> habitEvents = new ArrayList<HabitEvent>();
 
-            //Build the query
-            //String query = "{\n" +
-            //" \"query\": { \"term\": {\"username\":\"" + usernames[0] + "\"} }\n" +"}";
+            Log.i("Debug", Hids[0]);
 
-            Search search = new Search.Builder("").addIndex(db).addType(habitEventType).build();
+            String query = "{\"query\": {\"match\" : { \"hid\" : \"" + Hids[0] + "\" }}}";
+
+            Search search = new Search.Builder(query).addIndex(db).addType(habitEventType).build();
 
             try {
 
                 // TODO get the results of the query
                 SearchResult result = client.execute(search);
                 if (result.isSucceeded()) {
+                    Log.i("DeBug", "found some habit events");
                     List<HabitEvent> foundHabitEvent = result.getSourceAsObjectList(HabitEvent.class);
                     habitEvents.addAll(foundHabitEvent);
 
@@ -390,11 +441,97 @@ public class ElasticSearchController {
             return habitEvents;
         }
     }
+
+    public static class GetMaxUidTask extends AsyncTask<Void, Void, Integer>{
+        Integer maxUid = 0;
+        @Override
+        protected Integer doInBackground(Void... voids){
+
+            String query = "{\n" +
+                    "  \"filter\" : {\n" +
+                    "    \"match_all\" : { }\n" +
+                    "  },\n" +
+                    "  \"sort\": [\n" +
+                    "    {\n" +
+                    "      \"uid\": {\n" +
+                    "        \"order\": \"desc\"\n" +
+                    "      }\n" +
+                    "    }\n" +
+                    "  ],\n" +
+                    "  \"size\": 1\n" +
+                    "}";
+
+            Search search = new Search.Builder(query).addIndex(db).addType(userType).build();
+
+            try {
+
+                // TODO get the results of the query
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()) {
+                    UserAccount foundUser = result.getSourceAsObject(UserAccount.class);
+                    maxUid = foundUser.getUID();
+
+                } else{
+                    return 0;
+                }
+            }
+            catch (Exception e) {
+                Log.i("Error1", "Something went wrong when we tried to communicate with the elasticsearch server!");
+            }
+
+            return ++maxUid;
+        }
+    }
+
+    public static class GetMaxHidTask extends AsyncTask<Void, Void, Integer>{
+        Integer maxHid = 0;
+
+        @Override
+        protected Integer doInBackground(Void... voids){
+
+            String query = "{\n" +
+                    "  \"filter\" : {\n" +
+                    "    \"match_all\" : { }\n" +
+                    "  },\n" +
+                    "  \"sort\": [\n" +
+                    "    {\n" +
+                    "      \"hid\": {\n" +
+                    "        \"order\": \"desc\"\n" +
+                    "      }\n" +
+                    "    }\n" +
+                    "  ],\n" +
+                    "  \"size\": 1\n" +
+                    "}";
+
+            Search search = new Search.Builder(query).addIndex(db).addType(habitType).build();
+
+            try {
+
+                // TODO get the results of the query
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()) {
+                    Habit foundHabit = result.getSourceAsObject(Habit.class);
+                    maxHid = foundHabit.getHID();
+
+                } else {
+                    return 0;
+                }
+            }
+
+            catch (Exception e) {
+                Log.i("Error1", "Something went wrong when we tried to communicate with the elasticsearch server!");
+            }
+
+            return ++maxHid;
+        }
+
+    }
+
 
 
     public static void verifySettings() {
         if (client == null) {
-            DroidClientConfig.Builder builder = new DroidClientConfig.Builder(serverURL);
+            DroidClientConfig.Builder builder = new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");
             DroidClientConfig config = builder.build();
 
             JestClientFactory factory = new JestClientFactory();
@@ -402,5 +539,6 @@ public class ElasticSearchController {
             client = (JestDroidClient) factory.getObject();
         }
     }
+
 
 }
