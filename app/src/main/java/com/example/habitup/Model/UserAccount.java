@@ -1,5 +1,6 @@
 package com.example.habitup.Model;
 
+import android.graphics.Bitmap;
 import android.media.Image;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class UserAccount {
      *
      * @author @gojeffcho
      */
-    public UserAccount(String username, String realname, Image photo) throws
+    public UserAccount(String username, String realname, Bitmap photo) throws
             IllegalArgumentException, IllegalStateException {
 
         this.setUniqueUID();
@@ -67,7 +68,7 @@ public class UserAccount {
      * Gets Image if one is associated to the account, otherwise null
      * @return Image if associated, null if not
      */
-    public Image getPhoto() { return this.photo; }
+    public Bitmap getPhoto() { return this.photo; }
 
     /**
      * Gets Attribute object owned by UserAccount
@@ -203,7 +204,7 @@ public class UserAccount {
      * Set or update UserAccount photo
      * @param photo
      */
-    public void setPhoto(Image photo) {
+    public void setPhoto(Bitmap photo) {
         if (photo != null) {
             this.photo = photo;
         }

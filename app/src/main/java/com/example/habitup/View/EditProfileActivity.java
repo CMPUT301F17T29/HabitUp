@@ -15,6 +15,7 @@ import com.example.habitup.R;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+
 public class EditProfileActivity extends AppCompatActivity {
 
     private CircleImageView profilePic;

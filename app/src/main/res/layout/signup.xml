@@ -71,43 +71,53 @@
         android:background="@color/white"/>
 
 
-    <Button
-        android:id="@+id/add_profile_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="25dp"
-        android:layout_below="@+id/signup_displayname"
-        android:background="@color/colorPrimary"
-        android:drawableTop="@drawable/ic_add_photo"
-        style="?android:attr/borderlessButtonStyle"
-        android:scaleX="2"
-        android:scaleY="2"
-        android:textColor="#FFFFFF"
-        android:textSize="5sp"
-        android:paddingTop="10sp"
-        android:text="ADD PROFILE PICTURE"/>
+        <ImageView
+            android:id="@+id/add_profile_pic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="25dp"
+            android:background="@color/colorPrimary"
+            android:src = "@drawable/ic_add_photo"
+            android:scaleX="2"
+            android:scaleY="2"
+            android:textColor="#FFFFFF"
+            android:paddingTop="10sp" />
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
-        android:paddingLeft="35dp"
-        android:paddingRight="35dp"
-        android:layout_below="@+id/add_profile_button">
-
-        <Button
-            android:id="@+id/link_signup"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
-            android:layout_weight="0.5"
-            android:text="Sign Up"
-            android:layout_marginRight="5dp"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:textColor="@color/white"
-            android:backgroundTint="@color/green"
-            android:layout_marginTop="35dp" />
+            android:layout_gravity="center_horizontal"
+            android:textSize="10sp"
+            android:text="Add Profile photo" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <Button
+                android:id="@+id/signup_button"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:text="SIGN UP"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/green"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="35dp" />
+
+            <Button
+                android:id="@+id/cancel_signup"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:text="cancel"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/lightgray"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="35dp" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/lin_signup"
@@ -120,5 +130,4 @@
             android:backgroundTint="@color/lightgray"
             android:layout_marginTop="35dp" />
     </LinearLayout>
-
 </RelativeLayout>
