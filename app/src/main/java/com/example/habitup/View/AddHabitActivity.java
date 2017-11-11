@@ -6,14 +6,12 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
@@ -70,7 +68,7 @@ public class AddHabitActivity extends AppCompatActivity {
 
         // Set up attribute list
         String[] entries = Attributes.getAttributeNames();
-        AttributeAdapter adapter = new AttributeAdapter(this, R.layout.attribute_item, entries);
+        AttributeAdapter adapter = new AttributeAdapter(this, R.layout.spinner_item, entries);
         attrSpinner.setAdapter(adapter);
         attrSpinner.setOnItemSelectedListener(attributeListener);
 
@@ -249,7 +247,7 @@ public class AddHabitActivity extends AppCompatActivity {
             String[] names = Attributes.getAttributeNames();
             String attributeName = names[position];
             String color = Attributes.getColour(attributeName);
-            TextView text = view.findViewById(R.id.attribute_text);
+            TextView text = view.findViewById(R.id.spinner_text);
             text.setTextColor(Color.parseColor(color));
         }
 

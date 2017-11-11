@@ -8,11 +8,13 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -101,9 +103,9 @@ public class AddHabitEventActivity extends AppCompatActivity {
             hids.put(habit.getHabitName(), habit.getHID());
         }
 
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, habitNames);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.spinner_item, habitNames);
         habitSpinner.setAdapter(adapter);
+        habitSpinner.setOnItemSelectedListener(habitListener);
 
         // Get location checkbox
         Switch locationSwitch = (Switch) findViewById(R.id.location_switch);
@@ -112,7 +114,7 @@ public class AddHabitEventActivity extends AppCompatActivity {
         imageButton = (Button) findViewById(R.id.photo_icon);
         image = (ImageView) findViewById(R.id.taken_image);
 
-        // Allow user to take or choose photo when clicking the photo icon
+        // Allow user to take photo when clicking the photo icon
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -207,8 +209,6 @@ public class AddHabitEventActivity extends AppCompatActivity {
             }
 
         });
-
-        viewMode();
     }
 
     /**
@@ -281,46 +281,17 @@ public class AddHabitEventActivity extends AppCompatActivity {
         }
     };
 
-    // DELETE FOR LATER AND MOVE TO EditHabitEventActivity
-    private void viewMode() {
-        // Disable habit type spinner
-        Spinner spinner = (Spinner) findViewById(R.id.event_habit_spinner);
-        spinner.setBackgroundResource(0);
-        spinner.setBackgroundColor(getResources().getColor(R.color.white));
-        spinner.setPadding(0, 0, 0, 0);
-        spinner.setEnabled(false);
+    // Set color of text when habit type is selected
+    private AdapterView.OnItemSelectedListener habitListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            int color = ContextCompat.getColor(AddHabitEventActivity.this, R.color.lightgray);
+            TextView spinnerText = view.findViewById(R.id.spinner_text);
+            spinnerText.setTextColor(color);
+        }
 
-        // Disable date clickables
-        ImageView dateButton = (ImageView) findViewById(R.id.event_date_button);
-        TextView dateText = (TextView) findViewById(R.id.event_date_text);
-        dateButton.setVisibility(View.INVISIBLE);
-        dateButton.setOnClickListener(null);
-        dateText.setBackgroundResource(0);
-        dateText.setPadding(0, 0, 0, 0);
-        dateText.setOnClickListener(null);
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {}
+    };
 
-        // Disable location switch
-        Switch locSwitch = (Switch) findViewById(R.id.location_switch);
-        locSwitch.setClickable(false);
-        locSwitch.setBackgroundResource(0);
-        TextView markerLabel = (TextView) findViewById(R.id.marker_label);
-        markerLabel.setBackgroundResource(0);
-
-        // Disable comment field
-        EditText editComment = (EditText) findViewById(R.id.event_comment);
-        editComment.setBackgroundResource(0);
-        editComment.setPadding(0, 0, 0, 0);
-        editComment.setFocusable(false);
-
-        // Disable photo button
-        // TODO: Check whether event has an image, if it does not, remove all photo labels
-        RelativeLayout photoLayout = (RelativeLayout) findViewById(R.id.photo_display);
-        photoLayout.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-        Button photoButton = (Button) findViewById(R.id.photo_icon);
-        photoButton.setVisibility(View.INVISIBLE);
-
-        // Disable save button
-        Button saveButton = (Button) findViewById(R.id.save_event);
-        saveButton.setVisibility(View.INVISIBLE);
-    }
 }

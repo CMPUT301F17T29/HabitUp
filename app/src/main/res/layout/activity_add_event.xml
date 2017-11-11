@@ -21,7 +21,7 @@
         android:textStyle="bold"
         android:textSize="16sp"/>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/event_habit_type"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,13 +30,11 @@
         android:background="@color/whitegray">
 
         <Spinner
-            style="@style/Widget.AppCompat.DropDownItem.Spinner"
             android:id="@+id/event_habit_spinner"
-            android:layout_width="0dp"
-            android:layout_height="35dp"
-            android:layout_weight="1" />
+            android:layout_width="match_parent"
+            android:layout_height="35dp" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/date_location_labels"
@@ -87,9 +85,9 @@
             android:text="Current date"
             android:textSize="16sp"
             android:gravity="start|center_vertical"
-            android:paddingLeft="10dp"
             android:background="@color/whitegray"
-            tools:layout_editor_absoluteY="246dp" />
+            tools:layout_editor_absoluteY="246dp"
+            android:paddingLeft="5dp"/>
 
         <ImageView
             android:id="@+id/event_date_button"
@@ -144,7 +142,7 @@
         android:background="@drawable/text_input"
         android:hint="Add a comment"
         android:textSize="16sp"
-        android:paddingLeft="10dp"/>
+        android:paddingLeft="5dp"/>
 
     <TextView
         android:id="@+id/photo_label"
