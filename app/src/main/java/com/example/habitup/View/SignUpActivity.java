@@ -19,6 +19,11 @@ import com.example.habitup.R;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+/**
+ * @author Shuyang
+ *
+ * The signup activity
+ */
 
 public class SignUpActivity extends AppCompatActivity {
     protected EditText susername;
@@ -35,18 +40,25 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signup);
 
+        //get EditText
         susername = (EditText) findViewById(R.id.signup_username);
         sdisplayname = (EditText) findViewById(R.id.signup_displayname);
+
+        //get button
         Button signUpButton = (Button) findViewById(R.id.signup_button);
         Button cancelButton = (Button) findViewById(R.id.cancel_signup);
 
+        //get image
         addprofilePic = (ImageView) findViewById(R.id.add_profile_pic);
 
+        // change EditText to string
+        signUpName = susername.getText().toString();
+        realName = sdisplayname.getText().toString();
+
+        // click signup button
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signUpName = susername.getText().toString();
-                realName = sdisplayname.getText().toString();
                 if (checkUserExist(signUpName) && !signUpName.equals("")) {
                     if (createNewUser(signUpName,realName,userimage)) {
                         Toast.makeText(getApplicationContext(),
@@ -61,6 +73,8 @@ public class SignUpActivity extends AppCompatActivity {
                 }
             }
         });
+
+        // click add profile photo
         addprofilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -70,6 +84,8 @@ public class SignUpActivity extends AppCompatActivity {
                 }
             }
         });
+
+        // click cancel button
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -78,6 +94,13 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
     }
+
+    /**
+     * Includes activity for taking picture
+     * @param requestCode the request code for some activity
+     * @param resultCode the result code of the activity
+     * @param data data from the activity
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -99,10 +122,22 @@ public class SignUpActivity extends AppCompatActivity {
 
         }
     }
+
+    /**
+     * Resize the image in order to satisfy requirement
+     * @param bp the image need to resize
+     */
+
     private void resizeImage(Bitmap bp) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bp.compress(Bitmap.CompressFormat.JPEG, 70, stream);
     }
+
+    /**
+     * check whether this username exist or not
+     * @param uname the item in the menu
+     * @return true if this username does not exist,false else.
+     */
 
     private boolean checkUserExist(String uname) {
         ElasticSearchController.GetUsersTask getUser = new ElasticSearchController.GetUsersTask();
@@ -119,6 +154,14 @@ public class SignUpActivity extends AppCompatActivity {
             return false;
         }
     }
+
+    /**
+     * Listens for when the user clicks on the back button
+     * @param uname the username of the user
+     * @param rname the realname of the user
+     * @param image the profile photo of the user
+     * @return true if create a new user success,false else.
+     */
 
     private boolean createNewUser(String uname,String rname, Bitmap image){
         UserAccount newUser = new UserAccount(uname,rname,image);
