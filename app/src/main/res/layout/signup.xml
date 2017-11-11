@@ -63,28 +63,35 @@
             android:background="@color/white"/>
 
 
-        <Button
-            android:id="@+id/add_profile_button"
+        <ImageView
+            android:id="@+id/add_profile_pic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="25dp"
             android:background="@color/colorPrimary"
-            android:drawableTop="@drawable/ic_add_photo"
+            android:src = "@drawable/ic_add_photo"
             android:scaleX="2"
             android:scaleY="2"
             android:textColor="#FFFFFF"
-            android:textSize="5sp"
-            android:paddingTop="10sp"
-            android:text="ADD PROFILE PICTURE"/>
+            android:paddingTop="10sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/white"
+            android:layout_gravity="center_horizontal"
+            android:textSize="10sp"
+            android:text="Add Profile photo" />
 
         <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
             <Button
-                android:id="@+id/link_signup"
+                android:id="@+id/signup_button"
                 android:layout_width="150dp"
                 android:layout_height="50dp"
                 android:text="SIGN UP"
@@ -94,7 +101,7 @@
                 android:layout_marginTop="35dp" />
 
             <Button
-                android:id="@+id/lin_signup"
+                android:id="@+id/cancel_signup"
                 android:layout_width="150dp"
                 android:layout_height="50dp"
                 android:text="cancel"
