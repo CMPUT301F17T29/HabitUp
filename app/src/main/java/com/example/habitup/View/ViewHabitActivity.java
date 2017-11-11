@@ -30,6 +30,8 @@ public class ViewHabitActivity extends BaseActivity {
     static final int NEW_HABIT = 1;
     static final int VIEW_HABIT = 2;
     static final int EDIT_HABIT = 3;
+    public static final String INTENT_HID = "HABIT_INTENT_HID";
+    public static final String INTENT_ACTION = "HABIT_INTENT_ACTION";
 
     // Position of habit in list view
     private int position = -1;
@@ -46,8 +48,6 @@ public class ViewHabitActivity extends BaseActivity {
         // Get bottom navigation
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.habit_bottom_nav);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-//        habits = HabitUpApplication.getCurrentUser().getHabits().getHabitArrayList();
 
         ElasticSearchController.GetUserHabitsTask getUserHabits = new ElasticSearchController.GetUserHabitsTask();
         getUserHabits.execute(String.valueOf(HabitUpApplication.getCurrentUID()));
@@ -113,6 +113,8 @@ public class ViewHabitActivity extends BaseActivity {
 
         Log.i("HabitUpDEBUG", "OnActivityResult in HabitView");
 
+        // Update the Habits List
+        // TODO this is not working
         ElasticSearchController.GetUserHabitsTask getUserHabits = new ElasticSearchController.GetUserHabitsTask();
         getUserHabits.execute(String.valueOf(HabitUpApplication.getCurrentUID()));
         try {
@@ -123,6 +125,7 @@ public class ViewHabitActivity extends BaseActivity {
 
         adapter.notifyDataSetChanged();
 
+        // If no habits in list, display default message
         if (habits.size() == 0) {
             TextView subHeading = (TextView) findViewById(R.id.habits_subheading);
             subHeading.setText("You currently have no habits.");
@@ -130,7 +133,7 @@ public class ViewHabitActivity extends BaseActivity {
 
         // Get position and unhighlight selected list item
         if (requestCode == EDIT_HABIT) {
-            position = data.getExtras().getInt("position");
+//            position = data.getExtras().getInt("position");
         }
     }
 
@@ -144,12 +147,17 @@ public class ViewHabitActivity extends BaseActivity {
             if (position < 0) {
                 Toast.makeText(context, "Select a habit first.", Toast.LENGTH_SHORT).show();
             } else {
+                Habit habit = (Habit) adapter.getItem(position);
+                int hid = habit.getHID();
+
+                Log.i("HabitUpDEBUG", "Habit selected - " + habit.getHabitName());
+
                 switch (item.getItemId()) {
                     case R.id.habit_menu_view:
-                        goToEditActivity(VIEW_HABIT);
+                        goToEditActivity(VIEW_HABIT, hid);
                         return true;
                     case R.id.habit_menu_edit:
-                        goToEditActivity(EDIT_HABIT);
+                        goToEditActivity(EDIT_HABIT, hid);
                         return true;
                     case R.id.habit_menu_delete:
                         return true;
@@ -161,11 +169,13 @@ public class ViewHabitActivity extends BaseActivity {
 
     };
 
-    private void goToEditActivity(int requestCode) {
+    private void goToEditActivity(int requestCode, int hid) {
         setResult(RESULT_OK);
+
         Intent editIntent = new Intent(context, EditHabitActivity.class);
-        editIntent.putExtra("position", position);
-        editIntent.putExtra("action", requestCode);
+        editIntent.putExtra(INTENT_HID, hid);
+        editIntent.putExtra(INTENT_ACTION, requestCode);
+
         startActivityForResult(editIntent, requestCode);
     }
 

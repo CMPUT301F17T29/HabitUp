@@ -2,6 +2,9 @@ package com.example.habitup.Model;
 
 import android.graphics.Bitmap;
 import android.media.Image;
+import android.util.Log;
+
+import com.example.habitup.Controller.ElasticSearchController;
 
 import java.util.ArrayList;
 
@@ -19,7 +22,7 @@ public class UserAccount {
     private int uid;
     private String username;
     private String realname;
-    private Image photo;
+    private Bitmap photo;
     private int level;
     private int XP;
     private int XPtoNext;
@@ -32,7 +35,7 @@ public class UserAccount {
      *
      * @author @gojeffcho
      */
-    public UserAccount(String username, String realname, Image photo) throws
+    public UserAccount(String username, String realname, Bitmap photo) throws
             IllegalArgumentException, IllegalStateException {
 
         this.setUniqueUID();
@@ -68,7 +71,7 @@ public class UserAccount {
      * Gets Image if one is associated to the account, otherwise null
      * @return Image if associated, null if not
      */
-    public Image getPhoto() { return this.photo; }
+    public Bitmap getPhoto() { return this.photo; }
 
     /**
      * Gets Attribute object owned by UserAccount
@@ -153,17 +156,18 @@ public class UserAccount {
      */
     public void setUniqueUID() {
         // ElasticSearch query: highest UID in use
-        int id = 0;
-
-        // Increment it
-        ++id;
+        int newUID = -1;
+        ElasticSearchController.GetMaxUidTask getMaxUID = new ElasticSearchController.GetMaxUidTask();
+        getMaxUID.execute();
+        try {
+            newUID = getMaxUID.get();
+            Log.i("HabitUpDEBUG", "UserAccount - UID was set to " + String.valueOf(newUID));
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "UserAccount - could not get Max UID");
+        }
 
         // Set it to this user's uid
-        this.uid = id;
-    }
-
-    public void setUID(int uid) {
-        // TODO: Implement
+        this.uid = newUID;
     }
 
     /**
@@ -204,7 +208,7 @@ public class UserAccount {
      * Set or update UserAccount photo
      * @param photo
      */
-    public void setPhoto(Image photo) {
+    public void setPhoto(Bitmap photo) {
         if (photo != null) {
             this.photo = photo;
         }

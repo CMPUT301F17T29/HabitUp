@@ -2,6 +2,9 @@ package com.example.habitup.View;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +25,8 @@ import com.example.habitup.R;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class MainActivity extends BaseActivity {
 
     private ArrayList<Habit> habitsArrayList;
@@ -34,14 +39,22 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
 
         // DEBUG
-        UserAccount newUser = new UserAccount("gojoffchoo", "Joff Choo", null);
-        try {
-            HabitUpApplication.addUserAccount(newUser);
-        } catch (Exception e) {
-            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-        }
+//        UserAccount testUser = null;
+//        try {
+//            testUser = HabitUpApplication.getUserAccount("gojoffchoo");
+//        } catch (Exception e) {
+//            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+//        }
+//
+//        if (testUser != null) {
+//            HabitUpApplication.setCurrentUser(testUser);
+//        } else {
+//            Log.i("HabitUpDEBUG", "Couldn't get test user.");
+//        }
 
-        HabitUpApplication.setCurrentUser(newUser);
+        UserAccount testUser = new UserAccount("goojoffchoo", "Joff Choo", null);
+        HabitUpApplication.addUserAccount(testUser);
+        HabitUpApplication.setCurrentUser(testUser);
         // DEBUG
 
 
@@ -67,12 +80,19 @@ public class MainActivity extends BaseActivity {
         // Highlight profile in drawer
         navigationView.setCheckedItem(R.id.profile);
 
+        // Get the user
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+
         // Set user's photo
-//        findViewById(R.id.drawer_pic).setBackground(); // TODO: PHOTO
+        Bitmap photo =  currentUser.getPhoto();
+
+        if (photo != null) {
+            CircleImageView profilePic = (CircleImageView) findViewById(R.id.drawer_pic);
+            profilePic.setImageBitmap(photo);
+        }
 
         // Set user's display name
         TextView nameField = (TextView) findViewById(R.id.username);
-        UserAccount currentUser = HabitUpApplication.getCurrentUser();
 
         nameField.setText(currentUser.getRealname());
 
