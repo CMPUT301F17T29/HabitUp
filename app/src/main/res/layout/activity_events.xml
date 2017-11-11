@@ -63,49 +63,43 @@
             android:textStyle="bold"
             android:textSize="15sp"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"/>
+            android:layout_marginRight="10dp" />
 
-        <LinearLayout
+        <EditText
+            android:id="@+id/filter_comment"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="@drawable/white_text_input"
+            android:layout_below="@+id/filter_title"
+            android:hint="Comment text"
+            android:layout_marginTop="5dp"
+            android:textSize="14sp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:drawableLeft="@drawable/ic_find"
+            android:drawableTint="@color/tintgray"/>
+
+        <RelativeLayout
+            android:id="@+id/filter_habit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2"
-            android:layout_below="@+id/filter_title">
+            android:layout_below="@+id/filter_comment"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/white">
 
-            <EditText
-                android:id="@+id/filter_comment"
-                android:layout_width="0dp"
+            <Spinner
+                style="@style/Widget.AppCompat.DropDownItem.Spinner"
+                android:id="@+id/filter_habit_spinner"
+                android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:layout_weight="1"
-                android:background="@drawable/white_text_input"
-                android:hint="Comment text"
-                android:layout_marginTop="5dp"
-                android:textSize="14sp"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="5dp"/>
 
-            <LinearLayout
-                android:id="@+id/filter_habit"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginTop="5dp"
-                android:background="@color/white"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="10dp">
+                android:layout_weight="1" />
 
-                <Spinner
-                    style="@style/Widget.AppCompat.DropDownItem.Spinner"
-                    android:id="@+id/filter_habit_spinner"
-                    android:layout_width="0dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="1" />
-
-            </LinearLayout>
-
-        </LinearLayout>
+        </RelativeLayout>
 
     </RelativeLayout>
 

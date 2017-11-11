@@ -93,6 +93,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.40"
             android:text="@string/habit_attr_label"
+            android:layout_marginStart="8dp"
             android:textSize="16sp"
             android:textColor="@color/teal"
             android:textStyle="bold" />
@@ -111,7 +112,7 @@
             android:id="@+id/date_text"
             android:layout_width="0dp"
             android:layout_height="35dp"
-            android:layout_weight="0.50"
+            android:layout_weight="0.45"
             android:text="Current date"
             android:textSize="16sp"
             android:gravity="start|center_vertical"
@@ -123,7 +124,7 @@
             android:id="@+id/habit_date_button"
             android:layout_width="0dp"
             android:layout_height="35dp"
-            android:layout_weight="0.1"
+            android:layout_weight="0.15"
             android:src="@drawable/ic_calendar"
             android:background="@color/lightgray"
             android:layout_gravity="center"
@@ -133,7 +134,7 @@
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.40"
+            android:layout_weight="0.4"
             android:background="@color/whitegray"
             android:layout_marginStart="8dp">
 
@@ -171,146 +172,160 @@
         app:layout_constraintRight_toRightOf="parent"
         android:weightSum="7">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:orientation="vertical">
+            android:layout_marginRight="3dp">
 
             <CheckBox
                 android:id="@+id/monday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:theme="@style/GreenCheckBox" />
             <CheckedTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/monday"
+                android:layout_centerHorizontal="true"
                 android:text="@string/mon" />
-        </LinearLayout>
+        </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:layout_marginLeft="3dp"
             android:layout_marginRight="3dp"
-            android:layout_gravity="center"
-            android:orientation="vertical">
+            android:layout_gravity="center">
 
             <CheckBox
                 android:id="@+id/tuesday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:theme="@style/GreenCheckBox"/>
             <CheckedTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/tuesday"
+                android:layout_centerHorizontal="true"
                 android:text="@string/tue" />
-        </LinearLayout>
+        </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:orientation="vertical">
+            android:layout_marginRight="3dp">
 
             <CheckBox
                 android:id="@+id/wednesday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:theme="@style/GreenCheckBox"/>
             <CheckedTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/wednesday"
                 android:text="@string/wed" />
-        </LinearLayout>
+        </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:orientation="vertical">
+            android:layout_marginRight="3dp">
 
             <CheckBox
                 android:id="@+id/thursday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:theme="@style/GreenCheckBox"/>
             <CheckedTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/thursday"
                 android:text="@string/thu" />
-        </LinearLayout>
+        </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:orientation="vertical">
+            android:layout_marginRight="3dp">
 
             <CheckBox
                 android:id="@+id/friday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:theme="@style/GreenCheckBox"/>
             <CheckedTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/friday"
                 android:text="@string/fri" />
-        </LinearLayout>
+        </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:orientation="vertical">
+            android:layout_marginRight="3dp">
 
             <CheckBox
                 android:id="@+id/saturday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:theme="@style/GreenCheckBox"/>
             <CheckedTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/saturday"
                 android:text="@string/sat" />
-        </LinearLayout>
+        </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:orientation="vertical">
+            android:layout_marginRight="3dp">
 
             <CheckBox
                 android:id="@+id/sunday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:theme="@style/GreenCheckBox"/>
             <CheckedTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/sunday"
                 android:text="@string/sun" />
-        </LinearLayout>
+        </RelativeLayout>
 
     </LinearLayout>
 
