@@ -127,7 +127,6 @@
             android:text="cancel"
             android:layout_marginLeft="5dp"
             android:textColor="@color/white"
-            android:backgroundTint="@color/lightgray"
-            android:layout_marginTop="35dp" />
-    </LinearLayout>
+            android:backgroundTint="@color/lightgray" />
+
 </RelativeLayout>
