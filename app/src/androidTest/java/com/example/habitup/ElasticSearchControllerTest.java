@@ -1,44 +1,39 @@
+/*
+
 package com.example.habitup;
 
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
 import com.example.habitup.Controller.ElasticSearchController;
-import com.example.habitup.Model.Attributes;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
-
 import static junit.framework.Assert.assertTrue;
 
 
-/**
- * Created by Ty on 2017-11-08.
- */
-@RunWith(AndroidJUnit4.class)
-public class ElasticSearchControllerTest {
 
-    /*@Test
+  Created by Ty on 2017-11-08.
+
+//@RunWith(AndroidJUnit4.class)
+public class ElasticSearchControllerTest {
+/*
+    @Test
     public void testAddUsersTask() {
         UserAccount u1 = new UserAccount("theise", "Tyler Heise", null);
-        UserAccount u2 = new UserAccount("ezakirova", "E Z", null);
-
-        UserAccount u3 = new UserAccount("wtf", "E Z", null);
+        //UserAccount u2 = new UserAccount("ezakirova", "E Z", null);
 
         //private ArrayList<UserAccount> userList = new ArrayList<UserAccount>();
-        String x = u1.getUsername();
-        String y = u2.getUsername();
 
         ElasticSearchController.AddUsersTask addUsersTask = new ElasticSearchController.AddUsersTask();
 
-        addUsersTask.execute(u3);
+        addUsersTask.execute(u1);
 
-        Log.i("DeBug", "u3id is: " + u3.getESID());
+        Log.i("DeBug", "u1id is: " + u1.getESID());
     }
 
-    @Test
+   /* @Test
     public void testGetUsersTask() {
 
 
@@ -143,7 +138,7 @@ public class ElasticSearchControllerTest {
         //assertTrue (habitEvents.get(0).getComment().equals("Notnice"));
         //assertTrue (habitEvents.get(1).getComment().equals("nice"));
     }
-*/
+*//*
     @Test
     public void testGetMaxUid() {
         ElasticSearchController.GetMaxUidTask getMaxUidTask = new ElasticSearchController.GetMaxUidTask();
@@ -163,7 +158,7 @@ public class ElasticSearchControllerTest {
         assertTrue (MaxUID != -1);
         //assertTrue (MaxUID == 2);
     }
-
+/*
     @Test
     public void testGetMaxHid() {
         ElasticSearchController.GetMaxHidTask getMaxHidTask = new ElasticSearchController.GetMaxHidTask();
@@ -191,7 +186,7 @@ public class ElasticSearchControllerTest {
         addAttrsTask.execute(testAttr);
 
         }*/
-
+/*
     @Test
     public void testGetAttributes() {
         ElasticSearchController.GetAttributesTask getAttributesTask = new ElasticSearchController.GetAttributesTask();
@@ -209,7 +204,20 @@ public class ElasticSearchControllerTest {
 
         assertTrue(attributes.get(0).getUid() == 9);
 
+    }*/
+
+/*
+    @Test
+    public void testDeleteUser() {
+        ElasticSearchController.DeleteUserTask deleteUserTask = new ElasticSearchController.DeleteUserTask();
+        deleteUserTask.execute("1");
     }
 
+    @Test
+    public void testDeleteHabitEvent(){
+        ElasticSearchController.DeleteHabitEventTask deleteHabitEventTask = new ElasticSearchController.DeleteHabitEventTask();
+        deleteHabitEventTask.execute("AV-pqVmkSOjk61tN5V10");
+        }
     }
 
+*/

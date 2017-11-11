@@ -14,6 +14,8 @@ import com.searchly.jestdroid.JestDroidClient;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.searchbox.core.Delete;
+import io.searchbox.core.DeleteByQuery;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
@@ -269,8 +271,11 @@ public class ElasticSearchController {
                 try {
                     // where is the client?
                     DocumentResult result = client.execute(index);
-                    if (!result.isSucceeded()) {
+                    if (result.isSucceeded()) {
 
+                        habitEvent.setESid(result.getId());
+                    }
+                    else{
                         Log.i("Error", "Elasticsearch was not able to add the Habit Event");
                     }
                 } catch (Exception e) {
@@ -438,6 +443,88 @@ public class ElasticSearchController {
             return ++maxHid;
         }
 
+    }
+
+    //given a UID, deletes the corresponding user
+    public static class DeleteUserTask extends AsyncTask<String, Void, Void>{
+
+        @Override
+        protected Void doInBackground(String... uids) {
+            verifySettings();
+
+            for (String uid : uids) {
+
+                String query = "{\"query\": {\"match\" : { \"uid\" : \"" + uid + "\" }}}";
+
+                DeleteByQuery deleteUser = new DeleteByQuery.Builder(query).addIndex(db).addType(userType).build();
+
+                try {
+                    // where is the client?
+                    client.execute(deleteUser);
+                }
+
+                catch (Exception e) {
+                    Log.i("Error", "The application failed to build the query and delete the User");
+
+                }
+            }
+
+            return null;
+        }
+    }
+
+    //given an HID for a habit, delete the corresponding habit
+    public static class DeleteHabitTask extends AsyncTask<String, Void, Void>{
+
+        @Override
+        protected Void doInBackground(String... hids) {
+            verifySettings();
+
+            for (String hid : hids) {
+
+                String query = "{\"query\": {\"match\" : { \"hid\" : \"" + hid + "\" }}}";
+
+                DeleteByQuery deleteHabit = new DeleteByQuery.Builder(query).addIndex(db).addType(habitType).build();
+
+                try {
+                    // where is the client?
+                    client.execute(deleteHabit);
+                }
+
+                catch (Exception e) {
+                    Log.i("Error", "The application failed to build the query and delete the User");
+
+                }
+            }
+
+            return null;
+        }
+    }
+
+    //Given a ESid for a habit event, dletes the corresponding event from ES
+    public static class DeleteHabitEventTask extends AsyncTask<String, Void, Void>{
+
+        @Override
+        protected Void doInBackground(String... ESids) {
+            verifySettings();
+
+            for (String Esid : ESids) {
+
+                Delete deleteHabit = new Delete.Builder(Esid).index(db).type(habitEventType).build();
+
+                try {
+                    // where is the client?
+                    client.execute(deleteHabit);
+                }
+
+                catch (Exception e) {
+                    Log.i("Error", "The application failed to build the query and delete the User");
+
+                }
+            }
+
+            return null;
+        }
     }
 
 
