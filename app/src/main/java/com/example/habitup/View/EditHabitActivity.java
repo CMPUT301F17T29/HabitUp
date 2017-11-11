@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,7 +22,9 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Model.Attributes;
+import com.example.habitup.Model.Habit;
 import com.example.habitup.R;
 
 import java.text.DateFormatSymbols;
@@ -30,8 +33,10 @@ import java.util.Locale;
 
 public class EditHabitActivity extends AppCompatActivity {
 
-    private int position;
+    // Core functionality
+    private int hid;
     private int action;
+    private Habit habit;
 
     // Habit Edit Fields
     private EditText editName;
@@ -69,20 +74,34 @@ public class EditHabitActivity extends AppCompatActivity {
 
         // Get the habit from intent
         Intent intent = getIntent();
-        position = intent.getExtras().getInt("position");
-        action = intent.getExtras().getInt("action");
+        hid = intent.getExtras().getInt(ViewHabitActivity.INTENT_HID);
+        action = intent.getExtras().getInt(ViewHabitActivity.INTENT_ACTION);
 
-        // TODO: Get habit object from controller and set editable fields
+        // Get habit object from controller and set editable fields
+        ElasticSearchController.GetHabitsTask habitTask = new ElasticSearchController.GetHabitsTask();
+        habitTask.execute(String.valueOf(hid));
+        try {
+            habit = habitTask.get().get(0);
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "EditHabit - Couldn't get Habit from HID");
+        }
 
-        // Get edit text fields
+        // Set habit name
         editName = (EditText) findViewById(R.id.habit_name);
+        editName.setText(habit.getHabitName());
+
+        // Set habit reason
         editReason = (EditText) findViewById(R.id.habit_reason);
+        editReason.setText(habit.getHabitReason());
 
         // TODO: Get habit's date instead of current date
         final Calendar cal = Calendar.getInstance(Locale.CANADA);
-        year_x = cal.get(Calendar.YEAR);
-        month_x = cal.get(Calendar.MONTH);
-        day_x = cal.get(Calendar.DAY_OF_MONTH);
+//        year_x = cal.get(Calendar.YEAR);
+//        month_x = cal.get(Calendar.MONTH);
+//        day_x = cal.get(Calendar.DAY_OF_MONTH);
+        year_x = habit.getStartDate().getYear();
+        month_x = habit.getStartDate().getMonthValue();
+        day_x = habit.getStartDate().getDayOfMonth();
 
         // Get clickable region for calendar on-click listener
         dateLayout = (ImageView) findViewById(R.id.habit_date_button);
@@ -104,7 +123,7 @@ public class EditHabitActivity extends AppCompatActivity {
         // Just setting it to 2 for now so wrong color will currently be set in View Habit
         attrSpinner.setSelection(2);
 
-        // TODO: Check the boxes according to the habit's schedule
+        // Check the boxes according to the habit's schedule
         checkBoxMon = (CheckBox) findViewById(R.id.monday);
         checkBoxTue = (CheckBox) findViewById(R.id.tuesday);
         checkBoxWed = (CheckBox) findViewById(R.id.wednesday);
@@ -112,6 +131,16 @@ public class EditHabitActivity extends AppCompatActivity {
         checkBoxFri = (CheckBox) findViewById(R.id.friday);
         checkBoxSat = (CheckBox) findViewById(R.id.saturday);
         checkBoxSun = (CheckBox) findViewById(R.id.sunday);
+
+        boolean[] schedule = habit.getHabitSchedule();
+
+        checkBoxMon.setChecked(schedule[1]);
+        checkBoxTue.setChecked(schedule[2]);
+        checkBoxWed.setChecked(schedule[3]);
+        checkBoxThu.setChecked(schedule[4]);
+        checkBoxFri.setChecked(schedule[5]);
+        checkBoxSat.setChecked(schedule[6]);
+        checkBoxSun.setChecked(schedule[7]);
 
 
         // Open the date picker dialog clicking calendar button
@@ -134,7 +163,7 @@ public class EditHabitActivity extends AppCompatActivity {
         saveButton = (Button) findViewById(R.id.save_edit_habit);
 
         // Disable edit fields if viewing activity
-        if (action == 2) {
+        if (action == ViewHabitActivity.VIEW_HABIT) {
             viewMode();
         }
     }
@@ -149,7 +178,7 @@ public class EditHabitActivity extends AppCompatActivity {
         switch (menuItem.getItemId()) {
             case android.R.id.home:
                 Intent result = new Intent();
-                result.putExtra("position", position);
+                result.putExtra(ViewHabitActivity.INTENT_HID, hid);
                 setResult(Activity.RESULT_CANCELED, result);
                 finish();
                 return true;
