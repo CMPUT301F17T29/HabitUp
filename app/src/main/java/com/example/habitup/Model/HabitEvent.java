@@ -65,7 +65,7 @@ public class HabitEvent implements Comparable<HabitEvent> {
 
     public void setHabit(int hid) { this.hid = hid; }
 
-    public void setEid(String uuid) { this.eid = uuid; }
+    public void setEID(String uuid) { this.eid = uuid; }
 
     public void setImage(Bitmap image) throws IllegalArgumentException {
 
@@ -145,7 +145,7 @@ public class HabitEvent implements Comparable<HabitEvent> {
 
     public int getHID() { return hid; }
 
-    public String getEid() { return this.eid; }
+    public String getEID() { return eid; }
 
     public Boolean getScheduled() { return this.scheduled; }
 

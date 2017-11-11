@@ -401,7 +401,7 @@ public class ElasticSearchController {
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
 
-                        habitEvent.setESid(result.getId());
+                        habitEvent.setEID(result.getId());
                     }
                     else{
                         Log.i("Error", "Elasticsearch was not able to add the Habit Event");

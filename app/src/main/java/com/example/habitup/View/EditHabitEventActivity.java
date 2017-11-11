@@ -84,8 +84,9 @@ public class EditHabitEventActivity extends AppCompatActivity {
         action = intent.getExtras().getInt(ViewHabitEventActivity.HABIT_EVENT_ACTION);
         uid = intent.getExtras().getInt(ViewHabitEventActivity.HABIT_EVENT_UID);
         hid = intent.getExtras().getInt(ViewHabitEventActivity.HABIT_EVENT_HID);
+        eid = intent.getExtras().getString(ViewHabitEventActivity.HABIT_EVENT_EID);
 
-        ElasticSearchController.GetHabitEvent
+//        ElasticSearchController.GetHabitEvent
 
         // Get current date (for now)
         // TODO: Get the event's date
@@ -185,7 +186,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
         switch (menuItem.getItemId()) {
             case android.R.id.home:
                 Intent result = new Intent();
-                result.putExtra("position", position);
+//                result.putExtra("position", position);
                 setResult(Activity.RESULT_CANCELED, result);
                 finish();
                 return true;
