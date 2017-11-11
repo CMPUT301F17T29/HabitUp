@@ -70,7 +70,7 @@ public class Habit {
      * @return Boolean
      */
     public Boolean isLegalReasonLength(String reason){
-        return ((reason.trim().length()>0)||(name.trim().length()<=30));
+        return ((reason.trim().length()>0)||(reason.trim().length()<=30));
     }
 
     /**
