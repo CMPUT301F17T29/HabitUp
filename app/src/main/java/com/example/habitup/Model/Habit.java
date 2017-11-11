@@ -11,7 +11,7 @@ public class Habit {
     // Members
     private int uid;
     private String name;
-    private Boolean[] schedule;
+    private boolean[] schedule;
     private String reason;
     private String attribute;
     private HabitEventList habitEvents;
@@ -25,7 +25,7 @@ public class Habit {
      * @param reason String for the reason of Habit
      * @param attribute Attributes object to identify the associated attribute with the Habit
      * @param startDate LocalDate for startDate to associate with Habit
-     * @param schedule Boolean[8] for the schedule regarding the days the Habit is active
+     * @param schedule boolean[8] for the schedule regarding the days the Habit is active
      *
      * @author @alido8592
      */
@@ -34,10 +34,10 @@ public class Habit {
      * Empty constructor
      */
     public Habit() {
-
+        this.schedule = new boolean[8];
     }
 
-    public Habit(int uid, String name, String reason, String attribute, LocalDate startDate, Boolean[] schedule)
+    public Habit(int uid, String name, String reason, String attribute, LocalDate startDate, boolean[] schedule)
             throws IllegalArgumentException, IllegalStateException {
 
         //TODO:
@@ -48,7 +48,7 @@ public class Habit {
         setAttribute(attribute);
         habitEvents = new HabitEventList(); //temporary
         this.startDate = startDate;
-        schedule = new Boolean[8];
+        this.schedule = new boolean[8];
         setSchedule(schedule);
 
     }
@@ -76,12 +76,12 @@ public class Habit {
     /**
      * isLegalSchedule
      * Checks for Habit schedule containing at least 1 day schedule for the Habit
-     * @param schedule Boolean[8]
+     * @param schedule boolean[8]
      * @return Boolean
      */
-    public Boolean isLegalSchedule(Boolean[] schedule){
+    public Boolean isLegalSchedule(boolean[] schedule){
         int trueCount = 0;
-        for (Boolean s : schedule) if (s){trueCount++;}
+        for (boolean s : schedule) if (s){trueCount++;}
         if (trueCount>=1){return Boolean.TRUE;}
         else return Boolean.FALSE;
     }
@@ -113,10 +113,10 @@ public class Habit {
 
     /**
      * getHabitSchedule
-     * Forms a String of days of when the Habit is scheduled
-     * @return String
+     * Returns habit schedule
+     * @return boolean[8]
      */
-    public Boolean[] getHabitSchedule() {return this.schedule;}
+    public boolean[] getHabitSchedule() {return this.schedule;}
 
     /**
      * getHabitReason
@@ -174,9 +174,9 @@ public class Habit {
     /**
      * setSchedule
      * Changes the schedule accordingly with input schedule
-     * @param schedule Boolean[8]
+     * @param schedule boolean[8]
      */
-    public void setSchedule(Boolean[] schedule) throws IllegalStateException{
+    public void setSchedule(boolean schedule[]) throws IllegalStateException{
         if (isLegalSchedule(schedule)){
             this.schedule = schedule;}
         else{
