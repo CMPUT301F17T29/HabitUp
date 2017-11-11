@@ -46,7 +46,7 @@ public class ElasticSearchController {
                     // where is the client?
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
-
+                        Log.i("DEBUG", "AddUsersTask Success");
                     }
 
                     else{

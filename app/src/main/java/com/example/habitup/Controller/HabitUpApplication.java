@@ -3,6 +3,7 @@ package com.example.habitup.Controller;
 
 import android.widget.Toast;
 
+import com.example.habitup.Model.Attributes;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.Model.UserAccountList;
 
@@ -13,6 +14,11 @@ public class HabitUpApplication {
         // Try: ElasticSearch put user
         ElasticSearchController.AddUsersTask addUser = new ElasticSearchController.AddUsersTask();
         addUser.execute(user);
+
+        ElasticSearchController.AddAttrsTask addAttr = new ElasticSearchController.AddAttrsTask();
+        Attributes attrs = new Attributes(user.getUID());
+        addAttr.execute(attrs);
+
         return 0;
     }
 

@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.habitup.Controller.ElasticSearchController;
+import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.UserAccount;
@@ -34,9 +35,8 @@ public class MainActivity extends BaseActivity {
         HabitUpController hupCtl = new HabitUpController();
         hupCtl.testAccount();
 
-        ElasticSearchController.AddUsersTask addUser = new ElasticSearchController.AddUsersTask();
-        UserAccount newUser = new UserAccount("tester", "Test Account", null);
-        addUser.execute(newUser);
+        UserAccount newUser = new UserAccount("gojoffchoo", "Joff Choo", null);
+        HabitUpApplication.addUserAccount(newUser);
         // DEBUG
 
 
