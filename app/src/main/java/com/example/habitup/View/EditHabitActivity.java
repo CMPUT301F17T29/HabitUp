@@ -168,13 +168,13 @@ public class EditHabitActivity extends AppCompatActivity {
             }
         });
 
+        // Save button functionality
+        saveButton = (Button) findViewById(R.id.save_edit_habit);
+
         // Disable edit fields if viewing activity
         if (action == ViewHabitActivity.VIEW_HABIT) {
             viewMode();
         }
-
-        // Save button functionality
-        saveButton = (Button) findViewById(R.id.save_edit_habit);
 
         saveButton.setOnClickListener(new View.OnClickListener() {
 
