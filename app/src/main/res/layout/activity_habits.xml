@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:layout_marginTop="?attr/actionBarSize"
     android:background="@color/white"
-    tools:context="com.example.habitup.View.ViewHabitActivity">
+    tools:context="com.example.habitup.View.ViewHabitActivity"
+    android:fitsSystemWindows="true">
 
     <TextView
         android:id="@+id/habits_title"
@@ -19,6 +20,7 @@
         android:textStyle="bold"
         android:textSize="20sp"
         android:text="Habits" />
+
     <TextView
         android:id="@+id/habits_subheading"
         android:layout_width="wrap_content"
@@ -34,8 +36,9 @@
         android:id="@+id/OldHabitLists"
         android:layout_marginTop="20dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@+id/habits_subheading"
+        android:layout_marginBottom="?attr/actionBarSize"
         android:clickable="true" />
 
     <android.support.design.widget.BottomNavigationView

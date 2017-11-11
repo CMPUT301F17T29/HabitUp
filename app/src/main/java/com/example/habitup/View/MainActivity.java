@@ -1,20 +1,23 @@
 package com.example.habitup.View;
 
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
+import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
 import java.util.ArrayList;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends BaseActivity {
 
@@ -30,7 +33,13 @@ public class MainActivity extends BaseActivity {
         // DEBUG
         HabitUpController hupCtl = new HabitUpController();
         hupCtl.testAccount();
+
+        ElasticSearchController.AddUsersTask addUser = new ElasticSearchController.AddUsersTask();
+        UserAccount newUser = new UserAccount("tester", "Test Account", null);
+        addUser.execute(newUser);
         // DEBUG
+
+
 
         // Initialize list view for today's habits
         habitListView = (ListView) findViewById(R.id.habit_listview);
@@ -103,5 +112,19 @@ public class MainActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.profile, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.edit_profile:
+                Intent editIntent = new Intent(this, EditProfileActivity.class);
+                startActivity(editIntent);
+                return true;
+            case R.id.stats_profile:
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

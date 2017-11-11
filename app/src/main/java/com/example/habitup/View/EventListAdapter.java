@@ -49,17 +49,17 @@ public class EventListAdapter extends ArrayAdapter<HabitEvent> {
 
         HabitEvent event = events.get(position);
 
-        Habit eventHabit = event.getHabit();
-        String eventName = eventHabit.getHabitName();
-        String eventAttribute = eventHabit.getHabitAttribute();
-        String attributeColour = Attributes.getColour(eventAttribute);
+//        Habit eventHabit = event.getHabit();
+//        String eventName = eventHabit.getHabitName();
+//        String eventAttribute = eventHabit.getHabitAttribute();
+//        String attributeColour = Attributes.getColour(eventAttribute);
         LocalDate eventDate = event.getCompletedate();
         String eventComment = event.getComment();
 
         // Set habit name
         TextView eventNameView = v.findViewById(R.id.event_name);
-        eventNameView.setText(eventName);
-        eventNameView.setTextColor(Color.parseColor(attributeColour));
+//        eventNameView.setText(eventName);
+//        eventNameView.setTextColor(Color.parseColor(attributeColour));
 
         // Set event date
         TextView eventDateView = v.findViewById(R.id.event_date);

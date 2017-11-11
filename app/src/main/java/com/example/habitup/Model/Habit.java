@@ -2,20 +2,22 @@ package com.example.habitup.Model;
 
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 public class Habit {
 
     // Members
     private int uid;
+    private int hid;
     private String name;
     private boolean[] schedule;
     private String reason;
     private String attribute;
-    private HabitEventList habitEvents;
     private LocalDate startDate;
+
+    private LocalDate lastUpdated;
+    private int habitsDone;
+    private int habitsDoneExtra;
+    private int habitsPossible;
 
     /**
      * Habit constructor
@@ -43,14 +45,13 @@ public class Habit {
         //TODO:
         // unique name (HabitList?) or controller
         setUID(uid);
+        setUniqueHID();
         setHabitName(name);
         setReason(reason);
         setAttribute(attribute);
-        habitEvents = new HabitEventList(); //temporary
         this.startDate = startDate;
         this.schedule = new boolean[8];
         setSchedule(schedule);
-
     }
 
     /**
@@ -60,7 +61,7 @@ public class Habit {
      * @return Boolean
      */
     public Boolean isLegalNameLength(String name){
-        return ((name.trim().length()>0)&&(name.trim().length()<=20));
+        return ( (name.trim().length() > 0) && (name.trim().length() <= 20) );
     }
 
     /**
@@ -70,7 +71,7 @@ public class Habit {
      * @return Boolean
      */
     public Boolean isLegalReasonLength(String reason){
-        return ((reason.trim().length()>0)||(reason.trim().length()<=30));
+        return ( (reason.trim().length() > 0) && (reason.trim().length() <= 30) );
     }
 
     /**
@@ -81,9 +82,11 @@ public class Habit {
      */
     public Boolean isLegalSchedule(boolean[] schedule){
         int trueCount = 0;
-        for (boolean s : schedule) if (s){trueCount++;}
-        if (trueCount>=1){return Boolean.TRUE;}
-        else return Boolean.FALSE;
+        for (boolean s : schedule) {
+            if (s) { trueCount++; }
+        }
+
+        return trueCount > 0;
     }
 
     /**
@@ -93,23 +96,37 @@ public class Habit {
      * @return
      */
     public Boolean isLegalAttribute(String attribute){
-        Attributes attributesList = new Attributes();
-        return attributesList.contains(attribute);
+
+        String[] attrNames = Attributes.getAttributeNames();
+        for (String name : attrNames) {
+            if (name == attribute) {
+                return Boolean.TRUE;
+            }
+        }
+
+        return Boolean.FALSE;
     }
 
     /**
      * getUID
-     * Gets the int uid of habit
-     * @return int
+     * Gets the uid of habit
+     * @return int Associated UID
      */
-    public int getUID() {return this.uid;}
+    public int getUID() { return this.uid; }
+
+    /**
+     * getHID
+     * Gets the unique identifier of habit
+     * @return int habitID
+     */
+    public int getHID() { return this.hid; }
 
     /**
      * getHabitName
      * Gets the String of the Habit's name
      * @return String
      */
-    public String getHabitName() {return this.name;}
+    public String getHabitName() { return this.name; }
 
     /**
      * getHabitSchedule
@@ -123,35 +140,45 @@ public class Habit {
      * Gets the Habit's reason as a String
      * @return String
      */
-    public String getHabitReason() {return this.reason;}
+    public String getHabitReason() { return this.reason; }
 
     /**
      * getHabitAttribute
      * Gets the associated attribute of the Habit
      * @return String
      */
-    public String getHabitAttribute() {return this.attribute;}
-
-    /**
-     * getHabitEvents
-     * Gets the associated ArrayList of HabitEvent objects for the Habit
-     * @return ArrayList<HabitEvent>
-     */
-    public HabitEventList getHabitEvents() {return this.habitEvents;}
+    public String getHabitAttribute() { return this.attribute; }
 
     /**
      * getStartDate
      * Gets the Habit's start date
      * @return Date
      */
-    public LocalDate getStartDate() {return this.startDate;}
+    public LocalDate getStartDate() { return this.startDate; }
 
     /**
      * setUID
      * sets the Habit's uid into the input uid
      * @param uid int uid associated with user
      */
-    public void setUID(int uid) {this.uid = uid;}
+    public void setUID(int uid) { this.uid = uid; }
+
+    public void setUniqueHID() {
+        // Do ElasticSearch stuff
+        int hid;
+
+        // DEBUG - suppress error
+        hid = 0;
+
+        // Set the HID
+        setHID(hid);
+    }
+
+    /**
+     * setHID
+     * Sets the Habit's unique identifier
+     */
+    public void setHID(int hid) { this.hid = hid; }
 
     /**
      * setHabitName
@@ -161,12 +188,11 @@ public class Habit {
      */
     public void setHabitName(String name) throws IllegalArgumentException{
 
-        if(isLegalNameLength(name)){
+        if (isLegalNameLength(name)) {
             this.name = name;
-        }
-        else{
-            throw new IllegalArgumentException("Error: Name length has to be within " +
-                    "1 - 20 characters");
+        } else {
+            String errorStr = "Error: Name length must be within 1 - 20 characters";
+            throw new IllegalArgumentException(errorStr);
         }
         //TODO: Implement unique Habit name in HabitList? or controller
     }
@@ -192,11 +218,11 @@ public class Habit {
      */
     public void setReason(String reason) throws IllegalArgumentException {
 
-        if (isLegalReasonLength(reason)){
-            this.reason = reason;}
-        else{
-            throw new IllegalArgumentException("Error: Reason length has to be between " +
-                    "1 - 30 characters.");
+        if (isLegalReasonLength(reason)) {
+            this.reason = reason;
+        } else {
+            String errStr = "Error: Reason length has to be between 1 - 30 characters.";
+            throw new IllegalArgumentException(errStr);
         }
     }
 
@@ -207,11 +233,11 @@ public class Habit {
      * @throws IllegalArgumentException
      */
     public void setAttribute(String attribute) throws IllegalArgumentException{
-        if(isLegalAttribute(attribute)){
-            this.attribute = attribute;}
-        else{
-            throw new IllegalArgumentException("Error: Attribute is not from " +
-                    "the provided attributes.");
+        if (isLegalAttribute(attribute)) {
+            this.attribute = attribute;
+        } else {
+            String errStr = "Error: Attribute is invalid.";
+            throw new IllegalArgumentException(errStr);
         }
     }
 
@@ -219,28 +245,9 @@ public class Habit {
         //TODO: implement
     }
 
-    public void setStartDate(LocalDate startDate) {
+    public void setStartDate(LocalDate startDate) throws IllegalArgumentException {
+        // TODO: potential error checking, e.g. startDate cannot be after today?
         this.startDate = startDate;
-    }
-
-    /**
-     * addHabitEvent
-     * Adds a new HabitEvent into the Habit's ArrayList
-     * @param habitEvent HabitEvent to be added into the Habit
-     */
-    public void addHabitEvent(HabitEvent habitEvent){
-
-        this.habitEvents.add(habitEvent);
-    }
-
-    /**
-     * removeHabitEvent
-     * Removes the specified HabitEvent from the Habit's ArrayList
-     * @param habitEvent HabitEvent to be removed
-     */
-    public void removeHabitEvent(HabitEvent habitEvent){
-
-        this.habitEvents.remove(habitEvent);
     }
 
     /**
@@ -250,4 +257,42 @@ public class Habit {
     public Boolean isTodayHabit() {
         return schedule[LocalDate.now().getDayOfWeek().getValue()];
     }
+
+
+    public void updateHabitsPossible() {
+
+        // Get today's date - we will compare this to lastCalculated
+        LocalDate today = LocalDate.now();
+        LocalDate curr = this.lastUpdated;
+
+        // New lastCalculated is today, because we're recalculating.
+        this.lastUpdated = today;
+
+        while (curr != today) {
+
+            // Check if curr is one of the days set for the Habit to be done
+            // NOTE: DayOfWeek is an enum - Mon == 1, Tue == 2, etc.
+            if (this.schedule[curr.getDayOfWeek().getValue()]) {
+
+                // If so, increment habitsPossible
+                ++this.habitsPossible;
+            }
+
+            // Increment to next day
+            // Careful!  Check for month rollover, weird possibilities
+            curr.plusDays(1);
+
+        }
+    }
+
+    public void incrementHabitsDone() { ++this.habitsDone; }
+    public void incrementHabitsDoneExtra() { ++this.habitsDoneExtra; }
+    public void decrementHabitsDone() { --this.habitsDone; }
+    public void decrementHabitsDoneExtra() { --this.habitsDoneExtra; }
+
+    // Use habitsDone / habitsPossible to represent the overall stat (don't want to return
+    // a float or something dumb and messy like that - rational representation)
+    public int getHabitsDone() { return this.habitsDone; }
+    public int getHabitsDoneExtra() { return this.habitsDoneExtra; }
+    public int getHabitsPossible() { return this.habitsPossible; }
 }

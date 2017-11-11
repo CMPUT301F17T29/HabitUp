@@ -16,17 +16,22 @@ import java.time.LocalDate;
  */
 public class HabitEvent implements Comparable<HabitEvent> {
 
+    private static final int maxByteCount = 65536;
+
     private int uid;
-    private Habit habit;
+    private int hid;
     private String comment;
     private LocalDate completedate;
-    private Bitmap Image;
+    private Bitmap image;
     private Map location;
+    private Boolean scheduled;
 
     private String pathofimage;
 
 
-    public HabitEvent () {
+    public HabitEvent (int uid, int hid) {
+        this.uid = uid;
+        this.hid = hid;
 //        this.comment = comment;
 //        this.completedate = completedate;
 //        this.location = location;
@@ -35,38 +40,70 @@ public class HabitEvent implements Comparable<HabitEvent> {
 //        this.habit = habit;
     }
 
-    public HabitEvent(int uid, Habit habit, String comment, LocalDate completedate) {
+    public HabitEvent(int uid, int hid, String comment, LocalDate completedate) {
         this.setUID(uid);
-        this.setHabit(habit);
+        this.setHabit(hid);
         this.setComment(comment);
         this.setCompletedate(completedate);
+        this.setScheduled();
     }
 
     // Copy Constructor - @gojeffcho
     public HabitEvent(HabitEvent e) {
         // Copy all members over
         this.setUID(e.getUID());
-        this.setHabit(getHabit());
+        this.setHabit(e.getHID());
         this.setComment(e.getComment());
         this.setCompletedate(e.getCompletedate());
-        this.setLocation(e.getLocation());
         this.setImage(e.getImage());
+        this.setLocation(e.getLocation());
+        this.scheduled = e.getScheduled();
 //        this.pathofimage = ??
 
     }
 
     public void setUID(int uid) { this.uid = uid; }
 
-    public void setHabit(Habit h) { this.habit = h; }
+    public void setHabit(int hid) { this.hid = hid; }
+
+    public void setImage(Bitmap image) throws IllegalArgumentException {
+        if (image.getByteCount() <= maxByteCount) {
+            this.image = image;
+        } else {
+            throw new IllegalArgumentException("Image file must be less than or equal to " + String.valueOf(maxByteCount) + " bytes.");
+        }
+    }
+
+    public void setScheduled() {
+
+        // Get Habit corresponding to hid from ES
+
+        // Get schedule from Habit
+
+        // Check if completedate is a scheduled date
+
+            // If yes, set TRUE
+
+            // If not, set FALSE
+
+    }
 
     public void setComment (String comment) throws IllegalArgumentException {
-        this.comment = comment;
+        if (comment.length() >= 0 || comment.length() <= 20) {
+            this.comment = comment;
+        } else {
+            throw new IllegalArgumentException("Comment must be between 0 and 20 characters.");
+        }
     }
 
     public void setCompletedate (LocalDate completedate) throws IllegalArgumentException {
-        this.completedate = completedate;
-
+        if (completedate.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("Completion date must be on or before today's date.");
+        } else {
+            this.completedate = completedate;
+        }
     }
+
     public void setLocation(Map location){
         this.location =  location;
     }
@@ -78,22 +115,17 @@ public class HabitEvent implements Comparable<HabitEvent> {
     }
 
     private void setImage(String pathOfImage){
-        Image= BitmapFactory.decodeFile(pathOfImage);
+        image = BitmapFactory.decodeFile(pathOfImage);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        Image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         while(true){
-            if (stream.toByteArray().length >= 65536) {
-                resizeImage(Image);
+            if (stream.toByteArray().length >= maxByteCount) {
+                resizeImage(image);
             }
             else{
                 break;
             }
         }
-    }
-
-    // TODO: IMPLEMENT
-    private void setImage(Bitmap image) {
-
     }
 
     private void resizeImage(Bitmap bp) {
@@ -103,6 +135,10 @@ public class HabitEvent implements Comparable<HabitEvent> {
 
 
     public int getUID() { return this.uid; }
+
+    public int getHID() { return hid; }
+
+    public Boolean getScheduled() { return this.scheduled; }
 
     public LocalDate getCompletedate(){
         return completedate;
@@ -117,17 +153,15 @@ public class HabitEvent implements Comparable<HabitEvent> {
     }
 
     public Bitmap getImage(){
-        return Image;
+        return image;
     }
-
-    public Habit getHabit() { return habit; }
 
     public int compareTo(HabitEvent e) {
         return this.completedate.compareTo(e.getCompletedate());
     }
 
     public boolean hasImage() {
-        return this.Image != null;
+        return this.image != null;
     }
 
     public boolean hasLocation() {

@@ -4,9 +4,10 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -17,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Attributes;
@@ -35,6 +37,8 @@ public class AddHabitActivity extends AppCompatActivity {
     private int year_x, month_x, day_x;
     private static final int DIALOG_ID = 0;
 
+    private TextView dateView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +56,7 @@ public class AddHabitActivity extends AppCompatActivity {
 
         // Get clickable region for calendar on-click listern
         ImageView dateLayout = (ImageView) findViewById(R.id.habit_date_button);
+        dateView = (TextView) findViewById(R.id.date_text);
 
         // Set selected date
         setDateString();
@@ -65,8 +70,16 @@ public class AddHabitActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         attrSpinner.setAdapter(adapter);
 
-        // Open the date picker dialog
+        // Open the date picker dialog clicking calendar button
         dateLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog(DIALOG_ID);
+            }
+        });
+
+        // Open the date picker dialog clicking date field
+        dateView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showDialog(DIALOG_ID);
@@ -83,55 +96,95 @@ public class AddHabitActivity extends AppCompatActivity {
              * @param v View
              */
             public void onClick(View v) {
-            setResult(RESULT_OK);
+                setResult(RESULT_OK);
 
-            // Get Habit name and Reason
-            String habitName = ((EditText) findViewById(R.id.habit_name)).getText().toString();
-            String habitReason = ((EditText) findViewById(R.id.habit_reason)).getText().toString();
+                // Get Habit name and Reason
+                String habitName = ((EditText) findViewById(R.id.habit_name)).getText().toString();
+                String habitReason = ((EditText) findViewById(R.id.habit_reason)).getText().toString();
 
-            // Get Habit start date
-//            TextView dateView = (TextView) findViewById(R.id.date_text);
-//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM d, yyyy");
-//            LocalDate startDate = LocalDate.parse(dateView.getText().toString(), formatter);
+                // Get Habit start date
+                String dateString = ((TextView) findViewById(R.id.date_text)).getText().toString();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy");
+                LocalDate startDate = LocalDate.parse(dateString, formatter);
 
-            // Get Habit's associated Attribute
-            String attribute = ((Spinner) findViewById(R.id.habit_attr_spinner)).getSelectedItem().toString();
+                Log.i("DATE:", startDate.toString()); // TODO REMOVE
 
-            // Get Schedule array
-            Boolean schedule[] = new Boolean[8];
-            CheckBox checkBoxMon = (CheckBox) findViewById(R.id.monday);
-            CheckBox checkBoxTue = (CheckBox) findViewById(R.id.tuesday);
-            CheckBox checkBoxWed = (CheckBox) findViewById(R.id.wednesday);
-            CheckBox checkBoxThu = (CheckBox) findViewById(R.id.thursday);
-            CheckBox checkBoxFri = (CheckBox) findViewById(R.id.friday);
-            CheckBox checkBoxSat = (CheckBox) findViewById(R.id.saturday);
-            CheckBox checkBoxSun = (CheckBox) findViewById(R.id.sunday);
+                // Get Habit's associated Attribute
+                String attribute = ((Spinner) findViewById(R.id.habit_attr_spinner)).getSelectedItem().toString();
 
-            schedule[1] = checkBoxMon.isChecked();
-            schedule[2] = checkBoxTue.isChecked();
-            schedule[3] = checkBoxWed.isChecked();
-            schedule[4] = checkBoxThu.isChecked();
-            schedule[5] = checkBoxFri.isChecked();
-            schedule[6] = checkBoxSat.isChecked();
-            schedule[7] = checkBoxSun.isChecked();
+                // Get Schedule array
+                Boolean schedule[] = new Boolean[8];
+                CheckBox checkBoxMon = (CheckBox) findViewById(R.id.monday);
+                CheckBox checkBoxTue = (CheckBox) findViewById(R.id.tuesday);
+                CheckBox checkBoxWed = (CheckBox) findViewById(R.id.wednesday);
+                CheckBox checkBoxThu = (CheckBox) findViewById(R.id.thursday);
+                CheckBox checkBoxFri = (CheckBox) findViewById(R.id.friday);
+                CheckBox checkBoxSat = (CheckBox) findViewById(R.id.saturday);
+                CheckBox checkBoxSun = (CheckBox) findViewById(R.id.sunday);
 
-            // Create the Habit
-            Habit newHabit = new Habit();
-            newHabit.setHabitName(habitName);
-            newHabit.setReason(habitReason);
-            // set start date
-//            newHabit.setStartDate(startDate);
-            newHabit.setAttribute(attribute);
-            newHabit.setSchedule(schedule);
+                schedule[0] = Boolean.FALSE;
+                schedule[1] = checkBoxMon.isChecked();
+                schedule[2] = checkBoxTue.isChecked();
+                schedule[3] = checkBoxWed.isChecked();
+                schedule[4] = checkBoxThu.isChecked();
+                schedule[5] = checkBoxFri.isChecked();
+                schedule[6] = checkBoxSat.isChecked();
+                schedule[7] = checkBoxSun.isChecked();
 
-            // Pass to the controller
-            HabitUpController hupCtl = new HabitUpController();
-            if (hupCtl.addHabit(newHabit) == 0) {
-                Intent result = new Intent();
-                setResult(Activity.RESULT_OK, result);
-                finish();
+                // Create the Habit
+                Habit newHabit = new Habit();
+                Boolean habitOK = Boolean.TRUE;
 
-            }
+                try {
+                    newHabit.setHabitName(habitName);
+                } catch (IllegalArgumentException e) {
+                    // do stuff
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    habitOK = Boolean.FALSE;
+                }
+
+                try {
+                    newHabit.setReason(habitReason);
+                } catch (IllegalArgumentException e) {
+                    // do stuff
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    habitOK = Boolean.FALSE;
+                }
+
+                try {
+                    newHabit.setStartDate(startDate);
+                } catch (IllegalArgumentException e) {
+                    // do stuff
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    habitOK = Boolean.FALSE;
+                }
+
+                try {
+                    newHabit.setAttribute(attribute);
+                } catch (IllegalArgumentException e) {
+                    // do stuff
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    habitOK = Boolean.FALSE;
+                }
+
+                try {
+                    newHabit.setSchedule(schedule);
+                } catch (IllegalArgumentException e) {
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    habitOK = Boolean.FALSE;
+                }
+
+                if (habitOK) {
+                    // Pass to the controller
+                    HabitUpController hupCtl = new HabitUpController();
+                    if (hupCtl.addHabit(newHabit) == 0) {
+                        Intent result = new Intent();
+                        setResult(Activity.RESULT_OK, result);
+                        finish();
+                    } else {
+                        Toast.makeText(getBaseContext(), "There was an error adding the new Habit.", Toast.LENGTH_LONG).show();
+                    }
+                }
 
             }
         });
@@ -182,8 +235,6 @@ public class AddHabitActivity extends AppCompatActivity {
      * Updates the date string in the date text view
      */
     private void setDateString() {
-        TextView dateView = (TextView) findViewById(R.id.date_text);
-
         String monthName = new DateFormatSymbols().getShortMonths()[month_x];
         String dateString = (monthName) + " " + day_x + ", " + year_x;
         dateView.setText(dateString);

@@ -11,7 +11,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
+import com.example.habitup.Controller.HabitUpController;
+import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
 public class BaseActivity extends AppCompatActivity {
@@ -30,7 +33,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     public void setContentView(int layoutResID) {
         DrawerLayout fullView = (DrawerLayout) getLayoutInflater().inflate(R.layout.drawer, null);
-        FrameLayout container = (FrameLayout) fullView.findViewById(R.id.frame);
+        FrameLayout container = fullView.findViewById(R.id.frame);
         getLayoutInflater().inflate(layoutResID, container, true);
 
         super.setContentView(fullView);
@@ -41,6 +44,18 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void initNavigationDrawer() {
+
+
+//        UserAccount currentUser = HabitUpController.getCurrentUser();
+//
+//        TextView nameField = (TextView) findViewById(R.id.drawer_name);
+//
+//
+//        if (currentUser != null) {
+//            nameField.setText(currentUser.getRealname());
+//        } else {
+//            nameField.setText("Not logged in.");
+//        }
 
         // Taken from https://www.learn2crack.com/2016/03/android-material-design-sliding-navigation-drawer.html
         navigationView = (NavigationView)findViewById(R.id.navigation_view);
