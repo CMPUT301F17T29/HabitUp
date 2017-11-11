@@ -100,21 +100,6 @@ public class EditHabitActivity extends AppCompatActivity {
         attrSpinner.setAdapter(adapter);
         attrSpinner.setOnItemSelectedListener(attributeListener);
 
-        attrSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String[] names = Attributes.getAttributeNames();
-                String attributeName = names[position];
-                String color = Attributes.getColour(attributeName);
-                TextView text = view.findViewById(R.id.attribute_text);
-                text.setTextColor(Color.parseColor(color));
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
         // TODO: Set spinner attribute to the habit's attribute (get int position from entries)
         // Just setting it to 2 for now so wrong color will currently be set in View Habit
         attrSpinner.setSelection(2);
