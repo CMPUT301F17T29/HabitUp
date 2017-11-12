@@ -25,7 +25,6 @@ public class UserAccount {
     private int uid;
     private String username;
     private String realname;
-    private Bitmap photo;
     private String encodedPhoto;
     private int level;
     private int XP;
@@ -46,7 +45,7 @@ public class UserAccount {
         this.setUsername(username);
         this.setRealname(realname);
         this.setPhoto(photo);
-        this.setEncodedPhoto(photo);
+        //this.setEncodedPhoto(photo);
 
         level = 1;
         XP = 0;
@@ -77,16 +76,11 @@ public class UserAccount {
      * @return Image if associated, null if not
      */
     public Bitmap getPhoto() {
-        if (this.photo != null) {
-            return getPhotoFromEncode();
-        } else {
-            return null;
+        if (this.encodedPhoto != null) {
+            byte [] decodedBytes = Base64.decode(this.encodedPhoto, 0);
+            return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
         }
-    }
-
-    public Bitmap getPhotoFromEncode() {
-        byte [] decodedBytes = Base64.decode(this.encodedPhoto, 0);
-        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+        else return null;
     }
 
     /**
@@ -231,28 +225,20 @@ public class UserAccount {
      */
     public void setPhoto(Bitmap photo) {
         if (photo != null) {
-            this.photo = photo;
-            setEncodedPhoto(photo);
-        }
-    }
-
-    public void setEncodedPhoto(Bitmap photo) {
-
-        if (photo != null) {
-
             ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
             photo.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOS);
 
             this.encodedPhoto = Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
         }
+        else this.encodedPhoto = null;
     }
 
     /**
      * Delete the associated photo, if one exists
      */
     public void deletePhoto() {
-       if (photo != null) {
-           this.photo = null;
+       if (encodedPhoto != null) {
+           this.encodedPhoto = null;
        }
     }
 
