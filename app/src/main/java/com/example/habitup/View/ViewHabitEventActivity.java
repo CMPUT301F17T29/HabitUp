@@ -60,12 +60,39 @@ public class ViewHabitEventActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i("HabitUpDEBUG", "ViewHabitEventActivity onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events);
  
         // Get bottom navigation
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.event_bottom_nav);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        eventListView = (ListView) findViewById(R.id.event_list);
+
+        // Handle list view click events
+        eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
+                position = pos;
+
+                for (int i = 0; i < eventListView.getChildCount(); i++) {
+                    if (i == pos) {
+                        highlightItem(view);
+                    } else {
+                        unhighlightItem(eventListView.getChildAt(i), events.get(i));
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Invoked whenever the activity starts
+     */
+    @Override
+    public void onStart() {
+        super.onStart();
 
         // Retrieve events from ES for user
         ElasticSearchController.GetHabitEventsByUidTask getHabitEvents = new ElasticSearchController.GetHabitEventsByUidTask();
@@ -111,7 +138,16 @@ public class ViewHabitEventActivity extends BaseActivity {
         habitAdapter.add("All Habit Types");
 
         // Set up habit types list
-        ArrayList<Habit> habitTypes = new ArrayList<Habit>();
+        ElasticSearchController.GetUserHabitsTask userHabits = new ElasticSearchController.GetUserHabitsTask();
+        userHabits.execute(HabitUpApplication.getCurrentUIDAsString());
+        ArrayList<Habit> habitTypes;
+
+        try {
+            habitTypes = userHabits.get();
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "ViewHabitEvent, couldn't get HabitTypes for user");
+            habitTypes = null;
+        }
 
         // Populate spinner with habit type names
         for (Habit habit : habitTypes) {
@@ -168,14 +204,6 @@ public class ViewHabitEventActivity extends BaseActivity {
                 eventAdapter.notifyDataSetChanged();
             }
         });
-    }
-
-    /**
-     * Invoked whenever the activity starts
-     */
-    @Override
-    public void onStart() {
-        super.onStart();
 
         // Highlight events row in drawer
         navigationView.setCheckedItem(R.id.events);

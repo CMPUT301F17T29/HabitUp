@@ -32,7 +32,7 @@ public class HabitUpController {
         }
 
         for (Habit habit : allHabits) {
-            Log.i("HabitUpDEBUG", "getTodaysHabits: " + habit.getHabitName());
+//            Log.i("HabitUpDEBUG", "getTodaysHabits: " + habit.getHabitName());
             if (habit.isTodayHabit()) { habits.add(habit); }
         }
 

@@ -48,6 +48,7 @@ public class ViewHabitActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i("HabitUpDEBUG", "ViewHabitActivity onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habits);
 
