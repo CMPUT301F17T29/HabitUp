@@ -163,6 +163,36 @@ public class ViewHabitEventActivity extends BaseActivity {
         navigationView.setCheckedItem(R.id.events);
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        clearHighlightedRows();
+
+        // Retrieve events from ES for user
+        ElasticSearchController.GetHabitEventsByUidTask getHabitEvents = new ElasticSearchController.GetHabitEventsByUidTask();
+        getHabitEvents.execute(HabitUpApplication.getCurrentUIDAsString());
+        try {
+            events = getHabitEvents.get();
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "ViewHabitEvent - Couldn't get HabitEvents");
+        }
+
+        // Set up list view adapter for habit events
+        eventAdapter = new EventListAdapter(this, R.layout.event_list_item, events);
+        eventListView.setAdapter(eventAdapter);
+
+        eventAdapter.notifyDataSetChanged();
+
+        // Display if there are no events
+        if (events.size() == 0) {
+            TextView subHeading = (TextView) findViewById(R.id.select_event);
+            subHeading.setText("You currently have no habit events.");
+        }
+
+    }
+
     /**
      * Add the plus button in the top right corner
      * @param menu the add menu
@@ -253,13 +283,6 @@ public class ViewHabitEventActivity extends BaseActivity {
         editIntent.putExtra(HABIT_EVENT_EID, eid);
         editIntent.putExtra(HABIT_EVENT_ACTION, requestCode);
         startActivityForResult(editIntent, requestCode);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        clearHighlightedRows();
     }
 
     private void clearHighlightedRows() {
