@@ -69,17 +69,14 @@ public class BaseActivity extends AppCompatActivity {
                     case R.id.profile:
                         Intent profileIntent = new Intent(context, MainActivity.class);
                         startActivity(profileIntent);
-                        drawerLayout.closeDrawers();
                         break;
                     case R.id.habits:
                         Intent habitsIntent = new Intent(context, ViewHabitActivity.class);
                         startActivity(habitsIntent);
-                        drawerLayout.closeDrawers();
                         break;
                     case R.id.events:
                         Intent eventsIntent = new Intent(context, ViewHabitEventActivity.class);
                         startActivity(eventsIntent);
-                        drawerLayout.closeDrawers();
                         break;
                     case R.id.friends:
                         drawerLayout.closeDrawers();
