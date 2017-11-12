@@ -6,6 +6,7 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.example.habitup.Controller.ElasticSearchController;
+import com.example.habitup.Controller.HabitUpApplication;
 
 import java.io.ByteArrayOutputStream;
 
@@ -16,16 +17,12 @@ import java.io.ByteArrayOutputStream;
  */
 public class UserAccount {
 
-    // Static Members
-    private final static int xpIncrease = 25;
-    private final static int MAX_USERNAME_LENGTH = 15;
-    private final static int MAX_REALNAME_LENGTH = 20;
-
     // Members
     private int uid;
     private String username;
     private String realname;
     private String encodedPhoto;
+    private Bitmap photo;
     private int level;
     private int XP;
     private int XPtoNext;
@@ -34,7 +31,7 @@ public class UserAccount {
      * UserAccount Constructor
      * @param username: String representing username.  Must be unique.
      * @param realname: String representing real name.
-     * @param photo: Image object, if provided
+     * @param photo: Bitmap object, if provided
      *
      * @author @gojeffcho
      */
@@ -45,12 +42,10 @@ public class UserAccount {
         this.setUsername(username);
         this.setRealname(realname);
         this.setPhoto(photo);
-        //this.setEncodedPhoto(photo);
 
         level = 1;
         XP = 0;
         XPtoNext = 20;
-
     }
 
     /**
@@ -76,11 +71,18 @@ public class UserAccount {
      * @return Image if associated, null if not
      */
     public Bitmap getPhoto() {
+        decodePhoto();
+        return photo;
+    }
+
+    /**
+     * Decodes the encodedPhoto and sets the photo Bitmap to it.
+     */
+    public void decodePhoto() {
         if (this.encodedPhoto != null) {
             byte [] decodedBytes = Base64.decode(this.encodedPhoto, 0);
-            return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+            this.photo = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
         }
-        else return null;
     }
 
     /**
@@ -172,9 +174,9 @@ public class UserAccount {
         getMaxUID.execute();
         try {
             newUID = getMaxUID.get().intValue();
-            Log.i("HabitUpDEBUG", "UserAccount - UID was set to " + Integer.toString(newUID));
+//            Log.i("HabitUpDEBUG", "UserAccount - UID was set to " + Integer.toString(newUID));
         } catch (Exception e) {
-            Log.i("HabitUpDEBUG", "UserAccount - could not get Max UID");
+//            Log.i("HabitUpDEBUG", "UserAccount - could not get Max UID");
         }
 
         // Set it to this user's uid
@@ -191,8 +193,9 @@ public class UserAccount {
         // Catch invalid real names
         if (username.length() == 0) {
             throw new IllegalArgumentException("Error: username is blank.");
-        } else if (username.length() > MAX_USERNAME_LENGTH) {
-            throw new IllegalArgumentException("Error: username must be " + String.valueOf(MAX_USERNAME_LENGTH) + " characters or fewer.");
+        } else if (username.length() > HabitUpApplication.MAX_USERNAME_LENGTH) {
+            throw new IllegalArgumentException("Error: username must be " +
+                    String.valueOf(HabitUpApplication.MAX_USERNAME_LENGTH) + " characters or fewer.");
 
         // Otherwise, legal: set the name
         } else {
@@ -211,8 +214,9 @@ public class UserAccount {
         if (realname.length() == 0) {
             throw new IllegalArgumentException("Error: full name is blank.");
 
-        } else if (realname.length() > MAX_REALNAME_LENGTH) {
-            throw new IllegalArgumentException("Error: full name must be " + String.valueOf(MAX_REALNAME_LENGTH) + " characters or fewer.");
+        } else if (realname.length() > HabitUpApplication.MAX_REALNAME_LENGTH) {
+            throw new IllegalArgumentException("Error: full name must be " +
+                    String.valueOf(HabitUpApplication.MAX_REALNAME_LENGTH) + " characters or fewer.");
         // Otherwise, legal: set the name
         } else {
             this.realname = realname;
@@ -224,22 +228,55 @@ public class UserAccount {
      * @param photo
      */
     public void setPhoto(Bitmap photo) {
-        if (photo != null) {
-            ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
-            photo.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOS);
 
-            this.encodedPhoto = Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
+        if (photo != null) {
+
+//            Log.i("HabitUpDEBUG", "Photo is " + String.valueOf(photo.getByteCount()) + " bytes.");
+
+            if (photo.getByteCount() > HabitUpApplication.MAX_PHOTO_BYTECOUNT) {
+                for (int i = 0; i < 3; ++i) {
+                    photo = resizeImage(photo);
+//                    Log.i("HabitUpDEBUG", "Resized to " + String.valueOf(photo.getByteCount()) + " bytes.");
+                    if (photo.getByteCount() <= HabitUpApplication.MAX_PHOTO_BYTECOUNT) {
+                        break;
+                    }
+                }
+            }
+
+            if (photo.getByteCount() <= HabitUpApplication.MAX_PHOTO_BYTECOUNT) {
+
+                this.photo = photo;
+
+                ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
+                photo.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOS);
+                this.encodedPhoto = Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
+
+            } else {
+                throw new IllegalArgumentException("Image file must be less than or equal to " +
+                        String.valueOf(HabitUpApplication.MAX_PHOTO_BYTECOUNT) + " bytes.");
+            }
+
+        } else {
+            this.photo = null;
+            this.encodedPhoto = null;
         }
-        else this.encodedPhoto = null;
+    }
+
+    private Bitmap resizeImage(Bitmap img) {
+//        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//        img.compress(Bitmap.CompressFormat.JPEG, 70, stream);
+//        byte[] imgData = stream.toByteArray();
+//        return BitmapFactory.decodeByteArray(imgData, 0, imgData.length);
+        double scaleFactor = 0.95;
+        return Bitmap.createScaledBitmap(img, (int) (img.getWidth() * scaleFactor), (int) (img.getHeight() * scaleFactor), true);
     }
 
     /**
      * Delete the associated photo, if one exists
      */
     public void deletePhoto() {
-       if (encodedPhoto != null) {
-           this.encodedPhoto = null;
-       }
+       encodedPhoto = null;
+       photo = null;
     }
 
     /**
@@ -261,7 +298,7 @@ public class UserAccount {
      * Set XP target to the next level-up target
      */
     public void setXPtoNext() {
-        this.XPtoNext += xpIncrease;
+        this.XPtoNext += HabitUpApplication.XP_INCREASE_AMOUNT;
     }
 
     /**

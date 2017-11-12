@@ -30,8 +30,6 @@ import com.example.habitup.R;
 import java.text.DateFormatSymbols;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.Locale;
 
 public class EditHabitActivity extends AppCompatActivity {
 

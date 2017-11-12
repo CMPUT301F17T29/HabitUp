@@ -187,7 +187,7 @@ public class AddHabitEventActivity extends AppCompatActivity {
                 }
 
                 try {
-                    newEvent.setImage(photo);
+                    newEvent.setPhoto(photo);
                 } catch (IllegalArgumentException e) {
                     Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     eventOK = Boolean.FALSE;
