@@ -83,7 +83,7 @@ public class ViewHabitEventActivity extends BaseActivity {
         commentFilter = (EditText) findViewById(R.id.filter_comment);
 
         eventListView = (RecyclerView) findViewById(R.id.event_list);
-
+        eventListView.setHasFixedSize(true);
 
         // Date format for displaying event date
         DateTimeFormatter dateFmt = DateTimeFormatter.ofPattern("MMM d, yyyy");
@@ -97,16 +97,18 @@ public class ViewHabitEventActivity extends BaseActivity {
         });
         Collections.reverse(events);
 
-
         // Set up list view adapter for habit events
         eventAdapter = new EventListAdapter(this, R.layout.event_list_item, events, eventListView);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setAutoMeasureEnabled(true);
 
         eventListView.setAdapter(eventAdapter);
         eventListView.setLayoutManager(layoutManager);
 
         eventAdapter.notifyDataSetChanged();
+
+        position = eventAdapter.getPosition();
 
         // Display if there are no events
         if (events.size() == 0) {
@@ -162,15 +164,10 @@ public class ViewHabitEventActivity extends BaseActivity {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        position = -1;
         clearHighlightedRows();
 
         // Retrieve events from ES for user
@@ -232,6 +229,7 @@ public class ViewHabitEventActivity extends BaseActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
             // Check if list view item is selected
+            position = eventAdapter.getPosition();
             if (position < 0) {
                 Toast.makeText(context, "Select an event first.", Toast.LENGTH_SHORT).show();
             } else {
@@ -292,7 +290,6 @@ public class ViewHabitEventActivity extends BaseActivity {
         position = -1;
         for (int i = 0; i < eventListView.getChildCount(); i++) {
             View view = eventListView.getChildAt(i);
-            eventAdapter.unhighlightItem(view, events.get(i));
         }
     }
 }

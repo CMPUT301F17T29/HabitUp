@@ -119,7 +119,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/select_event"
+        app:layoutManager="LinearLayoutManager"
         android:layout_marginBottom="?attr/actionBarSize"
+        android:scrollbars="vertical"
         android:clickable="true">
     </android.support.v7.widget.RecyclerView>
 

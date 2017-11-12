@@ -25,6 +25,7 @@ import java.time.format.DateTimeFormatter;
 
 public class EventHolder extends RecyclerView.ViewHolder {
 
+    public final View itemView;
     private final TextView eventNameView;
     private final TextView eventDateView;
     private final TextView eventCommentView;
@@ -32,6 +33,7 @@ public class EventHolder extends RecyclerView.ViewHolder {
     private final ImageView markerIcon;
 
     private HabitEvent event;
+    private Habit eventHabit;
     private Context context;
 
     public EventHolder(Context context, View itemView) {
@@ -39,6 +41,7 @@ public class EventHolder extends RecyclerView.ViewHolder {
 
         this.context = context;
 
+        this.itemView = itemView;
         this.eventNameView = itemView.findViewById(R.id.event_name);
         this.eventDateView = itemView.findViewById(R.id.event_date);
         this.eventCommentView = itemView.findViewById(R.id.event_comment);
@@ -49,7 +52,6 @@ public class EventHolder extends RecyclerView.ViewHolder {
     public void bindEvent(HabitEvent event) {
         this.event = event;
 
-        Habit eventHabit;
         ElasticSearchController.GetHabitsTask getHabit = new ElasticSearchController.GetHabitsTask();
         getHabit.execute(String.valueOf(event.getHID()));
         try {
@@ -94,6 +96,28 @@ public class EventHolder extends RecyclerView.ViewHolder {
         } else {
             markerIcon.setColorFilter(defaultColour);
         }
+
+    }
+
+    public void highlightItem() {
+        itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.teal));
+
+        int whiteColor = ContextCompat.getColor(context, R.color.white);
+        eventNameView.setTextColor(whiteColor);
+        eventCommentView.setTextColor(whiteColor);
+        eventDateView.setTextColor(whiteColor);
+    }
+
+    public void unhighlightItem() {
+        itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
+
+        String attribute = eventHabit.getHabitAttribute();
+        String color = Attributes.getColour(attribute);
+
+        int lightGray = ContextCompat.getColor(context, R.color.lightgray);
+        eventNameView.setTextColor(Color.parseColor(color));
+        eventCommentView.setTextColor(lightGray);
+        eventDateView.setTextColor(lightGray);
 
     }
 

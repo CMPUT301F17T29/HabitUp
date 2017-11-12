@@ -39,6 +39,8 @@ public class EventListAdapter extends RecyclerView.Adapter<EventHolder> {
     private int itemResource;
     private RecyclerView recyclerView;
 
+    private int selected = -1;
+
     public EventListAdapter(Context context, int resource, ArrayList<HabitEvent> events, RecyclerView recyclerView) {
         this.events = events;
         this.context = context;
@@ -58,24 +60,19 @@ public class EventListAdapter extends RecyclerView.Adapter<EventHolder> {
 
     // 4. Override the onBindViewHolder method
     @Override
-    public void onBindViewHolder(EventHolder holder, final int position) {
+    public void onBindViewHolder(final EventHolder holder, final int position) {
 
-        HabitEvent event = this.events.get(position);
+        final HabitEvent event = this.events.get(position);
         final View view = holder.itemView;
         holder.bindEvent(event);
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                for (int i = 0; i < events.size(); i++) {
-                    if (i == position) {
-                        if (i == position) {
-                            highlightItem(view);
-                        } else {
-                            unhighlightItem(recyclerView.getChildAt(i), events.get(i));
-                        }
-                    }
-                }
+            public void onClick(View view) {
+                selected = position;
+                holder.highlightItem();
+
+                // TODO: Fix unhighlighting
             }
         });
     }
@@ -84,6 +81,10 @@ public class EventListAdapter extends RecyclerView.Adapter<EventHolder> {
     public int getItemCount() {
 
         return this.events.size();
+    }
+
+    public int getPosition() {
+        return this.selected;
     }
 
     public HabitEvent getItem(int position) {
@@ -95,46 +96,4 @@ public class EventListAdapter extends RecyclerView.Adapter<EventHolder> {
         notifyItemRemoved(position);
     }
 
-    public void highlightItem(View view) {
-        view.setBackgroundColor(ContextCompat.getColor(context, R.color.teal));
-
-        int whiteColor = ContextCompat.getColor(context, R.color.white);
-        TextView text = view.findViewById(R.id.event_name);
-        text.setTextColor(whiteColor);
-
-        TextView comment = view.findViewById(R.id.event_comment);
-        comment.setTextColor(whiteColor);
-
-        TextView dateText = view.findViewById(R.id.event_date);
-        dateText.setTextColor(whiteColor);
-    }
-
-    public void unhighlightItem(View view, HabitEvent event) {
-        view.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
-
-        Habit eventHabit;
-        ElasticSearchController.GetHabitsTask getHabit = new ElasticSearchController.GetHabitsTask();
-        getHabit.execute(String.valueOf(event.getHID()));
-        try {
-            eventHabit = getHabit.get().get(0);
-        } catch (Exception e) {
-            Log.i("HabitUpDEBUG", "ViewHabitEventActivity - couldn't get Habit");
-            eventHabit = new Habit(-1);
-            eventHabit.setHabitName("ERROR");
-        }
-
-        String attribute = eventHabit.getHabitAttribute();
-        String color = Attributes.getColour(attribute);
-
-        int lightGray = ContextCompat.getColor(context, R.color.lightgray);
-        TextView text = view.findViewById(R.id.event_name);
-        text.setTextColor(Color.parseColor(color));
-
-        TextView comment = view.findViewById(R.id.event_comment);
-        comment.setTextColor(lightGray);
-
-        TextView dateText = view.findViewById(R.id.event_date);
-        dateText.setTextColor(lightGray);
-
-    }
 }
