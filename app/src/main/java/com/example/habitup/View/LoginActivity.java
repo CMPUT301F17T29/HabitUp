@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 } else {
 
-                    // Login Successful - set current user
+                    // We have login input and an internet connection - try to validate user
                     UserAccount loggedInUser = null;
                     ElasticSearchController.GetUser getUser = new ElasticSearchController.GetUser();
                     getUser.execute(logInName);
@@ -75,6 +75,7 @@ public class LoginActivity extends AppCompatActivity {
                         Log.i("HabitUpDEBUG", "LogIn - could not get user " + logInName);
                     }
 
+                    // Login Successful - set current user
                     if (loggedInUser != null) {
 
                         HabitUpApplication.setCurrentUser(loggedInUser);
@@ -85,6 +86,7 @@ public class LoginActivity extends AppCompatActivity {
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
 
+                    // Login unsuccessful
                     } else {
                         Toast.makeText(getApplicationContext(),
                                 "Error: username not found.", Toast.LENGTH_SHORT).show();
