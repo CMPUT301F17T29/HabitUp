@@ -1,18 +1,23 @@
 package com.example.habitup.View;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -20,6 +25,7 @@ import android.widget.Toast;
 
 import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
+import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Attributes;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
@@ -28,6 +34,8 @@ import com.example.habitup.R;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class ViewHabitEventActivity extends BaseActivity {
 
@@ -46,6 +54,7 @@ public class ViewHabitEventActivity extends BaseActivity {
     private ArrayList<HabitEvent> events;
     private ListView eventListView;
     private ArrayAdapter eventAdapter;
+    private EditText commentFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +101,22 @@ public class ViewHabitEventActivity extends BaseActivity {
             Log.i("HabitUpDEBUG", "ViewHabitEvent - Couldn't get HabitEvents");
         }
 
-        Log.i("HabitUpDEBUG", "ViewHabitEventActivity onCreate ES Complete");
+        commentFilter = (EditText) findViewById(R.id.filter_comment);
+
+        eventListView = (ListView) findViewById(R.id.event_list);
+
+        // Date format for displaying event date
+        DateTimeFormatter dateFmt = DateTimeFormatter.ofPattern("MMM d, yyyy");
+
+        //sort by completedate
+        Collections.sort(events, new Comparator<HabitEvent>() {
+            @Override
+            public int compare(HabitEvent e1, HabitEvent e2) {
+                return e1.getCompletedate().compareTo(e2.getCompletedate());
+            }
+        });
+        Collections.reverse(events);
+
 
         // Set up list view adapter for habit events
         eventAdapter = new EventListAdapter(this, R.layout.event_list_item, events);
@@ -128,6 +152,40 @@ public class ViewHabitEventActivity extends BaseActivity {
             habitAdapter.add(habit.getHabitName());
         }
         habitSpinner.setAdapter(habitAdapter);
+
+        // Handle list view click events
+        eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
+                position = pos;
+
+                for (int i = 0; i < eventListView.getChildCount(); i++) {
+                    if (i == pos) {
+                        highlightItem(view);
+                    } else {
+                        unhighlightItem(eventListView.getChildAt(i), events.get(i));
+                    }
+                }
+            }
+        });
+
+        // comment filter through list
+        commentFilter.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                ViewHabitEventActivity.this.eventAdapter.getFilter().filter(charSequence);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         // Highlight events row in drawer
         navigationView.setCheckedItem(R.id.events);
@@ -210,6 +268,27 @@ public class ViewHabitEventActivity extends BaseActivity {
                         goToEditActivity(EDIT_EVENT);
                         return true;
                     case R.id.habit_menu_delete:
+                        //ES deletes through eid
+                        AlertDialog.Builder alert = new AlertDialog.Builder(ViewHabitEventActivity.this);
+                        alert.setTitle("Delete");
+                        alert.setMessage("Are you sure you want to delete this habit event?");
+                        alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                HabitUpController.deleteHabitEvent(events.get(position)); // ES delete
+                                eventAdapter.remove(eventAdapter.getItem(position)); // app view delete
+                                eventListView.setAdapter(eventAdapter);
+                                eventAdapter.notifyDataSetChanged();
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        alert.show();
                         return true;
                 }
             }

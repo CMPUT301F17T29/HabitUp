@@ -1,6 +1,8 @@
 package com.example.habitup.View;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Attributes;
 import com.example.habitup.Model.Habit;
+import com.example.habitup.Model.HabitEvent;
 import com.example.habitup.R;
 
 import java.util.ArrayList;
@@ -41,6 +44,7 @@ public class ViewHabitActivity extends BaseActivity {
     private ArrayList<Habit> habits;
     private ListView habitListView;
     private ArrayAdapter adapter;
+    private ArrayList<HabitEvent> events;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +62,15 @@ public class ViewHabitActivity extends BaseActivity {
             habits = getUserHabits.get();
         } catch (Exception e) {
             Toast.makeText(getBaseContext(), "Error retrieving Habits.", Toast.LENGTH_LONG).show();
+        }
+
+        // Get user habit events
+        ElasticSearchController.GetHabitEventsByUidTask getHabitEvents = new ElasticSearchController.GetHabitEventsByUidTask();
+        getHabitEvents.execute(HabitUpApplication.getCurrentUIDAsString());
+        try {
+            events = getHabitEvents.get();
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "ViewHabitEvent - Couldn't get HabitEvents");
         }
 
         // Initialize habits list view
@@ -98,6 +111,9 @@ public class ViewHabitActivity extends BaseActivity {
         } catch (Exception e) {
             Toast.makeText(getBaseContext(), "Error retrieving Habits.", Toast.LENGTH_LONG).show();
         }
+
+        adapter = new HabitListAdapter(this, R.layout.habit_list_item, habits);
+        habitListView.setAdapter(adapter);
 
         adapter.notifyDataSetChanged();
 
@@ -167,6 +183,32 @@ public class ViewHabitActivity extends BaseActivity {
                         goToEditActivity(EDIT_HABIT, hid);
                         return true;
                     case R.id.habit_menu_delete:
+                        //TODO: ES delete
+                        AlertDialog.Builder alert = new AlertDialog.Builder(ViewHabitActivity.this);
+                        alert.setTitle("Delete");
+                        alert.setMessage("Are you sure you want to delete this habit and its habit events?");
+                        alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                for (HabitEvent e : events){
+                                    if (e.getHID() == habits.get(position).getHID()){
+                                            //&& e.getUID() == HabitUpApplication.getCurrentUID()
+                                        HabitUpController.deleteHabitEvent(e); // ES delete on associated habit events
+                                    }
+                                }
+                                HabitUpController.deleteHabit(habits.get(position));
+                                adapter.remove(adapter.getItem(position));
+                                adapter.notifyDataSetChanged();
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        alert.show();
                         return true;
                 }
             }
