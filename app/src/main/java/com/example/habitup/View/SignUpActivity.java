@@ -14,17 +14,18 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.habitup.Controller.ElasticSearchController;
+import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+
 /**
  * @author Shuyang
  *
  * The signup activity
  */
-
 public class SignUpActivity extends AppCompatActivity {
     protected EditText susername;
     protected EditText sdisplayname;
@@ -40,36 +41,58 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signup);
 
-        //get EditText
+        // get EditText
         susername = (EditText) findViewById(R.id.signup_username);
         sdisplayname = (EditText) findViewById(R.id.signup_displayname);
 
-        //get button
+        // get button
         Button signUpButton = (Button) findViewById(R.id.signup_button);
         Button cancelButton = (Button) findViewById(R.id.cancel_signup);
-
-        //get image
-        addprofilePic = (ImageView) findViewById(R.id.add_profile_pic);
-
-        // change EditText to string
-        signUpName = susername.getText().toString();
-        realName = sdisplayname.getText().toString();
 
         // click signup button
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (checkUserExist(signUpName) && !signUpName.equals("")) {
-                    if (createNewUser(signUpName,realName,userimage)) {
-                        Toast.makeText(getApplicationContext(),
-                                "User: " + signUpName + " has been created.",
-                                Toast.LENGTH_SHORT).show();
-                        finish();
+
+                // change EditText to string
+                signUpName = susername.getText().toString().trim();
+                realName = sdisplayname.getText().toString().trim();
+
+                // get image
+                addprofilePic = (ImageView) findViewById(R.id.add_profile_pic);
+
+                if (signUpName.isEmpty()) {
+                    Toast.makeText(getApplicationContext(),
+                            "Error: Please enter a username.",
+                            Toast.LENGTH_SHORT).show();
+                } else if (realName.isEmpty()) {
+                    Toast.makeText(getApplicationContext(),
+                            "Error: Please enter a name.",
+                            Toast.LENGTH_SHORT).show();
+                } else if (!HabitUpApplication.isOnline(getApplicationContext())) {
+                    Toast.makeText(getApplicationContext(),
+                            "Error: You are not connected to the internet.",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+
+                    // Inputs are valid; see if username already exists
+                    ElasticSearchController.GetUser getUser = new ElasticSearchController.GetUser();
+                    getUser.execute(signUpName);
+                    ArrayList<UserAccount> result = null;
+                    try {
+                        result = getUser.get();
+                    } catch (Exception e) {
+                        Log.i("HabitUpDEBUG", "No user found in SignUp");
+                    }
+
+                    if (result == null) {
+                        Log.i("HabitUpDEBUG", "UNIQUE USERNAME OK");
+
                     } else {
                         Toast.makeText(getApplicationContext(),
-                                " User: " + signUpName + " cannot be created.",
-                                Toast.LENGTH_SHORT).show();
+                                "Error: username already exists.", Toast.LENGTH_SHORT).show();
                     }
+
                 }
             }
         });

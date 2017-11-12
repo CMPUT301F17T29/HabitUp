@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
                             "Please enter a username.",
                             Toast.LENGTH_SHORT).show();
 
-                } else if (!checkInternet()) {
+                } else if (!HabitUpApplication.isOnline(getApplicationContext())) {
                     Toast.makeText(getApplicationContext(),
                             "Error: No connection to the internet.",
                             Toast.LENGTH_SHORT).show();
@@ -103,39 +103,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-
-    /**
-     * check whether Internet is connected
-     */
-    private boolean checkInternet(){
-        //Taken from: https://stackoverflow.com/questions/1560788/how-to-check-internet-access-on-android-inetaddress-never-times-out
-        //2017-11-11
-        Context context = getApplicationContext();
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnected();
-
-
-    }
-
-    /**
-     * check whether this username exist or not
-     * @param uname the item in the menu
-     * @return True if this username exists, otherwise False.
-     */
-    private boolean checkUserExist(String uname) {
-        ElasticSearchController.GetUser getUser = new ElasticSearchController.GetUser();
-        getUser.execute(uname);
-        ArrayList<UserAccount> users = new ArrayList<>();
-        try {
-            users = getUser.get();
-        } catch (Exception e) {
-            Log.i("Error", "Failed to get the User from the async object");
-        }
-
-        return (users.size() != 0);
     }
 }
 
