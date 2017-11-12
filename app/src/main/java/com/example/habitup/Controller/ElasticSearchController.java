@@ -124,6 +124,14 @@ public class ElasticSearchController {
 
             UserQuery = "{\"query\": {\"match_all\" : {}}}";
 
+            String query = "{" +
+                                "\"size\": " + HabitUpApplication.NUM_OF_ES_RESULTS + "," +
+                                "\"from\": 0," +
+                                "\"query\": {" +
+                                    "\"match_all\" : {}" +
+                                "}" +
+                            "}";
+
 
             //Log.i("Debug", "username to search for is: "+ search_parameters[0]);
 
@@ -267,10 +275,6 @@ public class ElasticSearchController {
             String UserQuery;
             ArrayList<Habit> habits = new ArrayList<Habit>();
 
-            //Build the query
-            //String query = "{\n" +
-            //" \"query\": { \"term\": {\"username\":\"" + usernames[0] + "\"} }\n" +"}";
-
             if (Hids[0].equals("")){
                 UserQuery = Hids[0];
             }
@@ -314,10 +318,19 @@ public class ElasticSearchController {
                 UserQuery = uids[0];
             }
 
-            else{
-                UserQuery = "{\"query\": {\"match\" : { \"uid\" : \"" + uids[0] + "\" }}}";
+            else {
+                UserQuery = "{" +
+                                "\"size\": " + HabitUpApplication.NUM_OF_ES_RESULTS + "," +
+                                "\"from\": 0," +
+                                "\"query\": {" +
+                                    "\"match\" : " +
+                                        "{ \"uid\" : \"" + uids[0] + "\" }" +
+                                "}" +
+                            "}";
             }
 
+//            UserQuery = "{\"query\": {\"match\" : { \"uid\" : \"" + uids[0] + "\" }}}";
+//              }
 
             Search search = new Search.Builder(UserQuery).addIndex(db).addType(habitType).build();
 
@@ -438,9 +451,16 @@ public class ElasticSearchController {
 
             ArrayList<HabitEvent> habitEvents = new ArrayList<HabitEvent>();
 
-            Log.i("Debug", Uids[0]);
+//            Log.i("HabitUpDebug", "Getting Habits for UID " + Uids[0]);
 
-            String query = "{\"query\": {\"match\" : { \"uid\" : \"" + Uids[0] + "\" }}}";
+            String query = "{" +
+                                "\"size\": " + HabitUpApplication.NUM_OF_ES_RESULTS + "," +
+                                "\"from\": 0," +
+                                "\"query\": {" +
+                                    "\"match\" : " +
+                                        "{ \"uid\" : \"" + Uids[0] + "\" }" +
+                                "}" +
+                            "}";
 
             Search search = new Search.Builder(query).addIndex(db).addType(habitEventType).build();
 
@@ -454,11 +474,11 @@ public class ElasticSearchController {
                     habitEvents.addAll(foundHabitEvent);
 
                 } else {
-                    Log.i("Error2", "Something went wrong when we tried to communicate with the elasticsearch server");
+                    Log.i("HabitUpDEBUG", "ESCtrl/GetHabitsByUID - result failed");
                 }
             }
             catch (Exception e) {
-                Log.i("Error1", "Something went wrong when we tried to communicate with the elasticsearch server!");
+                Log.i("HabitUpDEBUG", "ESCtrl/GetHabitsByUID - exception");
             }
 
             return habitEvents;
@@ -476,13 +496,21 @@ public class ElasticSearchController {
 
             Log.i("Debug", Hids[0]);
 
-            String query = "{\"query\": {\"match\" : { \"hid\" : \"" + Hids[0] + "\" }}}";
+//            String query = "{\"query\": {\"match\" : { \"hid\" : \"" + Hids[0] + "\" }}}";
+
+            String query = "{" +
+                                "\"size\": " + HabitUpApplication.NUM_OF_ES_RESULTS + "," +
+                                "\"from\": 0," +
+                                "\"query\": {" +
+                                    "\"match\" : " +
+                                        "{ \"hid\" : \"" + Hids[0] + "\" }" +
+                                "}" +
+                            "}";
 
             Search search = new Search.Builder(query).addIndex(db).addType(habitEventType).build();
 
             try {
 
-                // TODO get the results of the query
                 SearchResult result = client.execute(search);
                 if (result.isSucceeded()) {
                     Log.i("DeBug", "found some habit events");
@@ -524,7 +552,6 @@ public class ElasticSearchController {
 
             try {
 
-                // TODO get the results of the query
                 SearchResult result = client.execute(search);
                 if (result.isSucceeded()) {
                     UserAccount foundUser = result.getSourceAsObject(UserAccount.class);
@@ -672,7 +699,7 @@ public class ElasticSearchController {
 
     public static void verifySettings() {
         if (client == null) {
-            DroidClientConfig.Builder builder = new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");
+            DroidClientConfig.Builder builder = new DroidClientConfig.Builder(serverURL);
             DroidClientConfig config = builder.build();
 
             JestClientFactory factory = new JestClientFactory();
@@ -680,6 +707,4 @@ public class ElasticSearchController {
             client = (JestDroidClient) factory.getObject();
         }
     }
-
-
 }

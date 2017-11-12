@@ -45,11 +45,6 @@ public class HabitUpController {
         return 0;
     }
 
-    static public int editHabut(Habit h) {
-        Log.d("HABIT EDIT:", "Editing habit " + h.getHabitName());
-        return 0;
-    }
-
     static public int deleteHabit(Habit h) {
         Log.d("HABIT DELETE:", "Deleting habit " + h.getHabitName());
         ElasticSearchController.DeleteHabitTask delHabit = new ElasticSearchController.DeleteHabitTask();
@@ -58,9 +53,38 @@ public class HabitUpController {
     }
 
     static public int addHabitEvent(HabitEvent event) {
-        Log.d("EVENT:", "Adding HabitEvent to HID #" + String.valueOf(event.getHID()));
+//        Log.d("EVENT:", "Adding HabitEvent to HID #" + String.valueOf(event.getHID()));
+
+        // Add the HabitEvent object to ES
         ElasticSearchController.AddHabitEventsTask addHabitEvent = new ElasticSearchController.AddHabitEventsTask();
         addHabitEvent.execute(event);
+
+        // Increment User XP and write back
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+        currentUser.increaseXP(HabitUpApplication.XP_PER_HABITEVENT);
+        ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
+        updateUser.execute(currentUser);
+
+        // Setup for attribute increment: need the Habit's Attribute type
+        ElasticSearchController.GetHabitsTask getHabit = new ElasticSearchController.GetHabitsTask();
+        getHabit.execute(String.valueOf(event.getHID()));
+        String attrName = "";
+        try {
+            attrName = getHabit.get().get(0).getHabitAttribute();
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "HUCtrl / Couldn't get Attribute name for Habit");
+        }
+
+        // Increment User Attribute
+        if (attrName != "") {
+            HabitUpApplication.updateCurrentAttrs();
+            HabitUpApplication.getCurrentAttrs().increaseValueBy(attrName, HabitUpApplication.ATTR_INCREMENT_PER_HABITEVENT);
+        }
+
+        // Write back User Attribute
+        ElasticSearchController.AddAttrsTask writeAttrs = new ElasticSearchController.AddAttrsTask();
+        writeAttrs.execute(HabitUpApplication.getCurrentAttrs());
+
         return 0;
     }
 

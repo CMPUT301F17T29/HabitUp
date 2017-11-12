@@ -13,12 +13,24 @@ import com.example.habitup.Model.UserAccountList;
 
 public class HabitUpApplication {
 
+    public final static int MAX_USERNAME_LENGTH = 15;
+    public final static int MAX_REALNAME_LENGTH = 20;
+    public static final int MAX_PHOTO_BYTECOUNT = 65536;
+    public final static int XP_INCREASE_AMOUNT = 25;
+    public final static int XP_PER_HABITEVENT = 1;
+    public final static int ATTR_INCREMENT_PER_HABITEVENT = 1;
+
     static UserAccount currentUser;
+    static Attributes currentAttrs;
     static Boolean setupDone = Boolean.FALSE;
+
+    public static int NUM_OF_ES_RESULTS = 50;
 
     static public UserAccount getCurrentUser() { return currentUser; }
     static public int getCurrentUID() { return currentUser.getUID(); }
     static public String getCurrentUIDAsString() { return String.valueOf(currentUser.getUID()); }
+
+    static public Attributes getCurrentAttrs() { return currentAttrs; }
 
     public void testAccount() {
         // DEBUG
@@ -31,7 +43,20 @@ public class HabitUpApplication {
         }
     }
 
-    static public void setCurrentUser(UserAccount user) { currentUser = user; }
+    static public void setCurrentUser(UserAccount user) {
+        currentUser = user;
+        updateCurrentAttrs();
+    }
+
+    static public void updateCurrentAttrs() {
+        ElasticSearchController.GetAttributesTask attrs = new ElasticSearchController.GetAttributesTask();
+        attrs.execute(String.valueOf(currentUser.getUID()));
+        try {
+            currentAttrs = attrs.get().get(0);
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "HUApp/Couldn't get Attributes for user");
+        }
+    }
 
     static public int addUserAccount(UserAccount user) {
 
@@ -41,7 +66,6 @@ public class HabitUpApplication {
 
         ElasticSearchController.AddAttrsTask addAttr = new ElasticSearchController.AddAttrsTask();
         Attributes attrs = new Attributes(user.getUID());
-        attrs.setValue("Mental", 5); // Test
         addAttr.execute(attrs);
 
         return 0;
