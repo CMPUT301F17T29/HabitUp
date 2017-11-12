@@ -21,27 +21,6 @@
         android:textSize="20sp"
         android:textStyle="bold"/>
 
-    <TextView
-        android:id="@+id/view_event_map"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/history_title"
-        android:layout_alignRight="@+id/event_bottom_nav"
-        android:layout_alignEnd="@+id/event_bottom_nav"
-        android:layout_marginRight="10dp"
-        android:paddingTop="3dp"
-        android:text="View Map" />
-
-    <ImageView
-        android:id="@+id/event_map"
-        android:layout_width="27dp"
-        android:layout_height="27dp"
-        app:srcCompat="@drawable/ic_action_map"
-        android:layout_alignTop="@+id/view_event_map"
-        android:layout_toLeftOf="@+id/view_event_map"
-        android:layout_toStartOf="@+id/view_event_map"
-        android:tint="@color/colorPrimary" />
-
     <RelativeLayout
         android:id="@+id/filters"
         android:layout_width="match_parent"
@@ -114,22 +93,14 @@
         android:textSize="15sp"
         android:textColor="@color/lightgray"/>
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/event_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/select_event"
-        android:layout_marginBottom="?attr/actionBarSize"
-        android:clickable="true" />
-
-    <android.support.design.widget.BottomNavigationView
-        android:id="@+id/event_bottom_nav"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        app:itemBackground="@color/colorPrimary"
-        app:itemIconTint="@color/white"
-        app:itemTextColor="@color/white"
-        app:menu="@menu/habit_bottom_nav" />
+        app:layoutManager="LinearLayoutManager"
+        android:scrollbars="vertical"
+        android:clickable="true">
+    </android.support.v7.widget.RecyclerView>
 
 </RelativeLayout>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
     android:paddingLeft="10dp"
@@ -11,60 +11,53 @@
     android:background="@color/white"
     android:baselineAligned="false">
 
-    <RelativeLayout
-        android:layout_width="0dp"
+    <TextView
+        android:id="@+id/event_name"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="0.7">
+        android:text="Example habit event"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
 
-        <TextView
-            android:id="@+id/event_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Example habit event"
-            android:textSize="16sp"
-            android:textStyle="bold"/>
+    <ImageView
+        android:id="@+id/event_has_image"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_below="@+id/event_name"
+        android:contentDescription="Event has image"
+        app:srcCompat="@drawable/ic_action_camera" />
 
-        <ImageView
-            android:id="@+id/event_has_image"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_below="@+id/event_name"
-            android:contentDescription="Event has image"
-            app:srcCompat="@drawable/ic_action_camera" />
+    <ImageView
+        android:id="@+id/event_has_location"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_below="@+id/event_name"
+        android:layout_marginTop="2dp"
+        android:layout_toRightOf="@+id/event_has_image"
+        android:contentDescription="Event has location"
+        app:srcCompat="@drawable/ic_event_marker" />
 
-        <ImageView
-            android:id="@+id/event_has_location"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_below="@+id/event_name"
-            android:layout_marginTop="2dp"
-            android:layout_toRightOf="@+id/event_has_image"
-            android:contentDescription="Event has location"
-            app:srcCompat="@drawable/ic_event_marker" />
-
-        <TextView
-            android:id="@+id/event_comment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/event_name"
-            android:layout_toEndOf="@+id/event_has_location"
-            android:text="This is an event comment..."
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="5dp"
-            android:textColor="@color/lightgray"/>
-
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/event_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/event_name"
+        android:layout_toEndOf="@+id/event_name"
+        android:text="This is an event comment..."
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/lightgray"/>
 
     <TextView
         android:id="@+id/event_date"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="0.3"
-        android:textColor="@color/lightgray"
-        android:textSize="13sp"
-        android:textStyle="bold"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
         android:text="Event date"
-        android:textAlignment="textEnd"/>
+        android:textStyle="bold"
+        android:textColor="@color/teal"
+        android:textSize="14sp"/>
 
 
-</LinearLayout>
+</RelativeLayout>
