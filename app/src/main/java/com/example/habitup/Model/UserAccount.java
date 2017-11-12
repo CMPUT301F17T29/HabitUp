@@ -177,7 +177,9 @@ public class UserAccount {
 
         // Catch invalid real names
         if (username.length() == 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Error: username is blank.");
+        } else if (username.length() > 15) {
+            throw new IllegalArgumentException("Error: username must be 15 characters or fewer.");
 
         // Otherwise, legal: set the name
         } else {
@@ -194,8 +196,10 @@ public class UserAccount {
 
         // Catch invalid real names
         if (realname.length() == 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Error: full name is blank.");
 
+        } else if (realname.length() > 20) {
+            throw new IllegalArgumentException("Error: full name must be 20 characters or fewer.");
         // Otherwise, legal: set the name
         } else {
             this.realname = realname;
