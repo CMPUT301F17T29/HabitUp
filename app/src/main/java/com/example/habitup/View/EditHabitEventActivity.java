@@ -254,8 +254,6 @@ public class EditHabitEventActivity extends AppCompatActivity {
                 if (eventOK) {
                     // Pass to the controller
                     if (HabitUpController.editHabitEvent(event) == 0) {
-                        Intent result = new Intent();
-                        setResult(Activity.RESULT_OK, result);
                         finish();
                     } else {
                         Toast.makeText(getBaseContext(), "There was an error updating the HabitEvent.", Toast.LENGTH_LONG).show();
