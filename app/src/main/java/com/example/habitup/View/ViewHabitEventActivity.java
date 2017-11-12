@@ -2,6 +2,7 @@ package com.example.habitup.View;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
+import com.example.habitup.Model.Attributes;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
 import com.example.habitup.R;
@@ -104,7 +106,7 @@ public class ViewHabitEventActivity extends BaseActivity {
                     if (i == pos) {
                         highlightItem(view);
                     } else {
-                        unhighlightItem(eventListView.getChildAt(i));
+                        unhighlightItem(eventListView.getChildAt(i), events.get(i));
                     }
                 }
             }
@@ -183,7 +185,9 @@ public class ViewHabitEventActivity extends BaseActivity {
         int uid = HabitUpApplication.getCurrentUID();
         int hid = ((HabitEvent) eventAdapter.getItem(position)).getHID();
         String eid = ((HabitEvent) eventAdapter.getItem(position)).getEID();
-        
+
+        Log.i("HabitUpDEBUG", "ViewHabitEvent eid " + eid);
+
         editIntent.putExtra(HABIT_EVENT_UID, uid);
         editIntent.putExtra(HABIT_EVENT_HID, hid);
         editIntent.putExtra(HABIT_EVENT_EID, eid);
@@ -191,11 +195,61 @@ public class ViewHabitEventActivity extends BaseActivity {
         startActivityForResult(editIntent, requestCode);
     }
 
-    private void highlightItem(View view) {
-        view.setBackgroundColor(ContextCompat.getColor(context, R.color.whitegray));
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        clearHighlightedRows();
     }
 
-    private void unhighlightItem(View view) {
+    private void clearHighlightedRows() {
+        position = -1;
+        for (int i = 0; i < eventListView.getChildCount(); i++) {
+            View view = eventListView.getChildAt(i);
+            unhighlightItem(view, events.get(i));
+        }
+    }
+
+    private void highlightItem(View view) {
+        view.setBackgroundColor(ContextCompat.getColor(context, R.color.teal));
+
+        int whiteColor = getResources().getColor(R.color.white);
+        TextView text = view.findViewById(R.id.event_name);
+        text.setTextColor(whiteColor);
+
+        TextView comment = view.findViewById(R.id.event_comment);
+        comment.setTextColor(whiteColor);
+
+        TextView dateText = view.findViewById(R.id.event_date);
+        dateText.setTextColor(whiteColor);
+    }
+
+    private void unhighlightItem(View view, HabitEvent event) {
         view.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
+
+        Habit eventHabit;
+        ElasticSearchController.GetHabitsTask getHabit = new ElasticSearchController.GetHabitsTask();
+        getHabit.execute(String.valueOf(event.getHID()));
+        try {
+            eventHabit = getHabit.get().get(0);
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "ViewHabitEventActivity - couldn't get Habit");
+            eventHabit = new Habit(-1);
+            eventHabit.setHabitName("ERROR");
+        }
+
+        String attribute = eventHabit.getHabitAttribute();
+        String color = Attributes.getColour(attribute);
+
+        int lightGray = getResources().getColor(R.color.lightgray);
+        TextView text = view.findViewById(R.id.event_name);
+        text.setTextColor(Color.parseColor(color));
+
+        TextView comment = view.findViewById(R.id.event_comment);
+        comment.setTextColor(lightGray);
+
+        TextView dateText = view.findViewById(R.id.event_date);
+        dateText.setTextColor(lightGray);
+
     }
 }

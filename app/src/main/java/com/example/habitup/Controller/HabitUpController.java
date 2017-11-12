@@ -62,8 +62,12 @@ public class HabitUpController {
         return 0;
     }
 
+    // Current implementation of AddHabitEventsTask checks to see if event has an EID, and if so,
+    // updates the existing one; otherwise creates it and assigns EID.
     static public int editHabitEvent(HabitEvent event) {
         Log.d("EVENT EDIT:", "Editing HabitEvent belonging to HID #" + String.valueOf(event.getHID()));
+        ElasticSearchController.AddHabitEventsTask addHabitEvent = new ElasticSearchController.AddHabitEventsTask();
+        addHabitEvent.execute(event);
         return 0;
     }
 

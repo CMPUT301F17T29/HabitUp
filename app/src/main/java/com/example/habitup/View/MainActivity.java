@@ -41,7 +41,7 @@ public class MainActivity extends BaseActivity {
         // DEBUG
 //        UserAccount testUser = null;
 //        try {
-//            testUser = HabitUpApplication.getUserAccount("gojoffchoo");
+//            testUser = HabitUpApplication.getUserAccount("gojeffcho");
 //        } catch (Exception e) {
 //            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
 //        }
@@ -52,9 +52,9 @@ public class MainActivity extends BaseActivity {
 //            Log.i("HabitUpDEBUG", "Couldn't get test user.");
 //        }
 
-        UserAccount testUser = new UserAccount("gogojoffchoo", "Jeef Chee", null);
-        HabitUpApplication.addUserAccount(testUser);
-        HabitUpApplication.setCurrentUser(testUser);
+//        UserAccount testUser = new UserAccount("gojeffcho", "Jeef Chee", null);
+//        HabitUpApplication.addUserAccount(testUser);
+//        HabitUpApplication.setCurrentUser(testUser);
         // DEBUG
 
 

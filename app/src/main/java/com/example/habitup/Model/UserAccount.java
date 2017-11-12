@@ -18,6 +18,8 @@ public class UserAccount {
 
     // Static Members
     private final static int xpIncrease = 25;
+    private final static int MAX_USERNAME_LENGTH = 15;
+    private final static int MAX_REALNAME_LENGTH = 20;
 
     // Members
     private int uid;
@@ -38,7 +40,7 @@ public class UserAccount {
      * @author @gojeffcho
      */
     public UserAccount(String username, String realname, Bitmap photo) throws
-            IllegalArgumentException, IllegalStateException {
+            IllegalArgumentException {
 
         this.setUniqueUID();
         this.setUsername(username);
@@ -165,11 +167,12 @@ public class UserAccount {
     public void setUniqueUID() {
         // ElasticSearch query: highest UID in use
         int newUID = -1;
+
         ElasticSearchController.GetMaxUidTask getMaxUID = new ElasticSearchController.GetMaxUidTask();
         getMaxUID.execute();
         try {
-            newUID = getMaxUID.get();
-            Log.i("HabitUpDEBUG", "UserAccount - UID was set to " + String.valueOf(newUID));
+            newUID = getMaxUID.get().intValue();
+            Log.i("HabitUpDEBUG", "UserAccount - UID was set to " + Integer.toString(newUID));
         } catch (Exception e) {
             Log.i("HabitUpDEBUG", "UserAccount - could not get Max UID");
         }
@@ -187,7 +190,9 @@ public class UserAccount {
 
         // Catch invalid real names
         if (username.length() == 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Error: username is blank.");
+        } else if (username.length() > MAX_USERNAME_LENGTH) {
+            throw new IllegalArgumentException("Error: username must be " + String.valueOf(MAX_USERNAME_LENGTH) + " characters or fewer.");
 
         // Otherwise, legal: set the name
         } else {
@@ -204,8 +209,10 @@ public class UserAccount {
 
         // Catch invalid real names
         if (realname.length() == 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Error: full name is blank.");
 
+        } else if (realname.length() > MAX_REALNAME_LENGTH) {
+            throw new IllegalArgumentException("Error: full name must be " + String.valueOf(MAX_REALNAME_LENGTH) + " characters or fewer.");
         // Otherwise, legal: set the name
         } else {
             this.realname = realname;
