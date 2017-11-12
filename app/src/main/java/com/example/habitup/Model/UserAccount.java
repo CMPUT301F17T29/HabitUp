@@ -76,7 +76,13 @@ public class UserAccount {
      * Gets Image if one is associated to the account, otherwise null
      * @return Image if associated, null if not
      */
-    public Bitmap getPhoto() { return this.photo; }
+    public Bitmap getPhoto() {
+        if (this.photo != null) {
+            return getPhotoFromEncode();
+        } else {
+            return null;
+        }
+    }
 
     public Bitmap getPhotoFromEncode() {
         byte [] decodedBytes = Base64.decode(this.encodedPhoto, 0);
@@ -226,6 +232,7 @@ public class UserAccount {
     public void setPhoto(Bitmap photo) {
         if (photo != null) {
             this.photo = photo;
+            setEncodedPhoto(photo);
         }
     }
 
