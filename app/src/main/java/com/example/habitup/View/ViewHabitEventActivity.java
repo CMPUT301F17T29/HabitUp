@@ -57,6 +57,7 @@ public class ViewHabitEventActivity extends BaseActivity {
     private EventListAdapter eventAdapter;
     private ArrayList<HabitEvent> filtList;
     private EditText commentFilter;
+    private ArrayList<Habit> habitTypes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,14 +134,13 @@ public class ViewHabitEventActivity extends BaseActivity {
         }
 
         // Set up habit type filter spinner
-        Spinner habitSpinner = (Spinner) findViewById(R.id.filter_habit_spinner);
-        ArrayAdapter<String> habitAdapter = new ArrayAdapter<String>(this, R.layout.habit_spinner);
+        final Spinner habitSpinner = (Spinner) findViewById(R.id.filter_habit_spinner);
+        final ArrayAdapter<String> habitAdapter = new ArrayAdapter<String>(this, R.layout.habit_spinner);
         habitAdapter.add("All Habit Types");
 
         // Set up habit types list
         ElasticSearchController.GetUserHabitsTask userHabits = new ElasticSearchController.GetUserHabitsTask();
         userHabits.execute(HabitUpApplication.getCurrentUIDAsString());
-        ArrayList<Habit> habitTypes;
 
         try {
             habitTypes = userHabits.get();
@@ -181,6 +181,7 @@ public class ViewHabitEventActivity extends BaseActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                refreshEvents(); // refreshes through ES re-get
                 String text = charSequence.toString().toLowerCase(Locale.getDefault());
                 filtList = new ArrayList<HabitEvent>();
                 filtList.clear();
@@ -196,7 +197,13 @@ public class ViewHabitEventActivity extends BaseActivity {
                 }
                 eventAdapter = new EventListAdapter(context, R.layout.event_list_item, filtList);
                 eventListView.setAdapter(eventAdapter);
-                refreshEvents(); // refreshes through ES re-get
+                Collections.sort(filtList, new Comparator<HabitEvent>() {
+                    @Override
+                    public int compare(HabitEvent e1, HabitEvent e2) {
+                        return e1.getCompletedate().compareTo(e2.getCompletedate());
+                    }
+                });
+                Collections.reverse(filtList);
                 eventAdapter.notifyDataSetChanged();
             }
 
@@ -208,6 +215,42 @@ public class ViewHabitEventActivity extends BaseActivity {
 
         // Highlight events row in drawer
         navigationView.setCheckedItem(R.id.events);
+
+        // Spinner select
+        habitSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
+                refreshEvents(); // refreshes through ES re-get
+                filtList = new ArrayList<HabitEvent>();
+                filtList.clear();
+
+                if (pos == 0) {
+                    filtList.addAll(events);
+                }
+                else {
+                    for (HabitEvent e : events) {
+                        if (e.getHID()==habitTypes.get(pos-1).getHID()) {
+                            filtList.add(e);
+                        }
+                    }
+                }
+                eventAdapter = new EventListAdapter(context, R.layout.event_list_item, filtList);
+                eventListView.setAdapter(eventAdapter);
+                Collections.sort(filtList, new Comparator<HabitEvent>() {
+                    @Override
+                    public int compare(HabitEvent e1, HabitEvent e2) {
+                        return e1.getCompletedate().compareTo(e2.getCompletedate());
+                    }
+                });
+                Collections.reverse(filtList);
+                eventAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
 
