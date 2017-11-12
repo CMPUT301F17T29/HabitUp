@@ -173,6 +173,7 @@ public class ViewHabitEventActivity extends BaseActivity {
 
         // comment filter through list
         commentFilter.addTextChangedListener(new TextWatcher() {
+
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -180,12 +181,7 @@ public class ViewHabitEventActivity extends BaseActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String text = commentFilter.getText().toString().toLowerCase(Locale.getDefault());
+                String text = charSequence.toString().toLowerCase(Locale.getDefault());
                 filtList = new ArrayList<HabitEvent>();
                 filtList.clear();
                 if (text.length()==0){
@@ -193,15 +189,20 @@ public class ViewHabitEventActivity extends BaseActivity {
                 }
                 else {
                     for (HabitEvent e : events) {
-                       if (e.getComment().toLowerCase(Locale.getDefault()).contains(text)) {
-                           filtList.add(e);
-                       }
+                        if (e.getComment().toLowerCase(Locale.getDefault()).contains(text)) {
+                            filtList.add(e);
+                        }
                     }
                 }
                 eventAdapter = new EventListAdapter(context, R.layout.event_list_item, filtList);
                 eventListView.setAdapter(eventAdapter);
-
+                refreshEvents(); // refreshes through ES re-get
                 eventAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
 
@@ -380,5 +381,15 @@ public class ViewHabitEventActivity extends BaseActivity {
         TextView dateText = view.findViewById(R.id.event_date);
         dateText.setTextColor(lightGray);
 
+    }
+
+    public void refreshEvents(){
+        ElasticSearchController.GetHabitEventsByUidTask getHabitEvents = new ElasticSearchController.GetHabitEventsByUidTask();
+        getHabitEvents.execute(HabitUpApplication.getCurrentUIDAsString());
+        try {
+            events = getHabitEvents.get();
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "ViewHabitEvent - Couldn't get HabitEvents");
+        }
     }
 }
