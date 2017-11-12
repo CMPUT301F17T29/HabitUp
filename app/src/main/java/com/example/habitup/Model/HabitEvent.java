@@ -3,25 +3,25 @@ package com.example.habitup.Model;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Base64;
+
+import com.example.habitup.Controller.HabitUpApplication;
 
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
-
-// NOTE: @gojeffcho changed GregorianCalendar to LocalDate, added Comparator for sorting on date
 
 /**
  * @author acysl
  */
 public class HabitEvent implements Comparable<HabitEvent> {
 
-    private static final int maxByteCount = 65536;
-
     private int uid;
     private int hid;
     private String eid;
     private String comment;
     private LocalDate completedate;
-    private Bitmap image;
+    private Bitmap photo;
+    private String encodedPhoto;
     private Map location;
     private Boolean scheduled;
 
@@ -54,7 +54,7 @@ public class HabitEvent implements Comparable<HabitEvent> {
         this.setHabit(e.getHID());
         this.setComment(e.getComment());
         this.setCompletedate(e.getCompletedate());
-        this.setImage(e.getImage());
+        this.setPhoto(e.getPhoto());
         this.setLocation(e.getLocation());
         this.scheduled = e.getScheduled();
 //        this.pathofimage = ??
@@ -66,20 +66,6 @@ public class HabitEvent implements Comparable<HabitEvent> {
     public void setHabit(int hid) { this.hid = hid; }
 
     public void setEID(String uuid) { this.eid = uuid; }
-
-    public void setImage(Bitmap image) throws IllegalArgumentException {
-
-        if (image == null) {
-            this.image = null;
-            return;
-        }
-
-        if (image.getByteCount() <= maxByteCount) {
-            this.image = image;
-        } else {
-            throw new IllegalArgumentException("Image file must be less than or equal to " + String.valueOf(maxByteCount) + " bytes.");
-        }
-    }
 
     public void setScheduled() {
 
@@ -115,31 +101,58 @@ public class HabitEvent implements Comparable<HabitEvent> {
         this.location =  location;
     }
 
-    public void setPathofimage(String pathofimage){
-        this.pathofimage = pathofimage;
-        setImage(pathofimage);
+    /**
+     * Set or update UserAccount photo
+     * @param photo
+     */
+    public void setPhoto(Bitmap photo) {
 
-    }
+        if (photo != null) {
 
-    private void setImage(String pathOfImage){
-        image = BitmapFactory.decodeFile(pathOfImage);
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        while(true){
-            if (stream.toByteArray().length >= maxByteCount) {
-                resizeImage(image);
+//            Log.i("HabitUpDEBUG", "Photo is " + String.valueOf(photo.getByteCount()) + " bytes.");
+
+            if (photo.getByteCount() > HabitUpApplication.MAX_PHOTO_BYTECOUNT) {
+                for (int i = 0; i < 3; ++i) {
+                    photo = resizeImage(photo);
+//                    Log.i("HabitUpDEBUG", "Resized to " + String.valueOf(photo.getByteCount()) + " bytes.");
+                    if (photo.getByteCount() <= HabitUpApplication.MAX_PHOTO_BYTECOUNT) {
+                        break;
+                    }
+                }
             }
-            else{
-                break;
+
+            if (photo.getByteCount() <= HabitUpApplication.MAX_PHOTO_BYTECOUNT) {
+
+                this.photo = photo;
+
+                ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
+                photo.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOS);
+                this.encodedPhoto = Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
+
+            } else {
+                throw new IllegalArgumentException("Image file must be less than or equal to " +
+                        String.valueOf(HabitUpApplication.MAX_PHOTO_BYTECOUNT) + " bytes.");
             }
+
+        } else {
+            this.photo = null;
+            this.encodedPhoto = null;
         }
     }
 
-    private void resizeImage(Bitmap bp) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bp.compress(Bitmap.CompressFormat.JPEG, 70, stream);
+    private Bitmap resizeImage(Bitmap img) {
+//        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//        img.compress(Bitmap.CompressFormat.JPEG, 70, stream);
+//        byte[] imgData = stream.toByteArray();
+//        return BitmapFactory.decodeByteArray(imgData, 0, imgData.length);
+        double scaleFactor = 0.95;
+        return Bitmap.createScaledBitmap(img, (int) (img.getWidth() * scaleFactor), (int) (img.getHeight() * scaleFactor), true);
     }
 
+    public void deletePhoto() {
+        this.photo = null;
+        this.encodedPhoto = null;
+    }
 
     public int getUID() { return this.uid; }
 
@@ -161,8 +174,19 @@ public class HabitEvent implements Comparable<HabitEvent> {
         return comment;
     }
 
-    public Bitmap getImage(){
-        return image;
+    public Bitmap getPhoto() {
+        decodePhoto();
+        return photo;
+    }
+
+    /**
+     * Decodes the encodedPhoto and sets the photo Bitmap to it.
+     */
+    public void decodePhoto() {
+        if (this.encodedPhoto != null) {
+            byte [] decodedBytes = Base64.decode(this.encodedPhoto, 0);
+            this.photo = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+        }
     }
 
     public int compareTo(HabitEvent e) {
@@ -170,7 +194,7 @@ public class HabitEvent implements Comparable<HabitEvent> {
     }
 
     public boolean hasImage() {
-        return this.image != null;
+        return this.photo != null;
     }
 
     public boolean hasLocation() {

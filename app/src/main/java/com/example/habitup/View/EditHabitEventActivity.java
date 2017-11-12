@@ -36,9 +36,7 @@ import java.text.DateFormatSymbols;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Locale;
 
 public class EditHabitEventActivity extends AppCompatActivity {
 
@@ -158,8 +156,9 @@ public class EditHabitEventActivity extends AppCompatActivity {
         // Get photo icon
         imageButton = (Button) findViewById(R.id.photo_icon);
         image = (ImageView) findViewById(R.id.taken_image);
-        if (event.getImage() != null) {
-            image.setImageBitmap(event.getImage());
+        if (event.getPhoto() != null) {
+            image.setImageBitmap(event.getPhoto());
+            image.setVisibility(View.VISIBLE);
         }
 
         // Allow user to take photo when clicking the photo icon
@@ -244,7 +243,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
 
                 if (photo != null) {
                     try {
-                        event.setImage(photo);
+                        event.setPhoto(photo);
                     } catch (IllegalArgumentException e) {
                         // do stuff
                         Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
@@ -312,7 +311,6 @@ public class EditHabitEventActivity extends AppCompatActivity {
             Bundle extras = data.getExtras();
             imageBitMap = (Bitmap) extras.get("data");
 
-            // TODO: Resize image for to appropriate byte size
             image.setImageBitmap(imageBitMap);
             image.setVisibility(View.VISIBLE);
         }
