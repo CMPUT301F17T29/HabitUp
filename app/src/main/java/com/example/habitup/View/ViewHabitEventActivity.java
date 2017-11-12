@@ -36,6 +36,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Locale;
 
 public class ViewHabitEventActivity extends BaseActivity {
 
@@ -53,7 +54,8 @@ public class ViewHabitEventActivity extends BaseActivity {
 
     private ArrayList<HabitEvent> events;
     private ListView eventListView;
-    private ArrayAdapter eventAdapter;
+    private EventListAdapter eventAdapter;
+    private ArrayList<HabitEvent> filtList;
     private EditText commentFilter;
 
     @Override
@@ -142,12 +144,28 @@ public class ViewHabitEventActivity extends BaseActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                ViewHabitEventActivity.this.eventAdapter.getFilter().filter(charSequence);
+
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
+                String text = commentFilter.getText().toString().toLowerCase(Locale.getDefault());
+                filtList = new ArrayList<HabitEvent>();
+                filtList.clear();
+                if (text.length()==0){
+                    filtList.addAll(events);
+                }
+                else {
+                    for (HabitEvent e : events) {
+                       if (e.getComment().toLowerCase(Locale.getDefault()).contains(text)) {
+                           filtList.add(e);
+                       }
+                    }
+                }
+                eventAdapter = new EventListAdapter(context, R.layout.event_list_item, filtList);
+                eventListView.setAdapter(eventAdapter);
 
+                eventAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -247,7 +265,7 @@ public class ViewHabitEventActivity extends BaseActivity {
                         alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                HabitUpController.deleteHabitEvent(events.get(position)); // ES delete
+                                HabitUpController.deleteHabitEvent(eventAdapter.getItem(position)); // ES delete
                                 eventAdapter.remove(eventAdapter.getItem(position)); // app view delete
                                 eventListView.setAdapter(eventAdapter);
                                 eventAdapter.notifyDataSetChanged();
