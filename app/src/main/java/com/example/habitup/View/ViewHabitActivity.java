@@ -111,6 +111,9 @@ public class ViewHabitActivity extends BaseActivity {
             Toast.makeText(getBaseContext(), "Error retrieving Habits.", Toast.LENGTH_LONG).show();
         }
 
+        adapter = new HabitListAdapter(this, R.layout.habit_list_item, habits);
+        habitListView.setAdapter(adapter);
+
         adapter.notifyDataSetChanged();
 
         if (habits.size() == 0) {
