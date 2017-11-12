@@ -1,6 +1,9 @@
 package com.example.habitup.Controller;
 
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -72,6 +75,17 @@ public class HabitUpApplication {
         }
 
         return user;
+    }
+
+    /**
+     * check whether Internet is connected
+     */
+    static public boolean isOnline(Context ctx) {
+        // Taken from: https://stackoverflow.com/questions/1560788/how-to-check-internet-access-on-android-inetaddress-never-times-out
+        // 2017-11-11
+        ConnectivityManager cm = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnected();
     }
 
 }
