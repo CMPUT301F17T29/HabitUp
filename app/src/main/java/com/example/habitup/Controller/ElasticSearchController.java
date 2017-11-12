@@ -329,9 +329,9 @@ public class ElasticSearchController {
 
                     List<Habit> foundHabit = result.getSourceAsObjectList(Habit.class);
 
-                    for (Habit habit: foundHabit) {
-                        Log.i("HabitUpDEBUG", "Habit Got: " + habit.getHabitName());
-                    }
+//                    for (Habit habit: foundHabit) {
+//                        Log.i("HabitUpDEBUG", "Habit Got: " + habit.getHabitName());
+//                    }
                     habits.addAll(foundHabit);
 
                 } else {
@@ -432,6 +432,8 @@ public class ElasticSearchController {
 
         @Override
         protected ArrayList<HabitEvent> doInBackground(String... Uids) {
+
+            Log.i("HabitUpDEBUG", "GetHabitEventsByUidTask");
             verifySettings();
 
             ArrayList<HabitEvent> habitEvents = new ArrayList<HabitEvent>();

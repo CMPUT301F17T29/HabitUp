@@ -49,6 +49,7 @@ public class ViewHabitEventActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i("HabitUpDEBUG", "ViewHabitEventActivity onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events);
  
@@ -65,6 +66,7 @@ public class ViewHabitEventActivity extends BaseActivity {
             Log.i("HabitUpDEBUG", "ViewHabitEvent - Couldn't get HabitEvents");
         }
 
+        Log.i("HabitUpDEBUG", "ViewHabitEventActivity onCreate ES Complete");
         eventListView = (ListView) findViewById(R.id.event_list);
 
         // Date format for displaying event date
