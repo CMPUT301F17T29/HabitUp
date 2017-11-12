@@ -84,7 +84,7 @@ public class MainActivity extends BaseActivity {
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
 
         // Set user's photo
-        Bitmap photo =  currentUser.getPhoto();
+        Bitmap photo = currentUser.getPhoto();
 
         if (photo != null) {
             CircleImageView profilePic = (CircleImageView) findViewById(R.id.drawer_pic);

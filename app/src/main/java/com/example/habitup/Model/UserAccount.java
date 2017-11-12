@@ -26,6 +26,7 @@ public class UserAccount {
     private String username;
     private String realname;
     private String encodedPhoto;
+    private Bitmap photo;
     private int level;
     private int XP;
     private int XPtoNext;
@@ -34,7 +35,7 @@ public class UserAccount {
      * UserAccount Constructor
      * @param username: String representing username.  Must be unique.
      * @param realname: String representing real name.
-     * @param photo: Image object, if provided
+     * @param photo: Bitmap object, if provided
      *
      * @author @gojeffcho
      */
@@ -45,12 +46,10 @@ public class UserAccount {
         this.setUsername(username);
         this.setRealname(realname);
         this.setPhoto(photo);
-        //this.setEncodedPhoto(photo);
 
         level = 1;
         XP = 0;
         XPtoNext = 20;
-
     }
 
     /**
@@ -76,11 +75,18 @@ public class UserAccount {
      * @return Image if associated, null if not
      */
     public Bitmap getPhoto() {
+        decodePhoto();
+        return photo;
+    }
+
+    /**
+     * Decodes the encodedPhoto and sets the photo Bitmap to it.
+     */
+    public void decodePhoto() {
         if (this.encodedPhoto != null) {
             byte [] decodedBytes = Base64.decode(this.encodedPhoto, 0);
-            return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+            this.photo = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
         }
-        else return null;
     }
 
     /**
@@ -172,9 +178,9 @@ public class UserAccount {
         getMaxUID.execute();
         try {
             newUID = getMaxUID.get().intValue();
-            Log.i("HabitUpDEBUG", "UserAccount - UID was set to " + Integer.toString(newUID));
+//            Log.i("HabitUpDEBUG", "UserAccount - UID was set to " + Integer.toString(newUID));
         } catch (Exception e) {
-            Log.i("HabitUpDEBUG", "UserAccount - could not get Max UID");
+//            Log.i("HabitUpDEBUG", "UserAccount - could not get Max UID");
         }
 
         // Set it to this user's uid
@@ -224,22 +230,25 @@ public class UserAccount {
      * @param photo
      */
     public void setPhoto(Bitmap photo) {
+
+        this.photo = photo;
+
         if (photo != null) {
             ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
             photo.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOS);
 
             this.encodedPhoto = Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
+        } else {
+            this.encodedPhoto = null;
         }
-        else this.encodedPhoto = null;
     }
 
     /**
      * Delete the associated photo, if one exists
      */
     public void deletePhoto() {
-       if (encodedPhoto != null) {
-           this.encodedPhoto = null;
-       }
+       encodedPhoto = null;
+       photo = null;
     }
 
     /**
