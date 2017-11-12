@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
+import com.example.habitup.Model.Attributes;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
@@ -109,21 +110,24 @@ public class MainActivity extends BaseActivity {
         progressBar.setProgress(currentUser.getXP());
         progressBar.setMax(currentUser.getXPtoNext());
 
+        // Get user attributes
+        Attributes userAttrs = HabitUpApplication.getCurrentAttrs();
+
         // Set user's Mental value
         TextView attr2Field = (TextView) findViewById(R.id.attribute2_value);
-        attr2Field.setText(String.valueOf(currentUser.getAttributes().getValue("Mental")));
+        attr2Field.setText(String.valueOf(userAttrs.getValue("Mental")));
 
         // Set user's Physical value
         TextView attr1Field = (TextView) findViewById(R.id.attribute1_value);
-        attr1Field.setText(String.valueOf(currentUser.getAttributes().getValue("Physical")));
+        attr1Field.setText(String.valueOf(userAttrs.getValue("Physical")));
 
         // Set user's Discipline value
         TextView attr3Field = (TextView) findViewById(R.id.attribute3_value);
-        attr3Field.setText(String.valueOf(currentUser.getAttributes().getValue("Social")));
+        attr3Field.setText(String.valueOf(userAttrs.getValue("Social")));
 
         // Set user's Social value
         TextView attr4Field = (TextView) findViewById(R.id.attribute4_value);
-        attr4Field.setText(String.valueOf(currentUser.getAttributes().getValue("Discipline")));
+        attr4Field.setText(String.valueOf(userAttrs.getValue("Discipline")));
 
         // Retrieve today's habits
         habitsArrayList = HabitUpController.getTodaysHabits();
