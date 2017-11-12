@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
+import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Attributes;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
@@ -209,16 +210,14 @@ public class ViewHabitEventActivity extends BaseActivity {
                         goToEditActivity(EDIT_EVENT);
                         return true;
                     case R.id.habit_menu_delete:
-                        //TODO: ES delete
+                        //ES deletes through eid
                         AlertDialog.Builder alert = new AlertDialog.Builder(ViewHabitEventActivity.this);
                         alert.setTitle("Delete");
                         alert.setMessage("Are you sure you want to delete this habit event?");
                         alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                int uid = HabitUpApplication.getCurrentUID();
-                                int hid = ((HabitEvent) eventAdapter.getItem(position)).getHID();
-                                String eid = ((HabitEvent) eventAdapter.getItem(position)).getEID();
+//                                HabitUpController.deleteHabitEvent(events.get(position)); //placeholder ES delete
                                 eventAdapter.remove(eventAdapter.getItem(position));
                                 eventAdapter.notifyDataSetChanged();
                                 dialogInterface.dismiss();

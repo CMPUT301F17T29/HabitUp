@@ -69,6 +69,8 @@ public class HabitUpController {
 
     static public int deleteHabitEvent(HabitEvent event) {
         Log.d("EVENT DELETE:", "Deleting HabitEvent belonging to HID #" + String.valueOf(event.getHID()));
+        ElasticSearchController.DeleteHabitEventTask delHabitEvent = new ElasticSearchController.DeleteHabitEventTask();
+        delHabitEvent.execute(event.getEID());
         return 0;
     }
 
