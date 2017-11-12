@@ -160,37 +160,36 @@
     <RelativeLayout
         android:id="@+id/photo_display"
         android:layout_width="match_parent"
-        android:layout_height="69dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/photo_label"
+        android:gravity="center"
         android:layout_gravity="center"
         android:background="@color/whitegray"
-        android:gravity="center"
-        android:paddingBottom="10dp"
         android:paddingTop="5dp"
-        app:layout_constraintTop_toBottomOf="@+id/photo_label"
-        tools:layout_editor_absoluteX="20dp">
+        android:paddingBottom="10dp">
 
         <Button
             android:id="@+id/photo_icon"
-            style="?android:attr/borderlessButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/whitegray"
-            android:drawableTint="@color/lightgray"
-            android:drawableTop="@drawable/ic_add_photo"
-            android:paddingTop="5dp"
             android:src="@drawable/ic_add_photo"
+            android:background="@color/whitegray"
+            android:paddingTop="5dp"
             android:text="Take Photo"
             android:textColor="@color/lightgray"
-            android:textSize="13sp" />
+            android:textSize="13sp"
+            style="?android:attr/borderlessButtonStyle"
+            android:drawableTop="@drawable/ic_add_photo"
+            android:drawableTint="@color/lightgray" />
 
         <ImageView
             android:id="@+id/taken_image"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_below="@+id/photo_icon"
+            android:scaleType="fitCenter"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:scaleType="fitCenter"
             android:visibility="gone" />
 
     </RelativeLayout>
