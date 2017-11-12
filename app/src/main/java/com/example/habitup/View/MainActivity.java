@@ -39,18 +39,18 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
 
         // DEBUG
-        UserAccount testUser = null;
-        try {
-            testUser = HabitUpApplication.getUserAccount("gojeffcho");
-        } catch (Exception e) {
-            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-
-        if (testUser != null) {
-            HabitUpApplication.setCurrentUser(testUser);
-        } else {
-            Log.i("HabitUpDEBUG", "Couldn't get test user.");
-        }
+//        UserAccount testUser = null;
+//        try {
+//            testUser = HabitUpApplication.getUserAccount("gojeffcho");
+//        } catch (Exception e) {
+//            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+//        }
+//
+//        if (testUser != null) {
+//            HabitUpApplication.setCurrentUser(testUser);
+//        } else {
+//            Log.i("HabitUpDEBUG", "Couldn't get test user.");
+//        }
 
 //        UserAccount testUser = new UserAccount("gojeffcho", "Jeef Chee", null);
 //        HabitUpApplication.addUserAccount(testUser);
