@@ -34,7 +34,7 @@ public class UserAccount {
      * @author @gojeffcho
      */
     public UserAccount(String username, String realname, Bitmap photo) throws
-            IllegalArgumentException, IllegalStateException {
+            IllegalArgumentException {
 
         this.setUniqueUID();
         this.setUsername(username);
