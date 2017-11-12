@@ -48,6 +48,7 @@ public class ViewHabitActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i("HabitUpDEBUG", "ViewHabitActivity onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habits);
 
@@ -135,12 +136,19 @@ public class ViewHabitActivity extends BaseActivity {
         // TODO this is not working
         ElasticSearchController.GetUserHabitsTask getUserHabits = new ElasticSearchController.GetUserHabitsTask();
         getUserHabits.execute(String.valueOf(HabitUpApplication.getCurrentUID()));
+
         try {
             habits = getUserHabits.get();
         } catch (Exception e) {
             Toast.makeText(getBaseContext(), "Error retrieving Habits.", Toast.LENGTH_LONG).show();
         }
 
+        for (Habit habit : habits) {
+            Log.i("HabitUpDEBUG", "Habit: " + habit.getHabitName());
+        }
+
+        adapter = new HabitListAdapter(this, R.layout.habit_list_item, habits);
+        habitListView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
         // If no habits in list, display default message

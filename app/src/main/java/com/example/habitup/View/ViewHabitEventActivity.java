@@ -58,12 +58,39 @@ public class ViewHabitEventActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i("HabitUpDEBUG", "ViewHabitEventActivity onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events);
  
         // Get bottom navigation
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.event_bottom_nav);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        eventListView = (ListView) findViewById(R.id.event_list);
+
+        // Handle list view click events
+        eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
+                position = pos;
+
+                for (int i = 0; i < eventListView.getChildCount(); i++) {
+                    if (i == pos) {
+                        highlightItem(view);
+                    } else {
+                        unhighlightItem(eventListView.getChildAt(i), events.get(i));
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Invoked whenever the activity starts
+     */
+    @Override
+    public void onStart() {
+        super.onStart();
 
         // Retrieve events from ES for user
         ElasticSearchController.GetHabitEventsByUidTask getHabitEvents = new ElasticSearchController.GetHabitEventsByUidTask();
@@ -109,7 +136,16 @@ public class ViewHabitEventActivity extends BaseActivity {
         habitAdapter.add("All Habit Types");
 
         // Set up habit types list
-        ArrayList<Habit> habitTypes = new ArrayList<Habit>();
+        ElasticSearchController.GetUserHabitsTask userHabits = new ElasticSearchController.GetUserHabitsTask();
+        userHabits.execute(HabitUpApplication.getCurrentUIDAsString());
+        ArrayList<Habit> habitTypes;
+
+        try {
+            habitTypes = userHabits.get();
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "ViewHabitEvent, couldn't get HabitTypes for user");
+            habitTypes = null;
+        }
 
         // Populate spinner with habit type names
         for (Habit habit : habitTypes) {
@@ -150,17 +186,39 @@ public class ViewHabitEventActivity extends BaseActivity {
 
             }
         });
-    }
-
-    /**
-     * Invoked whenever the activity starts
-     */
-    @Override
-    public void onStart() {
-        super.onStart();
 
         // Highlight events row in drawer
         navigationView.setCheckedItem(R.id.events);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        clearHighlightedRows();
+
+        // Retrieve events from ES for user
+        ElasticSearchController.GetHabitEventsByUidTask getHabitEvents = new ElasticSearchController.GetHabitEventsByUidTask();
+        getHabitEvents.execute(HabitUpApplication.getCurrentUIDAsString());
+        try {
+            events = getHabitEvents.get();
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "ViewHabitEvent - Couldn't get HabitEvents");
+        }
+
+        // Set up list view adapter for habit events
+        eventAdapter = new EventListAdapter(this, R.layout.event_list_item, events);
+        eventListView.setAdapter(eventAdapter);
+
+        eventAdapter.notifyDataSetChanged();
+
+        // Display if there are no events
+        if (events.size() == 0) {
+            TextView subHeading = (TextView) findViewById(R.id.select_event);
+            subHeading.setText("You currently have no habit events.");
+        }
+
     }
 
     /**
@@ -253,13 +311,6 @@ public class ViewHabitEventActivity extends BaseActivity {
         editIntent.putExtra(HABIT_EVENT_EID, eid);
         editIntent.putExtra(HABIT_EVENT_ACTION, requestCode);
         startActivityForResult(editIntent, requestCode);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        clearHighlightedRows();
     }
 
     private void clearHighlightedRows() {

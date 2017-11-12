@@ -42,7 +42,7 @@ public class ElasticSearchController {
             verifySettings();
 
             for (UserAccount user : users) {
-                Index index = new Index.Builder(user).index(db).type(userType).id(Integer.toString(user.getUID())).build();
+                Index index = new Index.Builder(user).index(db).type(userType).refresh(true).id(Integer.toString(user.getUID())).build();
 
                 try {
                     // where is the client?
@@ -162,7 +162,7 @@ public class ElasticSearchController {
             verifySettings();
 
             for (Attributes attr : attrs) {
-                Index index = new Index.Builder(attr).index(db).type(attrType).id(Integer.toString(attr.getUid())).build();
+                Index index = new Index.Builder(attr).index(db).type(attrType).id(Integer.toString(attr.getUid())).refresh(true).build();
 
 
                 try {
@@ -235,18 +235,20 @@ public class ElasticSearchController {
             verifySettings();
 
             for (Habit habit : habits) {
-                Index index = new Index.Builder(habit).index(db).type(habitType).id(Integer.toString(habit.getHID())).build();
+                Index index = new Index.Builder(habit).index(db).type(habitType).id(Integer.toString(habit.getHID())).refresh(true).build();
 
 
                 try {
                     // where is the client?
                     DocumentResult result = client.execute(index);
-                    if (!result.isSucceeded()) {
-
-                        Log.i("Error", "Elasticsearch was not able to add the Habit");
+                    if (result.isSucceeded()) {
+                        Log.i("HabitUpDEBUG", "Wrote Habit " + habit.getHabitName());
+                    } else {
+                        Log.i("HabitUpDEBUG", "Elasticsearch was not able to add the Habit");
                     }
+
                 } catch (Exception e) {
-                    Log.i("Error", "The application failed to build and send the Habit");
+                    Log.i("HabitUpDEBUG", "The application failed to build and send the Habit");
                 }
             }
 
@@ -308,10 +310,6 @@ public class ElasticSearchController {
             String UserQuery;
             ArrayList<Habit> habits = new ArrayList<Habit>();
 
-            //Build the query
-            //String query = "{\n" +
-            //" \"query\": { \"term\": {\"username\":\"" + usernames[0] + "\"} }\n" +"}";
-
             if (uids[0].equals("")){
                 UserQuery = uids[0];
             }
@@ -325,10 +323,15 @@ public class ElasticSearchController {
 
             try {
 
-                // TODO get the results of the query
                 SearchResult result = client.execute(search);
                 if (result.isSucceeded()) {
+                    Log.i("HabitUpDEBUG", "Got Habits from ES");
+
                     List<Habit> foundHabit = result.getSourceAsObjectList(Habit.class);
+
+//                    for (Habit habit: foundHabit) {
+//                        Log.i("HabitUpDEBUG", "Habit Got: " + habit.getHabitName());
+//                    }
                     habits.addAll(foundHabit);
 
                 } else {
@@ -353,9 +356,9 @@ public class ElasticSearchController {
             for (HabitEvent habitEvent : habitEvents) {
                 Index index;
                 if (habitEvent.getEID() == null) {
-                    index = new Index.Builder(habitEvent).index(db).type(habitEventType).build();
+                    index = new Index.Builder(habitEvent).index(db).type(habitEventType).refresh(true).build();
                 } else {
-                    index = new Index.Builder(habitEvent).index(db).type(habitEventType).id(habitEvent.getEID()).build();
+                    index = new Index.Builder(habitEvent).index(db).type(habitEventType).id(habitEvent.getEID()).refresh(true).build();
                 }
 
                 try {
@@ -429,6 +432,8 @@ public class ElasticSearchController {
 
         @Override
         protected ArrayList<HabitEvent> doInBackground(String... Uids) {
+
+            Log.i("HabitUpDEBUG", "GetHabitEventsByUidTask");
             verifySettings();
 
             ArrayList<HabitEvent> habitEvents = new ArrayList<HabitEvent>();
