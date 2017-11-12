@@ -108,15 +108,8 @@ public class ViewHabitEventActivity extends BaseActivity {
         // Date format for displaying event date
         DateTimeFormatter dateFmt = DateTimeFormatter.ofPattern("MMM d, yyyy");
 
-        //sort by completedate
-        Collections.sort(events, new Comparator<HabitEvent>() {
-            @Override
-            public int compare(HabitEvent e1, HabitEvent e2) {
-                return e1.getCompletedate().compareTo(e2.getCompletedate());
-            }
-        });
-        Collections.reverse(events);
-
+        // Sort by reverse chronological order; HabitEvents implement Comparable
+        Collections.sort(events);
 
         // Set up list view adapter for habit events
         eventAdapter = new EventListAdapter(this, R.layout.event_list_item, events);
@@ -152,22 +145,6 @@ public class ViewHabitEventActivity extends BaseActivity {
             habitAdapter.add(habit.getHabitName());
         }
         habitSpinner.setAdapter(habitAdapter);
-
-        // Handle list view click events
-        eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
-                position = pos;
-
-                for (int i = 0; i < eventListView.getChildCount(); i++) {
-                    if (i == pos) {
-                        highlightItem(view);
-                    } else {
-                        unhighlightItem(eventListView.getChildAt(i), events.get(i));
-                    }
-                }
-            }
-        });
 
         // comment filter through list
         commentFilter.addTextChangedListener(new TextWatcher() {

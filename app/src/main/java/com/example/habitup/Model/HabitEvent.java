@@ -190,7 +190,7 @@ public class HabitEvent implements Comparable<HabitEvent> {
     }
 
     public int compareTo(HabitEvent e) {
-        return this.completedate.compareTo(e.getCompletedate());
+        return (-1) * this.completedate.compareTo(e.getCompletedate());
     }
 
     public boolean hasImage() {
