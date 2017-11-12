@@ -217,8 +217,17 @@ public class ViewHabitEventActivity extends BaseActivity {
                         alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-//                                HabitUpController.deleteHabitEvent(events.get(position)); //placeholder ES delete
-                                eventAdapter.remove(eventAdapter.getItem(position));
+                                HabitUpController.deleteHabitEvent(events.get(position)); //placeholder ES delete
+                                ElasticSearchController.GetHabitEventsByUidTask getHabitEvents = new ElasticSearchController.GetHabitEventsByUidTask();
+                                getHabitEvents.execute(HabitUpApplication.getCurrentUIDAsString());
+                                try {
+                                    events = getHabitEvents.get();
+                                } catch (Exception e) {
+                                    Log.i("HabitUpDEBUG", "ViewHabitEvent - Couldn't get HabitEvents");
+                                }
+//                                eventAdapter.remove(eventAdapter.getItem(position));
+                                eventAdapter = new EventListAdapter(context, R.layout.event_list_item, events);
+                                eventListView.setAdapter(eventAdapter);
                                 eventAdapter.notifyDataSetChanged();
                                 dialogInterface.dismiss();
                             }

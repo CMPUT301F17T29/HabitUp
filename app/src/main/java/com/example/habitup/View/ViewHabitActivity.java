@@ -168,6 +168,7 @@ public class ViewHabitActivity extends BaseActivity {
                         alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
+//                                HabitUpController.deleteHabit(habits.get(position));
                                 adapter.remove(adapter.getItem(position));
                                 adapter.notifyDataSetChanged();
                                 dialogInterface.dismiss();
