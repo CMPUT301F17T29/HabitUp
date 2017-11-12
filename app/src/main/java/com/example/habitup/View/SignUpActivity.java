@@ -33,7 +33,7 @@ public class SignUpActivity extends AppCompatActivity {
     private String realName;
     private static final int REQUEST_CODE = 1;
     private static final int maxByteCount = 65536;
-    private ImageView addprofilePic;
+    private Button addprofilePic;
     private Bitmap userimage;
 
     @Override
