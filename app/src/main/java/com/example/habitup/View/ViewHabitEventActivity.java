@@ -9,16 +9,13 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
@@ -120,14 +117,14 @@ public class ViewHabitEventActivity extends BaseActivity {
         // Date format for displaying event date
         DateTimeFormatter dateFmt = DateTimeFormatter.ofPattern("MMM d, yyyy");
 
-        // Sort by reverse chronological order; HabitEvents implement Comparable
-        Collections.sort(events);
-
-        // Set up list view adapter for habit events
-        eventAdapter = new EventListAdapter(this, R.layout.event_list_item, events);
-        eventListView.setAdapter(eventAdapter);
-
-        eventAdapter.notifyDataSetChanged();
+        //sort by completedate
+        Collections.sort(events, new Comparator<HabitEvent>() {
+            @Override
+            public int compare(HabitEvent e1, HabitEvent e2) {
+                return e1.getCompletedate().compareTo(e2.getCompletedate());
+            }
+        });
+        Collections.reverse(events);
 
         // Display if there are no events
         if (events.size() == 0) {
