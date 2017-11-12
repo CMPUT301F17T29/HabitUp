@@ -1,10 +1,13 @@
 package com.example.habitup.Model;
 
 import android.graphics.Bitmap;
-import android.media.Image;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.util.Log;
 
 import com.example.habitup.Controller.ElasticSearchController;
+
+import java.io.ByteArrayOutputStream;
 
 /**
  * @author gojeffcho
@@ -22,7 +25,7 @@ public class UserAccount {
     private int uid;
     private String username;
     private String realname;
-    private Bitmap photo;
+    private String encodedPhoto;
     private int level;
     private int XP;
     private int XPtoNext;
@@ -42,6 +45,7 @@ public class UserAccount {
         this.setUsername(username);
         this.setRealname(realname);
         this.setPhoto(photo);
+        //this.setEncodedPhoto(photo);
 
         level = 1;
         XP = 0;
@@ -71,7 +75,13 @@ public class UserAccount {
      * Gets Image if one is associated to the account, otherwise null
      * @return Image if associated, null if not
      */
-    public Bitmap getPhoto() { return this.photo; }
+    public Bitmap getPhoto() {
+        if (this.encodedPhoto != null) {
+            byte [] decodedBytes = Base64.decode(this.encodedPhoto, 0);
+            return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+        }
+        else return null;
+    }
 
     /**
      * Gets Attribute object owned by UserAccount
@@ -215,16 +225,20 @@ public class UserAccount {
      */
     public void setPhoto(Bitmap photo) {
         if (photo != null) {
-            this.photo = photo;
+            ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
+            photo.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOS);
+
+            this.encodedPhoto = Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
         }
+        else this.encodedPhoto = null;
     }
 
     /**
      * Delete the associated photo, if one exists
      */
     public void deletePhoto() {
-       if (photo != null) {
-           this.photo = null;
+       if (encodedPhoto != null) {
+           this.encodedPhoto = null;
        }
     }
 
