@@ -87,7 +87,6 @@ public class ViewHabitEventActivity extends BaseActivity {
 
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         eventListView.addItemDecoration(itemDecoration);
-<<<<<<< HEAD
 
         eventAdapter = new EventListAdapter(this, events);
         adapterSize = eventAdapter.getItemCount();
@@ -100,20 +99,6 @@ public class ViewHabitEventActivity extends BaseActivity {
 
         eventAdapter.notifyDataSetChanged();
 
-=======
-
-        eventAdapter = new EventListAdapter(this, events);
-        adapterSize = eventAdapter.getItemCount();
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setAutoMeasureEnabled(true);
-
-        eventListView.setAdapter(eventAdapter);
-        eventListView.setLayoutManager(layoutManager);
-
-        eventAdapter.notifyDataSetChanged();
-
->>>>>>> development
         eventAdapter.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
