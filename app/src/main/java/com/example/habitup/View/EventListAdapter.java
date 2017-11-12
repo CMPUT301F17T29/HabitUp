@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.RecyclerView;
+import android.util.EventLog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,78 +32,109 @@ import java.util.GregorianCalendar;
  * Created by sharidanbarboza on 2017-10-28.
  */
 
-public class EventListAdapter extends ArrayAdapter<HabitEvent> {
+public class EventListAdapter extends RecyclerView.Adapter<EventHolder> {
 
     private ArrayList<HabitEvent> events;
+    private Context context;
+    private int itemResource;
+    private RecyclerView recyclerView;
 
-    public EventListAdapter(Context context, int resource, ArrayList<HabitEvent> events) {
-        super(context, resource, events);
+    public EventListAdapter(Context context, int resource, ArrayList<HabitEvent> events, RecyclerView recyclerView) {
         this.events = events;
+        this.context = context;
+        this.itemResource = resource;
+        this.recyclerView = recyclerView;
+    }
+
+    // 2. Override the onCreateViewHolder method
+    @Override
+    public EventHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        // 3. Inflate the view and return the new ViewHolder
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(this.itemResource, parent, false);
+        return new EventHolder(this.context, view);
+    }
+
+    // 4. Override the onBindViewHolder method
+    @Override
+    public void onBindViewHolder(EventHolder holder, final int position) {
+
+        HabitEvent event = this.events.get(position);
+        final View view = holder.itemView;
+        holder.bindEvent(event);
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (int i = 0; i < events.size(); i++) {
+                    if (i == position) {
+                        if (i == position) {
+                            highlightItem(view);
+                        } else {
+                            unhighlightItem(recyclerView.getChildAt(i), events.get(i));
+                        }
+                    }
+                }
+            }
+        });
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup viewGroup) {
-        View v = view;
+    public int getItemCount() {
 
-        if (v == null) {
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            v = inflater.inflate(R.layout.event_list_item, null);
-        }
+        return this.events.size();
+    }
 
-        HabitEvent event = events.get(position);
+    public HabitEvent getItem(int position) {
+        return events.get(position);
+    }
 
-        // Get the Habit from the HabitEvent
+    public void removeItem(int position) {
+        events.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void highlightItem(View view) {
+        view.setBackgroundColor(ContextCompat.getColor(context, R.color.teal));
+
+        int whiteColor = ContextCompat.getColor(context, R.color.white);
+        TextView text = view.findViewById(R.id.event_name);
+        text.setTextColor(whiteColor);
+
+        TextView comment = view.findViewById(R.id.event_comment);
+        comment.setTextColor(whiteColor);
+
+        TextView dateText = view.findViewById(R.id.event_date);
+        dateText.setTextColor(whiteColor);
+    }
+
+    public void unhighlightItem(View view, HabitEvent event) {
+        view.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
+
         Habit eventHabit;
         ElasticSearchController.GetHabitsTask getHabit = new ElasticSearchController.GetHabitsTask();
         getHabit.execute(String.valueOf(event.getHID()));
         try {
             eventHabit = getHabit.get().get(0);
         } catch (Exception e) {
-            Log.i("HabitUpDEBUG", "EventListAdaptor - couldn't get Habit");
+            Log.i("HabitUpDEBUG", "ViewHabitEventActivity - couldn't get Habit");
             eventHabit = new Habit(-1);
             eventHabit.setHabitName("ERROR");
         }
 
-        String eventName = eventHabit.getHabitName();
-        String eventAttribute = eventHabit.getHabitAttribute();
-        String attributeColour = Attributes.getColour(eventAttribute);
-        LocalDate eventDate = event.getCompletedate();
-        String eventComment = event.getComment();
+        String attribute = eventHabit.getHabitAttribute();
+        String color = Attributes.getColour(attribute);
 
-        // Set habit name
-        TextView eventNameView = v.findViewById(R.id.event_name);
-        eventNameView.setText(eventName);
-        eventNameView.setTextColor(Color.parseColor(attributeColour));
+        int lightGray = ContextCompat.getColor(context, R.color.lightgray);
+        TextView text = view.findViewById(R.id.event_name);
+        text.setTextColor(Color.parseColor(color));
 
-        // Set event date
-        TextView eventDateView = v.findViewById(R.id.event_date);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy");
-        eventDateView.setText(eventDate.format(formatter).toUpperCase());
+        TextView comment = view.findViewById(R.id.event_comment);
+        comment.setTextColor(lightGray);
 
-        // Set event comment (if any)
-        TextView eventCommentView = v.findViewById(R.id.event_comment);
-        eventCommentView.setText(eventComment);
+        TextView dateText = view.findViewById(R.id.event_date);
+        dateText.setTextColor(lightGray);
 
-        // Change color of camera and map marker icons
-        int tintColour = ContextCompat.getColor(getContext(), R.color.teal);
-        int defaultColour = ContextCompat.getColor(getContext(), R.color.tintgray);
-
-        // Set if event has corresponding image
-        ImageView photoIcon = v.findViewById(R.id.event_has_image);
-        if (event.hasImage()) {
-            photoIcon.setColorFilter(tintColour);
-        } else {
-            photoIcon.setColorFilter(defaultColour);
-        }
-
-        // Set if event has corresponding location
-        ImageView markerIcon = v.findViewById(R.id.event_has_location);
-        if (event.hasLocation()) {
-            markerIcon.setColorFilter(tintColour);
-        } else {
-            markerIcon.setColorFilter(defaultColour);
-        }
-
-        return v;
     }
 }
