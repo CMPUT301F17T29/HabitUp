@@ -15,9 +15,9 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="habit_label">Habit name *</string>
+    <string name="habit_label">Habit name * (max 20 characters)</string>
     <string name="habit_hint">Enter name of habit</string>
-    <string name="reason_label">Reason *</string>
+    <string name="reason_label">Reason * (max 30 characters)</string>
     <string name="reason_hint">Enter reason for habit</string>
     <string name="habit_date_label">Start date *</string>
     <string name="habit_attr_label">Attribute *</string>
