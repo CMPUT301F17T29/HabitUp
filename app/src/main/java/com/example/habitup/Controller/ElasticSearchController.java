@@ -552,6 +552,70 @@ public class ElasticSearchController {
         }
     }
 
+    public static class GetHabitsEventDuplicates extends AsyncTask<HabitEvent, Void, ArrayList<HabitEvent>>{
+
+        @Override
+        protected ArrayList<HabitEvent> doInBackground(HabitEvent... events) {
+            verifySettings();
+            String UserQuery;
+            ArrayList<HabitEvent> matches = new ArrayList<HabitEvent>();
+
+
+            String query =
+                "{" +
+                    "\"query\": {" +
+                        "\"bool\": {" +
+                            "\"must\": [" +
+                                "{\"term\": {\"uid\" : " + HabitUpApplication.getCurrentUIDAsString() + " }}, " +
+                                "{\"term\": {\"hid\" : " + events[0].getHID() + " }}, " +
+                                "{ " +
+                                    "\"nested\" : {" +
+                                        "\"path\": completedate," +
+                                        "\"query\": {" +
+                                            "\"bool\": {" +
+                                                "\"must\": [" +
+                                                    "{\"term\": {\"completedate.year\" : " + events[0].getCompletedate().getYear() + " }}," +
+                                                    "{\"term\": {\"completedate.month\" : " + events[0].getCompletedate().getMonthValue() + " }}," +
+                                                    "{\"term\": {\"completedate.day\" : " + events[0].getCompletedate().getDayOfMonth() + " }}" +
+                                                "]" +
+                                            "}" +
+                                        "}" +
+                                    "}" +
+                                "}" +
+                            "]" +
+                        "}" +
+                    "}" +
+                "}";
+
+
+            Log.i("HabitUpDEBUG", "ESCtl/HabitEventDupes - query: " + query);
+
+            Search search = new Search.Builder(query).addIndex(db).addType(habitType).build();
+
+            try {
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()) {
+                    List<HabitEvent> foundMatches = result.getSourceAsObjectList(HabitEvent.class);
+                    matches.addAll(foundMatches);
+
+                } else {
+                    Log.i("HabitUpDEBUG", "ESCtl/HabitEventDupes - Result Failed");
+                }
+            }
+            catch (Exception e) {
+                Log.i("HabitUpDEBUG", "ESCtl/HabitEventDupes - Exception");
+            }
+
+            Log.i("HabitUpDEBUG", "ESCtl/HabitEventDupes - " + matches.size() + " matches");
+
+            for (HabitEvent ev : matches) {
+                Log.i("HabitUpDEBUG", "ESCtl/HabitEventDupes - matched " + ev.getEID());
+            }
+
+            return matches;
+        }
+    }
+
     public static class GetMaxUidTask extends AsyncTask<Void, Void, Integer>{
         Integer maxUid = 0;
         @Override
