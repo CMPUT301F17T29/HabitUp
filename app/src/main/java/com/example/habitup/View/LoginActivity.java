@@ -38,10 +38,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
-        // set the logo
-        ImageView imageView = (ImageView) findViewById(R.id.title_image);
-        imageView.setImageResource(R.drawable.habitup);
-
         // get button
         final Button logInButton = (Button) findViewById(R.id.login_button);
         Button signUpButton = (Button) findViewById(R.id.link_signup);
