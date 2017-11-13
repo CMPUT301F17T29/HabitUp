@@ -65,8 +65,8 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
 
         //check whether we add that user
         solo.enterText((EditText) solo.getView(R.id.login_edit), testName);
-        solo.clickOnButton("LOGIN");
-        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
+        solo.clickOnButton("Login");
+        solo.assertCurrentActivity("Wrong Activity", LoginActivity.class);
 
     }
 }
