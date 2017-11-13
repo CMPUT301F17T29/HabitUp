@@ -8,7 +8,6 @@ import android.widget.EditText;
 
 import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Model.UserAccount;
-import com.example.habitup.View.MainActivity;
 import com.example.habitup.View.SignUpActivity;
 import com.robotium.solo.Solo;
 
