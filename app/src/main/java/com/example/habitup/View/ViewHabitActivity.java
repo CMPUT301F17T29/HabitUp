@@ -159,42 +159,45 @@ public class ViewHabitActivity extends BaseActivity {
             if (position < 0) {
                 Toast.makeText(context, "Select a habit first.", Toast.LENGTH_SHORT).show();
             } else {
-                Habit habit = (Habit) adapter.getItem(position);
+                final Habit habit = (Habit) adapter.getItem(position);
                 int hid = habit.getHID();
 
                 Log.i("HabitUpDEBUG", "Habit selected - " + habit.getHabitName());
 
                 switch (item.getItemId()) {
+
                     case R.id.habit_menu_view:
                         goToEditActivity(VIEW_HABIT, hid);
                         return true;
+
                     case R.id.habit_menu_edit:
                         goToEditActivity(EDIT_HABIT, hid);
                         return true;
+
                     case R.id.habit_menu_delete:
                         AlertDialog.Builder alert = new AlertDialog.Builder(ViewHabitActivity.this);
                         alert.setTitle("Delete");
-                        alert.setMessage("Are you sure you want to delete this habit and its habit events?");
+                        alert.setMessage("Are you sure you want to delete this Habit?  This will also delete any events completed that were associated with the Habit.");
+
                         alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                for (HabitEvent e : events){
-                                    if (e.getHID() == ((Habit) adapter.getItem(position)).getHID()){
-                                        HabitUpController.deleteHabitEvent(e); // ES delete on associated habit events
-                                    }
-                                }
+                                HabitUpController.deleteHabitEventsForHabit(habit);
                                 HabitUpController.deleteHabit(habits.get(position));
                                 adapter.remove(adapter.getItem(position));
                                 adapter.notifyDataSetChanged();
+                                position = -1;
                                 dialogInterface.dismiss();
                             }
                         });
+
                         alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.dismiss();
                             }
                         });
+
                         alert.show();
                         return true;
                 }

@@ -536,7 +536,7 @@ public class ElasticSearchController {
         }
     }
 
-    //Get HabitEvent by UID
+    // Get HabitEvent by UID
     public static class GetHabitEventsByHidTask extends AsyncTask<String, Void, ArrayList<HabitEvent>>{
 
         @Override
@@ -580,67 +580,43 @@ public class ElasticSearchController {
         }
     }
 
-    public static class GetHabitsEventDuplicates extends AsyncTask<HabitEvent, Void, ArrayList<HabitEvent>>{
+    // Get HabitEvent by UID
+    public static class GetHabitEventsForDelete extends AsyncTask<String, Void, ArrayList<HabitEvent>>{
 
         @Override
-        protected ArrayList<HabitEvent> doInBackground(HabitEvent... events) {
+        protected ArrayList<HabitEvent> doInBackground(String... Hids) {
             verifySettings();
-            String UserQuery;
-            ArrayList<HabitEvent> matches = new ArrayList<HabitEvent>();
 
+            ArrayList<HabitEvent> habitEvents = new ArrayList<HabitEvent>();
 
-            String query =
-                "{" +
+            String query = "{" +
+                    "\"size\": " + HabitUpApplication.NUM_OF_ES_RESULTS_FOR_DELETE + "," +
+                    "\"from\": 0," +
                     "\"query\": {" +
-                        "\"bool\": {" +
-                            "\"must\": [" +
-                                "{\"term\": {\"uid\" : " + HabitUpApplication.getCurrentUIDAsString() + " }}, " +
-                                "{\"term\": {\"hid\" : " + events[0].getHID() + " }}, " +
-                                "{ " +
-                                    "\"nested\" : {" +
-                                        "\"path\": completedate," +
-                                        "\"query\": {" +
-                                            "\"bool\": {" +
-                                                "\"must\": [" +
-                                                    "{\"term\": {\"completedate.year\" : " + events[0].getCompletedate().getYear() + " }}," +
-                                                    "{\"term\": {\"completedate.month\" : " + events[0].getCompletedate().getMonthValue() + " }}," +
-                                                    "{\"term\": {\"completedate.day\" : " + events[0].getCompletedate().getDayOfMonth() + " }}" +
-                                                "]" +
-                                            "}" +
-                                        "}" +
-                                    "}" +
-                                "}" +
-                            "]" +
-                        "}" +
+                    "\"match\" : " +
+                    "{ \"hid\" : \"" + Hids[0] + "\" }" +
                     "}" +
-                "}";
+                    "}";
 
-
-            Log.i("HabitUpDEBUG", "ESCtl/HabitEventDupes - query: " + query);
-
-            Search search = new Search.Builder(query).addIndex(db).addType(habitType).build();
+            Search search = new Search.Builder(query).addIndex(db).addType(habitEventType).build();
 
             try {
+
                 SearchResult result = client.execute(search);
                 if (result.isSucceeded()) {
-                    List<HabitEvent> foundMatches = result.getSourceAsObjectList(HabitEvent.class);
-                    matches.addAll(foundMatches);
+                    Log.i("DeBug", "found some habit events");
+                    List<HabitEvent> foundHabitEvent = result.getSourceAsObjectList(HabitEvent.class);
+                    habitEvents.addAll(foundHabitEvent);
 
                 } else {
-                    Log.i("HabitUpDEBUG", "ESCtl/HabitEventDupes - Result Failed");
+                    Log.i("Error2", "Something went wrong when we tried to communicate with the elasticsearch server");
                 }
             }
             catch (Exception e) {
-                Log.i("HabitUpDEBUG", "ESCtl/HabitEventDupes - Exception");
+                Log.i("Error1", "Something went wrong when we tried to communicate with the elasticsearch server!");
             }
 
-            Log.i("HabitUpDEBUG", "ESCtl/HabitEventDupes - " + matches.size() + " matches");
-
-            for (HabitEvent ev : matches) {
-                Log.i("HabitUpDEBUG", "ESCtl/HabitEventDupes - matched " + ev.getEID());
-            }
-
-            return matches;
+            return habitEvents;
         }
     }
 
@@ -791,12 +767,13 @@ public class ElasticSearchController {
         protected Void doInBackground(String... ESids) {
             verifySettings();
 
+            Log.i("HabitUpDEBUG", "ESCtl/Trying to delete " + ESids[0]);
+
             for (String Esid : ESids) {
 
                 Delete deleteHabit = new Delete.Builder(Esid).index(db).type(habitEventType).build();
 
                 try {
-                    // where is the client?
                     client.execute(deleteHabit);
                 }
 
@@ -804,6 +781,7 @@ public class ElasticSearchController {
                     Log.i("Error", "The application failed to build the query and delete the User");
 
                 }
+                Log.i("HabitUpDEBUG", "ESCtl/Deleted " + ESids[0]);
             }
 
             return null;
