@@ -12,16 +12,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".View.BaseActivity" />
+
         <activity
             android:name=".View.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:theme="@style/AppTheme.NoActionBar" />
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            </intent-filter>
-        </activity>
         <activity
             android:name=".View.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -30,24 +27,29 @@
                  <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".View.SignUpActivity"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
         </activity>
+
         <activity
             android:name=".View.ViewHabitActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".View.ViewHabitEventActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity android:name=".View.AddHabitActivity" />
+
         <activity android:name=".View.AddHabitEventActivity" />
+
         <activity android:name=".View.EditProfileActivity" />
+
         <activity android:name=".View.EditHabitActivity" />
-        <activity android:name=".View.EditHabitEventActivity"></activity>
+
+        <activity android:name=".View.EditHabitEventActivity" />
     </application>
 
 </manifest>
