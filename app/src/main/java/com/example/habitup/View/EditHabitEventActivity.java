@@ -38,12 +38,25 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * This is the activity for editing a habit event. A user must select one of
+ * their habits to create a new event. By default, the completion date for the event
+ * is set to the current date, but the user may choose another date that is before the
+ * current date only.
+ *
+ * When the user turns on the switch, the user's current location will be associated
+ * with the event. This is optional.
+ *
+ * The user can also choose to associate a photo with the event. The photo must be stored
+ * as less than 65 536 bytes.
+ *
+ * @see HabitEvent
+ *
+ * @author Shari Barboza
+ */
 public class EditHabitEventActivity extends AppCompatActivity {
 
     private int action;
-    private int uid;
-    private int hid;
-    private String eid;
     private HabitEvent event;
 
     // Event completion date
@@ -87,9 +100,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
         // Get the habit from intent
         Intent intent = getIntent();
         action = intent.getExtras().getInt(ViewHabitEventActivity.HABIT_EVENT_ACTION);
-        uid = intent.getExtras().getInt(ViewHabitEventActivity.HABIT_EVENT_UID);
-        hid = intent.getExtras().getInt(ViewHabitEventActivity.HABIT_EVENT_HID);
-        eid = intent.getExtras().getString(ViewHabitEventActivity.HABIT_EVENT_EID);
+        String eid = intent.getExtras().getString(ViewHabitEventActivity.HABIT_EVENT_EID);
 
         ElasticSearchController.GetHabitEventsByEIDTask getHabitEvent = new ElasticSearchController.GetHabitEventsByEIDTask();
         getHabitEvent.execute(eid);
@@ -200,6 +211,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
             viewMode();
         }
 
+        // When the save button is clicked
         saveButton.setOnClickListener(new View.OnClickListener() {
 
             /**
@@ -221,6 +233,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
 
                 Boolean eventOK = Boolean.TRUE;
 
+                // Validation for habit event
                 try {
                     event.setHabit(hids.get(eventType));
                 } catch (IllegalArgumentException e) {
@@ -377,7 +390,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
         }
     };
 
-    // Set color of text when habit type is selected
+    // Set color of text when habit type is selected in habit types spinner
     private AdapterView.OnItemSelectedListener habitListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

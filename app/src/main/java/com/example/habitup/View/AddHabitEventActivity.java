@@ -18,9 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -40,8 +38,23 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
+/**
+ * This is the activity for adding a habit event. A user must select one of
+ * their habits to create a new event. By default, the completion date for the event
+ * is set to the current date, but the user may choose another date that is before the
+ * current date only.
+ *
+ * When the user turns on the switch, the user's current location will be associated
+ * with the event. This is optional.
+ *
+ * The user can also choose to associate a photo with the event. The photo must be stored
+ * as less than 65 536 bytes.
+ *
+ * @see HabitEvent
+ *
+ * @author Shari Barboza
+ */
 public class AddHabitEventActivity extends AppCompatActivity {
 
     // Event completion date
@@ -51,14 +64,14 @@ public class AddHabitEventActivity extends AppCompatActivity {
 
     // Clickable image
     private static final int REQUEST_CODE = 1;
-    private Bitmap imageBitMap;
-    private Button imageButton;
     private ImageView image;
-
-    private Button saveButton;
 
     private int habit_pos = -1;
 
+    /**
+     * Called when the activity is first created.
+     * @param savedInstanceState the saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +112,7 @@ public class AddHabitEventActivity extends AppCompatActivity {
             habitList = new ArrayList<>();
         }
 
+        // Get the habit's name if coming from the main profile
         String currentName = null;
         Bundle extras = getIntent().getExtras();
         if (extras.getInt("profile") == 1) {
@@ -106,6 +120,7 @@ public class AddHabitEventActivity extends AppCompatActivity {
             currentName = extras.get("habit").toString();
         }
 
+        // Set up list adapter for habit type names
         ArrayAdapter adapter = new ArrayAdapter(this, R.layout.spinner_item, habitNames);
         habitSpinner.setAdapter(adapter);
 
@@ -123,12 +138,14 @@ public class AddHabitEventActivity extends AppCompatActivity {
             }
         }
 
+        // Set up a click listener when an item in the habit spinner is clicked
         habitSpinner.setOnItemSelectedListener(habitListener);
 
         // Get location checkbox
         Switch locationSwitch = (Switch) findViewById(R.id.location_switch);
 
         // Get photo icon
+        Button imageButton;
         imageButton = (Button) findViewById(R.id.photo_icon);
         image = (ImageView) findViewById(R.id.taken_image);
 
@@ -160,36 +177,40 @@ public class AddHabitEventActivity extends AppCompatActivity {
         });
 
         // Save button
-        saveButton = (Button) findViewById(R.id.save_event);
+        Button saveButton = (Button) findViewById(R.id.save_event);
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-
+                // Get the event habit type
                 String habitType = ((Spinner) findViewById(R.id.event_habit_spinner)).getSelectedItem().toString();
+
+                // Get the event comment
                 String habitComment = ((TextView) findViewById(R.id.event_comment)).getText().toString();
 
+                // Get the event date
                 String completeDateString = ((TextView) findViewById(R.id.event_date_text)).getText().toString();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy");
                 LocalDate completeDate = LocalDate.parse(completeDateString, formatter);
 
-                Bitmap photo = null;
-
                 // TODO: M5 get location here
+
+                // Get the event photo
+                Bitmap photo = null;
                 if ( ((ImageView) findViewById(R.id.taken_image)).getDrawable() != null ) {
                     photo = ((BitmapDrawable) ((ImageView) findViewById(R.id.taken_image)).getDrawable()).getBitmap();
                 }
 
+                // Create new habit event
                 int uid = HabitUpApplication.getCurrentUID();
                 int hid = hids.get(habitType);
-                Log.i("HabitUpDEBUG", "habitType " + habitType + " is HID " + hid);
-
                 HabitEvent newEvent = new HabitEvent(uid, hid);
                 Boolean eventOK = Boolean.TRUE;
+                newEvent.setHabit(hid);
+                newEvent.setScheduled();
 
-                newEvent.setHabit(hid);  // TODO: get actual HID from habitType
-
+                // Validation for habit event
                 try {
                     newEvent.setComment(habitComment);
                 } catch (IllegalArgumentException e) {
@@ -210,8 +231,6 @@ public class AddHabitEventActivity extends AppCompatActivity {
                     Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     eventOK = Boolean.FALSE;
                 }
-
-                newEvent.setScheduled();
 
                 if (eventOK) {
                     // Pass to the controller
@@ -256,9 +275,8 @@ public class AddHabitEventActivity extends AppCompatActivity {
 
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
-            imageBitMap = (Bitmap) extras.get("data");
+            Bitmap imageBitMap = (Bitmap) extras.get("data");
 
-            // TODO: Resize image for to appropriate byte size
             image.setImageBitmap(imageBitMap);
             image.setVisibility(View.VISIBLE);
         }
