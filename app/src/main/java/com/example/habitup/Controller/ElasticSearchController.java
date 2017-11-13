@@ -634,6 +634,58 @@ public class ElasticSearchController {
     }
 
     /**
+     * Gets HabitEvents for the CurrentUser that match a comment search string
+     * .execute() using String to match comments by
+     * .get() -> ArrayList<HabitEvent>
+     */
+    public static class GetHabitEventsForCommentMatch extends AsyncTask<String, Void, ArrayList<HabitEvent>>{
+
+        @Override
+        protected ArrayList<HabitEvent> doInBackground(String... searchStrings) {
+            verifySettings();
+
+            String query;
+            ArrayList<HabitEvent> commentMatches = new ArrayList<>();
+
+            query = "{" +
+                        "\"size\": " + HabitUpApplication.NUM_OF_ES_RESULTS_LARGE + "," +
+                        "\"from\": 0," +
+                        "\"query\": {" +
+                            "\"bool\": {" +
+                                "\"must\": [" +
+                                    "{\"term\": {\"uid\" : " + HabitUpApplication.getCurrentUIDAsString() + " }}, " +
+                                    "{\"match_phrase\": {\"comment\" : \"" + searchStrings[0] + "\" }}" +
+                                "]" +
+                            "}" +
+                        "}" +
+                    "}";
+
+            Search search = new Search.Builder(query).addIndex(db).addType(habitEventType).build();
+
+            try {
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()) {
+                    List<HabitEvent> matches = result.getSourceAsObjectList(HabitEvent.class);
+                    commentMatches.addAll(matches);
+
+                } else {
+                    Log.i("HabitUpDEBUG", "ESCtl/HabitByNameForUID - Result Failed");
+                }
+            }
+            catch (Exception e) {
+                Log.i("HabitUpDEBUG", "ESCtl/HabitByNameForUID - Exception");
+            }
+
+            Log.i("HabitUpDEBUG", "ESCtl/HabitEventCommentSearch - " + commentMatches.size() + " matches");
+            for (HabitEvent ev : commentMatches) {
+                Log.i("HabitUpDEBUG", "ESCtl/HabitEventCommentSearch - matched " + ev.getComment() + " #" + ev.getEID());
+            }
+
+            return commentMatches;
+        }
+    }
+
+    /**
      * Get HabitEvents specifically for deletion - returns a larger number of HabitEvents to make
      * sure they all get deleted properly.  This is used when a Habit is being deleted.
      *
@@ -649,7 +701,7 @@ public class ElasticSearchController {
             ArrayList<HabitEvent> habitEvents = new ArrayList<HabitEvent>();
 
             String query = "{" +
-                    "\"size\": " + HabitUpApplication.NUM_OF_ES_RESULTS_FOR_DELETE + "," +
+                    "\"size\": " + HabitUpApplication.NUM_OF_ES_RESULTS_LARGE + "," +
                     "\"from\": 0," +
                     "\"query\": {" +
                     "\"match\" : " +
