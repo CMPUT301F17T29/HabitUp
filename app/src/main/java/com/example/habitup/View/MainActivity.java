@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.TextView;
 
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
@@ -69,10 +68,6 @@ public class MainActivity extends BaseActivity {
         habitListView.setAdapter(adapter);
         habitListView.setLayoutManager(layoutManager);
 
-        if (habitsArrayList.size() == 0) {
-            TextView subHeading = (TextView) findViewById(R.id.today_subheading);
-            subHeading.setText(getString(R.string.no_habits));
-        }
     }
 
     @Override

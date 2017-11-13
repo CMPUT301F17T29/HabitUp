@@ -54,7 +54,7 @@ public class ViewHabitActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.i("HabitUpDEBUG", "ViewHabitActivity onCreate");
+//        Log.i("HabitUpDEBUG", "ViewHabitActivity onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habits);
 
@@ -95,7 +95,6 @@ public class ViewHabitActivity extends BaseActivity {
         // Sort 'em.
         Collections.sort(habits);
 
-
         habitListView = (ListView) findViewById(R.id.OldHabitLists);
 
         adapter = new HabitListAdapter(this, R.layout.habit_list_item, habits);
@@ -116,7 +115,7 @@ public class ViewHabitActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Log.i("HabitUpDEBUG", "OnActivityResult in HabitView");
+//        Log.i("HabitUpDEBUG", "OnActivityResult in HabitView");
 
         // Update the Habits List
         ElasticSearchController.GetUserHabitsTask getUserHabits = new ElasticSearchController.GetUserHabitsTask();
@@ -189,6 +188,7 @@ public class ViewHabitActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add_action_bar:
+
                 Intent addHabitIntent = new Intent(context, AddHabitActivity.class);
                 startActivityForResult(addHabitIntent, NEW_HABIT);
                 return true;

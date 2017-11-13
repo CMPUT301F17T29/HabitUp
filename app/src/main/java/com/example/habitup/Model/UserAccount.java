@@ -233,7 +233,9 @@ public class UserAccount {
      * TODO: boundary checking for MAX_INT
      */
     public void incrementLevel() {
-        this.level++;
+        if(this.level < Integer.MAX_VALUE) {
+            this.level++;
+        }
     }
 
     /**
@@ -241,7 +243,10 @@ public class UserAccount {
      * @param xpAmount int (amount to increase XP by)
      */
     public void increaseXP(int xpAmount) {
-        this.XP += xpAmount;
+        if ((this.XP - xpAmount) < Integer.MAX_VALUE -xpAmount){
+            this.XP += xpAmount;
+        }
+        else this.XP = Integer.MAX_VALUE;
     }
 
     /**
