@@ -1,12 +1,9 @@
 package com.example.habitup.View;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,9 +11,7 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Attributes;
@@ -38,27 +33,6 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // DEBUG
-//        UserAccount testUser = null;
-//        try {
-//            testUser = HabitUpApplication.getUserAccount("gojeffcho");
-//        } catch (Exception e) {
-//            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-//        }
-//
-//        if (testUser != null) {
-//            HabitUpApplication.setCurrentUser(testUser);
-//        } else {
-//            Log.i("HabitUpDEBUG", "Couldn't get test user.");
-//        }
-
-//        UserAccount testUser = new UserAccount("gojeffcho", "Jeef Chee", null);
-//        HabitUpApplication.addUserAccount(testUser);
-//        HabitUpApplication.setCurrentUser(testUser);
-        // DEBUG
-
-
 
         // Initialize list view for today's habits
         habitListView = (ListView) findViewById(R.id.habit_listview);
@@ -94,7 +68,6 @@ public class MainActivity extends BaseActivity {
 
         // Set user's display name
         TextView nameField = (TextView) findViewById(R.id.username);
-
         nameField.setText(currentUser.getRealname());
 
         // Set user's level

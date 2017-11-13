@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.example.habitup.Controller.HabitUpController;
+import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
@@ -35,27 +35,20 @@ public class BaseActivity extends AppCompatActivity {
         DrawerLayout fullView = (DrawerLayout) getLayoutInflater().inflate(R.layout.drawer, null);
         FrameLayout container = fullView.findViewById(R.id.frame);
         getLayoutInflater().inflate(layoutResID, container, true);
+        View headerView = getLayoutInflater().inflate(R.layout.nav_header, null);
 
         super.setContentView(fullView);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         initNavigationDrawer();
+
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+        TextView drawerName = headerView.findViewById(R.id.drawer_name);
+        drawerName.setText(currentUser.getRealname());
     }
 
     public void initNavigationDrawer() {
-
-
-//        UserAccount currentUser = HabitUpController.getCurrentUser();
-//
-//        TextView nameField = (TextView) findViewById(R.id.drawer_name);
-//
-//
-//        if (currentUser != null) {
-//            nameField.setText(currentUser.getRealname());
-//        } else {
-//            nameField.setText("Not logged in.");
-//        }
 
         // Taken from https://www.learn2crack.com/2016/03/android-material-design-sliding-navigation-drawer.html
         navigationView = (NavigationView)findViewById(R.id.navigation_view);
@@ -118,5 +111,4 @@ public class BaseActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
     }
-
 }
