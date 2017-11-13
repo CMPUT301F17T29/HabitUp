@@ -21,9 +21,13 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 /**
- * @author Shuyang
+ * This is the activity for signing up for a new user account. The user must enter in
+ * a valid non-empty unique username that is a maximum of 15 characters. This will be the name
+ * that users will use to log in to the application. The user must also enter in a display name
+ * (full name) that is a maximum of 25 characters. This is the name that will show up in the
+ * user's profile. The user can also choose to take an optional profile picture.
  *
- * The signup activity
+ * @author Shuyang
  */
 public class SignUpActivity extends AppCompatActivity {
     protected EditText susername;
@@ -32,7 +36,6 @@ public class SignUpActivity extends AppCompatActivity {
     private String realName;
     private static final int REQUEST_CODE = 1;
     private static final int maxByteCount = 65536;
-    private Button addprofilePic;
     private Bitmap userimage;
 
     @Override
@@ -45,7 +48,7 @@ public class SignUpActivity extends AppCompatActivity {
         sdisplayname = (EditText) findViewById(R.id.signup_displayname);
 
         // get image
-        addprofilePic = (Button) findViewById(R.id.add_profile_pic);
+        Button addprofilePic = (Button) findViewById(R.id.add_profile_pic);
 
         // get button
         Button signUpButton = (Button) findViewById(R.id.signup_button);
@@ -127,12 +130,6 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Includes activity for taking picture
-     * @param requestCode the request code for some activity
-     * @param resultCode the result code of the activity
-     * @param data data from the activity
-     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -154,11 +151,6 @@ public class SignUpActivity extends AppCompatActivity {
 
         }
     }
-
-    /**
-     * Resize the image in order to satisfy requirement
-     * @param bp the image need to resize
-     */
 
     private void resizeImage(Bitmap bp) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();

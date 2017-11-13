@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -30,9 +29,21 @@ import com.example.habitup.R;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Locale;
 
+/**
+ * This is the activity where the user can see their habit event history, which displays
+ * a list of all the habit events completed, sorted by most recent date. To view an event's
+ * details, the user must click on an event. To either edit or delete an event, the user must
+ * click and hold on an event, which will open a context menu.
+ * <p>
+ * The user can filter the events either by comment text, habit type, or both. Once text is
+ * entered in the comment field or a habit is selected from the dropdown menu, the matching
+ * events will immediately be displayed.
+ * <p>
+ * The drawer navigation menu can be accessed here.
+ *
+ * @author Shari Barboza
+ */
 public class ViewHabitEventActivity extends BaseActivity {
 
     private final Context context = ViewHabitEventActivity.this;
@@ -46,7 +57,6 @@ public class ViewHabitEventActivity extends BaseActivity {
 
     // Position of event in list view
     private int position = -1;
-    private int adapterSize;
 
     private ArrayList<HabitEvent> events;
     private RecyclerView eventListView;
@@ -92,7 +102,6 @@ public class ViewHabitEventActivity extends BaseActivity {
         eventListView.addItemDecoration(itemDecoration);
 
         eventAdapter = new EventListAdapter(this, events);
-        adapterSize = eventAdapter.getItemCount();
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setAutoMeasureEnabled(true);
@@ -144,11 +153,12 @@ public class ViewHabitEventActivity extends BaseActivity {
         ElasticSearchController.GetUserHabitsTask userHabits = new ElasticSearchController.GetUserHabitsTask();
         userHabits.execute(HabitUpApplication.getCurrentUIDAsString());
 
+        ArrayList<Habit> habitTypes;
         try {
             habitTypes = userHabits.get();
         } catch (Exception e) {
             Log.i("HabitUpDEBUG", "ViewHabitEvent, couldn't get HabitTypes for user");
-            habitTypes = null;
+            habitTypes = new ArrayList<>();
         }
 
         // Populate spinner with habit type names
@@ -198,11 +208,6 @@ public class ViewHabitEventActivity extends BaseActivity {
         navigationView.setCheckedItem(R.id.events);
     }
 
-    /**
-     * Add the plus button in the top right corner
-     * @param menu the add menu
-     * @return true
-     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.add, menu);
@@ -225,11 +230,6 @@ public class ViewHabitEventActivity extends BaseActivity {
         }
     }
 
-    /**
-     * Go to the AddHabitEvent activity when the add button is clicked
-     * @param item the add button item
-     * @return true if add button is clicked
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -247,8 +247,8 @@ public class ViewHabitEventActivity extends BaseActivity {
         setResult(RESULT_OK);
         Intent editIntent = new Intent(context, EditHabitEventActivity.class);
         int uid = HabitUpApplication.getCurrentUID();
-        int hid = ((HabitEvent) eventAdapter.getItem(position)).getHID();
-        String eid = ((HabitEvent) eventAdapter.getItem(position)).getEID();
+        int hid = eventAdapter.getItem(position).getHID();
+        String eid = eventAdapter.getItem(position).getEID();
 
         Log.i("HabitUpDEBUG", "ViewHabitEvent eid " + eid);
 
