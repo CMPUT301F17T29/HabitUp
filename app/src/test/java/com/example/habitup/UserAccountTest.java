@@ -165,9 +165,7 @@ public class UserAccountTest {
         assertTrue(testAccount.getXP() == Integer.MAX_VALUE);
 
         // XP++ - must not increase
-        System.out.println(testAccount.getXP() +"||"+ Integer.MAX_VALUE);
         testAccount.increaseXP(1);
-        System.out.println(testAccount.getXP() +"||"+ Integer.MAX_VALUE);
         assertTrue(testAccount.getXP() == Integer.MAX_VALUE);
     }
 /*
