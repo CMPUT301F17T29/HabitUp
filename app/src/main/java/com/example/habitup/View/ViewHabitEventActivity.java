@@ -273,6 +273,7 @@ public class ViewHabitEventActivity extends BaseActivity {
         switch (item.getItemId()) {
             case R.id.add_action_bar:
                 Intent addEventIntent = new Intent(ViewHabitEventActivity.this, AddHabitEventActivity.class);
+                addEventIntent.putExtra("profile", 0);
                 startActivityForResult(addEventIntent, NEW_EVENT);
                 return true;
         }
