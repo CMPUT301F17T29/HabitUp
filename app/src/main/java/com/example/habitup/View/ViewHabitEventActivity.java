@@ -16,8 +16,10 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
@@ -26,9 +28,9 @@ import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
 import com.example.habitup.R;
 
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Locale;
 
 /**
  * This is the activity where the user can see their habit event history, which displays
@@ -70,7 +72,7 @@ public class ViewHabitEventActivity extends BaseActivity {
         Log.i("HabitUpDEBUG", "ViewHabitEventActivity onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events);
-        events = new ArrayList<HabitEvent>();
+        events = new ArrayList<>();
         eventListView = (RecyclerView) findViewById(R.id.event_list);
         eventListView.setHasFixedSize(true);
 
@@ -84,6 +86,8 @@ public class ViewHabitEventActivity extends BaseActivity {
     @Override
     public void onStart() {
         super.onStart();
+
+        Log.i("HabitUpDEBUG", "ViewHabitEvents/OnStart triggered");
 
         // Retrieve events from ES for user
         ElasticSearchController.GetHabitEventsByUidTask getHabitEvents = new ElasticSearchController.GetHabitEventsByUidTask();
@@ -129,13 +133,9 @@ public class ViewHabitEventActivity extends BaseActivity {
 
         commentFilter = (EditText) findViewById(R.id.filter_comment);
         commentFilter.setText("");
-        commentFilter.setOnClickListener(spinCl);
         commentFilter.setOnKeyListener(cFilter);
 
-        // Date format for displaying event date
-        DateTimeFormatter dateFmt = DateTimeFormatter.ofPattern("MMM d, yyyy");
-
-        //sort by completedate
+        // Sort by completedate
         Collections.sort(events);
 
         // Display if there are no events
@@ -146,14 +146,15 @@ public class ViewHabitEventActivity extends BaseActivity {
 
         // Set up habit type filter spinner
         habitSpinner = (Spinner) findViewById(R.id.filter_habit_spinner);
-        ArrayAdapter<String> habitAdapter = new ArrayAdapter<String>(this, R.layout.habit_spinner);
+        final ArrayAdapter<String> habitAdapter = new ArrayAdapter<>(this, R.layout.habit_spinner);
         habitAdapter.add("All Habit Types");
 
         // Set up habit types list
         ElasticSearchController.GetUserHabitsTask userHabits = new ElasticSearchController.GetUserHabitsTask();
         userHabits.execute(HabitUpApplication.getCurrentUIDAsString());
 
-        ArrayList<Habit> habitTypes;
+        habitTypes = null;
+
         try {
             habitTypes = userHabits.get();
         } catch (Exception e) {
@@ -165,44 +166,11 @@ public class ViewHabitEventActivity extends BaseActivity {
         for (Habit habit : habitTypes) {
             habitAdapter.add(habit.getHabitName());
         }
+
         habitSpinner.setAdapter(habitAdapter);
 
         // Spinner select
-        habitSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
-                commentFilter.setText("");
-                refreshEvents(); // refreshes through ES re-get
-                ArrayList<HabitEvent> filtList = new ArrayList<HabitEvent>();
-                filtList.clear();
-
-                if (pos == 0) {
-                    filtList.addAll(events);
-                }
-                else {
-                    for (HabitEvent e : events) {
-                        if (e.getHID()==habitTypes.get(pos-1).getHID()) {
-                            filtList.add(e);
-                        }
-                    }
-                }
-                Collections.sort(filtList, new Comparator<HabitEvent>() {
-                    @Override
-                    public int compare(HabitEvent e1, HabitEvent e2) {
-                        return e1.getCompletedate().compareTo(e2.getCompletedate());
-                    }
-                });
-                Collections.reverse(filtList);
-                events.clear();
-                events.addAll(filtList);
-                eventAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
+        habitSpinner.setOnItemSelectedListener(spinnerListener);
 
         // Highlight events row in drawer
         navigationView.setCheckedItem(R.id.events);
@@ -250,7 +218,7 @@ public class ViewHabitEventActivity extends BaseActivity {
         int hid = eventAdapter.getItem(position).getHID();
         String eid = eventAdapter.getItem(position).getEID();
 
-        Log.i("HabitUpDEBUG", "ViewHabitEvent eid " + eid);
+//        Log.i("HabitUpDEBUG", "ViewHabitEvent eid " + eid);
 
         editIntent.putExtra(HABIT_EVENT_UID, uid);
         editIntent.putExtra(HABIT_EVENT_HID, hid);
@@ -283,61 +251,114 @@ public class ViewHabitEventActivity extends BaseActivity {
         alert.show();
     }
 
-    private void refreshEvents() {
-        ElasticSearchController.GetHabitEventsByUidTask getHabitEvents = new ElasticSearchController.GetHabitEventsByUidTask();
-        getHabitEvents.execute(HabitUpApplication.getCurrentUIDAsString());
-        try {
-            events.clear();
-            events.addAll(getHabitEvents.get());
-        } catch (Exception e) {
-            Log.i("HabitUpDEBUG", "ViewHabitEvent - Couldn't get HabitEvents");
-        }
-    }
+    AdapterView.OnItemSelectedListener spinnerListener = new AdapterView.OnItemSelectedListener() {
 
-    private ArrayList<HabitEvent> filterComSort(String text, ArrayList<HabitEvent> initEvents) {
-        ArrayList<HabitEvent> filtListCom = new ArrayList<HabitEvent>();
-        filtListCom.clear();
-        if (text.length()==0){
-            filtListCom.addAll(initEvents);
-        }
-        else {
-            for (HabitEvent e : initEvents) {
-                if (e.getComment().toLowerCase(Locale.getDefault()).contains(text)) {
-                    filtListCom.add(e);
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
+
+            // Reset comment search when filtering by Habit
+            commentFilter.setText("");
+
+            // Refactoring...
+//                refreshEvents(); // refreshes through ES re-get
+//                ArrayList<HabitEvent> filtList = new ArrayList<HabitEvent>();
+//                filtList.clear();
+//
+//                if (pos == 0) {
+//                    filtList.addAll(events);
+//                }
+//                else {
+//                    for (HabitEvent e : events) {
+//                        if (e.getHID()==habitTypes.get(pos-1).getHID()) {
+//                            filtList.add(e);
+//                        }
+//                    }
+//                }
+//                Collections.sort(filtList);
+//
+//                events.clear();
+//                events.addAll(filtList);
+//                eventAdapter.notifyDataSetChanged();
+
+            ArrayList<HabitEvent> filteredList = null;
+            // pos 0 means All Habits: reset to full habit history view
+            if (pos == 0) {
+                ElasticSearchController.GetHabitEventsByUidTask getHabitEvents = new ElasticSearchController.GetHabitEventsByUidTask();
+                getHabitEvents.execute(HabitUpApplication.getCurrentUIDAsString());
+                try {
+                    filteredList = getHabitEvents.get();
+                } catch (Exception e) {
+                    Log.i("HabitUpDEBUG", "ViewHabitEvent - Couldn't get All HabitEvents");
+                }
+
+                // Otherwise, a Habit type was selected by which to filter
+            } else {
+                ElasticSearchController.GetHabitEventsByHidTask getFilteredHabitEvents = new ElasticSearchController.GetHabitEventsByHidTask();
+                Log.i("HabitUpDEBUG", "Searching for HID " + String.valueOf(habitTypes.get(pos - 1).getHID()));
+                getFilteredHabitEvents.execute(String.valueOf(habitTypes.get(pos - 1).getHID()));
+                try {
+                    filteredList = getFilteredHabitEvents.get();
+                } catch (Exception e) {
+                    Log.i("HabitUpDEBUG", "ViewHabitEvent - Couldn't get filtered HabitEvents");
                 }
             }
-        }
-        Collections.sort(filtListCom, new Comparator<HabitEvent>() {
-            @Override
-            public int compare(HabitEvent e1, HabitEvent e2) {
-                return e1.getCompletedate().compareTo(e2.getCompletedate());
-            }
-        });
-        Collections.reverse(filtListCom);
-        return filtListCom;
-    }
 
-    EditText.OnKeyListener cFilter = new EditText.OnKeyListener() {
+            events.clear();
+            events.addAll(filteredList);
+            Collections.sort(events);
+            eventAdapter.notifyDataSetChanged();
+        }
+
         @Override
-        public boolean onKey(View view, int i, KeyEvent keyEvent) {
-            if ((keyEvent.getAction() == KeyEvent.ACTION_UP) && (i == KeyEvent.KEYCODE_ENTER)) {
-                InputMethodManager methodMan = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                methodMan.toggleSoftInput(0, 0);
-                String text = commentFilter.getText().toString().toLowerCase(Locale.getDefault());
-                refreshEvents(); // refreshes through ES re-get
-                ArrayList<HabitEvent> filtEvents = filterComSort(text,events);
-                events.clear();
-                events.addAll(filtEvents);
-                eventAdapter.notifyDataSetChanged();
-            }
-            return true;
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
         }
     };
 
-    EditText.OnClickListener spinCl = new EditText.OnClickListener() {
+    EditText.OnKeyListener cFilter = new EditText.OnKeyListener() {
+
         @Override
-        public void onClick(View view) {
-            habitSpinner.setSelection(0);
+        public boolean onKey(View view, int i, KeyEvent keyEvent) {
+
+            habitSpinner.setOnItemSelectedListener(null);
+            habitSpinner.setSelection(0, false);
+            habitSpinner.setOnItemSelectedListener(spinnerListener);
+
+            if ((keyEvent.getAction() == KeyEvent.ACTION_UP) && (i == KeyEvent.KEYCODE_ENTER)) {
+
+                InputMethodManager methodMan = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                methodMan.toggleSoftInput(0, 0);
+
+                ArrayList<HabitEvent> commentMatches = null;
+                String searchText = commentFilter.getText().toString().trim().toLowerCase(Locale.getDefault());
+
+                if (searchText.isEmpty()) {
+                    Log.i("HabitUpDEBUG", "ViewHabitEvents/FilterENTER - search text empty");
+                    Toast.makeText(getApplicationContext(), "Error: Please enter a string to search comments", Toast.LENGTH_SHORT);
+                    return false;
+                } else {
+                    ElasticSearchController.GetHabitEventsForCommentMatch commentSearch = new ElasticSearchController.GetHabitEventsForCommentMatch();
+                    commentSearch.execute(searchText);
+                    try {
+                        commentMatches = commentSearch.get();
+                    } catch (Exception e) {
+                        Log.i("HabitUpDEBUG", "ViewHabitEvents/CommentSearch - failed to get matching HabitEvents");
+                    }
+                }
+
+                events.clear();
+                events.addAll(commentMatches);
+                Collections.sort(events);
+                eventAdapter.notifyDataSetChanged();
+
+                // This way lies madness.  Refactoring...
+//                refreshEvents(); // refreshes through ES re-get
+//                ArrayList<HabitEvent> filtEvents = filterComSort(text,events);
+//                events.clear();
+//                events.addAll(filtEvents);
+//                eventAdapter.notifyDataSetChanged();
+            }
+            return true;
         }
     };
 
