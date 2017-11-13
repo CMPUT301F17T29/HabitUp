@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Attributes;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.R;
@@ -82,6 +83,10 @@ public class ProfileHabitsAdapter extends ArrayAdapter<Habit> {
 
         // TODO: Check if habit has an event checked already for that day and check the box
         // TODO: If box is checked, disable check box to be checked
+        if (HabitUpController.habitDoneToday(habit)) {
+            checkBox.setChecked(true);
+            checkBox.setEnabled(false);
+        }
 
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
