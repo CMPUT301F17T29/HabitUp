@@ -1,32 +1,35 @@
 package com.example.habitup.View;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
-import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
-import com.example.habitup.Model.Attributes;
 import com.example.habitup.Model.Habit;
-import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
+/**
+ * This is the main activity for the HabitUp application. From this activity, the user
+ * can view their profile and the habits scheduled for that day. The user can see what
+ * level they are, how much XP they need to level up, and also the value points for each
+ * of their Attribute categories.
+ * <p>
+ * When a user clicks on the checkbox for a specific habit, the user can create a habit
+ * event for that day. Once a habit event is made, the user cannot click the checkbox again.
+ * <p>
+ * The drawer navigation menu can be accessed here.
+ *
+ * @author Shari Barboza
+ */
 public class MainActivity extends BaseActivity {
 
     private ArrayList<Habit> habitsArrayList;
@@ -65,10 +68,6 @@ public class MainActivity extends BaseActivity {
         habitListView.setAdapter(adapter);
         habitListView.setLayoutManager(layoutManager);
 
-        if (habitsArrayList.size() == 0) {
-            TextView subHeading = (TextView) findViewById(R.id.today_subheading);
-            subHeading.setText(getString(R.string.no_habits));
-        }
     }
 
     @Override

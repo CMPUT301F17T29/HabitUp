@@ -38,12 +38,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * This is the activity for editing a habit event. A user can change the associated habit type.
+ * The completion date can be changed as long as the date selected is before the current
+ * date. The user can also switch on or off the location switch. The event photo can be changed as
+ * long as it is under 65,536 bytes.
+ *
+ * @author Shari Barboza
+ */
 public class EditHabitEventActivity extends AppCompatActivity {
 
     private int action;
-    private int uid;
-    private int hid;
-    private String eid;
     private HabitEvent event;
 
     // Event completion date
@@ -87,9 +92,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
         // Get the habit from intent
         Intent intent = getIntent();
         action = intent.getExtras().getInt(ViewHabitEventActivity.HABIT_EVENT_ACTION);
-        uid = intent.getExtras().getInt(ViewHabitEventActivity.HABIT_EVENT_UID);
-        hid = intent.getExtras().getInt(ViewHabitEventActivity.HABIT_EVENT_HID);
-        eid = intent.getExtras().getString(ViewHabitEventActivity.HABIT_EVENT_EID);
+        String eid = intent.getExtras().getString(ViewHabitEventActivity.HABIT_EVENT_EID);
 
         ElasticSearchController.GetHabitEventsByEIDTask getHabitEvent = new ElasticSearchController.GetHabitEventsByEIDTask();
         getHabitEvent.execute(eid);
@@ -200,6 +203,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
             viewMode();
         }
 
+        // When the save button is clicked
         saveButton.setOnClickListener(new View.OnClickListener() {
 
             /**
@@ -221,6 +225,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
 
                 Boolean eventOK = Boolean.TRUE;
 
+                // Validation for habit event
                 try {
                     event.setHabit(hids.get(eventType));
                 } catch (IllegalArgumentException e) {
@@ -268,11 +273,6 @@ public class EditHabitEventActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Listens for when the user clicks on the back button
-     * @param menuItem the item in the menu
-     * @return true if the item was selected
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
@@ -287,11 +287,6 @@ public class EditHabitEventActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Opening the date picker dialog
-     * @param id the dialog id
-     * @return the dialog
-     */
     @Override
     protected Dialog onCreateDialog(int id) {
         if (id == DIALOG_ID) {
@@ -300,12 +295,6 @@ public class EditHabitEventActivity extends AppCompatActivity {
         return null;
     }
 
-    /**
-     * Includes activity for taking picture
-     * @param requestCode the request code for some activity
-     * @param resultCode the result code of the activity
-     * @param data data from the activity
-     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -319,18 +308,12 @@ public class EditHabitEventActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Updates the date string in the date text view
-     */
     private void setDateString() {
         String monthName = new DateFormatSymbols().getShortMonths()[month_x];
         String dateString = (monthName) + " " + day_x + ", " + year_x;
         dateView.setText(dateString);
     }
 
-    /**
-     * Disables editable fields and specific resources for viewing an event
-     */
     private void viewMode() {
         // Disable habit type spinner
         habitSpinner.setBackgroundResource(0);
@@ -377,7 +360,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
         }
     };
 
-    // Set color of text when habit type is selected
+    // Set color of text when habit type is selected in habit types spinner
     private AdapterView.OnItemSelectedListener habitListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

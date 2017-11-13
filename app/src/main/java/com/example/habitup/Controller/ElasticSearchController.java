@@ -204,7 +204,7 @@ public class ElasticSearchController {
                     // where is the client?
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
-                        Log.i("HabitUpDEBUG", "AddAttr SUCCESS");
+//                        Log.i("HabitUpDEBUG", "AddAttr SUCCESS");
                     }
 
                     else{
@@ -429,7 +429,7 @@ public class ElasticSearchController {
 
                 SearchResult result = client.execute(search);
                 if (result.isSucceeded()) {
-                    Log.i("HabitUpDEBUG", "Got Habits from ES");
+//                    Log.i("HabitUpDEBUG", "Got Habits from ES");
 
                     List<Habit> foundHabit = result.getSourceAsObjectList(Habit.class);
 
@@ -549,7 +549,7 @@ public class ElasticSearchController {
         @Override
         protected ArrayList<HabitEvent> doInBackground(String... Uids) {
 
-            Log.i("HabitUpDEBUG", "GetHabitEventsByUidTask");
+//            Log.i("HabitUpDEBUG", "GetHabitEventsByUidTask");
             verifySettings();
 
             ArrayList<HabitEvent> habitEvents = new ArrayList<HabitEvent>();
