@@ -186,6 +186,7 @@ public class ViewHabitActivity extends BaseActivity {
                                 HabitUpController.deleteHabit(habits.get(position));
                                 adapter.remove(adapter.getItem(position));
                                 adapter.notifyDataSetChanged();
+                                position = -1;
                                 dialogInterface.dismiss();
                             }
                         });
