@@ -211,6 +211,8 @@ public class HabitUpController {
 
     static public boolean habitDoneToday(Habit h) {
 
+//        Log.i("HabitUpDEBUG", "HUCtl/habitDoneToday - in method");
+
         ElasticSearchController.GetHabitEventsByHidTask getEventsForHabit = new ElasticSearchController.GetHabitEventsByHidTask();
         getEventsForHabit.execute(String.valueOf(h.getHID()));
         ArrayList<HabitEvent> matchedEvents = null;
