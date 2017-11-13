@@ -201,7 +201,7 @@ public class HabitUpController {
 
         boolean alreadyExists = false;
         for (HabitEvent ev : matchedEvents) {
-            if (ev.getCompletedate().equals(event.getCompletedate())) {
+            if (ev.getCompletedate().equals(event.getCompletedate()) && !ev.getEID().equals(event.getEID())) {
                 alreadyExists = true;
             }
         }
