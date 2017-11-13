@@ -24,7 +24,8 @@ public class HabitTest {
         boolean[] schedule = {true};
 
         try{
-            Habit testHabit = new Habit(1, name, reason, attribute, startDate, schedule);
+            Habit testHabit = new Habit(1);
+            testHabit.setHabitName(name);
         }
         catch (IllegalArgumentException err) {
             assertTrue(Boolean.TRUE);
@@ -40,10 +41,11 @@ public class HabitTest {
         String reason = "123456789123456789123456789101010";
         String attribute = "Mental";
         LocalDate startDate = LocalDate.now();
-        boolean[] schedule = {true};
+        boolean[] schedule = {true,true};
 
         try{
-            Habit testHabit = new Habit(1, name,reason,attribute,startDate,schedule);
+            Habit testHabit = new Habit(1);
+            testHabit.setReason(reason);
         }
         catch (IllegalArgumentException err) {
             assertTrue(Boolean.TRUE);
@@ -62,9 +64,10 @@ public class HabitTest {
         boolean[] schedule = new boolean[8];
 
         try{
-            Habit testHabit = new Habit(1, name,reason,attribute,startDate,schedule);
+            Habit testHabit = new Habit(1);
+            testHabit.setSchedule(schedule);
         }
-        catch (IllegalStateException err) {
+        catch (IllegalArgumentException err) {
             assertTrue(Boolean.TRUE);
             return;
         }
@@ -81,33 +84,11 @@ public class HabitTest {
         LocalDate startDate = LocalDate.now();
         boolean[] schedule = {true};
 
-        Habit testHabit = new Habit(1, name,reason,attribute,startDate,schedule);
+        Habit testHabit = new Habit(1);
 
         testHabit.setHabitName(habitName);
 
         assertTrue(testHabit.getHabitName() == habitName); //check for match
-    }
-
-    //Tests that setHabitName does not accept the same name of an existing habit
-    @Test //TODO maybe a controller test
-    public void testSetHabitNameErr(){
-        String name = "name";
-        String habitName = "sampleHabit";
-        String reason = "I wanna be the very best";
-        String attribute = "Mental";
-        LocalDate startDate = LocalDate.now();
-        boolean[] schedule = {true};
-        Habit testHabit = new Habit(1,name,reason,attribute,startDate,schedule);
-        Habit testHabit2 = new Habit(1,habitName,reason,attribute,startDate,schedule);
-
-        try{
-            testHabit2.setHabitName(name);
-        }
-        catch (IllegalStateException err) {
-            assertTrue(Boolean.TRUE);
-            return;
-        }
-        assertTrue(Boolean.FALSE); //failed to reproduce error (same as testHabit)
     }
 
     //Tests setHabitName to not exceed 20 characters, expects an error
@@ -119,7 +100,7 @@ public class HabitTest {
         String attribute = "Mental";
         LocalDate startDate = LocalDate.now();
         boolean[] schedule = {true};
-        Habit testHabit = new Habit(1,name,reason,attribute,startDate,schedule);
+        Habit testHabit = new Habit(1);
 
         try{
             testHabit.setHabitName(habitName);
@@ -141,7 +122,7 @@ public class HabitTest {
         String attribute = "Mental";
         LocalDate startDate = LocalDate.now();
         boolean[] schedule = {true};
-        Habit testHabit = new Habit(1,name,reason,attribute,startDate,schedule);
+        Habit testHabit = new Habit(1);
 
         testHabit.setReason(reason2);
 
@@ -158,7 +139,7 @@ public class HabitTest {
         String attribute = "Mental";
         LocalDate startDate = LocalDate.now();
         boolean[] schedule = {true};
-        Habit testHabit = new Habit(1,name,reason,attribute,startDate,schedule);
+        Habit testHabit = new Habit(1);
 
         try{
             testHabit.setReason(reason2);
@@ -177,9 +158,9 @@ public class HabitTest {
         String reason = "I wanna be the very best";
         String attribute = "Mental";
         LocalDate startDate = LocalDate.now();
-        boolean[] schedule = {true};
-        boolean[] schedule2 = {false};
-        Habit testHabit = new Habit(1,name,reason,attribute,startDate,schedule);
+        boolean[] schedule = {true,true,true};
+        boolean[] schedule2 = {false,true, false};
+        Habit testHabit = new Habit(1);
 
         testHabit.setSchedule(schedule2);
 
@@ -195,8 +176,8 @@ public class HabitTest {
         String attribute2 = "Physical";
         LocalDate startDate = LocalDate.now();
         boolean[] schedule = {true};
-        Habit testHabit = new Habit(1,name,reason,attribute,startDate,schedule);
-
+        Habit testHabit = new Habit(1);
+        testHabit.setAttribute(attribute);
         testHabit.setAttribute(attribute2);
         assertTrue(testHabit.getHabitAttribute()== attribute2); //check attribute match
     }
