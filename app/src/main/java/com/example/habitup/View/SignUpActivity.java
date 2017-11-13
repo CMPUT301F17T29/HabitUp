@@ -88,13 +88,17 @@ public class SignUpActivity extends AppCompatActivity {
                     }
 
                     if (result.size() == 0) {
-                        Log.i("HabitUpDEBUG", "UNIQUE USERNAME OK");
+//                        Log.i("HabitUpDEBUG", "UNIQUE USERNAME OK");
                         try {
                             UserAccount newUser = new UserAccount(signUpName, realName, userimage);
                             HabitUpApplication.addUserAccount(newUser);
                             Intent intent = new Intent();
                             setResult(Activity.RESULT_OK, intent);
+                            Toast.makeText(getApplicationContext(),
+                                    "Created new user '" + signUpName + "'. Please log in using this username.",
+                                    Toast.LENGTH_LONG);
                             finish();
+
                         } catch (IllegalArgumentException e) {
                             Toast.makeText(getApplicationContext(),
                                     e.getMessage(), Toast.LENGTH_LONG).show();
@@ -102,7 +106,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                     } else {
                         Toast.makeText(getApplicationContext(),
-                                "Error: username already exists.", Toast.LENGTH_SHORT).show();
+                                "Error: username already exists. Please try a different one.", Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -137,25 +141,12 @@ public class SignUpActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap imageBitMap = (Bitmap) extras.get("data");
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            imageBitMap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-            while(true){
-                if (stream.toByteArray().length >= maxByteCount) {
-                    resizeImage(imageBitMap);
-                }
-                else{
-                    break;
-                }
-            }
             userimage = imageBitMap;
+
 
         }
     }
 
-    private void resizeImage(Bitmap bp) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bp.compress(Bitmap.CompressFormat.JPEG, 70, stream);
-    }
 }
 
 
