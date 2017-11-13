@@ -42,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/event_name"
-        android:layout_toEndOf="@+id/event_name"
+        android:layout_toEndOf="@+id/event_has_location"
         android:text="This is an event comment..."
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
