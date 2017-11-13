@@ -45,6 +45,7 @@
             android:layout_marginRight="10dp" />
 
         <EditText
+            android:singleLine="true"
             android:id="@+id/filter_comment"
             android:layout_width="match_parent"
             android:layout_height="30dp"

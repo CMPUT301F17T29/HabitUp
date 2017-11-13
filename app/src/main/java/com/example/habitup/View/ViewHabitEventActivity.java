@@ -8,9 +8,8 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -52,7 +51,6 @@ public class ViewHabitEventActivity extends BaseActivity {
     private RecyclerView eventListView;
     private EventListAdapter eventAdapter;
     private EditText commentFilter;
-    private ArrayList<HabitEvent> filtList;
     private ArrayList<Habit> habitTypes;
 
     @Override
@@ -119,6 +117,7 @@ public class ViewHabitEventActivity extends BaseActivity {
         });
 
         commentFilter = (EditText) findViewById(R.id.filter_comment);
+        commentFilter.setOnKeyListener(cFilter);
 
         // Date format for displaying event date
         DateTimeFormatter dateFmt = DateTimeFormatter.ofPattern("MMM d, yyyy");
@@ -160,53 +159,12 @@ public class ViewHabitEventActivity extends BaseActivity {
         }
         habitSpinner.setAdapter(habitAdapter);
 
-        // comment filter through list
-        commentFilter.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                refreshEvents(); // refreshes through ES re-get
-                String text = charSequence.toString().toLowerCase(Locale.getDefault());
-                filtList = new ArrayList<HabitEvent>();
-                filtList.clear();
-                if (text.length()==0){
-                    filtList.addAll(events);
-                }
-                else {
-                    for (HabitEvent e : events) {
-                        if (e.getComment().toLowerCase(Locale.getDefault()).contains(text)) {
-                            filtList.add(e);
-                        }
-                    }
-                }
-                eventAdapter = new EventListAdapter(context, filtList);
-                eventListView.setAdapter(eventAdapter);
-                Collections.sort(filtList, new Comparator<HabitEvent>() {
-                    @Override
-                    public int compare(HabitEvent e1, HabitEvent e2) {
-                        return e1.getCompletedate().compareTo(e2.getCompletedate());
-                    }
-                });
-                Collections.reverse(filtList);
-                eventAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-
         // Spinner select
         habitSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
                 refreshEvents(); // refreshes through ES re-get
-                filtList = new ArrayList<HabitEvent>();
+                ArrayList<HabitEvent> filtList = new ArrayList<HabitEvent>();
                 filtList.clear();
 
                 if (pos == 0) {
@@ -334,6 +292,45 @@ public class ViewHabitEventActivity extends BaseActivity {
             Log.i("HabitUpDEBUG", "ViewHabitEvent - Couldn't get HabitEvents");
         }
     }
+
+    private ArrayList<HabitEvent> filterComSort(String text, ArrayList<HabitEvent> initEvents) {
+        refreshEvents(); // refreshes through ES re-get
+        ArrayList<HabitEvent> filtListCom = new ArrayList<HabitEvent>();
+        filtListCom.clear();
+        if (text.length()==0){
+            filtListCom.addAll(initEvents);
+        }
+        else {
+            for (HabitEvent e : initEvents) {
+                if (e.getComment().toLowerCase(Locale.getDefault()).contains(text)) {
+                    filtListCom.add(e);
+                }
+            }
+        }
+        Collections.sort(filtListCom, new Comparator<HabitEvent>() {
+            @Override
+            public int compare(HabitEvent e1, HabitEvent e2) {
+                return e1.getCompletedate().compareTo(e2.getCompletedate());
+            }
+        });
+        Collections.reverse(filtListCom);
+        return filtListCom;
+    }
+
+    EditText.OnKeyListener cFilter = new EditText.OnKeyListener() {
+        @Override
+        public boolean onKey(View view, int i, KeyEvent keyEvent) {
+            if ((keyEvent.getAction() == KeyEvent.ACTION_UP) && (i == KeyEvent.KEYCODE_ENTER)) {
+                String text = commentFilter.getText().toString().toLowerCase(Locale.getDefault());
+                ArrayList<HabitEvent> filtEvents = filterComSort(text,events);
+                eventAdapter = new EventListAdapter(context, filtEvents);
+                eventListView.setAdapter(eventAdapter);
+                eventAdapter.notifyDataSetChanged();
+            }
+            return true;
+        }
+    };
+
 
 }
 
