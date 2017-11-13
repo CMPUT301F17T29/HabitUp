@@ -63,6 +63,31 @@ public class HabitUpController {
         }
     }
 
+    static public int editHabit(Habit h, boolean nameUnchanged) throws IllegalArgumentException {
+
+        // Name was changed: check to make sure new name is unique
+        if (!nameUnchanged) {
+
+            ElasticSearchController.GetHabitsByNameForCurrentUserTask checkHabit = new ElasticSearchController.GetHabitsByNameForCurrentUserTask();
+            checkHabit.execute(h.getHabitName());
+            ArrayList<Habit> matched = null;
+            try {
+                matched = checkHabit.get();
+            } catch (Exception e) {
+                Log.i("HabitUpDEBUG", "HUCtl/addHabit - Execute check failed");
+            }
+
+            if (matched.size() != 0) {
+                throw new IllegalArgumentException("Error: a Habit with this name already exists!");
+            }
+
+        }
+
+        ElasticSearchController.AddHabitsTask addHabit = new ElasticSearchController.AddHabitsTask();
+        addHabit.execute(h);
+        return 0;
+    }
+
     static public int deleteHabit(Habit h) {
         Log.d("HABIT DELETE:", "Deleting habit " + h.getHabitName());
         ElasticSearchController.DeleteHabitTask delHabit = new ElasticSearchController.DeleteHabitTask();
