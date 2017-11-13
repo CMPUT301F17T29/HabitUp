@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
@@ -134,6 +135,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private void logout() {
+        Toast.makeText(getApplicationContext(), HabitUpApplication.getCurrentUser().getUsername() + " has logged out", Toast.LENGTH_LONG).show();
         HabitUpApplication.logoutCurrentUser();
         Intent logoutIntent = new Intent(context, LoginActivity.class);
         startActivity(logoutIntent);
