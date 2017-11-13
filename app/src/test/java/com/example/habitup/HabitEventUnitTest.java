@@ -65,4 +65,13 @@ public class HabitEventUnitTest {
         assertTrue(Boolean.FALSE);
     }
 
+    @Test
+    public void testSetImage(){
+        Bitmap bm1 = Bitmap.createBitmap(22, 22, Bitmap.Config.ARGB_8888);
+        HabitEvent event1 = new HabitEvent(1,1);
+        event1.setPhoto(bm1);
+        assertTrue(event1.hasImage());
+
+    }
+
 }
