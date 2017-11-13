@@ -25,6 +25,7 @@ import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -66,12 +67,6 @@ public class MainActivity extends BaseActivity {
         View profileView = inflater.inflate(R.layout.profile_banner, habitListView, false);
         habitListView.addHeaderView(profileView);
 
-        // Set up the array and adapter
-        habitsArrayList = HabitUpController.getTodaysHabits();
-        adapter = new ProfileHabitsAdapter(this, R.layout.todays_habits, habitsArrayList);
-        habitListView.setAdapter(adapter);
-
-        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -129,8 +124,12 @@ public class MainActivity extends BaseActivity {
         TextView attr4Field = (TextView) findViewById(R.id.attribute4_value);
         attr4Field.setText(String.valueOf(userAttrs.getValue("Discipline")));
 
-        // Retrieve today's habits
+        // Set up the array and adapter
         habitsArrayList = HabitUpController.getTodaysHabits();
+        Collections.sort(habitsArrayList);
+        adapter = new ProfileHabitsAdapter(this, R.layout.todays_habits, habitsArrayList);
+        habitListView.setAdapter(adapter);
+
         adapter.notifyDataSetChanged();
 
         if (habitsArrayList.size() == 0) {
