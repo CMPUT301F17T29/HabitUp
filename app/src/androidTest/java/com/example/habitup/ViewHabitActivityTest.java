@@ -51,18 +51,6 @@ public class ViewHabitActivityTest extends ActivityInstrumentationTestCase2 {
 
         HabitUpApplication.setCurrentUser(user);
 
-        // get user habits
-        ElasticSearchController.GetHabitsTask getHabits = new ElasticSearchController.GetHabitsTask();
-        getHabits.execute("tatata");
-        ArrayList<Habit> habits = new ArrayList<Habit>();
-        try {
-            habits.addAll(getHabits.get());
-            Collections.sort(habits);
-        }
-        catch (Exception e) {
-            Log.d("Error", "Failed to retrieve habits from ES");
-        }
-
         solo = new Solo(getInstrumentation(),getActivity());
     }
 
