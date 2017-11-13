@@ -57,6 +57,7 @@ public class ProfileHabitsAdapter extends RecyclerView.Adapter<RecyclerView.View
         private TextView attr1Field;
         private TextView attr3Field;
         private TextView attr4Field;
+        private TextView today_subheading;
 
 
         public HeaderViewHolder(View itemView) {
@@ -72,6 +73,8 @@ public class ProfileHabitsAdapter extends RecyclerView.Adapter<RecyclerView.View
             this.attr1Field = itemView.findViewById(R.id.attribute1_value);
             this.attr3Field = itemView.findViewById(R.id.attribute3_value);
             this.attr4Field = itemView.findViewById(R.id.attribute4_value);
+
+            this.today_subheading = itemView.findViewById(R.id.today_subheading);
 
         }
 
@@ -112,6 +115,10 @@ public class ProfileHabitsAdapter extends RecyclerView.Adapter<RecyclerView.View
 
             // Set user's Social value
             attr4Field.setText(String.valueOf(userAttrs.getValue("Discipline")));
+
+            if (habits.size() == 0) {
+                today_subheading.setText(R.string.no_habits);
+            }
         }
     }
 
@@ -205,6 +212,11 @@ public class ProfileHabitsAdapter extends RecyclerView.Adapter<RecyclerView.View
         if (holder instanceof NormalViewHolder) {
             NormalViewHolder vh = (NormalViewHolder) holder;
             final Habit habit = this.habits.get(pos - 1);
+
+            if (habit == null) {
+                return;
+            }
+
             vh.bindHabit(habit);
 
             if (!vh.checkBox.isChecked()) {
