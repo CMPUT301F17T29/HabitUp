@@ -194,7 +194,6 @@ public class ViewHabitEventActivity extends BaseActivity {
             }
         });
 
-
         // Highlight events row in drawer
         navigationView.setCheckedItem(R.id.events);
     }

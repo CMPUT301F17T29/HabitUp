@@ -23,23 +23,25 @@
         android:layout_below="@+id/signup_title"
         android:layout_marginLeft="35dp"
         android:layout_marginTop="40dp"
-        android:text="Enter username"
+        android:text="Enter username (max 15 characters)"
+        android:textColor="@color/white"
         android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="@color/white" />
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/signup_username"
         android:layout_width="fill_parent"
         android:layout_height="40dp"
         android:scrollbars="horizontal"
-        android:inputType="text"
         android:layout_below="@+id/username_label"
         android:textSize="16sp"
         android:layout_marginLeft="35dp"
         android:layout_marginTop="5dp"
         android:layout_marginRight="35dp"
         android:hint="Enter unique username"
+        android:singleLine="true"
+        android:inputType="textFilter"
+        android:maxLength="15"
         android:paddingLeft="5dp"
         android:background="@color/white"/>
 
@@ -50,23 +52,25 @@
         android:layout_below="@+id/signup_username"
         android:layout_marginLeft="35dp"
         android:layout_marginTop="20dp"
+        android:text="Enter display name (max 25 characters)"
+        android:textColor="@color/white"
         android:textSize="16sp"
-        android:textStyle="bold"
-        android:text="Enter display name"
-        android:textColor="@color/white"/>
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/signup_displayname"
         android:layout_width="fill_parent"
         android:layout_height="40dp"
         android:scrollbars="horizontal"
-        android:inputType="text"
         android:layout_marginLeft="35dp"
         android:layout_marginTop="5dp"
         android:layout_marginRight="35dp"
         android:layout_below="@+id/full_name_label"
         android:textSize="16sp"
         android:hint="Enter full name"
+        android:singleLine="true"
+        android:inputType="textFilter"
+        android:maxLength="25"
         android:paddingLeft="10dp"
         android:background="@color/white"/>
 

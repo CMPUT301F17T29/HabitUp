@@ -104,5 +104,9 @@ public class LoginActivity extends AppCompatActivity {
         });
 
     }
+
+    // Override soft back button in Login screen
+    @Override
+    public void onBackPressed() { }
 }
 

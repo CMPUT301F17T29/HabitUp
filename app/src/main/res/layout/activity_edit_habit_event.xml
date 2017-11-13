@@ -144,6 +144,9 @@
         android:hint="Add a comment"
         android:textColorHint="@color/lightgray"
         android:textSize="16sp"
+        android:singleLine="true"
+        android:inputType="textFilter"
+        android:maxLength="20"
         android:paddingLeft="5dp"/>
 
     <TextView
