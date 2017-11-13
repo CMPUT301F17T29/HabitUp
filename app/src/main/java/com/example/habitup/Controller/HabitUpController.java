@@ -52,6 +52,27 @@ public class HabitUpController {
         return 0;
     }
 
+    static public int deleteHabitEventsForHabit(Habit h) {
+        ElasticSearchController.GetHabitEventsForDelete getDeleteEvents = new ElasticSearchController.GetHabitEventsForDelete();
+        getDeleteEvents.execute(String.valueOf(h.getHID()));
+        ArrayList<HabitEvent> eventsToDelete = null;
+
+        try {
+            eventsToDelete = getDeleteEvents.get();
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "HUCtl/deleteHabitEventsForHabit - couldn't get eventsToDelete");
+        }
+
+        Log.i("HabitUpDEBUG", "HUCtl/deleteHabitEventsForHabit - found " + String.valueOf(eventsToDelete.size()) + " matches.");
+
+        for (HabitEvent ev : eventsToDelete) {
+            ElasticSearchController.DeleteHabitEventTask deleter = new ElasticSearchController.DeleteHabitEventTask();
+            deleter.execute(ev.getEID());
+        }
+
+        return 0;
+    }
+
     static public int addHabitEvent(HabitEvent event) {
 //        Log.d("EVENT:", "Adding HabitEvent to HID #" + String.valueOf(event.getHID()));
 

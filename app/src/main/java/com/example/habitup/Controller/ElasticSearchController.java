@@ -485,7 +485,7 @@ public class ElasticSearchController {
         }
     }
 
-    //Get HabitEvent by UID
+    // Get HabitEvent by UID
     public static class GetHabitEventsByHidTask extends AsyncTask<String, Void, ArrayList<HabitEvent>>{
 
         @Override
@@ -506,6 +506,46 @@ public class ElasticSearchController {
                                         "{ \"hid\" : \"" + Hids[0] + "\" }" +
                                 "}" +
                             "}";
+
+            Search search = new Search.Builder(query).addIndex(db).addType(habitEventType).build();
+
+            try {
+
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()) {
+                    Log.i("DeBug", "found some habit events");
+                    List<HabitEvent> foundHabitEvent = result.getSourceAsObjectList(HabitEvent.class);
+                    habitEvents.addAll(foundHabitEvent);
+
+                } else {
+                    Log.i("Error2", "Something went wrong when we tried to communicate with the elasticsearch server");
+                }
+            }
+            catch (Exception e) {
+                Log.i("Error1", "Something went wrong when we tried to communicate with the elasticsearch server!");
+            }
+
+            return habitEvents;
+        }
+    }
+
+    // Get HabitEvent by UID
+    public static class GetHabitEventsForDelete extends AsyncTask<String, Void, ArrayList<HabitEvent>>{
+
+        @Override
+        protected ArrayList<HabitEvent> doInBackground(String... Hids) {
+            verifySettings();
+
+            ArrayList<HabitEvent> habitEvents = new ArrayList<HabitEvent>();
+
+            String query = "{" +
+                    "\"size\": " + HabitUpApplication.NUM_OF_ES_RESULTS_FOR_DELETE + "," +
+                    "\"from\": 0," +
+                    "\"query\": {" +
+                    "\"match\" : " +
+                    "{ \"hid\" : \"" + Hids[0] + "\" }" +
+                    "}" +
+                    "}";
 
             Search search = new Search.Builder(query).addIndex(db).addType(habitEventType).build();
 
@@ -676,12 +716,13 @@ public class ElasticSearchController {
         protected Void doInBackground(String... ESids) {
             verifySettings();
 
+            Log.i("HabitUpDEBUG", "ESCtl/Trying to delete " + ESids[0]);
+
             for (String Esid : ESids) {
 
                 Delete deleteHabit = new Delete.Builder(Esid).index(db).type(habitEventType).build();
 
                 try {
-                    // where is the client?
                     client.execute(deleteHabit);
                 }
 
@@ -689,6 +730,7 @@ public class ElasticSearchController {
                     Log.i("Error", "The application failed to build the query and delete the User");
 
                 }
+                Log.i("HabitUpDEBUG", "ESCtl/Deleted " + ESids[0]);
             }
 
             return null;

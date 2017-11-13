@@ -25,6 +25,7 @@ public class HabitUpApplication {
     static Boolean setupDone = Boolean.FALSE;
 
     public static int NUM_OF_ES_RESULTS = 50;
+    public static int NUM_OF_ES_RESULTS_FOR_DELETE = 99999;
 
     static public UserAccount getCurrentUser() { return currentUser; }
     static public int getCurrentUID() { return currentUser.getUID(); }
