@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.habitup.Controller.ElasticSearchController;
@@ -143,6 +144,9 @@ public class SignUpActivity extends AppCompatActivity {
             Bitmap imageBitMap = (Bitmap) extras.get("data");
             userimage = imageBitMap;
 
+            ImageView takenPhoto = (ImageView) findViewById(R.id.signup_taken_image);
+            takenPhoto.setImageBitmap(imageBitMap);
+            takenPhoto.setVisibility(View.VISIBLE);
 
         }
     }

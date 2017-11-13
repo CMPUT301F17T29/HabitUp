@@ -74,33 +74,55 @@
         android:paddingLeft="10dp"
         android:background="@color/white"/>
 
-
-    <Button
-        android:id="@+id/add_profile_pic"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/signup_photo_display"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="25dp"
         android:layout_below="@+id/signup_displayname"
+        android:gravity="center"
+        android:layout_gravity="center"
         android:background="@color/colorPrimary"
-        android:drawableTop="@drawable/ic_add_photo"
-        style="?android:attr/borderlessButtonStyle"
-        android:scaleX="2"
-        android:scaleY="2"
-        android:textColor="#FFFFFF"
-        android:textSize="5sp"
-        android:paddingTop="10sp"
-        android:text="ADD PROFILE PICTURE"/>
+        android:paddingTop="5dp"
+        android:paddingBottom="10dp">
+
+        <Button
+            android:id="@+id/add_profile_pic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="25dp"
+            android:background="@color/colorPrimary"
+            android:drawableTop="@drawable/ic_add_photo"
+            style="?android:attr/borderlessButtonStyle"
+            android:scaleX="2"
+            android:scaleY="2"
+            android:textColor="#FFFFFF"
+            android:textSize="5sp"
+            android:paddingTop="10sp"
+            android:text="ADD PROFILE PICTURE"/>
+
+        <ImageView
+            android:id="@+id/signup_taken_image"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_below="@+id/add_profile_pic"
+            android:scaleType="fitCenter"
+            android:paddingTop="10dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:visibility="gone" />
+
+    </RelativeLayout>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="5dp"
         android:paddingLeft="35dp"
         android:paddingRight="35dp"
-        android:layout_below="@+id/add_profile_pic">
+        android:layout_below="@+id/signup_photo_display">
 
         <Button
             android:id="@+id/signup_button"
