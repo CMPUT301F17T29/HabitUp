@@ -6,11 +6,13 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -25,6 +27,7 @@ import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -65,13 +68,6 @@ public class MainActivity extends BaseActivity {
         LayoutInflater inflater = this.getLayoutInflater();
         View profileView = inflater.inflate(R.layout.profile_banner, habitListView, false);
         habitListView.addHeaderView(profileView);
-
-        // Set up the array and adapter
-        habitsArrayList = HabitUpController.getTodaysHabits();
-        adapter = new ProfileHabitsAdapter(this, R.layout.todays_habits, habitsArrayList);
-        habitListView.setAdapter(adapter);
-
-        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -129,8 +125,12 @@ public class MainActivity extends BaseActivity {
         TextView attr4Field = (TextView) findViewById(R.id.attribute4_value);
         attr4Field.setText(String.valueOf(userAttrs.getValue("Discipline")));
 
-        // Retrieve today's habits
+        // Set up the array and adapter
         habitsArrayList = HabitUpController.getTodaysHabits();
+        Collections.sort(habitsArrayList);
+        adapter = new ProfileHabitsAdapter(this, R.layout.todays_habits, habitsArrayList);
+        habitListView.setAdapter(adapter);
+
         adapter.notifyDataSetChanged();
 
         if (habitsArrayList.size() == 0) {
@@ -158,4 +158,18 @@ public class MainActivity extends BaseActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+            int habit_pos = data.getExtras().getInt("habit_pos");
+            if (resultCode == RESULT_CANCELED && habit_pos >= 0) {
+                View view = habitListView.getChildAt(habit_pos + 1);
+                CheckBox lastChecked = view.findViewById(R.id.today_habit_checkbox);
+                lastChecked.setChecked(false);
+                lastChecked.setClickable(false);
+            }
+    }
+
 }

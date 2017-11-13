@@ -60,6 +60,9 @@ public class EditHabitActivity extends AppCompatActivity {
     private CheckBox checkBoxSat;
     private CheckBox checkBoxSun;
 
+    // Change check
+    String originalName;
+
     // Save button
     Button saveButton;
 
@@ -89,6 +92,7 @@ public class EditHabitActivity extends AppCompatActivity {
         // Set habit name
         editName = (EditText) findViewById(R.id.habit_name);
         editName.setText(habit.getHabitName());
+        originalName = habit.getHabitName();
 
         // Set habit reason
         editReason = (EditText) findViewById(R.id.habit_reason);
@@ -237,12 +241,13 @@ public class EditHabitActivity extends AppCompatActivity {
 
                 if (habitOK) {
                     // Pass to the controller
-                    if (HabitUpController.addHabit(habit) == 0) {
+                    try {
+                        HabitUpController.editHabit(habit, originalName.equals(habit.getHabitName()));
                         Intent result = new Intent();
                         setResult(Activity.RESULT_OK, result);
                         finish();
-                    } else {
-                        Toast.makeText(getBaseContext(), "There was an error updating the Habit.", Toast.LENGTH_LONG).show();
+                    } catch (Exception e) {
+                        Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             }

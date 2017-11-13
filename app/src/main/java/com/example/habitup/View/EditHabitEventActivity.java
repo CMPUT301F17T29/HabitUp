@@ -72,6 +72,9 @@ public class EditHabitEventActivity extends AppCompatActivity {
     // Save button
     Button saveButton;
 
+    // Save original date
+    LocalDate originalDate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,6 +104,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
         year_x = event.getCompletedate().getYear();
         month_x = event.getCompletedate().getMonthValue() - 1;
         day_x = event.getCompletedate().getDayOfMonth();
+        originalDate = event.getCompletedate();
 
         // Get date click button
         dateClicker = (ImageView) findViewById(R.id.event_date_button);
@@ -253,10 +257,11 @@ public class EditHabitEventActivity extends AppCompatActivity {
 
                 if (eventOK) {
                     // Pass to the controller
-                    if (HabitUpController.editHabitEvent(event) == 0) {
+                    try {
+                        HabitUpController.editHabitEvent(event);
                         finish();
-                    } else {
-                        Toast.makeText(getBaseContext(), "There was an error updating the HabitEvent.", Toast.LENGTH_LONG).show();
+                    } catch (Exception e) {
+                        Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             }
