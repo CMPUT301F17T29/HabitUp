@@ -94,7 +94,6 @@ public class HabitUpController {
      * @return int successCode (0 for success)
      */
     static public int deleteHabit(Habit h) {
-//        Log.d("HABIT DELETE:", "Deleting habit " + h.getHabitName());
         ElasticSearchController.DeleteHabitTask delHabit = new ElasticSearchController.DeleteHabitTask();
         delHabit.execute(Integer.toString(h.getHID()));
         return 0;

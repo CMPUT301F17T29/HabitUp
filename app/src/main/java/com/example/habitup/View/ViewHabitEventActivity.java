@@ -9,9 +9,12 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -58,13 +61,16 @@ public class ViewHabitEventActivity extends BaseActivity {
     private ArrayList<HabitEvent> events;
     private RecyclerView eventListView;
     private EventListAdapter eventAdapter;
+    private EditText commentFilter;
+    private ArrayList<Habit> habitTypes;
+    private Spinner habitSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i("HabitUpDEBUG", "ViewHabitEventActivity onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events);
-
+        events = new ArrayList<HabitEvent>();
         eventListView = (RecyclerView) findViewById(R.id.event_list);
         eventListView.setHasFixedSize(true);
 
@@ -83,7 +89,8 @@ public class ViewHabitEventActivity extends BaseActivity {
         ElasticSearchController.GetHabitEventsByUidTask getHabitEvents = new ElasticSearchController.GetHabitEventsByUidTask();
         getHabitEvents.execute(HabitUpApplication.getCurrentUIDAsString());
         try {
-            events = getHabitEvents.get();
+            events.clear();
+            events.addAll(getHabitEvents.get());
         } catch (Exception e) {
             Log.i("HabitUpDEBUG", "ViewHabitEvent - Couldn't get HabitEvents");
         }
@@ -120,6 +127,11 @@ public class ViewHabitEventActivity extends BaseActivity {
             }
         });
 
+        commentFilter = (EditText) findViewById(R.id.filter_comment);
+        commentFilter.setText("");
+        commentFilter.setOnClickListener(spinCl);
+        commentFilter.setOnKeyListener(cFilter);
+
         // Date format for displaying event date
         DateTimeFormatter dateFmt = DateTimeFormatter.ofPattern("MMM d, yyyy");
 
@@ -133,7 +145,7 @@ public class ViewHabitEventActivity extends BaseActivity {
         }
 
         // Set up habit type filter spinner
-        Spinner habitSpinner = (Spinner) findViewById(R.id.filter_habit_spinner);
+        habitSpinner = (Spinner) findViewById(R.id.filter_habit_spinner);
         ArrayAdapter<String> habitAdapter = new ArrayAdapter<String>(this, R.layout.habit_spinner);
         habitAdapter.add("All Habit Types");
 
@@ -154,6 +166,43 @@ public class ViewHabitEventActivity extends BaseActivity {
             habitAdapter.add(habit.getHabitName());
         }
         habitSpinner.setAdapter(habitAdapter);
+
+        // Spinner select
+        habitSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
+                commentFilter.setText("");
+                refreshEvents(); // refreshes through ES re-get
+                ArrayList<HabitEvent> filtList = new ArrayList<HabitEvent>();
+                filtList.clear();
+
+                if (pos == 0) {
+                    filtList.addAll(events);
+                }
+                else {
+                    for (HabitEvent e : events) {
+                        if (e.getHID()==habitTypes.get(pos-1).getHID()) {
+                            filtList.add(e);
+                        }
+                    }
+                }
+                Collections.sort(filtList, new Comparator<HabitEvent>() {
+                    @Override
+                    public int compare(HabitEvent e1, HabitEvent e2) {
+                        return e1.getCompletedate().compareTo(e2.getCompletedate());
+                    }
+                });
+                Collections.reverse(filtList);
+                events.clear();
+                events.addAll(filtList);
+                eventAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         // Highlight events row in drawer
         navigationView.setCheckedItem(R.id.events);
@@ -233,6 +282,64 @@ public class ViewHabitEventActivity extends BaseActivity {
         });
         alert.show();
     }
+
+    private void refreshEvents() {
+        ElasticSearchController.GetHabitEventsByUidTask getHabitEvents = new ElasticSearchController.GetHabitEventsByUidTask();
+        getHabitEvents.execute(HabitUpApplication.getCurrentUIDAsString());
+        try {
+            events.clear();
+            events.addAll(getHabitEvents.get());
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "ViewHabitEvent - Couldn't get HabitEvents");
+        }
+    }
+
+    private ArrayList<HabitEvent> filterComSort(String text, ArrayList<HabitEvent> initEvents) {
+        ArrayList<HabitEvent> filtListCom = new ArrayList<HabitEvent>();
+        filtListCom.clear();
+        if (text.length()==0){
+            filtListCom.addAll(initEvents);
+        }
+        else {
+            for (HabitEvent e : initEvents) {
+                if (e.getComment().toLowerCase(Locale.getDefault()).contains(text)) {
+                    filtListCom.add(e);
+                }
+            }
+        }
+        Collections.sort(filtListCom, new Comparator<HabitEvent>() {
+            @Override
+            public int compare(HabitEvent e1, HabitEvent e2) {
+                return e1.getCompletedate().compareTo(e2.getCompletedate());
+            }
+        });
+        Collections.reverse(filtListCom);
+        return filtListCom;
+    }
+
+    EditText.OnKeyListener cFilter = new EditText.OnKeyListener() {
+        @Override
+        public boolean onKey(View view, int i, KeyEvent keyEvent) {
+            if ((keyEvent.getAction() == KeyEvent.ACTION_UP) && (i == KeyEvent.KEYCODE_ENTER)) {
+                InputMethodManager methodMan = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                methodMan.toggleSoftInput(0, 0);
+                String text = commentFilter.getText().toString().toLowerCase(Locale.getDefault());
+                refreshEvents(); // refreshes through ES re-get
+                ArrayList<HabitEvent> filtEvents = filterComSort(text,events);
+                events.clear();
+                events.addAll(filtEvents);
+                eventAdapter.notifyDataSetChanged();
+            }
+            return true;
+        }
+    };
+
+    EditText.OnClickListener spinCl = new EditText.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            habitSpinner.setSelection(0);
+        }
+    };
 
 }
 

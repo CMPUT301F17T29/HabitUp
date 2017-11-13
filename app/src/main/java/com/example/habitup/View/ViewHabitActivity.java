@@ -51,7 +51,6 @@ public class ViewHabitActivity extends BaseActivity {
     private ArrayList<Habit> habits;
     private ListView habitListView;
     private ArrayAdapter adapter;
-    private ArrayList<HabitEvent> events;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,16 +95,9 @@ public class ViewHabitActivity extends BaseActivity {
         // Sort 'em.
         Collections.sort(habits);
 
-        // Get user habit events
-        ElasticSearchController.GetHabitEventsByUidTask getHabitEvents = new ElasticSearchController.GetHabitEventsByUidTask();
-        getHabitEvents.execute(HabitUpApplication.getCurrentUIDAsString());
-        try {
-            events = getHabitEvents.get();
-        } catch (Exception e) {
-            Log.i("HabitUpDEBUG", "ViewHabitEvent - Couldn't get HabitEvents");
-        }
 
         habitListView = (ListView) findViewById(R.id.OldHabitLists);
+
         adapter = new HabitListAdapter(this, R.layout.habit_list_item, habits);
         habitListView.setAdapter(adapter);
 
