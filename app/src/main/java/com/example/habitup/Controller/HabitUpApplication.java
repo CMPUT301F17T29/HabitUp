@@ -14,7 +14,7 @@ import com.example.habitup.Model.UserAccountList;
 public class HabitUpApplication {
 
     public final static int MAX_USERNAME_LENGTH = 15;
-    public final static int MAX_REALNAME_LENGTH = 20;
+    public final static int MAX_REALNAME_LENGTH = 25;
     public static final int MAX_PHOTO_BYTECOUNT = 65536;
     public final static int XP_INCREASE_AMOUNT = 25;
     public final static int XP_PER_HABITEVENT = 1;
