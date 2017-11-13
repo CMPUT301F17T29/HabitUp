@@ -69,7 +69,7 @@ public class ViewHabitEventActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.i("HabitUpDEBUG", "ViewHabitEventActivity onCreate");
+//        Log.i("HabitUpDEBUG", "ViewHabitEventActivity onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events);
         events = new ArrayList<>();
@@ -87,7 +87,7 @@ public class ViewHabitEventActivity extends BaseActivity {
     public void onStart() {
         super.onStart();
 
-        Log.i("HabitUpDEBUG", "ViewHabitEvents/OnStart triggered");
+//        Log.i("HabitUpDEBUG", "ViewHabitEvents/OnStart triggered");
 
         // Retrieve events from ES for user
         ElasticSearchController.GetHabitEventsByUidTask getHabitEvents = new ElasticSearchController.GetHabitEventsByUidTask();
@@ -202,6 +202,13 @@ public class ViewHabitEventActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add_action_bar:
+
+                if (habitTypes.size() == 0) {
+                    Log.i("HabitUpDEBUG", "ViewHabitEvents/Can't create HabitEvent with no Habits");
+                    Toast.makeText(getApplicationContext(), "Error: You cannot add Habit Events without any Habits.", Toast.LENGTH_LONG).show();
+                    return false;
+                }
+
                 Intent addEventIntent = new Intent(ViewHabitEventActivity.this, AddHabitEventActivity.class);
                 addEventIntent.putExtra("profile", 0);
                 startActivityForResult(addEventIntent, NEW_EVENT);
@@ -334,7 +341,7 @@ public class ViewHabitEventActivity extends BaseActivity {
 
                 if (searchText.isEmpty()) {
                     Log.i("HabitUpDEBUG", "ViewHabitEvents/FilterENTER - search text empty");
-                    Toast.makeText(getApplicationContext(), "Error: Please enter a string to search comments", Toast.LENGTH_SHORT);
+                    Toast.makeText(getApplicationContext(), "Error: Please enter a string to search comments", Toast.LENGTH_SHORT).show();
                     return false;
                 } else {
                     ElasticSearchController.GetHabitEventsForCommentMatch commentSearch = new ElasticSearchController.GetHabitEventsForCommentMatch();
