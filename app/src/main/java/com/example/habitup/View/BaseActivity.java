@@ -2,6 +2,7 @@ package com.example.habitup.View;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -11,8 +12,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
@@ -44,18 +47,6 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void initNavigationDrawer() {
-
-
-//        UserAccount currentUser = HabitUpController.getCurrentUser();
-//
-//        TextView nameField = (TextView) findViewById(R.id.drawer_name);
-//
-//
-//        if (currentUser != null) {
-//            nameField.setText(currentUser.getRealname());
-//        } else {
-//            nameField.setText("Not logged in.");
-//        }
 
         // Taken from https://www.learn2crack.com/2016/03/android-material-design-sliding-navigation-drawer.html
         navigationView = (NavigationView)findViewById(R.id.navigation_view);
@@ -100,7 +91,6 @@ public class BaseActivity extends AppCompatActivity {
         });
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
-        View header = navigationView.getHeaderView(0);
 
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.drawer_open,R.string.drawer_close){
 
@@ -117,6 +107,29 @@ public class BaseActivity extends AppCompatActivity {
 
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Set the profile name and pic
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+        String fullName = currentUser.getRealname();
+        Bitmap profilePic = currentUser.getPhoto();
+
+        // Get the nav header view
+        View header = navigationView.getHeaderView(0);
+
+        // Set the user's full name
+        TextView nameView = header.findViewById(R.id.drawer_name);
+        nameView.setText(fullName);
+
+        // Set the user's profile photo
+        if (profilePic != null) {
+            ImageView photoView = header.findViewById(R.id.drawer_pic);
+            photoView.setImageBitmap(profilePic);
+        }
     }
 
 }
