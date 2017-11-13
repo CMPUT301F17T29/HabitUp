@@ -82,6 +82,7 @@ public class BaseActivity extends AppCompatActivity {
                         drawerLayout.closeDrawers();
                         break;
                     case R.id.logout:
+                        logout();
                         drawerLayout.closeDrawers();
                         break;
                 }
@@ -130,6 +131,12 @@ public class BaseActivity extends AppCompatActivity {
             ImageView photoView = header.findViewById(R.id.drawer_pic);
             photoView.setImageBitmap(profilePic);
         }
+    }
+
+    private void logout() {
+        HabitUpApplication.logoutCurrentUser();
+        Intent logoutIntent = new Intent(context, LoginActivity.class);
+        startActivity(logoutIntent);
     }
 
 }
