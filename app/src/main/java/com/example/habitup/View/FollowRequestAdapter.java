@@ -14,6 +14,11 @@ import com.example.habitup.R;
 
 import java.util.ArrayList;
 
+/**
+ * This is the adapter for displaying the user's follow requests.
+ *
+ * @author Shuyang
+ */
 public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdapter.FollowRequestHolder>{
     private ArrayList<UserAccount> afollowrequestList;
 

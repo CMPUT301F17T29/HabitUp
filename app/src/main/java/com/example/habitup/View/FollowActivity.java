@@ -6,12 +6,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-
-
 import com.example.habitup.R;
 
 import java.util.ArrayList;
 
+/**
+ * This activity will display all the user's current follow requests.
+ */
 public class FollowActivity extends AppCompatActivity{
     private ArrayList requestList = new ArrayList <>();
 
