@@ -92,7 +92,7 @@ public class Attributes {
 
     /**
      * Get the UID associated with this container
-     * @return
+     * @return int (UID)
      */
     public int getUid() { return this.uid; }
 

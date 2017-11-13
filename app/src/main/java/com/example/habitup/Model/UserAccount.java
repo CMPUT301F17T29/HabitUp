@@ -13,7 +13,13 @@ import java.io.ByteArrayOutputStream;
 /**
  * @author gojeffcho
  *
- * The system representation of a User.
+ * The system representation of a User.  Stores a unique UID identifying the user, a username that
+ * is used for login/friend requests, a real name that is displayed in the app, and optionally a
+ * photo as a display picture.  encodedPhoto is what we use to be able to store images to
+ * ElasticSearch by transcoding them to Strings.  We will likely separate these out into their own
+ * wrapper class for P5.
+ *
+ * Javadoc last updated 2017-11-13 by @gojeffcho.
  */
 public class UserAccount {
 
@@ -28,21 +34,20 @@ public class UserAccount {
     private int XPtoNext;
 
     /**
-     * UserAccount Constructor
-     * @param username: String representing username.  Must be unique.
-     * @param realname: String representing real name.
-     * @param photo: Bitmap object, if provided
+     * Constructor for a UserAccount.
      *
-     * @author @gojeffcho
+     * @param username String (max 15 chars)
+     * @param realname String (max 25 chars)
+     * @param photo Bitmap
+     * @throws IllegalArgumentException if constraints are not met
      */
-    public UserAccount(String username, String realname, Bitmap photo) throws
-            IllegalArgumentException {
-
+    public UserAccount(String username, String realname, Bitmap photo) throws IllegalArgumentException {
         this.setUniqueUID();
         this.setUsername(username);
         this.setRealname(realname);
         this.setPhoto(photo);
 
+        // RPG baseline stats
         level = 1;
         XP = 0;
         XPtoNext = 20;
@@ -50,25 +55,25 @@ public class UserAccount {
 
     /**
      * Gets the UID
-     * @return int uid
+     * @return int UID
      */
     public int getUID() { return this.uid; }
 
     /**
      * Gets unique String of UserAccount's username
-     * @return String
+     * @return String username
      */
     public String getUsername() { return this.username; }
 
     /**
      * Gets String of UserAccount's real name
-     * @return String
+     * @return String realname
      */
     public String getRealname() { return this.realname; }
 
     /**
      * Gets Image if one is associated to the account, otherwise null
-     * @return Image if associated, null if not
+     * @return Bitmap if associated, null if not
      */
     public Bitmap getPhoto() {
         decodePhoto();
@@ -76,7 +81,7 @@ public class UserAccount {
     }
 
     /**
-     * Decodes the encodedPhoto and sets the photo Bitmap to it.
+     * Decodes the encodedPhoto if it exists and sets the photo Bitmap to it.
      */
     public void decodePhoto() {
         if (this.encodedPhoto != null) {
@@ -86,68 +91,25 @@ public class UserAccount {
     }
 
     /**
-     * Gets Attribute object owned by UserAccount
-     * @return Attributes
-     */
-    public Attributes getAttributes() {
-        // TODO: IMPLEMENT
-
-        // ElasticSearch on uid to get Attributes object
-
-        // Return Attributes object
-
-        return new Attributes(this.uid); // TODO REMOVE
-    }
-
-    /**
      * Gets UserAccount's current level
-     * @return Int
+     * @return int currentLevel
      */
     public int getLevel() { return this.level; }
 
     /**
      * Gets current XP of UserAccount
-     * @return Int
+     * @return int Current XP
      */
     public int getXP() { return this.XP; }
 
     /**
      * Gets next level-up XP target
-     * @return Int
+     * @return int Next XP target level
      */
     public int getXPtoNext() { return this.XPtoNext; }
 
     /**
-     * Gets approved friends of UserAccount
-     * @return ArrayList<UserAccount>
-     */
-    public UserAccountList getFriendsList() {
-
-        // TODO: IMPLEMENT
-
-        // ES on uid to get FriendsList
-
-        // Return FriendsList
-
-        return new UserAccountList(); // TODO REMOVE
-    }
-
-    /**
-     * Returns current unapproved friend requests to UserAccount
-     * @return ArrayList<UserAccount>
-     */
-    public UserAccountList getRequestsPending() {
-        // TODO: IMPLEMENT
-
-        // ES on uid to get RequestsPending
-
-        // Return RequestsPending
-
-        return new UserAccountList(); // TODO REMOVE
-    }
-
-    /**
-     * Get the next unique UID, then set it to this user
+     * Get the next unique UID from ElasticSearch, then set it to this user's UID
      */
     public void setUniqueUID() {
         // ElasticSearch query: highest UID in use
@@ -157,9 +119,8 @@ public class UserAccount {
         getMaxUID.execute();
         try {
             newUID = getMaxUID.get().intValue();
-//            Log.i("HabitUpDEBUG", "UserAccount - UID was set to " + Integer.toString(newUID));
         } catch (Exception e) {
-//            Log.i("HabitUpDEBUG", "UserAccount - could not get Max UID");
+            Log.i("HabitUpDEBUG", "UserAccount - could not get Max UID");
         }
 
         // Set it to this user's uid
@@ -167,9 +128,9 @@ public class UserAccount {
     }
 
     /**
-     * Method to update username
-     * @param username
-     * @throws IllegalArgumentException
+     * Validate and update username
+     * @param username String
+     * @throws IllegalArgumentException if username not legal
      */
     public void setUsername(String username) throws IllegalArgumentException {
 
@@ -187,9 +148,9 @@ public class UserAccount {
     }
 
     /**
-     * Method to update realname
-     * @param realname
-     * @throws IllegalArgumentException
+     * Validate and update realname
+     * @param realname String
+     * @throws IllegalArgumentException if realname not legal
      */
     public void setRealname(String realname) throws IllegalArgumentException {
 
@@ -207,8 +168,9 @@ public class UserAccount {
     }
 
     /**
-     * Set or update UserAccount photo
-     * @param photo
+     * Set or update UserAccount photo.  If photo is over the size limit, it attemps three times to
+     * shrink the filesize by scaling the photo down.
+     * @param photo Bitmap
      */
     public void setPhoto(Bitmap photo) {
 
@@ -244,6 +206,11 @@ public class UserAccount {
         }
     }
 
+    /**
+     * Helper method - tries to resize the image by a scaling factor.
+     * @param img Bitmap
+     * @return Bitmap after resizing
+     */
     private Bitmap resizeImage(Bitmap img) {
 //        ByteArrayOutputStream stream = new ByteArrayOutputStream();
 //        img.compress(Bitmap.CompressFormat.JPEG, 70, stream);
@@ -254,7 +221,7 @@ public class UserAccount {
     }
 
     /**
-     * Delete the associated photo, if one exists
+     * Delete the associated photo, if one exists, by setting photo and encodedPhoto to null.
      */
     public void deletePhoto() {
        encodedPhoto = null;
@@ -262,7 +229,8 @@ public class UserAccount {
     }
 
     /**
-     * Set level to the next level, does boundary checking
+     * Set level to the next level.
+     * TODO: boundary checking for MAX_INT
      */
     public void incrementLevel() {
         this.level++;
@@ -270,7 +238,7 @@ public class UserAccount {
 
     /**
      * Increase UserAccount's current XP by xpAmount
-     * @param xpAmount
+     * @param xpAmount int (amount to increase XP by)
      */
     public void increaseXP(int xpAmount) {
         this.XP += xpAmount;
@@ -282,56 +250,5 @@ public class UserAccount {
     public void setXPtoNext() {
         this.XPtoNext += HabitUpApplication.XP_INCREASE_AMOUNT;
     }
-
-    /**
-     * Add a friend request from the requestingUser
-     * @param requestingUser
-     * @return -1 if already in list; 0 if successfully added
-     */
-    public int addRequest(UserAccount requestingUser) {
-
-        // ES on uid to get RequestsPending
-
-        // Add requestingUser to RequestsPending
-
-        // Put to ES
-
-        return 0;
-    }
-
-    /**
-     * Approve an existing request in requestsPending
-     * @param requestingUser
-     * @return -1 if unsuccessful,
-     */
-    public int approveRequest(UserAccount requestingUser) {
-
-        // TODO: rework this whole thing
-//        if (requestsPending.contains(requestingUser)) {
-//            requestsPending.remove(requestingUser);
-//            return friendsList.add(requestingUser);
-//        } else {
-//            return -1;
-//        }
-        return 0;
-
-    }
-
-    /**
-     * Delete an existing Habit associated with the UserAccount
-     * @param habit
-     * @return 0 if successful, -1 if not in list
-     */
-    public int deleteHabit(Habit habit) {
-
-        // TODO: rework this whole thing
-
-//        if (habits.contains(habit)) {
-//            habits.remove(habit);
-//            return 0;
-//        } else {
-//            return -1;
-//        }
-        return 0;
-    }
+    
 }
