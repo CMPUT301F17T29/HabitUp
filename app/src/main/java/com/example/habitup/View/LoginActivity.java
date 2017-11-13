@@ -1,10 +1,6 @@
 package com.example.habitup.View;
 
-
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -12,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.habitup.Controller.ElasticSearchController;
@@ -20,12 +15,13 @@ import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
-import java.util.ArrayList;
-
 /**
- * @author Shuyang
+ * This is the the start up launch activity where the user can login into the HabitUp
+ * application. If a username does not exist, the user cannot sign in. The user can choose to
+ * sign up for a new account from here. A username cannot be empty. Once the user logs in with
+ * an existing username, they will be taken to the user's profile.
  *
- * The login activity
+ * @author Shuyang
  */
 
 public class LoginActivity extends AppCompatActivity {

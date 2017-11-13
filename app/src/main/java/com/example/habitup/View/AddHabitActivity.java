@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,12 +32,20 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Locale;
 
+/**
+ * This is the activity to add a habit. The user must set a habit name and a reason for
+ * creating the habit. By default, the start date of the habit is set to the current date.
+ * The user may change it to another date. The user must also associate one of the pre-set
+ * Attributes to a habit. When a habit is completed, it will allocate points to that Attribute
+ * category. The user must select at least 1 day for the habit schedule.
+ *
+ * @author Shari Barboza
+ */
 public class AddHabitActivity extends AppCompatActivity {
 
     // Habit start date
     private int year_x, month_x, day_x;
     private static final int DIALOG_ID = 0;
-
     private TextView dateView;
 
     @Override
@@ -109,8 +116,6 @@ public class AddHabitActivity extends AppCompatActivity {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy");
                 LocalDate startDate = LocalDate.parse(dateString, formatter);
 
-                Log.i("DATE:", startDate.toString()); // TODO REMOVE
-
                 // Get Habit's associated Attribute
                 String attribute = ((Spinner) findViewById(R.id.habit_attr_spinner)).getSelectedItem().toString();
 
@@ -137,10 +142,10 @@ public class AddHabitActivity extends AppCompatActivity {
                 Habit newHabit = new Habit(HabitUpApplication.getCurrentUID());
                 Boolean habitOK = Boolean.TRUE;
 
+                // Validation check for new habit
                 try {
                     newHabit.setHabitName(habitName);
                 } catch (IllegalArgumentException e) {
-                    // do stuff
                     Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     habitOK = Boolean.FALSE;
                 }
@@ -148,7 +153,6 @@ public class AddHabitActivity extends AppCompatActivity {
                 try {
                     newHabit.setReason(habitReason);
                 } catch (IllegalArgumentException e) {
-                    // do stuff
                     Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     habitOK = Boolean.FALSE;
                 }
@@ -156,7 +160,6 @@ public class AddHabitActivity extends AppCompatActivity {
                 try {
                     newHabit.setStartDate(startDate);
                 } catch (IllegalArgumentException e) {
-                    // do stuff
                     Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     habitOK = Boolean.FALSE;
                 }
@@ -164,7 +167,6 @@ public class AddHabitActivity extends AppCompatActivity {
                 try {
                     newHabit.setAttribute(attribute);
                 } catch (IllegalArgumentException e) {
-                    // do stuff
                     Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     habitOK = Boolean.FALSE;
                 }
@@ -192,11 +194,6 @@ public class AddHabitActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Opening the date picker dialog
-     * @param id the dialog id
-     * @return the dialog
-     */
     @Override
     protected Dialog onCreateDialog(int id) {
         if (id == DIALOG_ID) {
@@ -205,11 +202,6 @@ public class AddHabitActivity extends AppCompatActivity {
         return null;
     }
 
-    /**
-     * Listens for when the user clicks on the back button
-     * @param menuItem the item in the menu
-     * @return true if the item was selected
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
@@ -221,7 +213,13 @@ public class AddHabitActivity extends AppCompatActivity {
         }
     }
 
-    // Creating the date picker listener for when a user selects a date
+    private void setDateString() {
+        String monthName = new DateFormatSymbols().getShortMonths()[month_x];
+        String dateString = (monthName) + " " + day_x + ", " + year_x;
+        dateView.setText(dateString);
+    }
+
+    // The date picker listener for when a user selects a date
     private DatePickerDialog.OnDateSetListener datePicker
             = new DatePickerDialog.OnDateSetListener() {
         @Override
@@ -233,15 +231,8 @@ public class AddHabitActivity extends AppCompatActivity {
         }
     };
 
-    /**
-     * Updates the date string in the date text view
-     */
-    private void setDateString() {
-        String monthName = new DateFormatSymbols().getShortMonths()[month_x];
-        String dateString = (monthName) + " " + day_x + ", " + year_x;
-        dateView.setText(dateString);
-    }
-
+    // Listens for a click inside the Attributes spinner and sets the selected row to
+    // its corresponding Attribute color
     private AdapterView.OnItemSelectedListener attributeListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -256,9 +247,4 @@ public class AddHabitActivity extends AppCompatActivity {
         public void onNothingSelected(AdapterView<?> parent) {
         }
     };
-
-
-    public void onSave() {
-
-    }
 }

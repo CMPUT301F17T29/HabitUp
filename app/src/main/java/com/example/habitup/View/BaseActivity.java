@@ -9,25 +9,27 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.habitup.Controller.HabitUpApplication;
-import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
+/**
+ * This is the main parent activity class for other activities that need access to the
+ * drawer navigation layout. Here, the initialization for the drawer will occur.
+ *
+ * @author Shari Barboza
+ */
 public class BaseActivity extends AppCompatActivity {
 
     protected NavigationView navigationView;
     protected DrawerLayout drawerLayout;
-    private ActionBarDrawerToggle drawerToggle;
     private Toolbar toolbar;
     private Context context = BaseActivity.this;
 
