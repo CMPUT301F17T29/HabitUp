@@ -257,6 +257,7 @@ public class ViewHabitEventActivity extends BaseActivity {
         editIntent.putExtra(HABIT_EVENT_HID, hid);
         editIntent.putExtra(HABIT_EVENT_EID, eid);
         editIntent.putExtra(HABIT_EVENT_ACTION, requestCode);
+        editIntent.putExtra("profile", 0);
         startActivity(editIntent);
     }
 
