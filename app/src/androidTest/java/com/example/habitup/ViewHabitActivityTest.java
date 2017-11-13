@@ -78,4 +78,23 @@ public class ViewHabitActivityTest extends ActivityInstrumentationTestCase2 {
         solo.assertCurrentActivity("Wrong activity", ViewHabitActivity.class);
         assertTrue(solo.waitForText("exercise"));
     }
+
+    public void testDeleteHabit() {
+        solo.assertCurrentActivity("Wrong activity", ViewHabitActivity.class);
+        solo.clickOnView(solo.getView(R.id.add_action_bar));
+        solo.assertCurrentActivity("Wrong activity", AddHabitActivity.class);
+
+        solo.enterText((EditText) solo.getView(R.id.habit_name), "eat");
+        solo.enterText((EditText) solo.getView(R.id.habit_reason), "gainz");
+        solo.clickOnCheckBox(0);
+        solo.clickOnButton("Save");
+        solo.assertCurrentActivity("Wrong activity", ViewHabitActivity.class);
+        assertTrue(solo.waitForText("eat"));
+
+        solo.assertCurrentActivity("Wrong activity", ViewHabitActivity.class);
+        solo.clickLongOnTextAndPress("eat",1);
+        solo.clickOnButton("Yes");
+        solo.assertCurrentActivity("Wrong activity", ViewHabitActivity.class);
+        assertFalse(solo.waitForText("eat"));
+    }
 }
