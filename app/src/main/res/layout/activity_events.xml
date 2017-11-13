@@ -37,29 +37,31 @@
             android:id="@+id/filter_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Filters"
-            android:textColor="@color/teal"
-            android:textStyle="bold"
-            android:textSize="15sp"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp" />
+            android:layout_marginRight="10dp"
+            android:text="Search comments or Filter by Habit"
+            android:textColor="@color/teal"
+            android:textSize="15sp"
+            android:textStyle="bold" />
 
         <EditText
-            android:singleLine="true"
             android:id="@+id/filter_comment"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:background="@drawable/white_text_input"
             android:layout_below="@+id/filter_title"
-            android:hint="Comment text"
-            android:layout_marginTop="5dp"
-            android:textSize="14sp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/white_text_input"
+            android:drawableLeft="@drawable/ic_find"
+            android:drawableTint="@color/tintgray"
+            android:hint="Enter comment search string and press ENTER"
+            android:inputType="textFilter"
+            android:maxLength="30"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
-            android:drawableLeft="@drawable/ic_find"
-            android:drawableTint="@color/tintgray"/>
+            android:singleLine="true"
+            android:textSize="14sp" />
 
         <RelativeLayout
             android:id="@+id/filter_habit"

@@ -138,6 +138,17 @@ public class HabitUpController {
     static public int addHabitEvent(HabitEvent event) throws IllegalArgumentException {
 //        Log.d("EVENT:", "Adding HabitEvent to HID #" + String.valueOf(event.getHID()));
 
+        // Check if HabitEvent is completed before Habit start date
+        try {
+            if (habitEventBeforeHabitStartDate(event)) {
+                throw new IllegalArgumentException("Error: Habit cannot be completed before its start date.");
+            }
+        } catch (Exception e) {
+            // Pass any exception from habitEventBeforeHabitStartDate to caller
+            throw new IllegalArgumentException(e.getMessage());
+        }
+
+        // Check if HabitEvent for the parent Habit already exists on that day
         if (!habitEventAlreadyExists(event)) {
 
             // Add the HabitEvent object to ES
@@ -193,6 +204,17 @@ public class HabitUpController {
      */
     static public int editHabitEvent(HabitEvent event) throws IllegalArgumentException {
 
+        // Check if HabitEvent is completed before Habit start date
+        try {
+            if (habitEventBeforeHabitStartDate(event)) {
+                throw new IllegalArgumentException("Error: Habit cannot be completed before its start date.");
+            }
+        } catch (Exception e) {
+            // Pass any exception from habitEventBeforeHabitStartDate to caller
+            throw new IllegalArgumentException(e.getMessage());
+        }
+
+        // Check if HabitEvent for the parent Habit already exists on that day
         if (!habitEventAlreadyExists(event)) {
             ElasticSearchController.AddHabitEventsTask addHabitEvent = new ElasticSearchController.AddHabitEventsTask();
             addHabitEvent.execute(event);
@@ -271,6 +293,29 @@ public class HabitUpController {
         }
 
         return alreadyExists;
+    }
+
+    /**
+     * Utility method to check whether a HabitEvent's completedate is before a Habit's startDate
+     * @param event HabitEvent to check
+     * @return True if HabitEvent happens before the Habit's startDate
+     * @throws RuntimeException if parentHabit could not be obtained
+     */
+    static private boolean habitEventBeforeHabitStartDate(HabitEvent event) throws RuntimeException {
+        ElasticSearchController.GetHabitsTask getHabit = new ElasticSearchController.GetHabitsTask();
+        getHabit.execute(String.valueOf(event.getHID()));
+        Habit parentHabit = null;
+        try {
+            parentHabit = getHabit.get().get(0);
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "HUCtl/habitEventBeforeHabitStartDate - exception getting parentHabit");
+        }
+
+        if (parentHabit == null) {
+            throw new RuntimeException("Couldn't get parent Habit for this HabitEvent.");
+        }
+
+        return parentHabit.getStartDate().isAfter(event.getCompletedate());
     }
 
     /**

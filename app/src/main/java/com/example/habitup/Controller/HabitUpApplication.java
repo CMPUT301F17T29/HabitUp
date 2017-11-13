@@ -34,7 +34,7 @@ public class HabitUpApplication {
     static Attributes currentAttrs;
 
     public static int NUM_OF_ES_RESULTS = 50;
-    public static int NUM_OF_ES_RESULTS_FOR_DELETE = 99999;
+    public static int NUM_OF_ES_RESULTS_LARGE = 99999;
 
     /**
      * Get the current logged-in UserAccount

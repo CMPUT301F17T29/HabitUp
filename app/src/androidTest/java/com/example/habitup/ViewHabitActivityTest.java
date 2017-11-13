@@ -3,12 +3,9 @@ import android.app.Activity;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import android.widget.EditText;
-import android.widget.ImageView;
-
 
 import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
-import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.UserAccount;
 
@@ -28,6 +25,7 @@ import java.util.Collections;
  * ViewHabit - US 01.03.01
  * EditHabit - US 01.04.01, US 01.06.01
  * DeleteHabit - US 01.05.01
+ * by alido8592
  */
 
 public class ViewHabitActivityTest extends ActivityInstrumentationTestCase2 {
