@@ -13,6 +13,8 @@ import java.util.Map;
  * Implementation uses a hash map, with the attribute name as the key and an integer
  * number (representing the attribute's points) as the value. A hash map is used to allow quick
  * access to any attribute, such as when only one attribute's value needs to be retrieved/updated.
+ *
+ * Javadoc last updated 2017-11-13 by @gojeffcho.
  */
 
 public class Attributes {
@@ -31,6 +33,7 @@ public class Attributes {
         "#1E88E5",
         "#1A9B1A"
     };
+
     private final static Map<String,String> colourMap = createColourMap();
 
     // Members
@@ -40,6 +43,8 @@ public class Attributes {
     /**
      * Attributes constructor, which takes the class variable attributeNames
      * and populates an initialized attributeMap with default values of 0.
+     *
+     * @param uid UID associated with this Attributes container
      */
     public Attributes(int uid) {
 
@@ -85,7 +90,11 @@ public class Attributes {
         return attributeNames;
     }
 
-    public int getUid(){return this.uid;}
+    /**
+     * Get the UID associated with this container
+     * @return
+     */
+    public int getUid() { return this.uid; }
 
     /**
      * Return the number of attributes
@@ -114,9 +123,9 @@ public class Attributes {
     }
 
     /**
-     * Updates an attribute by setting it to a different value.
-     * @param name the name of the attribute
-     * @param value the new attribute's value
+     * Updates an attribute by setting it to a different value.  Used for testing.
+     * @param name String (name of the attribute)
+     * @param value int (the attribute's new value)
      */
     public void setValue(String name, Integer value) {
         attributeMap.put(name, value);

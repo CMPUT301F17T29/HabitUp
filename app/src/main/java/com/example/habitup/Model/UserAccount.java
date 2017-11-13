@@ -147,23 +147,6 @@ public class UserAccount {
     }
 
     /**
-     * Gets Habits defined by the UserAccount
-     * @return ArrayList<Habit>
-     */
-    public HabitList getHabits() {
-        // TODO: IMPLEMENT
-
-        // ES on uid to get Habits
-
-        // Add into a HabitList
-
-        // Return HabitList
-
-        return new HabitList(this.uid);  // TODO REMOVE
-    }
-
-
-    /**
      * Get the next unique UID, then set it to this user
      */
     public void setUniqueUID() {
