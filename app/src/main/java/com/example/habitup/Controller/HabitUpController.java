@@ -8,6 +8,7 @@ import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
 import com.example.habitup.Model.UserAccount;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class HabitUpController {
@@ -90,18 +91,6 @@ public class HabitUpController {
         getDeleteEvents.execute(String.valueOf(h.getHID()));
         ArrayList<HabitEvent> eventsToDelete = null;
 
-        // Increment User XP and write back
-        UserAccount currentUser = HabitUpApplication.getCurrentUser();
-
-        if (currentUser.getXP() + 1 >= currentUser.getXPtoNext()) {
-            currentUser.incrementLevel();
-            currentUser.setXPtoNext();
-        }
-
-        currentUser.increaseXP(HabitUpApplication.XP_PER_HABITEVENT);
-        ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
-        updateUser.execute(currentUser);
-
         try {
             eventsToDelete = getDeleteEvents.get();
         } catch (Exception e) {
@@ -129,6 +118,12 @@ public class HabitUpController {
 
             // Increment User XP and write back
             UserAccount currentUser = HabitUpApplication.getCurrentUser();
+
+            if (currentUser.getXP() + 1 >= currentUser.getXPtoNext()) {
+                currentUser.incrementLevel();
+                currentUser.setXPtoNext();
+            }
+
             currentUser.increaseXP(HabitUpApplication.XP_PER_HABITEVENT);
             ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
             updateUser.execute(currentUser);
@@ -222,6 +217,31 @@ public class HabitUpController {
         for (HabitEvent ev : matchedEvents) {
             if (ev.getCompletedate().equals(event.getCompletedate())) {
                 alreadyExists = true;
+            }
+        }
+
+        return alreadyExists;
+    }
+
+    static public boolean habitDoneToday(Habit h) {
+
+//        Log.i("HabitUpDEBUG", "HUCtl/habitDoneToday - in method");
+
+        ElasticSearchController.GetHabitEventsByHidTask getEventsForHabit = new ElasticSearchController.GetHabitEventsByHidTask();
+        getEventsForHabit.execute(String.valueOf(h.getHID()));
+        ArrayList<HabitEvent> matchedEvents = null;
+        try {
+            matchedEvents = getEventsForHabit.get();
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "HUCtl/addHabitEvent - exception in events for same habit");
+        }
+
+        boolean alreadyExists = false;
+        for (HabitEvent ev : matchedEvents) {
+//            Log.i("HabitUpDEBUG", "HUCtl/habitDoneToday - looking at HabitEvent " + ev.getEID());
+            if (ev.getCompletedate().equals(LocalDate.now())) {
+                alreadyExists = true;
+//                Log.i("HabitUpDEBUG", "HUCtl/habitDoneToday - HabitEvent " + ev.getEID() + " was done today.");
             }
         }
 

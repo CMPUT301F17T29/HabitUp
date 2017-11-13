@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Attributes;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.R;
@@ -40,6 +41,9 @@ public class ProfileHabitsAdapter extends ArrayAdapter<Habit> {
 
     @Override
     public View getView(final int position, View view, ViewGroup viewGroup) {
+
+//        Log.i("HabitUpDEBUG", "ProfileHabitsAdapter - in getView");
+
         View v = view;
 
         if (v == null) {
@@ -80,21 +84,28 @@ public class ProfileHabitsAdapter extends ArrayAdapter<Habit> {
         // Handle click events for check boxes
         final CheckBox checkBox = v.findViewById(R.id.today_habit_checkbox);
 
-        // TODO: Check if habit has an event checked already for that day and check the box
-        // TODO: If box is checked, disable check box to be checked
+        // Check if habit has an event checked already for that day and check the box
+        // If box is checked, disable check box to be checked
+//        Log.i("HabitUpDEBUG", "ProfileHabitsAdapter - looking at Habit " + habit.getHabitName());
+        boolean doneToday = HabitUpController.habitDoneToday(habit);
+        checkBox.setChecked(doneToday);
 
-        checkBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent addEventIntent = new Intent(context, AddHabitEventActivity.class);
-                addEventIntent.putExtra("position", position);
-                addEventIntent.putExtra("HABIT_EVENT_HID", habit.getHID());
-                addEventIntent.putExtra("profile", 1);
-                addEventIntent.putExtra("habit_pos", position);
-                addEventIntent.putExtra("habit", habit.getHabitName());
-                ((Activity) context).startActivityForResult(addEventIntent, 1);
-            }
-        });
+        if (!checkBox.isChecked()) {
+            checkBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent addEventIntent = new Intent(context, AddHabitEventActivity.class);
+                    addEventIntent.putExtra("position", position);
+                    addEventIntent.putExtra("HABIT_EVENT_HID", habit.getHID());
+                    addEventIntent.putExtra("profile", 1);
+                    addEventIntent.putExtra("habit_pos", position);
+                    addEventIntent.putExtra("habit", habit.getHabitName());
+                    ((Activity) context).startActivityForResult(addEventIntent, 1);
+                }
+            });
+        } else {
+            checkBox.setClickable(false);
+        }
 
         return v;
     }

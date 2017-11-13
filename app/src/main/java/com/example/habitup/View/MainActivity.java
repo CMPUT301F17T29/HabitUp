@@ -42,27 +42,6 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // DEBUG
-//        UserAccount testUser = null;
-//        try {
-//            testUser = HabitUpApplication.getUserAccount("gojeffcho");
-//        } catch (Exception e) {
-//            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-//        }
-//
-//        if (testUser != null) {
-//            HabitUpApplication.setCurrentUser(testUser);
-//        } else {
-//            Log.i("HabitUpDEBUG", "Couldn't get test user.");
-//        }
-
-//        UserAccount testUser = new UserAccount("gojeffcho", "Jeef Chee", null);
-//        HabitUpApplication.addUserAccount(testUser);
-//        HabitUpApplication.setCurrentUser(testUser);
-        // DEBUG
-
-
-
         // Initialize list view for today's habits
         habitListView = (ListView) findViewById(R.id.habit_listview);
         LayoutInflater inflater = this.getLayoutInflater();

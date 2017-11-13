@@ -34,6 +34,7 @@ public class EditProfileActivity extends AppCompatActivity {
     TextView userLoginName;
     TextView userFullName;
     Button saveButton;
+    private boolean changedPhoto = false;
 
     private static final int REQUEST_CODE = 1;
 
@@ -92,7 +93,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
                 // Get image, if there is one
                 Bitmap photo = null;
-                if ( ((ImageView) profilePic).getDrawable() != null ) {
+                if ( ((ImageView) profilePic).getDrawable() != null) {
                     photo = ((BitmapDrawable) ((ImageView) profilePic).getDrawable()).getBitmap();
                 }
 
@@ -115,7 +116,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     profileOK = Boolean.FALSE;
                 }
 
-                if (photo != null) {
+                if (photo != null && changedPhoto) {
                     try {
                         currentUser.setPhoto(photo);
                     } catch (IllegalArgumentException e) {
@@ -156,6 +157,9 @@ public class EditProfileActivity extends AppCompatActivity {
 
             // TODO: Resize image for to appropriate byte size
             profilePic.setImageBitmap(imageBitMap);
+            changedPhoto = true;
+        } else {
+            changedPhoto = false;
         }
     }
 
