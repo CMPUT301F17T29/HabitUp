@@ -215,13 +215,14 @@ public class AddHabitEventActivity extends AppCompatActivity {
 
                 if (eventOK) {
                     // Pass to the controller
-                    if (HabitUpController.addHabitEvent(newEvent) == 0) {
+                    try {
+                        HabitUpController.addHabitEvent(newEvent);
                         Intent result = new Intent();
                         result.putExtra("habit_pos", -1);
                         setResult(Activity.RESULT_OK, result);
                         finish();
-                    } else {
-                        Toast.makeText(getBaseContext(), "There was an error adding the new HabitEvent.", Toast.LENGTH_LONG).show();
+                    } catch (Exception e) {
+                        Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
 
