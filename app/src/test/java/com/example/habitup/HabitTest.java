@@ -4,8 +4,6 @@ import com.example.habitup.Model.Habit;
 
 import org.junit.Test;
 
-import java.time.LocalDate;
-
 import static junit.framework.Assert.assertTrue;
 
 /**
@@ -18,10 +16,6 @@ public class HabitTest {
     @Test
     public void testHabitConstLongNameErr() {
         String name = "123456789abcdefjhijklmnop";
-        String reason = "I wanna be the very best";
-        String attribute = "Mental";
-        LocalDate startDate = LocalDate.now();
-        boolean[] schedule = {true};
 
         try{
             Habit testHabit = new Habit(1);
@@ -37,11 +31,7 @@ public class HabitTest {
     //Test Habit construction error long reason
     @Test
     public void testHabitConstLongReasonErr(){
-        String name = "name";
         String reason = "123456789123456789123456789101010";
-        String attribute = "Mental";
-        LocalDate startDate = LocalDate.now();
-        boolean[] schedule = {true,true};
 
         try{
             Habit testHabit = new Habit(1);
@@ -57,10 +47,6 @@ public class HabitTest {
     //Test Habit construction error no schedule
     @Test
     public void testHabitConstSchedErr(){
-        String name = "name";
-        String reason = "I wanna be the very best";
-        String attribute = "Mental";
-        LocalDate startDate = LocalDate.now();
         boolean[] schedule = new boolean[8];
 
         try{
@@ -77,12 +63,7 @@ public class HabitTest {
     //Test setHabitName actually sets/replaces the name
     @Test
     public void testSetHabitNameSuccess() {
-        String name = "name";
         String habitName = "sampleHabit";
-        String reason = "I wanna be the very best";
-        String attribute = "Mental";
-        LocalDate startDate = LocalDate.now();
-        boolean[] schedule = {true};
 
         Habit testHabit = new Habit(1);
 
@@ -94,12 +75,7 @@ public class HabitTest {
     //Tests setHabitName to not exceed 20 characters, expects an error
     @Test
     public void testHabitNameLength() {
-        String name = "name";
         String habitName = "123456789abcdefghijklmnop";
-        String reason = "I wanna be the very best";
-        String attribute = "Mental";
-        LocalDate startDate = LocalDate.now();
-        boolean[] schedule = {true};
         Habit testHabit = new Habit(1);
 
         try{
@@ -116,12 +92,7 @@ public class HabitTest {
     //Tests that setReason sets
     @Test
     public void testSetReason() {
-        String name = "name";
-        String reason = "reason";
         String reason2 = "I wanna be the very best";
-        String attribute = "Mental";
-        LocalDate startDate = LocalDate.now();
-        boolean[] schedule = {true};
         Habit testHabit = new Habit(1);
 
         testHabit.setReason(reason2);
@@ -132,13 +103,7 @@ public class HabitTest {
     //Tests setReason to not exceed 30 characters, expecting an error
     @Test
     public void testSetReasonLength() {
-        String name = "name";
-        String habitName = "sampleHabit";
-        String reason = "I wanna be the very best";
         String reason2 = "123456789123456789123456789101010";
-        String attribute = "Mental";
-        LocalDate startDate = LocalDate.now();
-        boolean[] schedule = {true};
         Habit testHabit = new Habit(1);
 
         try{
@@ -154,11 +119,6 @@ public class HabitTest {
     //Tests setSchedule sets
     @Test
     public void testSetSchedule(){
-        String name = "name";
-        String reason = "I wanna be the very best";
-        String attribute = "Mental";
-        LocalDate startDate = LocalDate.now();
-        boolean[] schedule = {true,true,true};
         boolean[] schedule2 = {false,true, false};
         Habit testHabit = new Habit(1);
 
@@ -170,12 +130,8 @@ public class HabitTest {
     //Test setAttribute actually sets an attribute
     @Test
     public void testSetAttribute(){
-        String name = "name";
-        String reason = "I wanna be the very best";
         String attribute = "Mental";
         String attribute2 = "Physical";
-        LocalDate startDate = LocalDate.now();
-        boolean[] schedule = {true};
         Habit testHabit = new Habit(1);
         testHabit.setAttribute(attribute);
         testHabit.setAttribute(attribute2);
