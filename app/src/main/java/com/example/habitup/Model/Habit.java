@@ -2,11 +2,23 @@ package com.example.habitup.Model;
 
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.habitup.Controller.ElasticSearchController;
 
 import java.time.LocalDate;
+
+/**
+ * Habit is the object representing a habit type, belonging to a specific user.  It specifies a
+ * name, reason, schedule of days of the week it should be completed on, the date to start, and
+ * the attribute it is associated with (the attribute it will increase each time the habit is
+ * done).
+ *
+ * The Habit stores some utility data for calculating statistics, namely how many times it was done
+ * on schedule, how many times it could have been done if always done on schedule, and how many
+ * non-scheduled times it was done.
+ *
+ * Javadoc last updated 2017-11-13 by @gojeffcho.
+ */
 
 public class Habit implements Comparable<Habit> {
 
@@ -25,56 +37,30 @@ public class Habit implements Comparable<Habit> {
     private int habitsPossible;
 
     /**
-     * Habit constructor
-     *
-     * @param uid int for id to associate habits and habitevents with user
-     * @param name String for the Habit name
-     * @param reason String for the reason of Habit
-     * @param attribute Attributes object to identify the associated attribute with the Habit
-     * @param startDate LocalDate for startDate to associate with Habit
-     * @param schedule boolean[8] for the schedule regarding the days the Habit is active
-     *
-     * @author @alido8592
-     */
-
-    /**
-     * Empty constructor
+     * Empty constructor - UID is set from ES to the next possible HID.  Habit is then built
+     * using setters to set the additional fields.
+     * @param uid int (user to whom the Habit belongs)
      */
     public Habit(int uid) {
         this.uid = uid;
         setUniqueHID();
     }
 
-    public Habit(int uid, String name, String reason, String attribute, LocalDate startDate, boolean[] schedule)
-            throws IllegalArgumentException, IllegalStateException {
-
-        //TODO:
-        // unique name (HabitList?) or controller
-        setUID(uid);
-        setUniqueHID();
-        setHabitName(name);
-        setReason(reason);
-        setAttribute(attribute);
-        this.startDate = startDate;
-        this.schedule = new boolean[8];
-        setSchedule(schedule);
-    }
-
     /**
      * isLegalNameLength
      * Checks for Habit name length between 1 - 20
-     * @param name
-     * @return Boolean
+     * @param name String (Habit name)
+     * @return Boolean (True if legal, False if not)
      */
-    public Boolean isLegalNameLength(String name){
+    public Boolean isLegalNameLength (String name) {
         return ( (name.trim().length() > 0) && (name.trim().length() <= 20) );
     }
 
     /**
      * isLegalReasonLength
      * Checks for Habit reason length between 1 - 30
-     * @param reason
-     * @return Boolean
+     * @param reason String (Habit reason)
+     * @return Boolean (True if legal, False if not)
      */
     public Boolean isLegalReasonLength(String reason){
         return ( (reason.trim().length() > 0) && (reason.trim().length() <= 30) );
@@ -82,9 +68,9 @@ public class Habit implements Comparable<Habit> {
 
     /**
      * isLegalSchedule
-     * Checks for Habit schedule containing at least 1 day schedule for the Habit
-     * @param schedule boolean[8]
-     * @return Boolean
+     * Checks for Habit schedule containing at least 1 day scheduled for the Habit
+     * @param schedule boolean[8] (0 is unused, 1 for Mon, 2 for Tue...)
+     * @return Boolean (True if legal, False if not)
      */
     public Boolean isLegalSchedule(boolean[] schedule){
         int trueCount = 0;
@@ -98,8 +84,8 @@ public class Habit implements Comparable<Habit> {
     /**
      * isLegalAttribute
      * Checks for Habit attribute is from the established list of attributes
-     * @param attribute
-     * @return
+     * @param attribute String (Name of attribute)
+     * @return Boolean (True if legal, False if not)
      */
     public Boolean isLegalAttribute(String attribute) {
 
@@ -116,59 +102,55 @@ public class Habit implements Comparable<Habit> {
     /**
      * getUID
      * Gets the uid of habit
-     * @return int Associated UID
+     * @return int (UID of associated user)
      */
     public int getUID() { return this.uid; }
 
     /**
      * getHID
      * Gets the unique identifier of habit
-     * @return int habitID
+     * @return int (habitID)
      */
     public int getHID() { return this.hid; }
 
     /**
      * getHabitName
      * Gets the String of the Habit's name
-     * @return String
+     * @return String (Name of Habit)
      */
     public String getHabitName() { return this.name; }
 
     /**
      * getHabitSchedule
      * Returns habit schedule
-     * @return boolean[8]
+     * @return boolean[8] (0 is unused, 1 for Mon, 2 for Tue...)
      */
-    public boolean[] getHabitSchedule() {return this.schedule;}
+    public boolean[] getHabitSchedule() { return this.schedule; }
 
     /**
      * getHabitReason
      * Gets the Habit's reason as a String
-     * @return String
+     * @return String (Habit reason)
      */
     public String getHabitReason() { return this.reason; }
 
     /**
      * getHabitAttribute
      * Gets the associated attribute of the Habit
-     * @return String
+     * @return String (Attribute that the Habit increases each time when done)
      */
     public String getHabitAttribute() { return this.attribute; }
 
     /**
      * getStartDate
      * Gets the Habit's start date
-     * @return Date
+     * @return Date (Start date of Habit)
      */
     public LocalDate getStartDate() { return this.startDate; }
 
     /**
-     * setUID
-     * sets the Habit's uid into the input uid
-     * @param uid int uid associated with user
+     * Sets the next available HID from ElasticSearch - ensures no duplicate HIDs
      */
-    public void setUID(int uid) { this.uid = uid; }
-
     public void setUniqueHID() {
         // Do ElasticSearch stuff
         ElasticSearchController.GetMaxHidTask maxHid = new ElasticSearchController.GetMaxHidTask();
@@ -194,8 +176,8 @@ public class Habit implements Comparable<Habit> {
     /**
      * setHabitName
      * Sets the Habit's name into String name
-     * @param name String for the desired new name
-     * @throws IllegalArgumentException
+     * @param name String (Intended Habit name)
+     * @throws IllegalArgumentException (if Habit name not legal)
      */
     public void setHabitName(String name) throws IllegalArgumentException {
 
@@ -205,13 +187,12 @@ public class Habit implements Comparable<Habit> {
             String errorStr = "Error: Name length must be within 1 - 20 characters";
             throw new IllegalArgumentException(errorStr);
         }
-        //TODO: Implement unique Habit name in HabitList? or controller
     }
 
     /**
      * setSchedule
      * Changes the schedule accordingly with input schedule
-     * @param schedule boolean[8]
+     * @param schedule boolean[8] (0 unused, 1 for Mon, 2 for Tue...)
      */
     public void setSchedule(boolean schedule[]) throws IllegalArgumentException {
         if (isLegalSchedule(schedule)){
@@ -224,8 +205,8 @@ public class Habit implements Comparable<Habit> {
     /**
      * setReason
      * Sets the Habit's reason as the provided String
-     * @param reason String to represent the new desired reason
-     * @throws IllegalArgumentException
+     * @param reason String (Intended Habit reason)
+     * @throws IllegalArgumentException (if Reason not legal)
      */
     public void setReason(String reason) throws IllegalArgumentException {
 
@@ -240,8 +221,8 @@ public class Habit implements Comparable<Habit> {
     /**
      * setAttribute
      * Sets the Habit's attribute into the provided
-     * @param attribute Attributes object to be associated to the Habit
-     * @throws IllegalArgumentException
+     * @param attribute String (Attribute associated to the Habit)
+     * @throws IllegalArgumentException (if attribute not legal)
      */
     public void setAttribute(String attribute) throws IllegalArgumentException {
         if (isLegalAttribute(attribute)) {
@@ -252,24 +233,26 @@ public class Habit implements Comparable<Habit> {
         }
     }
 
-    public void updateSchedule() {
-        //TODO: implement
-    }
-
-    public void setStartDate(LocalDate startDate) throws IllegalArgumentException {
-        // TODO: potential error checking, e.g. startDate cannot be after today?
+    /**
+     * Set start date for the Habit - can be in the past, present, or future
+     * @param startDate LocalDate (Intended start date of Habit)
+     */
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
     /**
      * Returns True if this Habit is set for today in its schedule.
-     * @return Boolean
+     * @return Boolean (True if Habit is scheduled for current day)
      */
     public Boolean isTodayHabit() {
         return schedule[LocalDate.now().getDayOfWeek().getValue()];
     }
 
-
+    /**
+     * Utility function for stats calculation - updates the number of possible Habit executions
+     * if it were done every day it was scheduled for since its start date.
+     */
     public void updateHabitsPossible() {
 
         // Get today's date - we will compare this to lastCalculated
@@ -296,18 +279,50 @@ public class Habit implements Comparable<Habit> {
         }
     }
 
+    /**
+     * Comparator implementation - to sort lexicographically based on name.
+     * @param h Habit (to compare to)
+     * @return int (comparison)
+     */
     public int compareTo(Habit h) {
         return this.name.compareTo(h.getHabitName());
     }
 
+    /**
+     * Increment how many times Habit was done on schedule.
+     */
     public void incrementHabitsDone() { ++this.habitsDone; }
+
+    /**
+     * Increment how any times Habit was done outside of schedule.
+     */
     public void incrementHabitsDoneExtra() { ++this.habitsDoneExtra; }
+
+    /**
+     * Decrement how many times Habit was done on schedule.
+     */
     public void decrementHabitsDone() { --this.habitsDone; }
+
+    /**
+     * Decrement how many times Habit was done outside of schedule.
+     */
     public void decrementHabitsDoneExtra() { --this.habitsDoneExtra; }
 
-    // Use habitsDone / habitsPossible to represent the overall stat (don't want to return
-    // a float or something dumb and messy like that - rational representation)
+    /**
+     * Get how many times Habit was done on schedule.
+     * @return int (Number of times Habit was done on schedule)
+     */
     public int getHabitsDone() { return this.habitsDone; }
+
+    /**
+     * Get how many times Habit was done outside of schedule.
+     * @return int (Number of times Habit was done outside of schedule)
+     */
     public int getHabitsDoneExtra() { return this.habitsDoneExtra; }
+
+    /**
+     * Get how many times Habit could have been done if schedule was followed from start date.
+     * @return int (Number of times Habit could have been done if schedule was followed from start date)
+     */
     public int getHabitsPossible() { return this.habitsPossible; }
 }
