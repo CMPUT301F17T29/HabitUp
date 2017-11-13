@@ -10,6 +10,7 @@ import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.View.AddHabitEventActivity;
+import com.example.habitup.View.EditHabitEventActivity;
 import com.example.habitup.View.ViewHabitEventActivity;
 import com.robotium.solo.Solo;
 
@@ -96,5 +97,29 @@ public class AddHabitEventTest extends ActivityInstrumentationTestCase2{
         solo.clickLongOnTextAndPress("I lived",1);
         solo.clickOnButton("Yes");
 
+    }
+
+    public void testViewHabitEvent() {
+        solo.clickOnView(solo.getView(R.id.add_action_bar));
+        solo.assertCurrentActivity("Wrong activity", AddHabitEventActivity.class);
+        solo.assertCurrentActivity("Wrong activity", ViewHabitEventActivity.class);
+        solo.clickOnView(solo.getView(R.id.add_action_bar));
+        solo.assertCurrentActivity("Wrong activity", AddHabitEventActivity.class);
+
+        solo.pressSpinnerItem(0,0);
+        solo.clickOnImage(0);
+        solo.setDatePicker(0,2017,10,10);
+        solo.clickOnText("OK");
+        solo.enterText(0, "I lived");
+        solo.clickOnButton("Save");
+
+        solo.assertCurrentActivity("Wrong activity", ViewHabitEventActivity.class);
+        assertTrue(solo.waitForText("I lived"));
+        solo.clickOnText("I lived");
+        solo.assertCurrentActivity("Wrong activity", EditHabitEventActivity.class);
+        solo.goBack();
+
+        solo.clickLongOnTextAndPress("I lived",1);
+        solo.clickOnButton("Yes");
     }
 }
