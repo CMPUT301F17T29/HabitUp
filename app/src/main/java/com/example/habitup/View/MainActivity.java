@@ -6,12 +6,10 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.TextView;
 
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
