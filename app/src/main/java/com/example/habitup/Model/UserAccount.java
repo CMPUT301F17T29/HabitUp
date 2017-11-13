@@ -231,12 +231,12 @@ public class UserAccount {
 
         if (photo != null) {
 
-//            Log.i("HabitUpDEBUG", "Photo is " + String.valueOf(photo.getByteCount()) + " bytes.");
+            Log.i("HabitUpDEBUG", "Photo is " + String.valueOf(photo.getByteCount()) + " bytes.");
 
             if (photo.getByteCount() > HabitUpApplication.MAX_PHOTO_BYTECOUNT) {
                 for (int i = 0; i < 3; ++i) {
                     photo = resizeImage(photo);
-//                    Log.i("HabitUpDEBUG", "Resized to " + String.valueOf(photo.getByteCount()) + " bytes.");
+                    Log.i("HabitUpDEBUG", "Resized to " + String.valueOf(photo.getByteCount()) + " bytes.");
                     if (photo.getByteCount() <= HabitUpApplication.MAX_PHOTO_BYTECOUNT) {
                         break;
                     }
@@ -246,7 +246,6 @@ public class UserAccount {
             if (photo.getByteCount() <= HabitUpApplication.MAX_PHOTO_BYTECOUNT) {
 
                 this.photo = photo;
-
                 ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
                 photo.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOS);
                 this.encodedPhoto = Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
