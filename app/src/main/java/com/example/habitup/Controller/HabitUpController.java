@@ -61,6 +61,12 @@ public class HabitUpController {
 
         // Increment User XP and write back
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
+
+        if (currentUser.getXP() + 1 >= currentUser.getXPtoNext()) {
+            currentUser.incrementLevel();
+            currentUser.setXPtoNext();
+        }
+
         currentUser.increaseXP(HabitUpApplication.XP_PER_HABITEVENT);
         ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
         updateUser.execute(currentUser);
