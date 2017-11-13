@@ -97,7 +97,7 @@ public class SignUpActivity extends AppCompatActivity {
                             setResult(Activity.RESULT_OK, intent);
                             Toast.makeText(getApplicationContext(),
                                     "Created new user '" + signUpName + "'. Please log in using this username.",
-                                    Toast.LENGTH_LONG);
+                                    Toast.LENGTH_LONG).show();
                             finish();
 
                         } catch (IllegalArgumentException e) {

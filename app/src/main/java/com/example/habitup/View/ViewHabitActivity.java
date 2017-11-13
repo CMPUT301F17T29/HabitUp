@@ -95,7 +95,6 @@ public class ViewHabitActivity extends BaseActivity {
         // Sort 'em.
         Collections.sort(habits);
 
-
         habitListView = (ListView) findViewById(R.id.OldHabitLists);
 
         adapter = new HabitListAdapter(this, R.layout.habit_list_item, habits);
@@ -189,6 +188,7 @@ public class ViewHabitActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add_action_bar:
+
                 Intent addHabitIntent = new Intent(context, AddHabitActivity.class);
                 startActivityForResult(addHabitIntent, NEW_HABIT);
                 return true;
