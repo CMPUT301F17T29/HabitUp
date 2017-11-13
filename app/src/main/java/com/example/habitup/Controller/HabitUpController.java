@@ -8,6 +8,7 @@ import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
 import com.example.habitup.Model.UserAccount;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class HabitUpController {
@@ -94,8 +95,6 @@ public class HabitUpController {
 
     static public int addHabitEvent(HabitEvent event) {
 //        Log.d("EVENT:", "Adding HabitEvent to HID #" + String.valueOf(event.getHID()));
-
-
 
         if (!habitEventAlreadyExists(event)) {
 
@@ -204,6 +203,31 @@ public class HabitUpController {
         for (HabitEvent ev : matchedEvents) {
             if (ev.getCompletedate().equals(event.getCompletedate())) {
                 alreadyExists = true;
+            }
+        }
+
+        return alreadyExists;
+    }
+
+    static public boolean habitDoneToday(Habit h) {
+
+//        Log.i("HabitUpDEBUG", "HUCtl/habitDoneToday - in method");
+
+        ElasticSearchController.GetHabitEventsByHidTask getEventsForHabit = new ElasticSearchController.GetHabitEventsByHidTask();
+        getEventsForHabit.execute(String.valueOf(h.getHID()));
+        ArrayList<HabitEvent> matchedEvents = null;
+        try {
+            matchedEvents = getEventsForHabit.get();
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "HUCtl/addHabitEvent - exception in events for same habit");
+        }
+
+        boolean alreadyExists = false;
+        for (HabitEvent ev : matchedEvents) {
+//            Log.i("HabitUpDEBUG", "HUCtl/habitDoneToday - looking at HabitEvent " + ev.getEID());
+            if (ev.getCompletedate().equals(LocalDate.now())) {
+                alreadyExists = true;
+//                Log.i("HabitUpDEBUG", "HUCtl/habitDoneToday - HabitEvent " + ev.getEID() + " was done today.");
             }
         }
 
