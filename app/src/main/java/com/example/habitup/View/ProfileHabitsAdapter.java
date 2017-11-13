@@ -89,20 +89,23 @@ public class ProfileHabitsAdapter extends ArrayAdapter<Habit> {
 //        Log.i("HabitUpDEBUG", "ProfileHabitsAdapter - looking at Habit " + habit.getHabitName());
         boolean doneToday = HabitUpController.habitDoneToday(habit);
         checkBox.setChecked(doneToday);
-        checkBox.setEnabled(!doneToday);
 
-        checkBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent addEventIntent = new Intent(context, AddHabitEventActivity.class);
-                addEventIntent.putExtra("position", position);
-                addEventIntent.putExtra("HABIT_EVENT_HID", habit.getHID());
-                addEventIntent.putExtra("profile", 1);
-                addEventIntent.putExtra("habit_pos", position);
-                addEventIntent.putExtra("habit", habit.getHabitName());
-                ((Activity) context).startActivityForResult(addEventIntent, 1);
-            }
-        });
+        if (!checkBox.isChecked()) {
+            checkBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent addEventIntent = new Intent(context, AddHabitEventActivity.class);
+                    addEventIntent.putExtra("position", position);
+                    addEventIntent.putExtra("HABIT_EVENT_HID", habit.getHID());
+                    addEventIntent.putExtra("profile", 1);
+                    addEventIntent.putExtra("habit_pos", position);
+                    addEventIntent.putExtra("habit", habit.getHabitName());
+                    ((Activity) context).startActivityForResult(addEventIntent, 1);
+                }
+            });
+        } else {
+            checkBox.setClickable(false);
+        }
 
         return v;
     }
