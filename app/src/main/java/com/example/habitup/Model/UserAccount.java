@@ -250,5 +250,5 @@ public class UserAccount {
     public void setXPtoNext() {
         this.XPtoNext += HabitUpApplication.XP_INCREASE_AMOUNT;
     }
-    
+
 }

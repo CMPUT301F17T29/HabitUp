@@ -97,13 +97,25 @@ public class HabitUpApplication {
      */
     static public int addUserAccount(UserAccount user) {
 
-        // Try: ElasticSearch put user
         ElasticSearchController.AddUsersTask addUser = new ElasticSearchController.AddUsersTask();
         addUser.execute(user);
 
         ElasticSearchController.AddAttrsTask addAttr = new ElasticSearchController.AddAttrsTask();
         Attributes attrs = new Attributes(user.getUID());
         addAttr.execute(attrs);
+
+        return 0;
+    }
+
+    /**
+     * Edit a new UserAccount
+     * @param user UserAccount of user to update
+     * @return 0 for success
+     */
+    static public int editUserAccount(UserAccount user) {
+
+        ElasticSearchController.AddUsersTask addUser = new ElasticSearchController.AddUsersTask();
+        addUser.execute(user);
 
         return 0;
     }
