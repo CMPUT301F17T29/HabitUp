@@ -58,8 +58,8 @@ public class MainActivity extends BaseActivity {
         habitListView.setLayoutManager(layoutManager);
 
         if (habitsArrayList.size() == 0) {
-            TextView subHeading = (TextView) findViewById(R.id.today_subheading);
-            subHeading.setText(getString(R.string.no_habits));
+//            TextView subHeading = (TextView) findViewById(R.id.today_subheading);
+//            subHeading.setText(getString(R.string.no_habits));
         }
     }
 
