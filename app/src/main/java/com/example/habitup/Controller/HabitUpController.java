@@ -39,10 +39,28 @@ public class HabitUpController {
         return habits;
     }
 
-    static public int addHabit(Habit h) {
-        ElasticSearchController.AddHabitsTask addHabit = new ElasticSearchController.AddHabitsTask();
-        addHabit.execute(h);
-        return 0;
+    static public int addHabit(Habit h) throws IllegalArgumentException {
+
+        ElasticSearchController.GetHabitsByNameForCurrentUserTask checkHabit = new ElasticSearchController.GetHabitsByNameForCurrentUserTask();
+        checkHabit.execute(h.getHabitName());
+        ArrayList<Habit> matched = null;
+        try {
+            matched = checkHabit.get();
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "HUCtl/addHabit - Execute check failed");
+        }
+
+        for (Habit match : matched) {
+            Log.i("HabitUpDEBUG", "matched habit: " + match.getHabitName());
+        }
+
+        if (matched.size() == 0) {
+            ElasticSearchController.AddHabitsTask addHabit = new ElasticSearchController.AddHabitsTask();
+            addHabit.execute(h);
+            return 0;
+        } else {
+            throw new IllegalArgumentException("Error: a Habit with this name already exists!");
+        }
     }
 
     static public int deleteHabit(Habit h) {

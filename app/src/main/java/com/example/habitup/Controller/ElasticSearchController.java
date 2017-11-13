@@ -302,6 +302,57 @@ public class ElasticSearchController {
         }
     }
 
+    public static class GetHabitsByNameForCurrentUserTask extends AsyncTask<String, Void, ArrayList<Habit>>{
+
+        @Override
+        protected ArrayList<Habit> doInBackground(String... habitNames) {
+            verifySettings();
+            String UserQuery;
+            ArrayList<Habit> habits = new ArrayList<Habit>();
+
+            if (habitNames[0].equals("")){
+                UserQuery = habitNames[0];
+            } else {
+                UserQuery = "{" +
+                                "\"query\": {" +
+                                    "\"bool\": {" +
+                                        "\"must\": [" +
+                                            "{\"term\": {\"uid\" : " + HabitUpApplication.getCurrentUIDAsString() + " }}, " +
+                                            "{\"match_phrase\": {\"name\" : \"" + habitNames[0] + "\" }}" +
+                                        "]" +
+                                    "}" +
+                                "}" +
+                            "}";
+            }
+
+            Log.i("HabitUpDEBUG", "ESCtl/HabitByNameForUID - query: " + UserQuery);
+
+            Search search = new Search.Builder(UserQuery).addIndex(db).addType(habitType).build();
+
+            try {
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()) {
+                    List<Habit> foundHabit = result.getSourceAsObjectList(Habit.class);
+                    habits.addAll(foundHabit);
+
+                } else {
+                    Log.i("HabitUpDEBUG", "ESCtl/HabitByNameForUID - Result Failed");
+                }
+            }
+            catch (Exception e) {
+                Log.i("HabitUpDEBUG", "ESCtl/HabitByNameForUID - Exception");
+            }
+
+            Log.i("HabitUpDEBUG", "ESCtl/HabitByNameForUID - " + habits.size() + " matches");
+
+            for (Habit h : habits) {
+                Log.i("HabitUpDEBUG", "ESCtl/HabitByNameForUID - matched " + h.getHabitName() + " #" + h.getHID());
+            }
+
+            return habits;
+        }
+    }
+
     public static class GetUserHabitsTask extends AsyncTask<String, Void, ArrayList<Habit>>{
 
         @Override
