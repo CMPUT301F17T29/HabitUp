@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single" android:id="@+id/main_group">
+        <item
+            android:id="@+id/profile"
+            android:title="Profile"
+            android:icon="@drawable/ic_profile"/>
+        <item
+            android:id="@+id/habits"
+            android:title="Habits"
+            android:icon="@drawable/ic_habits"/>
+        <item
+            android:id="@+id/events"
+            android:title="Habit Events"
+            android:icon="@drawable/ic_events"/>
+        <item
+            android:id="@+id/map"
+            android:title="Map"
+            android:icon="@drawable/ic_map"/>
+    </group>
+
+    <group android:checkableBehavior="single" android:id="@+id/friends_group">
+
+        <item
+            android:id="@+id/friends"
+            android:title="Friends"
+            android:icon="@drawable/ic_friends"/>
+
+        <item
+            android:id="@+id/requests"
+            android:title="Friend Requests"
+            android:icon="@drawable/ic_requests"/>
+
+        <item
+            android:id="@+id/finds"
+            android:title="Find A User"
+            android:icon="@drawable/ic_find"/>
+
+    </group>
+
+    <item
+        android:id="@+id/logout"
+        android:title="Log Out"
+        android:icon="@drawable/ic_logout"/>
+</menu>

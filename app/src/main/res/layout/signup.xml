@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/signup_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:textSize="40dp"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/white"
+        android:text="Sign up"/>
+
+    <TextView
+        android:id="@id/username_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/signup_title"
+        android:layout_marginLeft="35dp"
+        android:layout_marginTop="40dp"
+        android:text="Enter username (max 15 characters)"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/signup_username"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:scrollbars="horizontal"
+        android:layout_below="@+id/username_label"
+        android:textSize="16sp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="35dp"
+        android:hint="Enter unique username"
+        android:singleLine="true"
+        android:inputType="textFilter"
+        android:maxLength="15"
+        android:paddingLeft="5dp"
+        android:background="@color/white"/>
+
+    <TextView
+        android:id="@+id/full_name_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/signup_username"
+        android:layout_marginLeft="35dp"
+        android:layout_marginTop="20dp"
+        android:text="Enter display name (max 25 characters)"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/signup_displayname"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:scrollbars="horizontal"
+        android:layout_marginLeft="35dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="35dp"
+        android:layout_below="@+id/full_name_label"
+        android:textSize="16sp"
+        android:hint="Enter full name"
+        android:singleLine="true"
+        android:inputType="textFilter"
+        android:maxLength="25"
+        android:paddingLeft="10dp"
+        android:background="@color/white"/>
+
+    <RelativeLayout
+        android:id="@+id/signup_photo_display"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/signup_displayname"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:background="@color/colorPrimary"
+        android:paddingTop="5dp"
+        android:paddingBottom="10dp">
+
+        <Button
+            android:id="@+id/add_profile_pic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="25dp"
+            android:background="@color/colorPrimary"
+            android:drawableTop="@drawable/ic_add_photo"
+            style="?android:attr/borderlessButtonStyle"
+            android:scaleX="2"
+            android:scaleY="2"
+            android:textColor="#FFFFFF"
+            android:textSize="5sp"
+            android:paddingTop="10sp"
+            android:text="ADD PROFILE PICTURE"/>
+
+        <ImageView
+            android:id="@+id/signup_taken_image"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_below="@+id/add_profile_pic"
+            android:scaleType="fitCenter"
+            android:paddingTop="10dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:paddingLeft="35dp"
+        android:paddingRight="35dp"
+        android:layout_below="@+id/signup_photo_display">
+
+        <Button
+            android:id="@+id/signup_button"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_weight="0.5"
+            android:text="Sign Up"
+            android:layout_marginRight="5dp"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/green"
+            android:layout_marginTop="35dp" />
+
+        <Button
+            android:id="@+id/cancel_signup"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_weight="0.5"
+            android:text="cancel"
+            android:layout_marginLeft="5dp"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/lightgray"
+            android:layout_marginTop="35dp" />
+    </LinearLayout>
+
+</RelativeLayout>

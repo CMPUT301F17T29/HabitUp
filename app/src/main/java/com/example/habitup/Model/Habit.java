@@ -1,212 +1,328 @@
 package com.example.habitup.Model;
 
 
-import java.util.ArrayList;
+import android.util.Log;
 
-public class Habit {
+import com.example.habitup.Controller.ElasticSearchController;
+
+import java.time.LocalDate;
+
+/**
+ * Habit is the object representing a habit type, belonging to a specific user.  It specifies a
+ * name, reason, schedule of days of the week it should be completed on, the date to start, and
+ * the attribute it is associated with (the attribute it will increase each time the habit is
+ * done).
+ *
+ * The Habit stores some utility data for calculating statistics, namely how many times it was done
+ * on schedule, how many times it could have been done if always done on schedule, and how many
+ * non-scheduled times it was done.
+ *
+ * Javadoc last updated 2017-11-13 by @gojeffcho.
+ */
+
+public class Habit implements Comparable<Habit> {
 
     // Members
+    private int uid;
+    private int hid;
     private String name;
-    private ArrayList<Boolean> schedule;
+    private boolean[] schedule;
     private String reason;
     private String attribute;
-    private HabitEventList habitEvents;
+    private LocalDate startDate;
+
+    private LocalDate lastUpdated;
+    private int habitsDone;
+    private int habitsDoneExtra;
+    private int habitsPossible;
 
     /**
-     * Habit constructor
-     *
-     * @param name String for the Habit name
-     * @param Mon Boolean entry signifying if the Habit is schedule for Mon
-     * @param Tue Boolean entry signifying if the Habit is schedule for Tue
-     * @param Wed Boolean entry signifying if the Habit is schedule for Wed
-     * @param Thu Boolean entry signifying if the Habit is schedule for Thu
-     * @param Fri Boolean entry signifying if the Habit is schedule for Fri
-     * @param Sat Boolean entry signifying if the Habit is schedule for Sat
-     * @param Sun Boolean entry signifying if the Habit is schedule for Sun
-     * @param reason String for the reason of Habit
-     * @param attribute Attributes object to identify the associated attribute with the Habit
-     *
-     * @author @alido8592
+     * Empty constructor - UID is set from ES to the next possible HID.  Habit is then built
+     * using setters to set the additional fields.
+     * @param uid int (user to whom the Habit belongs)
      */
+    public Habit(int uid) {
+        this.uid = uid;
+        setUniqueHID();
+    }
 
     /**
-     * Empty constructor
+     * isLegalNameLength
+     * Checks for Habit name length between 1 - 20
+     * @param name String (Habit name)
+     * @return Boolean (True if legal, False if not)
      */
-    public Habit() {
-
+    public Boolean isLegalNameLength (String name) {
+        return ( (name.trim().length() > 0) && (name.trim().length() <= 20) );
     }
 
-    public Habit(String name, Boolean Sun, Boolean Mon, Boolean Tue, Boolean Wed, Boolean Thu,
-                 Boolean Fri, Boolean Sat, String reason, String attribute)
-            throws IllegalArgumentException, IllegalStateException {
-
-        //TODO:
-        // limits for name length and unique name and reason length and minimum 1 day scheduled
-        // String attribute must be from Attributes
-
-        this.name = name;
-        this.schedule = new ArrayList<Boolean>(7);
-        this.schedule.set(0, Sun);
-        this.schedule.set(1, Mon);
-        this.schedule.set(2, Tue);
-        this.schedule.set(3, Wed);
-        this.schedule.set(4, Thu);
-        this.schedule.set(5, Fri);
-        this.schedule.set(6, Sat);
-        this.reason = reason;
-        this.attribute = attribute;
-        habitEvents = new HabitEventList();
-
+    /**
+     * isLegalReasonLength
+     * Checks for Habit reason length between 1 - 30
+     * @param reason String (Habit reason)
+     * @return Boolean (True if legal, False if not)
+     */
+    public Boolean isLegalReasonLength(String reason){
+        return ( (reason.trim().length() > 0) && (reason.trim().length() <= 30) );
     }
+
+    /**
+     * isLegalSchedule
+     * Checks for Habit schedule containing at least 1 day scheduled for the Habit
+     * @param schedule boolean[8] (0 is unused, 1 for Mon, 2 for Tue...)
+     * @return Boolean (True if legal, False if not)
+     */
+    public Boolean isLegalSchedule(boolean[] schedule){
+        int trueCount = 0;
+        for (boolean s : schedule) {
+            if (s) { trueCount++; }
+        }
+
+        return trueCount > 0;
+    }
+
+    /**
+     * isLegalAttribute
+     * Checks for Habit attribute is from the established list of attributes
+     * @param attribute String (Name of attribute)
+     * @return Boolean (True if legal, False if not)
+     */
+    public Boolean isLegalAttribute(String attribute) {
+
+        String[] attrNames = Attributes.getAttributeNames();
+        for (String name : attrNames) {
+            if (name == attribute) {
+                return Boolean.TRUE;
+            }
+        }
+
+        return Boolean.FALSE;
+    }
+
+    /**
+     * getUID
+     * Gets the uid of habit
+     * @return int (UID of associated user)
+     */
+    public int getUID() { return this.uid; }
+
+    /**
+     * getHID
+     * Gets the unique identifier of habit
+     * @return int (habitID)
+     */
+    public int getHID() { return this.hid; }
 
     /**
      * getHabitName
      * Gets the String of the Habit's name
-     * @return String
+     * @return String (Name of Habit)
      */
-    public String getHabitName() {return this.name;}
+    public String getHabitName() { return this.name; }
 
     /**
      * getHabitSchedule
-     * Forms a String of days of when the Habit is scheduled
-     * @return String
+     * Returns habit schedule
+     * @return boolean[8] (0 is unused, 1 for Mon, 2 for Tue...)
      */
-    public String getHabitSchedule() {
-
-        ArrayList<String> days = new ArrayList<String>();
-        days.add("Sunday");
-        days.add("Monday");
-        days.add("Tuesday");
-        days.add("Wednesday");
-        days.add("Thursday");
-        days.add("Friday");
-        days.add("Saturday");
-
-        StringBuilder scheduleBuilder = new StringBuilder();
-
-        Integer i = 0;
-
-        while (i<7) {
-
-            if (this.schedule.get(i)) {
-
-                scheduleBuilder.append(days.get(i));
-                scheduleBuilder.append(" ");
-                i++;
-            }
-
-            else {i++;}
-
-        }
-
-        String stringSchedule = scheduleBuilder.toString();
-        return stringSchedule;
-    }
+    public boolean[] getHabitSchedule() { return this.schedule; }
 
     /**
      * getHabitReason
      * Gets the Habit's reason as a String
-     * @return String
+     * @return String (Habit reason)
      */
-    public String getHabitReason() {return this.reason;}
+    public String getHabitReason() { return this.reason; }
 
     /**
      * getHabitAttribute
      * Gets the associated attribute of the Habit
-     * @return String
+     * @return String (Attribute that the Habit increases each time when done)
      */
-    public String getHabitAttribute() {return this.attribute;}
+    public String getHabitAttribute() { return this.attribute; }
 
     /**
-     * getHabitEvents
-     * Gets the associated ArrayList of HabitEvent objects for the Habit
-     * @return ArrayList<HabitEvent>
+     * getStartDate
+     * Gets the Habit's start date
+     * @return Date (Start date of Habit)
      */
-    public HabitEventList getHabitEvents() {return this.habitEvents;}
+    public LocalDate getStartDate() { return this.startDate; }
+
+    /**
+     * Sets the next available HID from ElasticSearch - ensures no duplicate HIDs
+     */
+    public void setUniqueHID() {
+        // Do ElasticSearch stuff
+        ElasticSearchController.GetMaxHidTask maxHid = new ElasticSearchController.GetMaxHidTask();
+        maxHid.execute();
+        int hid;
+        try {
+            hid = maxHid.get();
+        } catch (Exception e) {
+            Log.d("HabitUpDEBUG", "ERROR getting MaxHID");
+            hid = -1;
+        }
+
+        // Set the HID
+        setHID(hid);
+    }
+
+    /**
+     * setHID
+     * Sets the Habit's unique identifier
+     */
+    private void setHID(int hid) { this.hid = hid; }
 
     /**
      * setHabitName
      * Sets the Habit's name into String name
-     * @param name String for the desired new name
-     * @throws IllegalArgumentException
+     * @param name String (Intended Habit name)
+     * @throws IllegalArgumentException (if Habit name not legal)
      */
-    public void setHabitName(String name) throws IllegalArgumentException{
+    public void setHabitName(String name) throws IllegalArgumentException {
 
-        this.name = name;
-        //TODO: Implement unique Habit name and limit length
+        if (isLegalNameLength(name)) {
+            this.name = name;
+        } else {
+            String errorStr = "Error: Name length must be within 1 - 20 characters";
+            throw new IllegalArgumentException(errorStr);
+        }
     }
 
     /**
      * setSchedule
-     * Changes the schedule accordingly by changing the Boolean values
-     * @param Mon Boolean entry signifying if the Habit is schedule for Monday
-     * @param Tue Boolean entry signifying if the Habit is schedule for Tuesday
-     * @param Wed Boolean entry signifying if the Habit is schedule for Wednesday
-     * @param Thu Boolean entry signifying if the Habit is schedule for Thursday
-     * @param Fri Boolean entry signifying if the Habit is schedule for Friday
-     * @param Sat Boolean entry signifying if the Habit is schedule for Saturday
-     * @param Sun Boolean entry signifying if the Habit is schedule for Sunday
+     * Changes the schedule accordingly with input schedule
+     * @param schedule boolean[8] (0 unused, 1 for Mon, 2 for Tue...)
      */
-    public void setSchedule(Boolean Mon, Boolean Tue, Boolean Wed, Boolean Thu,
-                            Boolean Fri, Boolean Sat, Boolean Sun) throws IllegalStateException{
-
-        //TODO: minimum 1 day scheduled
-
-        this.schedule.set(0, Mon);
-        this.schedule.set(1, Tue);
-        this.schedule.set(2, Wed);
-        this.schedule.set(3, Thu);
-        this.schedule.set(4, Fri);
-        this.schedule.set(5, Sat);
-        this.schedule.set(6, Sun);
+    public void setSchedule(boolean schedule[]) throws IllegalArgumentException {
+        if (isLegalSchedule(schedule)){
+            this.schedule = schedule;}
+        else{
+            throw new IllegalArgumentException("Error: Minimum one day scheduled required.");
+        }
     }
 
     /**
      * setReason
      * Sets the Habit's reason as the provided String
-     * @param reason String to represent the new desired reason
-     * @throws IllegalArgumentException
+     * @param reason String (Intended Habit reason)
+     * @throws IllegalArgumentException (if Reason not legal)
      */
     public void setReason(String reason) throws IllegalArgumentException {
 
-        this.reason = reason;
-        //TODO: Implement reason length limit
+        if (isLegalReasonLength(reason)) {
+            this.reason = reason;
+        } else {
+            String errStr = "Error: Reason length has to be between 1 - 30 characters.";
+            throw new IllegalArgumentException(errStr);
+        }
     }
 
     /**
      * setAttribute
      * Sets the Habit's attribute into the provided
-     * @param attribute Attributes object to be associated to the Habit
-     * @throws IllegalArgumentException
+     * @param attribute String (Attribute associated to the Habit)
+     * @throws IllegalArgumentException (if attribute not legal)
      */
-    public void setAttribute(String attribute) throws IllegalArgumentException{
-        //TODO: String attribute must be from Attributes.attributeNames
-
-        this.attribute = attribute;
-    }
-
-    public void updateSchedule() {
-        //TODO: implement
+    public void setAttribute(String attribute) throws IllegalArgumentException {
+        if (isLegalAttribute(attribute)) {
+            this.attribute = attribute;
+        } else {
+            String errStr = "Error: Attribute is invalid.";
+            throw new IllegalArgumentException(errStr);
+        }
     }
 
     /**
-     * addHabitEvent
-     * Adds a new HabitEvent into the Habit's ArrayList
-     * @param habitEvent HabitEvent to be added into the Habit
+     * Set start date for the Habit - can be in the past, present, or future
+     * @param startDate LocalDate (Intended start date of Habit)
      */
-    public void addHabitEvent(HabitEvent habitEvent){
-
-        this.habitEvents.add(habitEvent);
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
     }
 
     /**
-     * removeHabitEvent
-     * Removes the specified HabitEvent from the Habit's ArrayList
-     * @param habitEvent HabitEvent to be removed
+     * Returns True if this Habit is set for today in its schedule.
+     * @return Boolean (True if Habit is scheduled for current day)
      */
-    public void removeHabitEvent(HabitEvent habitEvent){
-
-        this.habitEvents.remove(habitEvent);
+    public Boolean isTodayHabit() {
+        return schedule[LocalDate.now().getDayOfWeek().getValue()];
     }
 
+    /**
+     * Utility function for stats calculation - updates the number of possible Habit executions
+     * if it were done every day it was scheduled for since its start date.
+     */
+    public void updateHabitsPossible() {
+
+        // Get today's date - we will compare this to lastCalculated
+        LocalDate today = LocalDate.now();
+        LocalDate curr = this.lastUpdated;
+
+        // New lastCalculated is today, because we're recalculating.
+        this.lastUpdated = today;
+
+        while (curr != today) {
+
+            // Check if curr is one of the days set for the Habit to be done
+            // NOTE: DayOfWeek is an enum - Mon == 1, Tue == 2, etc.
+            if (this.schedule[curr.getDayOfWeek().getValue()]) {
+
+                // If so, increment habitsPossible
+                ++this.habitsPossible;
+            }
+
+            // Increment to next day
+            // Careful!  Check for month rollover, weird possibilities
+            curr.plusDays(1);
+
+        }
+    }
+
+    /**
+     * Comparator implementation - to sort lexicographically based on name.
+     * @param h Habit (to compare to)
+     * @return int (comparison)
+     */
+    public int compareTo(Habit h) {
+        return this.name.compareTo(h.getHabitName());
+    }
+
+    /**
+     * Increment how many times Habit was done on schedule.
+     */
+    public void incrementHabitsDone() { ++this.habitsDone; }
+
+    /**
+     * Increment how any times Habit was done outside of schedule.
+     */
+    public void incrementHabitsDoneExtra() { ++this.habitsDoneExtra; }
+
+    /**
+     * Decrement how many times Habit was done on schedule.
+     */
+    public void decrementHabitsDone() { --this.habitsDone; }
+
+    /**
+     * Decrement how many times Habit was done outside of schedule.
+     */
+    public void decrementHabitsDoneExtra() { --this.habitsDoneExtra; }
+
+    /**
+     * Get how many times Habit was done on schedule.
+     * @return int (Number of times Habit was done on schedule)
+     */
+    public int getHabitsDone() { return this.habitsDone; }
+
+    /**
+     * Get how many times Habit was done outside of schedule.
+     * @return int (Number of times Habit was done outside of schedule)
+     */
+    public int getHabitsDoneExtra() { return this.habitsDoneExtra; }
+
+    /**
+     * Get how many times Habit could have been done if schedule was followed from start date.
+     * @return int (Number of times Habit could have been done if schedule was followed from start date)
+     */
+    public int getHabitsPossible() { return this.habitsPossible; }
 }

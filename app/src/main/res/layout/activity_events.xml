@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="?attr/actionBarSize"
+    android:background="@color/white"
+    tools:context="com.example.habitup.View.ViewHabitActivity"
+    android:fitsSystemWindows="true">
+
+    <TextView
+        android:id="@+id/history_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Habit Event History"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="15dp"
+        android:textColor="@color/darkgray"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+    <RelativeLayout
+        android:id="@+id/filters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/whitegray"
+        android:layout_below="@+id/history_title"
+        android:paddingTop="5dp"
+        android:paddingBottom="15dp"
+        android:layout_marginTop="10dp"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true">
+
+        <TextView
+            android:id="@+id/filter_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:text="Search comments or Filter by Habit"
+            android:textColor="@color/teal"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/filter_comment"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_below="@+id/filter_title"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/white_text_input"
+            android:drawableLeft="@drawable/ic_find"
+            android:drawableTint="@color/tintgray"
+            android:hint="Enter comment search string and press ENTER"
+            android:inputType="textFilter"
+            android:maxLength="30"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:singleLine="true"
+            android:textSize="14sp" />
+
+        <RelativeLayout
+            android:id="@+id/filter_habit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/filter_comment"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/white">
+
+            <Spinner
+                style="@style/Widget.AppCompat.DropDownItem.Spinner"
+                android:id="@+id/filter_habit_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+
+                android:layout_weight="1" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/select_event"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/filters"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:text="Tap an event to view details, or tap and hold for more options."
+        android:textSize="15sp"
+        android:textColor="@color/lightgray"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/event_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/select_event"
+        app:layoutManager="LinearLayoutManager"
+        android:scrollbars="vertical"
+        android:clickable="true">
+    </android.support.v7.widget.RecyclerView>
+
+</RelativeLayout>

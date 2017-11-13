@@ -13,31 +13,73 @@ import java.util.Map;
  * Implementation uses a hash map, with the attribute name as the key and an integer
  * number (representing the attribute's points) as the value. A hash map is used to allow quick
  * access to any attribute, such as when only one attribute's value needs to be retrieved/updated.
+ *
+ * Javadoc last updated 2017-11-13 by @gojeffcho.
  */
 
 public class Attributes {
 
     // Static members
     private final static String[] attributeNames = {
-        "Mental",
         "Physical",
+        "Mental",
         "Social",
         "Discipline"
     };
 
+    private final static String[] attributeColours = {
+        "#D32F2F",
+        "#7B1FA2",
+        "#1E88E5",
+        "#1A9B1A"
+    };
+
+    private final static Map<String,String> colourMap = createColourMap();
+
     // Members
+    private int uid;
     private Map<String,Integer> attributeMap;
 
     /**
      * Attributes constructor, which takes the class variable attributeNames
      * and populates an initialized attributeMap with default values of 0.
+     *
+     * @param uid UID associated with this Attributes container
      */
-    public Attributes() {} {
+    public Attributes(int uid) {
+
+        this.uid = uid;
         attributeMap = new HashMap<String,Integer>();
 
-        for (String name : attributeNames) {
+        for (int i = 0; i < Attributes.getSize(); i++) {
+            String name = attributeNames[i];
             attributeMap.put(name, 0);
         }
+    }
+
+    /**
+     * Creates a static hash map of attributes that correspond with a specific colour,
+     * with the key being the attribute name and the hex colou code being the value.
+     * @return the hash map of attibute names corresponding to a specific colour
+     */
+    public static Map<String,String> createColourMap() {
+        Map<String,String> map = new HashMap<String,String>();
+
+        for (int i = 0; i < Attributes.getSize(); i++) {
+            String name = attributeNames[i];
+            map.put(name, attributeColours[i]);
+        }
+
+        return map;
+    }
+
+    /**
+     * Gets the colour associated with an attribute
+     * @param name the name of the attribute
+     * @return the colour hex code
+     */
+    public static String getColour(String name) {
+        return colourMap.get(name);
     }
 
     /**
@@ -47,6 +89,12 @@ public class Attributes {
     public static String[] getAttributeNames() {
         return attributeNames;
     }
+
+    /**
+     * Get the UID associated with this container
+     * @return int (UID)
+     */
+    public int getUid() { return this.uid; }
 
     /**
      * Return the number of attributes
@@ -75,9 +123,9 @@ public class Attributes {
     }
 
     /**
-     * Updates an attribute by setting it to a different value.
-     * @param name the name of the attribute
-     * @param value the new attribute's value
+     * Updates an attribute by setting it to a different value.  Used for testing.
+     * @param name String (name of the attribute)
+     * @param value int (the attribute's new value)
      */
     public void setValue(String name, Integer value) {
         attributeMap.put(name, value);
