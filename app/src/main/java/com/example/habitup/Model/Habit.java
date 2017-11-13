@@ -8,7 +8,7 @@ import com.example.habitup.Controller.ElasticSearchController;
 
 import java.time.LocalDate;
 
-public class Habit {
+public class Habit implements Comparable<Habit> {
 
     // Members
     private int uid;
@@ -294,6 +294,10 @@ public class Habit {
             curr.plusDays(1);
 
         }
+    }
+
+    public int compareTo(Habit h) {
+        return this.name.compareTo(h.getHabitName());
     }
 
     public void incrementHabitsDone() { ++this.habitsDone; }

@@ -178,12 +178,13 @@ public class AddHabitActivity extends AppCompatActivity {
 
                 if (habitOK) {
                     // Pass to the controller
-                    if (HabitUpController.addHabit(newHabit) == 0) {
+                    try {
+                        HabitUpController.addHabit(newHabit);
                         Intent result = new Intent();
                         setResult(Activity.RESULT_OK, result);
                         finish();
-                    } else {
-                        Toast.makeText(getBaseContext(), "There was an error adding the new Habit.", Toast.LENGTH_LONG).show();
+                    } catch (Exception e) {
+                        Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
 

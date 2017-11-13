@@ -124,13 +124,7 @@ public class ViewHabitEventActivity extends BaseActivity {
         DateTimeFormatter dateFmt = DateTimeFormatter.ofPattern("MMM d, yyyy");
 
         //sort by completedate
-        Collections.sort(events, new Comparator<HabitEvent>() {
-            @Override
-            public int compare(HabitEvent e1, HabitEvent e2) {
-                return e1.getCompletedate().compareTo(e2.getCompletedate());
-            }
-        });
-        Collections.reverse(events);
+        Collections.sort(events);
 
         // Display if there are no events
         if (events.size() == 0) {
@@ -279,6 +273,7 @@ public class ViewHabitEventActivity extends BaseActivity {
         switch (item.getItemId()) {
             case R.id.add_action_bar:
                 Intent addEventIntent = new Intent(ViewHabitEventActivity.this, AddHabitEventActivity.class);
+                addEventIntent.putExtra("profile", 0);
                 startActivityForResult(addEventIntent, NEW_EVENT);
                 return true;
         }
@@ -299,6 +294,7 @@ public class ViewHabitEventActivity extends BaseActivity {
         editIntent.putExtra(HABIT_EVENT_HID, hid);
         editIntent.putExtra(HABIT_EVENT_EID, eid);
         editIntent.putExtra(HABIT_EVENT_ACTION, requestCode);
+        editIntent.putExtra("profile", 0);
         startActivity(editIntent);
     }
 

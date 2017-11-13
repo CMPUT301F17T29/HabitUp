@@ -28,6 +28,7 @@ import com.example.habitup.Model.HabitEvent;
 import com.example.habitup.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ViewHabitActivity extends BaseActivity {
 
@@ -56,30 +57,8 @@ public class ViewHabitActivity extends BaseActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.habit_bottom_nav);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        ElasticSearchController.GetUserHabitsTask getUserHabits = new ElasticSearchController.GetUserHabitsTask();
-        getUserHabits.execute(String.valueOf(HabitUpApplication.getCurrentUID()));
-        try {
-            habits = getUserHabits.get();
-        } catch (Exception e) {
-            Toast.makeText(getBaseContext(), "Error retrieving Habits.", Toast.LENGTH_LONG).show();
-        }
-
-        // Get user habit events
-        ElasticSearchController.GetHabitEventsByUidTask getHabitEvents = new ElasticSearchController.GetHabitEventsByUidTask();
-        getHabitEvents.execute(HabitUpApplication.getCurrentUIDAsString());
-        try {
-            events = getHabitEvents.get();
-        } catch (Exception e) {
-            Log.i("HabitUpDEBUG", "ViewHabitEvent - Couldn't get HabitEvents");
-        }
-
         // Initialize habits list view
         habitListView = (ListView) findViewById(R.id.OldHabitLists);
-
-        adapter = new HabitListAdapter(this, R.layout.habit_list_item, habits);
-        habitListView.setAdapter(adapter);
-
-        adapter.notifyDataSetChanged();
 
         // Handle list view click events
         habitListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -104,12 +83,25 @@ public class ViewHabitActivity extends BaseActivity {
 
 //        habits = HabitUpApplication.getCurrentUser().getHabits().getHabitArrayList();
 
+        // Get user habits
         ElasticSearchController.GetUserHabitsTask getUserHabits = new ElasticSearchController.GetUserHabitsTask();
         getUserHabits.execute(String.valueOf(HabitUpApplication.getCurrentUID()));
         try {
             habits = getUserHabits.get();
         } catch (Exception e) {
             Toast.makeText(getBaseContext(), "Error retrieving Habits.", Toast.LENGTH_LONG).show();
+        }
+
+        // Sort 'em.
+        Collections.sort(habits);
+
+        // Get user habit events
+        ElasticSearchController.GetHabitEventsByUidTask getHabitEvents = new ElasticSearchController.GetHabitEventsByUidTask();
+        getHabitEvents.execute(HabitUpApplication.getCurrentUIDAsString());
+        try {
+            events = getHabitEvents.get();
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "ViewHabitEvent - Couldn't get HabitEvents");
         }
 
         adapter = new HabitListAdapter(this, R.layout.habit_list_item, habits);
@@ -133,7 +125,6 @@ public class ViewHabitActivity extends BaseActivity {
         Log.i("HabitUpDEBUG", "OnActivityResult in HabitView");
 
         // Update the Habits List
-        // TODO this is not working
         ElasticSearchController.GetUserHabitsTask getUserHabits = new ElasticSearchController.GetUserHabitsTask();
         getUserHabits.execute(String.valueOf(HabitUpApplication.getCurrentUID()));
 
@@ -143,9 +134,7 @@ public class ViewHabitActivity extends BaseActivity {
             Toast.makeText(getBaseContext(), "Error retrieving Habits.", Toast.LENGTH_LONG).show();
         }
 
-        for (Habit habit : habits) {
-            Log.i("HabitUpDEBUG", "Habit: " + habit.getHabitName());
-        }
+        Collections.sort(habits);
 
         adapter = new HabitListAdapter(this, R.layout.habit_list_item, habits);
         habitListView.setAdapter(adapter);
@@ -170,42 +159,45 @@ public class ViewHabitActivity extends BaseActivity {
             if (position < 0) {
                 Toast.makeText(context, "Select a habit first.", Toast.LENGTH_SHORT).show();
             } else {
-                Habit habit = (Habit) adapter.getItem(position);
+                final Habit habit = (Habit) adapter.getItem(position);
                 int hid = habit.getHID();
 
                 Log.i("HabitUpDEBUG", "Habit selected - " + habit.getHabitName());
 
                 switch (item.getItemId()) {
+
                     case R.id.habit_menu_view:
                         goToEditActivity(VIEW_HABIT, hid);
                         return true;
+
                     case R.id.habit_menu_edit:
                         goToEditActivity(EDIT_HABIT, hid);
                         return true;
+
                     case R.id.habit_menu_delete:
                         AlertDialog.Builder alert = new AlertDialog.Builder(ViewHabitActivity.this);
                         alert.setTitle("Delete");
-                        alert.setMessage("Are you sure you want to delete this habit and its habit events?");
+                        alert.setMessage("Are you sure you want to delete this Habit?  This will also delete any events completed that were associated with the Habit.");
+
                         alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                for (HabitEvent e : events){
-                                    if (e.getHID() == ((Habit) adapter.getItem(position)).getHID()){
-                                        HabitUpController.deleteHabitEvent(e); // ES delete on associated habit events
-                                    }
-                                }
+                                HabitUpController.deleteHabitEventsForHabit(habit);
                                 HabitUpController.deleteHabit(habits.get(position));
                                 adapter.remove(adapter.getItem(position));
                                 adapter.notifyDataSetChanged();
+                                position = -1;
                                 dialogInterface.dismiss();
                             }
                         });
+
                         alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.dismiss();
                             }
                         });
+
                         alert.show();
                         return true;
                 }
