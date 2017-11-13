@@ -231,12 +231,12 @@ public class UserAccount {
 
         if (photo != null) {
 
-            Log.i("HabitUpDEBUG", "Photo is " + String.valueOf(photo.getByteCount()) + " bytes.");
+            //Log.i("HabitUpDEBUG", "Photo is " + String.valueOf(photo.getByteCount()) + " bytes.");
 
             if (photo.getByteCount() > HabitUpApplication.MAX_PHOTO_BYTECOUNT) {
                 for (int i = 0; i < 3; ++i) {
                     photo = resizeImage(photo);
-                    Log.i("HabitUpDEBUG", "Resized to " + String.valueOf(photo.getByteCount()) + " bytes.");
+                    //Log.i("HabitUpDEBUG", "Resized to " + String.valueOf(photo.getByteCount()) + " bytes.");
                     if (photo.getByteCount() <= HabitUpApplication.MAX_PHOTO_BYTECOUNT) {
                         break;
                     }
