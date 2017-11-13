@@ -1,6 +1,8 @@
 package com.example.habitup.View;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
@@ -13,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.habitup.Model.Attributes;
 import com.example.habitup.Model.Habit;
@@ -27,14 +30,16 @@ import java.util.ArrayList;
 public class ProfileHabitsAdapter extends ArrayAdapter<Habit> {
 
     private ArrayList<Habit> habits;
+    private Context context;
 
     public ProfileHabitsAdapter(Context context, int resource, ArrayList<Habit> habits) {
         super(context, resource, habits);
         this.habits = habits;
+        this.context = context;
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup viewGroup) {
+    public View getView(final int position, View view, ViewGroup viewGroup) {
         View v = view;
 
         if (v == null) {
@@ -42,7 +47,7 @@ public class ProfileHabitsAdapter extends ArrayAdapter<Habit> {
             v = inflater.inflate(R.layout.todays_habits, null);
         }
 
-        Habit habit = habits.get(position);
+        final Habit habit = habits.get(position);
         String attributeName = habit.getHabitAttribute();
         String attributeColour = Attributes.getColour(attributeName);
 
@@ -71,6 +76,25 @@ public class ProfileHabitsAdapter extends ArrayAdapter<Habit> {
                 textViews[i-1].setVisibility(View.GONE);
             }
         }
+
+        // Handle click events for check boxes
+        final CheckBox checkBox = v.findViewById(R.id.today_habit_checkbox);
+
+        // TODO: Check if habit has an event checked already for that day and check the box
+        // TODO: If box is checked, disable check box to be checked
+
+        checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent addEventIntent = new Intent(context, AddHabitEventActivity.class);
+                addEventIntent.putExtra("position", position);
+                addEventIntent.putExtra("HABIT_EVENT_HID", habit.getHID());
+                addEventIntent.putExtra("profile", 1);
+                addEventIntent.putExtra("habit_pos", position);
+                addEventIntent.putExtra("habit", habit.getHabitName());
+                ((Activity) context).startActivityForResult(addEventIntent, 1);
+            }
+        });
 
         return v;
     }
