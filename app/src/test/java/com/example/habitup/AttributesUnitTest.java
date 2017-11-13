@@ -6,27 +6,11 @@ import com.example.habitup.Model.Attributes;
 
 import org.junit.Test;
 
+import static junit.framework.Assert.assertTrue;
 
 
-public class AttributesUnitTest extends ActivityInstrumentationTestCase2 {
+public class AttributesUnitTest {
 
-    public AttributesUnitTest(){
-        super(Attributes.class);
-    }
-    @Override
-    public void setUp() throws Exception{
-
-    }
-
-    @Override
-    public void tearDown() throws Exception {
-
-    }
-
-    @Override
-    public void runTest() throws Exception {
-
-    }
     @Test
     public void testAttributeInitialization() {
         Attributes attributes = new Attributes(1);
