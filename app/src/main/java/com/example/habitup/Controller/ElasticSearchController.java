@@ -599,9 +599,7 @@ public class ElasticSearchController {
 
             ArrayList<HabitEvent> habitEvents = new ArrayList<HabitEvent>();
 
-            Log.i("Debug", Hids[0]);
-
-//            String query = "{\"query\": {\"match\" : { \"hid\" : \"" + Hids[0] + "\" }}}";
+//            Log.i("HabitUpDEBUG", Hids[0]);
 
             String query = "{" +
                                 "\"size\": " + HabitUpApplication.NUM_OF_ES_RESULTS + "," +
@@ -628,6 +626,10 @@ public class ElasticSearchController {
             catch (Exception e) {
                 Log.i("Error1", "Something went wrong when we tried to communicate with the elasticsearch server!");
             }
+
+//            for (HabitEvent ev : habitEvents) {
+//                Log.i("HabitUpDEBUG", "Found HabitEvent " + ev.getEID() + " from HID " + ev.getHID());
+//            }
 
             return habitEvents;
         }
