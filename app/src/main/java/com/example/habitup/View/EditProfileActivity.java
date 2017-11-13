@@ -17,16 +17,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.habitup.Controller.HabitUpApplication;
-import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
-
+/**
+ * This is the activity for editing the current user's profile fields. The user can
+ * change their profile photo and also change their full display name. A profile photo must be
+ * under 65,536 bytes. The full name must be a maximum of 25 characters.
+ *
+ * @author Shari Barboza
+ */
 public class EditProfileActivity extends AppCompatActivity {
 
     private UserAccount currentUser;
@@ -141,12 +143,6 @@ public class EditProfileActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * Includes activity for taking picture
-     * @param requestCode the request code for some activity
-     * @param resultCode the result code of the activity
-     * @param data data from the activity
-     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -164,11 +160,6 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * Listens for when the user clicks on the back button
-     * @param menuItem the item in the menu
-     * @return true if the item was selected
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {

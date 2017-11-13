@@ -31,6 +31,13 @@ import java.text.DateFormatSymbols;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * This is the activity for editing a habit. The user must ensure a non-empty habit name and a
+ * reason are set. The user can also change the start date and the associated attribute. The user
+ * can add or remove more days for the habit's schedule, but must have at least 1 day selected.
+ *
+ * @author Shari Barboza
+ */
 public class EditHabitActivity extends AppCompatActivity {
 
     // Core functionality
@@ -172,6 +179,7 @@ public class EditHabitActivity extends AppCompatActivity {
             viewMode();
         }
 
+        // When save button is clicked
         saveButton.setOnClickListener(new View.OnClickListener() {
 
             /**
@@ -200,6 +208,7 @@ public class EditHabitActivity extends AppCompatActivity {
 
                 Boolean habitOK = Boolean.TRUE;
 
+                // Validation for habit
                 try {
                     habit.setHabitName(habitName);
                 } catch (IllegalArgumentException e) {
@@ -255,11 +264,6 @@ public class EditHabitActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * Listens for when the user clicks on the back button
-     * @param menuItem the item in the menu
-     * @return true if the item was selected
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
@@ -274,11 +278,6 @@ public class EditHabitActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Opening the date picker dialog
-     * @param id the dialog id
-     * @return the dialog
-     */
     @Override
     protected Dialog onCreateDialog(int id) {
         if (id == DIALOG_ID) {
@@ -287,30 +286,15 @@ public class EditHabitActivity extends AppCompatActivity {
         return null;
     }
 
-    // Creating the date picker listener for when a user selects a date
-    private DatePickerDialog.OnDateSetListener datePicker
-            = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            year_x = year;
-            month_x = monthOfYear;
-            day_x = dayOfMonth;
-            setDateString();
-        }
-    };
-
-    /**
-     * Updates the date string in the date text view
-     */
+    //
     private void setDateString() {
         String monthName = new DateFormatSymbols().getShortMonths()[month_x];
         String dateString = (monthName) + " " + day_x + ", " + year_x;
         dateView.setText(dateString);
     }
 
-    /**
-     * Disables editable fields and specific resources for viewing a habit
-     */
+
+    // Disables editable fields and specific resources for viewing a habit
     private void viewMode() {
         // Disable name edit
         editName.setFocusable(false);
@@ -348,7 +332,19 @@ public class EditHabitActivity extends AppCompatActivity {
         saveButton.setVisibility(View.INVISIBLE);
     }
 
-    // Sets selected attribute color and padding
+    // Creating the date picker listener for when a user selects a date
+    private DatePickerDialog.OnDateSetListener datePicker
+            = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            year_x = year;
+            month_x = monthOfYear;
+            day_x = dayOfMonth;
+            setDateString();
+        }
+    };
+
+    // Sets selected attribute color and padding in the attributes spinner
     private AdapterView.OnItemSelectedListener attributeListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

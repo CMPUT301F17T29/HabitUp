@@ -25,9 +25,13 @@ import java.util.ArrayList;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
- * Created by sharidanbarboza on 2017-10-28.
+ * This is the adapter for the habits that will be displayed in a user's profile screen.
+ * The profile habits only contain habits that are scheduled for the current day. The information
+ * displayed for each habit are the habit name, the days of the weeks it is scheduled for,
+ * and a checkbox indicating whether there is a habit event completed for that habit or not.
+ *
+ * @author Shari Barboza
  */
-
 public class ProfileHabitsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int HEADER_VIEW = 0;
