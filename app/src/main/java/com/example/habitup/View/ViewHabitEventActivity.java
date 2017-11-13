@@ -64,7 +64,6 @@ public class ViewHabitEventActivity extends BaseActivity {
 
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         eventListView.addItemDecoration(itemDecoration);
-
     }
 
     /**
