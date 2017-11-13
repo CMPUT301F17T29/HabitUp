@@ -111,6 +111,10 @@ public class ProfileHabitsAdapter extends RecyclerView.Adapter<RecyclerView.View
 
             // Set user's Social value
             attr4Field.setText(String.valueOf(userAttrs.getValue("Discipline")));
+
+            if (habits.size() == 0) {
+                today_subheading.setText(R.string.no_habits);
+            }
         }
     }
 

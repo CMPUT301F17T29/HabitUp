@@ -6,6 +6,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,10 +58,6 @@ public class MainActivity extends BaseActivity {
         habitListView.setAdapter(adapter);
         habitListView.setLayoutManager(layoutManager);
 
-        if (habitsArrayList.size() == 0) {
-//            TextView subHeading = (TextView) findViewById(R.id.today_subheading);
-//            subHeading.setText(getString(R.string.no_habits));
-        }
     }
 
     @Override
