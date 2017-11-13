@@ -78,6 +78,12 @@ public class HabitEventListUnitTest extends ActivityInstrumentationTestCase2 {
         assertFalse(list.contains(e));
     }
 
-    
+    @Test
+    public void testGetTodaysHabitArrayList(){
+
+
+    }
+
+
 
 }
