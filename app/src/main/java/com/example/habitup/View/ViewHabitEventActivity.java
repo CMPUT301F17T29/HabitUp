@@ -153,6 +153,7 @@ public class ViewHabitEventActivity extends BaseActivity {
         }
         habitSpinner.setAdapter(habitAdapter);
 
+        /*
         // comment filter through list
         commentFilter.addTextChangedListener(new TextWatcher() {
             @Override
@@ -229,7 +230,7 @@ public class ViewHabitEventActivity extends BaseActivity {
 
             }
         });
-
+        */
 
         // Highlight events row in drawer
         navigationView.setCheckedItem(R.id.events);
