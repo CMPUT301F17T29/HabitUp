@@ -21,7 +21,19 @@ import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 
-// http://cmput301.softwareprocess.es:8080/team29_habitup/
+/**
+ * ElasticSearchController performs all ElasticSearch-related operations, primarily establishing
+ * connections with the database and performing queries.
+ *
+ * Some of these queries will have to be updated to override the default 10 results cap - those
+ * key to P4 implementation have this done already, but others (e.g. GetAllUsersTask) will need to
+ * be updated for P5.
+ *
+ * @author tyheise
+ * @author gojeffcho
+ *
+ * Javadoc last updated 2017-11-13 by @gojeffcho
+ */
 
 public class ElasticSearchController {
 
@@ -34,7 +46,10 @@ public class ElasticSearchController {
     private static final String habitType = "habit";
     private static final String habitEventType = "habitevent";
 
-
+    /**
+     * Put a UserAccount to the DB - by UID, so can be an add or edit operation
+     * .execute() with UserAccount object
+     */
     public static class AddUsersTask extends AsyncTask<UserAccount, Void, Void> {
 
         @Override
@@ -45,10 +60,9 @@ public class ElasticSearchController {
                 Index index = new Index.Builder(user).index(db).type(userType).refresh(true).id(Integer.toString(user.getUID())).build();
 
                 try {
-                    // where is the client?
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
-                        Log.i("HabitUpDEBUG", "AddUsersTask Success");
+//                        Log.i("HabitUpDEBUG", "AddUsersTask Success");
                     }
 
                     else{
@@ -67,7 +81,13 @@ public class ElasticSearchController {
         }
     }
 
-    /* Given a username, returns the user object corresponding to it */
+    // Given a username, returns the user object corresponding to it
+
+    /**
+     * Get a UserAccount object corresponding to a String username
+     * .execute() with a String (username)
+     * .get() -> ArrayList<UserAccount>
+     */
     public static class GetUser extends AsyncTask<String, Void, ArrayList<UserAccount>> {
         @Override
         protected ArrayList<UserAccount> doInBackground(String... search_parameters) {
@@ -113,7 +133,11 @@ public class ElasticSearchController {
         }
     }
 
-    /* Given a username, returns the user object corresponding to it */
+    /**
+     * Gets all UserAccounts, up to NUM_OF_ES_RESULTS
+     * .execute() with no args
+     * .get() -> ArrayList<UserAccount>
+     */
     public static class GetAllUsers extends AsyncTask<Void, Void, ArrayList<UserAccount>> {
         @Override
         protected ArrayList<UserAccount> doInBackground(Void... voids) {
@@ -122,11 +146,10 @@ public class ElasticSearchController {
             ArrayList<UserAccount> accounts = new ArrayList<>();
             String UserQuery;
 
-            UserQuery = "{\"query\": {\"match_all\" : {}}}";
+//            UserQuery = "{\"query\": {\"match_all\" : {}}}";
 
             String query = "{" +
                                 "\"size\": " + HabitUpApplication.NUM_OF_ES_RESULTS + "," +
-                                "\"from\": 0," +
                                 "\"query\": {" +
                                     "\"match_all\" : {}" +
                                 "}" +
@@ -135,7 +158,7 @@ public class ElasticSearchController {
 
             //Log.i("Debug", "username to search for is: "+ search_parameters[0]);
 
-            Search search = new Search.Builder(UserQuery)
+            Search search = new Search.Builder(query)
                     .addIndex(db)
                     .addType(userType)
                     .build();
@@ -162,6 +185,10 @@ public class ElasticSearchController {
         }
     }
 
+    /**
+     * Put Attributes object to the DB - done by UID, so can be add or edit
+     * .execute() with Attributes object
+     */
     public static class AddAttrsTask extends AsyncTask<Attributes, Void, Void> {
 
         @Override
@@ -177,7 +204,7 @@ public class ElasticSearchController {
                     // where is the client?
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
-                        Log.i("HabitUpDEBUG", "AddAttr SUCCESS");
+//                        Log.i("HabitUpDEBUG", "AddAttr SUCCESS");
                     }
 
                     else{
@@ -192,20 +219,25 @@ public class ElasticSearchController {
         }
     }
 
+    /**
+     * Gets Attributes object belonging to the UID
+     * .execute() with String UID
+     * .get() -> ArrayList<Attributes>
+     */
     public static class GetAttributesTask extends AsyncTask<String, Void, ArrayList<Attributes>> {
         @Override
-        protected ArrayList<Attributes> doInBackground(String... search_parameters) {
+        protected ArrayList<Attributes> doInBackground(String... uids) {
             verifySettings();
 
             ArrayList<Attributes> attributes = new ArrayList<>();
             String query;
 
-            if (search_parameters[0].equals("")){
-                query = search_parameters[0];
+            if (uids[0].equals("")){
+                query = uids[0];
             }
 
             else{
-                query = "{\"query\": {\"match\" : { \"uid\" : \"" + search_parameters[0] + "\" }}}";
+                query = "{\"query\": {\"match\" : { \"uid\" : \"" + uids[0] + "\" }}}";
             }
 
             //Log.i("Debug", "username to search for is: "+ search_parameters[0]);
@@ -235,6 +267,10 @@ public class ElasticSearchController {
         }
     }
 
+    /**
+     * Put a Habit to the DB - done by HID, so can be add or edit task
+     * .execute() with Habit object
+     */
     public static class AddHabitsTask extends AsyncTask<Habit, Void, Void> {
 
         @Override
@@ -245,12 +281,10 @@ public class ElasticSearchController {
             for (Habit habit : habits) {
                 Index index = new Index.Builder(habit).index(db).type(habitType).id(Integer.toString(habit.getHID())).refresh(true).build();
 
-
                 try {
-                    // where is the client?
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
-                        Log.i("HabitUpDEBUG", "Wrote Habit " + habit.getHabitName());
+//                        Log.i("HabitUpDEBUG", "Wrote Habit " + habit.getHabitName());
                     } else {
                         Log.i("HabitUpDEBUG", "Elasticsearch was not able to add the Habit");
                     }
@@ -265,8 +299,11 @@ public class ElasticSearchController {
 
     }
 
-    //get Habit by name
-    //returns an arraylist, should be length 1 with arrayList[0] being the ahbit
+    /**
+     * Gets the Habit corresponding to an HID
+     * .execute() with String HID
+     * .get() -> ArrayList<Habit>
+     */
     public static class GetHabitsTask extends AsyncTask<String, Void, ArrayList<Habit>>{
 
         @Override
@@ -277,9 +314,7 @@ public class ElasticSearchController {
 
             if (Hids[0].equals("")){
                 UserQuery = Hids[0];
-            }
-
-            else{
+            } else {
                 UserQuery = "{\"query\": {\"match\" : { \"hid\" : \"" + Hids[0] + "\" }}}";
             }
 
@@ -287,8 +322,6 @@ public class ElasticSearchController {
             Search search = new Search.Builder(UserQuery).addIndex(db).addType(habitType).build();
 
             try {
-
-                // TODO get the results of the query
                 SearchResult result = client.execute(search);
                 if (result.isSucceeded()) {
                     List<Habit> foundHabit = result.getSourceAsObjectList(Habit.class);
@@ -306,6 +339,11 @@ public class ElasticSearchController {
         }
     }
 
+    /**
+     * Gets Habits matching a name for the CurrentUser
+     * .execute() using String of HabitName
+     * .get() -> ArrayList<Habit>
+     */
     public static class GetHabitsByNameForCurrentUserTask extends AsyncTask<String, Void, ArrayList<Habit>>{
 
         @Override
@@ -329,7 +367,7 @@ public class ElasticSearchController {
                             "}";
             }
 
-            Log.i("HabitUpDEBUG", "ESCtl/HabitByNameForUID - query: " + UserQuery);
+//            Log.i("HabitUpDEBUG", "ESCtl/HabitByNameForUID - query: " + UserQuery);
 
             Search search = new Search.Builder(UserQuery).addIndex(db).addType(habitType).build();
 
@@ -347,16 +385,20 @@ public class ElasticSearchController {
                 Log.i("HabitUpDEBUG", "ESCtl/HabitByNameForUID - Exception");
             }
 
-            Log.i("HabitUpDEBUG", "ESCtl/HabitByNameForUID - " + habits.size() + " matches");
-
-            for (Habit h : habits) {
-                Log.i("HabitUpDEBUG", "ESCtl/HabitByNameForUID - matched " + h.getHabitName() + " #" + h.getHID());
-            }
+//            Log.i("HabitUpDEBUG", "ESCtl/HabitByNameForUID - " + habits.size() + " matches");
+//            for (Habit h : habits) {
+//                Log.i("HabitUpDEBUG", "ESCtl/HabitByNameForUID - matched " + h.getHabitName() + " #" + h.getHID());
+//            }
 
             return habits;
         }
     }
 
+    /**
+     * Get all Habits belonging to a UserAccount
+     * .execute() with String UID
+     * .get() -> ArrayList<Habit>
+     */
     public static class GetUserHabitsTask extends AsyncTask<String, Void, ArrayList<Habit>>{
 
         @Override
@@ -367,9 +409,7 @@ public class ElasticSearchController {
 
             if (uids[0].equals("")){
                 UserQuery = uids[0];
-            }
-
-            else {
+            } else {
                 UserQuery = "{" +
                                 "\"size\": " + HabitUpApplication.NUM_OF_ES_RESULTS + "," +
                                 "\"from\": 0," +
@@ -389,7 +429,7 @@ public class ElasticSearchController {
 
                 SearchResult result = client.execute(search);
                 if (result.isSucceeded()) {
-                    Log.i("HabitUpDEBUG", "Got Habits from ES");
+//                    Log.i("HabitUpDEBUG", "Got Habits from ES");
 
                     List<Habit> foundHabit = result.getSourceAsObjectList(Habit.class);
 
@@ -410,6 +450,12 @@ public class ElasticSearchController {
         }
     }
 
+    /**
+     * Add HabitEvent - NOT by EID.  Sends HabitEvent, and if EID not previously set, i.e., this is
+     * a new HabitEvent, sets the EID on the object and re-sends it to update.
+     *
+     * .execute() using HabitEvent object
+     */
     public static class AddHabitEventsTask extends AsyncTask<HabitEvent, Void, Void> {
 
         @Override
@@ -429,7 +475,7 @@ public class ElasticSearchController {
 
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
-                        Log.i("HabitUpDEBUG", "AddHabitEventTask getId: " + result.getId());
+//                        Log.i("HabitUpDEBUG", "AddHabitEventTask getId: " + result.getId());
 
                         if (habitEvent.getEID() == null) {
                             habitEvent.setEID(result.getId());
@@ -437,7 +483,7 @@ public class ElasticSearchController {
                             try {
                                 DocumentResult newResult = client.execute(reindex);
                                 if (newResult.isSucceeded()) {
-                                    Log.i("HabitUpDEBUG", "Update EID OK");
+//                                    Log.i("HabitUpDEBUG", "Update EID OK");
                                 } else {
                                     Log.i("HabitUpDEBUG", "Update EID failed.");
                                 }
@@ -458,7 +504,11 @@ public class ElasticSearchController {
         }
     }
 
-    //Get HabitEvent by EID
+    /**
+     * Retrieve a HabitEvent by EID.
+     * .execute() using String EID
+     * .get() -> ArrayList<HabitEvent>
+     */
     public static class GetHabitEventsByEIDTask extends AsyncTask<String, Void, ArrayList<HabitEvent>>{
 
         @Override
@@ -472,8 +522,6 @@ public class ElasticSearchController {
             Search search = new Search.Builder(query).addIndex(db).addType(habitEventType).build();
 
             try {
-
-                // TODO get the results of the query
                 SearchResult result = client.execute(search);
                 if (result.isSucceeded()) {
                     List<HabitEvent> foundHabitEvent = result.getSourceAsObjectList(HabitEvent.class);
@@ -491,13 +539,17 @@ public class ElasticSearchController {
         }
     }
 
-    //Get HabitEvent by UID
+    /**
+     * Get all HabitEvents belonging to a UserAccount by UID.
+     * .execute() using String UID
+     * .get() -> ArrayList<HabitEvent>
+     */
     public static class GetHabitEventsByUidTask extends AsyncTask<String, Void, ArrayList<HabitEvent>>{
 
         @Override
         protected ArrayList<HabitEvent> doInBackground(String... Uids) {
 
-            Log.i("HabitUpDEBUG", "GetHabitEventsByUidTask");
+//            Log.i("HabitUpDEBUG", "GetHabitEventsByUidTask");
             verifySettings();
 
             ArrayList<HabitEvent> habitEvents = new ArrayList<HabitEvent>();
@@ -516,11 +568,9 @@ public class ElasticSearchController {
             Search search = new Search.Builder(query).addIndex(db).addType(habitEventType).build();
 
             try {
-
-                // TODO get the results of the query
                 SearchResult result = client.execute(search);
                 if (result.isSucceeded()) {
-                    Log.i("DeBug", "found some habit events");
+//                    Log.i("DeBug", "found some habit events");
                     List<HabitEvent> foundHabitEvent = result.getSourceAsObjectList(HabitEvent.class);
                     habitEvents.addAll(foundHabitEvent);
 
@@ -536,7 +586,11 @@ public class ElasticSearchController {
         }
     }
 
-    // Get HabitEvent by UID
+    /**
+     * Get all HabitEvents belonging to a HID
+     * .execute() using String HID
+     * .get() -> ArrayList<HabitEvent>
+     */
     public static class GetHabitEventsByHidTask extends AsyncTask<String, Void, ArrayList<HabitEvent>>{
 
         @Override
@@ -561,10 +615,9 @@ public class ElasticSearchController {
             Search search = new Search.Builder(query).addIndex(db).addType(habitEventType).build();
 
             try {
-
                 SearchResult result = client.execute(search);
                 if (result.isSucceeded()) {
-                    Log.i("DeBug", "found some habit events");
+//                    Log.i("DeBug", "found some habit events");
                     List<HabitEvent> foundHabitEvent = result.getSourceAsObjectList(HabitEvent.class);
                     habitEvents.addAll(foundHabitEvent);
 
@@ -580,7 +633,13 @@ public class ElasticSearchController {
         }
     }
 
-    // Get HabitEvent by UID
+    /**
+     * Get HabitEvents specifically for deletion - returns a larger number of HabitEvents to make
+     * sure they all get deleted properly.  This is used when a Habit is being deleted.
+     *
+     * .execute() using String HID of Habit being deleted
+     * .get() -> ArrayList<HabitEvent>
+     */
     public static class GetHabitEventsForDelete extends AsyncTask<String, Void, ArrayList<HabitEvent>>{
 
         @Override
@@ -604,7 +663,6 @@ public class ElasticSearchController {
 
                 SearchResult result = client.execute(search);
                 if (result.isSucceeded()) {
-                    Log.i("DeBug", "found some habit events");
                     List<HabitEvent> foundHabitEvent = result.getSourceAsObjectList(HabitEvent.class);
                     habitEvents.addAll(foundHabitEvent);
 
@@ -620,6 +678,11 @@ public class ElasticSearchController {
         }
     }
 
+    /**
+     * Gets the highest UID currently in use, then returns its increment
+     * .execute()
+     * .get() -> Integer (next available UID to use)
+     */
     public static class GetMaxUidTask extends AsyncTask<Void, Void, Integer>{
         Integer maxUid = 0;
         @Override
@@ -642,7 +705,6 @@ public class ElasticSearchController {
             Search search = new Search.Builder(query).addIndex(db).addType(userType).build();
 
             try {
-
                 SearchResult result = client.execute(search);
                 if (result.isSucceeded()) {
                     UserAccount foundUser = result.getSourceAsObject(UserAccount.class);
@@ -660,6 +722,11 @@ public class ElasticSearchController {
         }
     }
 
+    /**
+     * Gets the highest HID currently in use, then returns its increment.
+     * .execute()
+     * .get() -> Integer (next available HID to use)
+     */
     public static class GetMaxHidTask extends AsyncTask<Void, Void, Integer>{
         Integer maxHid = 0;
 
@@ -683,8 +750,6 @@ public class ElasticSearchController {
             Search search = new Search.Builder(query).addIndex(db).addType(habitType).build();
 
             try {
-
-                // TODO get the results of the query
                 SearchResult result = client.execute(search);
                 if (result.isSucceeded()) {
                     Habit foundHabit = result.getSourceAsObject(Habit.class);
@@ -701,10 +766,12 @@ public class ElasticSearchController {
 
             return ++maxHid;
         }
-
     }
 
-    //given a UID, deletes the corresponding user
+    /**
+     * Delete a UserAccount by UID
+     * .execute() using String UID
+     */
     public static class DeleteUserTask extends AsyncTask<String, Void, Void>{
 
         @Override
@@ -718,13 +785,9 @@ public class ElasticSearchController {
                 DeleteByQuery deleteUser = new DeleteByQuery.Builder(query).addIndex(db).addType(userType).build();
 
                 try {
-                    // where is the client?
                     client.execute(deleteUser);
-                }
-
-                catch (Exception e) {
+                } catch (Exception e) {
                     Log.i("Error", "The application failed to build the query and delete the User");
-
                 }
             }
 
@@ -732,7 +795,10 @@ public class ElasticSearchController {
         }
     }
 
-    //given an HID for a habit, delete the corresponding habit
+    /**
+     * Delete Habit by HID
+     * .execute() using String HID
+     */
     public static class DeleteHabitTask extends AsyncTask<String, Void, Void>{
 
         @Override
@@ -746,13 +812,9 @@ public class ElasticSearchController {
                 DeleteByQuery deleteHabit = new DeleteByQuery.Builder(query).addIndex(db).addType(habitType).build();
 
                 try {
-                    // where is the client?
                     client.execute(deleteHabit);
-                }
-
-                catch (Exception e) {
+                } catch (Exception e) {
                     Log.i("Error", "The application failed to build the query and delete the User");
-
                 }
             }
 
@@ -760,14 +822,17 @@ public class ElasticSearchController {
         }
     }
 
-    //Given a ESid for a habit event, dletes the corresponding event from ES
+    /**
+     * Delete a HabitEvent by EID
+     * .execute() using String EID
+     */
     public static class DeleteHabitEventTask extends AsyncTask<String, Void, Void>{
 
         @Override
         protected Void doInBackground(String... ESids) {
             verifySettings();
 
-            Log.i("HabitUpDEBUG", "ESCtl/Trying to delete " + ESids[0]);
+//            Log.i("HabitUpDEBUG", "ESCtl/Trying to delete " + ESids[0]);
 
             for (String Esid : ESids) {
 
@@ -775,21 +840,20 @@ public class ElasticSearchController {
 
                 try {
                     client.execute(deleteHabit);
-                }
-
-                catch (Exception e) {
+                } catch (Exception e) {
                     Log.i("Error", "The application failed to build the query and delete the User");
 
                 }
-                Log.i("HabitUpDEBUG", "ESCtl/Deleted " + ESids[0]);
+//                Log.i("HabitUpDEBUG", "ESCtl/Deleted " + ESids[0]);
             }
 
             return null;
         }
     }
 
-
-
+    /**
+     * Connection utility
+     */
     public static void verifySettings() {
         if (client == null) {
             DroidClientConfig.Builder builder = new DroidClientConfig.Builder(serverURL);

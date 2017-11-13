@@ -130,7 +130,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
                 if (profileOK) {
                     // Pass to the controller
-                    if (HabitUpApplication.addUserAccount(currentUser) == 0) {
+                    if (HabitUpApplication.editUserAccount(currentUser) == 0) {
                         Intent result = new Intent();
                         setResult(Activity.RESULT_OK, result);
                         finish();
