@@ -2,7 +2,6 @@ package com.example.habitup.Controller;
 
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
@@ -11,14 +10,24 @@ import com.example.habitup.Model.UserAccount;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+/**
+ * HabitUpController is used for core functionality relating to Habits and HabitEvents.  It is the
+ * primary controller linking the Views and Models, and is also often the layer between the app and
+ * ElasticSearch, through invocations to ElasticSearchController, for common and transactional
+ * operations.
+ *
+ * @author @gojeffcho
+ *
+ * Javadoc last updated 2017-11-13 by @gojeffcho.
+ */
+
 public class HabitUpController {
 
-
-
-    public HabitUpController() {
-
-    }
-
+    /**
+     * Get all Habits that are scheduled to be done on the current day for the logged-in user.
+     * Used for MainActivity Habit list.
+     * @return ArrayList<Habit> of today's Habits
+     */
     static public ArrayList<Habit> getTodaysHabits() {
         ArrayList<Habit> habits = new ArrayList<>();
         ArrayList<Habit> allHabits;
@@ -40,6 +49,12 @@ public class HabitUpController {
         return habits;
     }
 
+    /**
+     * Add a new Habit and send it to the DB.
+     * @param h Habit to be added
+     * @return int successCode (0 for success)
+     * @throws IllegalArgumentException if Habit name is not unique
+     */
     static public int addHabit(Habit h) throws IllegalArgumentException {
 
         if (!habitAlreadyExists(h)) {
@@ -51,6 +66,14 @@ public class HabitUpController {
         }
     }
 
+    /**
+     * Edit an existing Habit.  If name was not changed, update existing Habit.  If name was
+     * changed, check to ensure the new name is unique, then update the Habit accordingly.
+     * @param h Habit after edits
+     * @param nameUnchanged True if name did not update - important for uniqueness check
+     * @return int successCode (0 for success)
+     * @throws IllegalArgumentException if name was changed but not unique
+     */
     static public int editHabit(Habit h, boolean nameUnchanged) throws IllegalArgumentException {
 
         // Name was changed: check to make sure new name is unique
@@ -65,13 +88,23 @@ public class HabitUpController {
         return 0;
     }
 
+    /**
+     * Delete a Habit.
+     * @param h Habit to delete
+     * @return int successCode (0 for success)
+     */
     static public int deleteHabit(Habit h) {
-        Log.d("HABIT DELETE:", "Deleting habit " + h.getHabitName());
+//        Log.d("HABIT DELETE:", "Deleting habit " + h.getHabitName());
         ElasticSearchController.DeleteHabitTask delHabit = new ElasticSearchController.DeleteHabitTask();
         delHabit.execute(Integer.toString(h.getHID()));
         return 0;
     }
 
+    /**
+     * Delete all the HabitEvents associated with a Habit that is being deleted
+     * @param h Habit being deleted
+     * @return int successCode (0 for success)
+     */
     static public int deleteHabitEventsForHabit(Habit h) {
         ElasticSearchController.GetHabitEventsForDelete getDeleteEvents = new ElasticSearchController.GetHabitEventsForDelete();
         getDeleteEvents.execute(String.valueOf(h.getHID()));
@@ -83,7 +116,7 @@ public class HabitUpController {
             Log.i("HabitUpDEBUG", "HUCtl/deleteHabitEventsForHabit - couldn't get eventsToDelete");
         }
 
-        Log.i("HabitUpDEBUG", "HUCtl/deleteHabitEventsForHabit - found " + String.valueOf(eventsToDelete.size()) + " matches.");
+//        Log.i("HabitUpDEBUG", "HUCtl/deleteHabitEventsForHabit - found " + String.valueOf(eventsToDelete.size()) + " matches.");
 
         for (HabitEvent ev : eventsToDelete) {
             ElasticSearchController.DeleteHabitEventTask deleter = new ElasticSearchController.DeleteHabitEventTask();
@@ -93,7 +126,17 @@ public class HabitUpController {
         return 0;
     }
 
-    static public int addHabitEvent(HabitEvent event) {
+    /**
+     * Add a new HabitEvent, as long as no HabitEvent from that Habit already exists for the day it
+     * is being added for.  XP and associated Attribute are incremented if the HabitEvent is valid,
+     * and if user's next XP target is met, their level is incremented and their target XP is also
+     * increased.
+     *
+     * @param event HabitEvent to add
+     * @return int successCode (0 for success)
+     * @throws IllegalArgumentException if HabitEvent already exists for Habit on that day
+     */
+    static public int addHabitEvent(HabitEvent event) throws IllegalArgumentException {
 //        Log.d("EVENT:", "Adding HabitEvent to HID #" + String.valueOf(event.getHID()));
 
         if (!habitEventAlreadyExists(event)) {
@@ -141,9 +184,15 @@ public class HabitUpController {
         }
     }
 
-    // Current implementation of AddHabitEventsTask checks to see if event has an EID, and if so,
-    // updates the existing one; otherwise creates it and assigns EID.
-    static public int editHabitEvent(HabitEvent event) {
+    /**
+     * Edit an existing HabitEvent - in case the date was edited, checks to make sure no HabitEvent
+     * belonging to the same Habit exists for the set date, unless it is the same HabitEvent that is
+     * being updated here.
+     * @param event HabitEvent
+     * @return int successCode (0 for success)
+     * @throws IllegalArgumentException if a different HabitEvent exists for the same Habit on that date
+     */
+    static public int editHabitEvent(HabitEvent event) throws IllegalArgumentException {
 
         if (!habitEventAlreadyExists(event)) {
             ElasticSearchController.AddHabitEventsTask addHabitEvent = new ElasticSearchController.AddHabitEventsTask();
@@ -154,13 +203,23 @@ public class HabitUpController {
         }
     }
 
+    /**
+     * Delete a HabitEvent.
+     * @param event HabitEvent to delete
+     * @return successCode (0 for success)
+     */
     static public int deleteHabitEvent(HabitEvent event) {
-        Log.d("EVENT DELETE:", "Deleting HabitEvent belonging to HID #" + String.valueOf(event.getHID()));
+//        Log.d("EVENT DELETE:", "Deleting HabitEvent belonging to HID #" + String.valueOf(event.getHID()));
         ElasticSearchController.DeleteHabitEventTask delHabitEvent = new ElasticSearchController.DeleteHabitEventTask();
         delHabitEvent.execute(event.getEID());
         return 0;
     }
 
+    /**
+     * Utility method to see if a Habit with the same name already exists for the current user.
+     * @param h Habit to check
+     * @return True if a Habit with that name already exists
+     */
     static public boolean habitAlreadyExists(Habit h) {
         ElasticSearchController.GetHabitsByNameForCurrentUserTask checkHabit = new ElasticSearchController.GetHabitsByNameForCurrentUserTask();
         checkHabit.execute(h.getHabitName());
@@ -178,6 +237,12 @@ public class HabitUpController {
         return matched.size() > 0;
     }
 
+    /**
+     * Utility method to see if a different HabitEvent already exists for the same Habit on the
+     * same date.
+     * @param event HabitEvent to check
+     * @return True if a different HabitEvent already exists on that date
+     */
     static public boolean habitEventAlreadyExists(HabitEvent event) {
 //        ElasticSearchController.GetHabitsEventDuplicates getDupes = new ElasticSearchController.GetHabitsEventDuplicates();
 //        getDupes.execute(event);
@@ -209,6 +274,11 @@ public class HabitUpController {
         return alreadyExists;
     }
 
+    /**
+     * Utility method to check whether a Habit has a HabitEvent for the current day.
+     * @param h Habit to check
+     * @return True if the Habit has a HabitEvent already for the current day
+     */
     static public boolean habitDoneToday(Habit h) {
 
 //        Log.i("HabitUpDEBUG", "HUCtl/habitDoneToday - in method");
