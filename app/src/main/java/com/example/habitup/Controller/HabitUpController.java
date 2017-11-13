@@ -47,7 +47,21 @@ public class HabitUpController {
 
     static public int deleteHabit(Habit h) {
         Log.d("HABIT DELETE:", "Deleting habit " + h.getHabitName());
+        ArrayList<HabitEvent> events = new ArrayList<HabitEvent>();
+        // Get user habit events
+        ElasticSearchController.GetHabitEventsByUidTask getHabitEvents = new ElasticSearchController.GetHabitEventsByUidTask();
+        getHabitEvents.execute(HabitUpApplication.getCurrentUIDAsString());
+        try {
+            events = getHabitEvents.get();
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "ViewHabitEvent - Couldn't get HabitEvents");
+        }
         ElasticSearchController.DeleteHabitTask delHabit = new ElasticSearchController.DeleteHabitTask();
+        for (HabitEvent e : events){
+            if (e.getHID() == h.getHID()){
+                HabitUpController.deleteHabitEvent(e); // ES delete on associated habit events
+            }
+        }
         delHabit.execute(Integer.toString(h.getHID()));
         return 0;
     }
