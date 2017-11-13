@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,10 +54,6 @@ public class ViewHabitActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habits);
 
-        // Get bottom navigation
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.habit_bottom_nav);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
         // Initialize habits list view
         habitListView = (ListView) findViewById(R.id.OldHabitLists);
 
@@ -66,15 +63,14 @@ public class ViewHabitActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
                 position = pos;
 
-                for (int i = 0; i < habitListView.getChildCount(); i++) {
-                    if (i == pos) {
-                        highlightItem(view);
-                    } else {
-                        unhighlightItem(habitListView.getChildAt(i), habits.get(i));
-                    }
-                }
+                final Habit habit = (Habit) adapter.getItem(pos);
+                int hid = habit.getHID();
+                goToEditActivity(VIEW_HABIT, hid);
+
             }
         });
+
+        registerForContextMenu(habitListView);
     }
 
     @Override
@@ -104,6 +100,7 @@ public class ViewHabitActivity extends BaseActivity {
             Log.i("HabitUpDEBUG", "ViewHabitEvent - Couldn't get HabitEvents");
         }
 
+        habitListView = (ListView) findViewById(R.id.OldHabitLists);
         adapter = new HabitListAdapter(this, R.layout.habit_list_item, habits);
         habitListView.setAdapter(adapter);
 
@@ -145,68 +142,35 @@ public class ViewHabitActivity extends BaseActivity {
             TextView subHeading = (TextView) findViewById(R.id.habits_subheading);
             subHeading.setText("You currently have no habits.");
         }
-
-        clearHighlightedRows();
     }
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        menu.setHeaderTitle("Select action");
+        menu.add(0, 1, 1, "Edit");
+        menu.add(0, 2, 2, "Delete");
+    }
 
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        int position = info.position;
 
-            // Check if list view item is selected
-            if (position < 0) {
-                Toast.makeText(context, "Select a habit first.", Toast.LENGTH_SHORT).show();
-            } else {
-                final Habit habit = (Habit) adapter.getItem(position);
-                int hid = habit.getHID();
+        final Habit habit = (Habit) adapter.getItem(position);
+        int hid = habit.getHID();
 
-                Log.i("HabitUpDEBUG", "Habit selected - " + habit.getHabitName());
-
-                switch (item.getItemId()) {
-
-                    case R.id.habit_menu_view:
-                        goToEditActivity(VIEW_HABIT, hid);
-                        return true;
-
-                    case R.id.habit_menu_edit:
-                        goToEditActivity(EDIT_HABIT, hid);
-                        return true;
-
-                    case R.id.habit_menu_delete:
-                        AlertDialog.Builder alert = new AlertDialog.Builder(ViewHabitActivity.this);
-                        alert.setTitle("Delete");
-                        alert.setMessage("Are you sure you want to delete this Habit?  This will also delete any events completed that were associated with the Habit.");
-
-                        alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                HabitUpController.deleteHabitEventsForHabit(habit);
-                                HabitUpController.deleteHabit(habits.get(position));
-                                adapter.remove(adapter.getItem(position));
-                                adapter.notifyDataSetChanged();
-                                position = -1;
-                                dialogInterface.dismiss();
-                            }
-                        });
-
-                        alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                            }
-                        });
-
-                        alert.show();
-                        return true;
-                }
-            }
-
-            return false;
+        switch (item.getItemId()) {
+            case 1:
+                goToEditActivity(EDIT_HABIT, hid);
+                return true;
+            case 2:
+                deleteHabit(habit);
+                return true;
+            default:
+                return super.onContextItemSelected(item);
         }
-
-    };
+    }
 
     private void goToEditActivity(int requestCode, int hid) {
         setResult(RESULT_OK);
@@ -236,28 +200,30 @@ public class ViewHabitActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void clearHighlightedRows() {
-        position = -1;
-        for (int i = 0; i < habitListView.getChildCount(); i++) {
-            View view = habitListView.getChildAt(i);
-            unhighlightItem(view, habits.get(i));
-        }
-    }
+    private void deleteHabit(final Habit habit) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(ViewHabitActivity.this);
+        alert.setTitle("Delete");
+        alert.setMessage("Are you sure you want to delete this Habit?  This will also delete any events completed that were associated with the Habit.");
 
-    private void highlightItem(View view) {
-        view.setBackgroundColor(ContextCompat.getColor(context, R.color.teal));
-        TextView text = view.findViewById(R.id.habit_name);
-        text.setTextColor(getResources().getColor(R.color.white));
-    }
+        alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                HabitUpController.deleteHabitEventsForHabit(habit);
+                HabitUpController.deleteHabit(habit);
+                adapter.remove(habit);
+                adapter.notifyDataSetChanged();
+                dialogInterface.dismiss();
+            }
+        });
 
-    private void unhighlightItem(View view, Habit habit) {
-        view.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
-        String attribute = habit.getHabitAttribute();
-        String color = Attributes.getColour(attribute);
+        alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
 
-        TextView text = view.findViewById(R.id.habit_name);
-        text.setTextColor(Color.parseColor(color));
-
+        alert.show();
     }
 
 
