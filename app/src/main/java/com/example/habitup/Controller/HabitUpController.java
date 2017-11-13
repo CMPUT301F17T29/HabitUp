@@ -88,11 +88,6 @@ public class HabitUpController {
         ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
         updateUser.execute(currentUser);
 
-        // Setup for attribute increment: need the Habit's Attribute type
-        ElasticSearchController.GetHabitsTask getHabit = new ElasticSearchController.GetHabitsTask();
-        getHabit.execute(String.valueOf(event.getHID()));
-        String attrName = "";
-
         try {
             eventsToDelete = getDeleteEvents.get();
         } catch (Exception e) {
