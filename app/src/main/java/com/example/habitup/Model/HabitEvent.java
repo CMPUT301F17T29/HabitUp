@@ -20,7 +20,7 @@ import java.time.LocalDate;
  * date, for stats calculation and update purposes, e.g. on edit or delete.
  *
  * @author acysl
- * @author gojeffcho
+ * @author gojeffcho (updates)
  *
  * Javadoc last updated 2017-11-13 by @gojeffcho
  */
