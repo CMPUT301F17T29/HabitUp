@@ -90,6 +90,23 @@ public class HabitUpController {
         getDeleteEvents.execute(String.valueOf(h.getHID()));
         ArrayList<HabitEvent> eventsToDelete = null;
 
+        // Increment User XP and write back
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+
+        if (currentUser.getXP() + 1 >= currentUser.getXPtoNext()) {
+            currentUser.incrementLevel();
+            currentUser.setXPtoNext();
+        }
+
+        currentUser.increaseXP(HabitUpApplication.XP_PER_HABITEVENT);
+        ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
+        updateUser.execute(currentUser);
+
+        // Setup for attribute increment: need the Habit's Attribute type
+        ElasticSearchController.GetHabitsTask getHabit = new ElasticSearchController.GetHabitsTask();
+        getHabit.execute(String.valueOf(event.getHID()));
+        String attrName = "";
+
         try {
             eventsToDelete = getDeleteEvents.get();
         } catch (Exception e) {
