@@ -172,7 +172,6 @@ public class ViewHabitActivity extends BaseActivity {
                         goToEditActivity(EDIT_HABIT, hid);
                         return true;
                     case R.id.habit_menu_delete:
-                        //TODO: ES delete
                         AlertDialog.Builder alert = new AlertDialog.Builder(ViewHabitActivity.this);
                         alert.setTitle("Delete");
                         alert.setMessage("Are you sure you want to delete this habit and its habit events?");
@@ -180,8 +179,7 @@ public class ViewHabitActivity extends BaseActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 for (HabitEvent e : events){
-                                    if (e.getHID() == habits.get(position).getHID()){
-                                            //&& e.getUID() == HabitUpApplication.getCurrentUID()
+                                    if (e.getHID() == ((Habit) adapter.getItem(position)).getHID()){
                                         HabitUpController.deleteHabitEvent(e); // ES delete on associated habit events
                                     }
                                 }

@@ -8,10 +8,13 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -28,6 +31,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Locale;
 
 public class ViewHabitEventActivity extends BaseActivity {
 
@@ -48,6 +52,8 @@ public class ViewHabitEventActivity extends BaseActivity {
     private RecyclerView eventListView;
     private EventListAdapter eventAdapter;
     private EditText commentFilter;
+    private ArrayList<HabitEvent> filtList;
+    private ArrayList<Habit> habitTypes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +140,6 @@ public class ViewHabitEventActivity extends BaseActivity {
         // Set up habit types list
         ElasticSearchController.GetUserHabitsTask userHabits = new ElasticSearchController.GetUserHabitsTask();
         userHabits.execute(HabitUpApplication.getCurrentUIDAsString());
-        ArrayList<Habit> habitTypes;
 
         try {
             habitTypes = userHabits.get();
@@ -149,7 +154,6 @@ public class ViewHabitEventActivity extends BaseActivity {
         }
         habitSpinner.setAdapter(habitAdapter);
 
-        /*
         // comment filter through list
         commentFilter.addTextChangedListener(new TextWatcher() {
             @Override
@@ -159,7 +163,30 @@ public class ViewHabitEventActivity extends BaseActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                ViewHabitEventActivity.this.eventAdapter.getFilter().filter(charSequence);
+                refreshEvents(); // refreshes through ES re-get
+                String text = charSequence.toString().toLowerCase(Locale.getDefault());
+                filtList = new ArrayList<HabitEvent>();
+                filtList.clear();
+                if (text.length()==0){
+                    filtList.addAll(events);
+                }
+                else {
+                    for (HabitEvent e : events) {
+                        if (e.getComment().toLowerCase(Locale.getDefault()).contains(text)) {
+                            filtList.add(e);
+                        }
+                    }
+                }
+                eventAdapter = new EventListAdapter(context, filtList);
+                eventListView.setAdapter(eventAdapter);
+                Collections.sort(filtList, new Comparator<HabitEvent>() {
+                    @Override
+                    public int compare(HabitEvent e1, HabitEvent e2) {
+                        return e1.getCompletedate().compareTo(e2.getCompletedate());
+                    }
+                });
+                Collections.reverse(filtList);
+                eventAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -167,7 +194,43 @@ public class ViewHabitEventActivity extends BaseActivity {
 
             }
         });
-        */
+
+        // Spinner select
+        habitSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
+                refreshEvents(); // refreshes through ES re-get
+                filtList = new ArrayList<HabitEvent>();
+                filtList.clear();
+
+                if (pos == 0) {
+                    filtList.addAll(events);
+                }
+                else {
+                    for (HabitEvent e : events) {
+                        if (e.getHID()==habitTypes.get(pos-1).getHID()) {
+                            filtList.add(e);
+                        }
+                    }
+                }
+                eventAdapter = new EventListAdapter(context, filtList);
+                eventListView.setAdapter(eventAdapter);
+                Collections.sort(filtList, new Comparator<HabitEvent>() {
+                    @Override
+                    public int compare(HabitEvent e1, HabitEvent e2) {
+                        return e1.getCompletedate().compareTo(e2.getCompletedate());
+                    }
+                });
+                Collections.reverse(filtList);
+                eventAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
 
         // Highlight events row in drawer
         navigationView.setCheckedItem(R.id.events);
@@ -230,6 +293,7 @@ public class ViewHabitEventActivity extends BaseActivity {
         editIntent.putExtra(HABIT_EVENT_HID, hid);
         editIntent.putExtra(HABIT_EVENT_EID, eid);
         editIntent.putExtra(HABIT_EVENT_ACTION, requestCode);
+        editIntent.putExtra("profile", 0);
         startActivity(editIntent);
     }
 
@@ -240,7 +304,7 @@ public class ViewHabitEventActivity extends BaseActivity {
         alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                HabitUpController.deleteHabitEvent(events.get(position)); // ES delete
+                HabitUpController.deleteHabitEvent(eventAdapter.getItem(position)); // ES delete
                 eventAdapter.removeItem(position); // app view delete
                 eventListView.setAdapter(eventAdapter);
                 eventAdapter.notifyDataSetChanged();
@@ -256,4 +320,15 @@ public class ViewHabitEventActivity extends BaseActivity {
         alert.show();
     }
 
+    private void refreshEvents() {
+        ElasticSearchController.GetHabitEventsByUidTask getHabitEvents = new ElasticSearchController.GetHabitEventsByUidTask();
+        getHabitEvents.execute(HabitUpApplication.getCurrentUIDAsString());
+        try {
+            events = getHabitEvents.get();
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "ViewHabitEvent - Couldn't get HabitEvents");
+        }
+    }
+
 }
+

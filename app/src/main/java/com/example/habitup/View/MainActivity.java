@@ -6,11 +6,13 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -66,7 +68,6 @@ public class MainActivity extends BaseActivity {
         LayoutInflater inflater = this.getLayoutInflater();
         View profileView = inflater.inflate(R.layout.profile_banner, habitListView, false);
         habitListView.addHeaderView(profileView);
-
     }
 
     @Override
@@ -157,4 +158,18 @@ public class MainActivity extends BaseActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+            int habit_pos = data.getExtras().getInt("habit_pos");
+            if (resultCode == RESULT_CANCELED && habit_pos >= 0) {
+                View view = habitListView.getChildAt(habit_pos + 1);
+                CheckBox lastChecked = view.findViewById(R.id.today_habit_checkbox);
+                lastChecked.setChecked(false);
+                lastChecked.setClickable(false);
+            }
+    }
+
 }

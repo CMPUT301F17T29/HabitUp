@@ -57,6 +57,8 @@ public class AddHabitEventActivity extends AppCompatActivity {
 
     private Button saveButton;
 
+    private int habit_pos = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,14 +99,30 @@ public class AddHabitEventActivity extends AppCompatActivity {
             habitList = new ArrayList<>();
         }
 
-        // Populate habitNames, hids for dropdown menu and back-translation to Habit
-        for (Habit habit : habitList) {
-            habitNames.add(habit.getHabitName());
-            hids.put(habit.getHabitName(), habit.getHID());
+        String currentName = null;
+        Bundle extras = getIntent().getExtras();
+        if (extras.getInt("profile") == 1) {
+            habit_pos = extras.getInt("habit_pos");
+            currentName = extras.get("habit").toString();
         }
 
         ArrayAdapter adapter = new ArrayAdapter(this, R.layout.spinner_item, habitNames);
         habitSpinner.setAdapter(adapter);
+
+        // Populate habitNames, hids for dropdown menu and back-translation to Habit
+        for (int i = 0; i < habitList.size(); i++) {
+            Habit habit = habitList.get(i);
+            String habitName = habit.getHabitName();
+            adapter.add(habitName);
+            hids.put(habit.getHabitName(), habit.getHID());
+
+            // Selected row in spinner if adding event from profile
+            if (currentName != null && currentName.equals(habitName)) {
+                Log.i("Spinner", "Found a match");
+                habitSpinner.setSelection(i);
+            }
+        }
+
         habitSpinner.setOnItemSelectedListener(habitListener);
 
         // Get location checkbox
@@ -200,6 +218,7 @@ public class AddHabitEventActivity extends AppCompatActivity {
                     try {
                         HabitUpController.addHabitEvent(newEvent);
                         Intent result = new Intent();
+                        result.putExtra("habit_pos", -1);
                         setResult(Activity.RESULT_OK, result);
                         finish();
                     } catch (Exception e) {
@@ -254,6 +273,9 @@ public class AddHabitEventActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case android.R.id.home:
+                Intent result = new Intent();
+                result.putExtra("habit_pos", habit_pos);
+                setResult(Activity.RESULT_CANCELED, result);
                 finish();
                 return true;
             default:

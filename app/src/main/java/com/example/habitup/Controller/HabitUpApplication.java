@@ -24,6 +24,8 @@ public class HabitUpApplication {
     static Attributes currentAttrs;
     static Boolean setupDone = Boolean.FALSE;
 
+    public static int NUM_OF_ES_RESULTS = 50;
+
     static public UserAccount getCurrentUser() { return currentUser; }
     static public int getCurrentUID() { return currentUser.getUID(); }
     static public String getCurrentUIDAsString() { return String.valueOf(currentUser.getUID()); }
