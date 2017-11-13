@@ -44,7 +44,6 @@ public class ViewHabitActivity extends BaseActivity {
     private ArrayList<Habit> habits;
     private ListView habitListView;
     private ArrayAdapter adapter;
-    private ArrayList<HabitEvent> events;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,15 +61,6 @@ public class ViewHabitActivity extends BaseActivity {
             habits = getUserHabits.get();
         } catch (Exception e) {
             Toast.makeText(getBaseContext(), "Error retrieving Habits.", Toast.LENGTH_LONG).show();
-        }
-
-        // Get user habit events
-        ElasticSearchController.GetHabitEventsByUidTask getHabitEvents = new ElasticSearchController.GetHabitEventsByUidTask();
-        getHabitEvents.execute(HabitUpApplication.getCurrentUIDAsString());
-        try {
-            events = getHabitEvents.get();
-        } catch (Exception e) {
-            Log.i("HabitUpDEBUG", "ViewHabitEvent - Couldn't get HabitEvents");
         }
 
         // Initialize habits list view
@@ -189,11 +179,6 @@ public class ViewHabitActivity extends BaseActivity {
                         alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                for (HabitEvent e : events){
-                                    if (e.getHID() == ((Habit) adapter.getItem(position)).getHID()){
-                                        HabitUpController.deleteHabitEvent(e); // ES delete on associated habit events
-                                    }
-                                }
                                 HabitUpController.deleteHabit(habits.get(position));
                                 adapter.remove(adapter.getItem(position));
                                 adapter.notifyDataSetChanged();
