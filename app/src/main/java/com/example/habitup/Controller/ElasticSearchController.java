@@ -553,7 +553,7 @@ public class ElasticSearchController {
                                 "\"size\": " + HabitUpApplication.NUM_OF_ES_RESULTS + "," +
                                 "\"from\": 0," +
                                 "\"query\": {" +
-                                    "\"match\" : " +
+                                    "\"term\" : " +
                                         "{ \"hid\" : \"" + Hids[0] + "\" }" +
                                 "}" +
                             "}";

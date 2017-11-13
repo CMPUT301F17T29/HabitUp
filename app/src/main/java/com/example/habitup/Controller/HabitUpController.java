@@ -222,8 +222,10 @@ public class HabitUpController {
 
         boolean alreadyExists = false;
         for (HabitEvent ev : matchedEvents) {
+//            Log.i("HabitUpDEBUG", "HUCtl/habitDoneToday - looking at HabitEvent " + ev.getEID());
             if (ev.getCompletedate().equals(LocalDate.now())) {
                 alreadyExists = true;
+//                Log.i("HabitUpDEBUG", "HUCtl/habitDoneToday - HabitEvent " + ev.getEID() + " was done today.");
             }
         }
 

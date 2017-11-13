@@ -41,6 +41,9 @@ public class ProfileHabitsAdapter extends ArrayAdapter<Habit> {
 
     @Override
     public View getView(final int position, View view, ViewGroup viewGroup) {
+
+//        Log.i("HabitUpDEBUG", "ProfileHabitsAdapter - in getView");
+
         View v = view;
 
         if (v == null) {
@@ -81,12 +84,12 @@ public class ProfileHabitsAdapter extends ArrayAdapter<Habit> {
         // Handle click events for check boxes
         final CheckBox checkBox = v.findViewById(R.id.today_habit_checkbox);
 
-        // TODO: Check if habit has an event checked already for that day and check the box
-        // TODO: If box is checked, disable check box to be checked
-        if (HabitUpController.habitDoneToday(habit)) {
-            checkBox.setChecked(true);
-            checkBox.setEnabled(false);
-        }
+        // Check if habit has an event checked already for that day and check the box
+        // If box is checked, disable check box to be checked
+//        Log.i("HabitUpDEBUG", "ProfileHabitsAdapter - looking at Habit " + habit.getHabitName());
+        boolean doneToday = HabitUpController.habitDoneToday(habit);
+        checkBox.setChecked(doneToday);
+        checkBox.setEnabled(!doneToday);
 
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
