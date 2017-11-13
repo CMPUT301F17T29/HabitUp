@@ -1,13 +1,11 @@
 package com.example.habitup;
 
 import com.example.habitup.Model.Habit;
-import com.example.habitup.Model.HabitEvent;
 
 import org.junit.Test;
 
 import java.time.LocalDate;
 
-import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 /**
@@ -25,10 +23,8 @@ public class HabitTest {
         LocalDate startDate = LocalDate.now();
         boolean[] schedule = {true};
 
-        Habit habit = new Habit()
-
         try{
-            Habit testHabit = new Habit(name,);
+            Habit testHabit = new Habit(1, name, reason, attribute, startDate, schedule);
         }
         catch (IllegalArgumentException err) {
             assertTrue(Boolean.TRUE);
@@ -44,11 +40,10 @@ public class HabitTest {
         String reason = "123456789123456789123456789101010";
         String attribute = "Mental";
         LocalDate startDate = LocalDate.now();
-        Boolean[] schedule = {Boolean.FALSE,Boolean.TRUE,Boolean.TRUE,Boolean.TRUE,Boolean.TRUE,
-                Boolean.TRUE,Boolean.TRUE,Boolean.TRUE};
+        boolean[] schedule = {true};
 
         try{
-            Habit testHabit = new Habit(name,reason,attribute,startDate,schedule);
+            Habit testHabit = new Habit(1, name,reason,attribute,startDate,schedule);
         }
         catch (IllegalArgumentException err) {
             assertTrue(Boolean.TRUE);
@@ -64,11 +59,10 @@ public class HabitTest {
         String reason = "I wanna be the very best";
         String attribute = "Mental";
         LocalDate startDate = LocalDate.now();
-        Boolean[] schedule = {Boolean.FALSE,Boolean.FALSE,Boolean.FALSE,Boolean.FALSE,Boolean.FALSE,
-                Boolean.FALSE,Boolean.FALSE,Boolean.FALSE};
+        boolean[] schedule = new boolean[8];
 
         try{
-            Habit testHabit = new Habit(name,reason,attribute,startDate,schedule);
+            Habit testHabit = new Habit(1, name,reason,attribute,startDate,schedule);
         }
         catch (IllegalStateException err) {
             assertTrue(Boolean.TRUE);
@@ -85,9 +79,9 @@ public class HabitTest {
         String reason = "I wanna be the very best";
         String attribute = "Mental";
         LocalDate startDate = LocalDate.now();
-        Boolean[] schedule = {Boolean.FALSE,Boolean.TRUE,Boolean.TRUE,Boolean.TRUE,Boolean.TRUE,
-                Boolean.TRUE,Boolean.TRUE,Boolean.TRUE};
-        Habit testHabit = new Habit(name,reason,attribute,startDate,schedule);
+        boolean[] schedule = {true};
+
+        Habit testHabit = new Habit(1, name,reason,attribute,startDate,schedule);
 
         testHabit.setHabitName(habitName);
 
@@ -102,10 +96,9 @@ public class HabitTest {
         String reason = "I wanna be the very best";
         String attribute = "Mental";
         LocalDate startDate = LocalDate.now();
-        Boolean[] schedule = {Boolean.FALSE,Boolean.TRUE,Boolean.TRUE,Boolean.TRUE,Boolean.TRUE,
-                Boolean.TRUE,Boolean.TRUE,Boolean.TRUE};
-        Habit testHabit = new Habit(name,reason,attribute,startDate,schedule);
-        Habit testHabit2 = new Habit(habitName,reason,attribute,startDate,schedule);
+        boolean[] schedule = {true};
+        Habit testHabit = new Habit(1,name,reason,attribute,startDate,schedule);
+        Habit testHabit2 = new Habit(1,habitName,reason,attribute,startDate,schedule);
 
         try{
             testHabit2.setHabitName(name);
@@ -125,9 +118,8 @@ public class HabitTest {
         String reason = "I wanna be the very best";
         String attribute = "Mental";
         LocalDate startDate = LocalDate.now();
-        Boolean[] schedule = {Boolean.FALSE,Boolean.TRUE,Boolean.TRUE,Boolean.TRUE,Boolean.TRUE,
-                Boolean.TRUE,Boolean.TRUE,Boolean.TRUE};
-        Habit testHabit = new Habit(name,reason,attribute,startDate,schedule);
+        boolean[] schedule = {true};
+        Habit testHabit = new Habit(1,name,reason,attribute,startDate,schedule);
 
         try{
             testHabit.setHabitName(habitName);
@@ -148,9 +140,8 @@ public class HabitTest {
         String reason2 = "I wanna be the very best";
         String attribute = "Mental";
         LocalDate startDate = LocalDate.now();
-        Boolean[] schedule = {Boolean.FALSE,Boolean.TRUE,Boolean.TRUE,Boolean.TRUE,Boolean.TRUE,
-                Boolean.TRUE,Boolean.TRUE,Boolean.TRUE};
-        Habit testHabit = new Habit(name,reason,attribute,startDate,schedule);
+        boolean[] schedule = {true};
+        Habit testHabit = new Habit(1,name,reason,attribute,startDate,schedule);
 
         testHabit.setReason(reason2);
 
@@ -166,9 +157,8 @@ public class HabitTest {
         String reason2 = "123456789123456789123456789101010";
         String attribute = "Mental";
         LocalDate startDate = LocalDate.now();
-        Boolean[] schedule = {Boolean.FALSE,Boolean.TRUE,Boolean.TRUE,Boolean.TRUE,Boolean.TRUE,
-                Boolean.TRUE,Boolean.TRUE,Boolean.TRUE};
-        Habit testHabit = new Habit(name,reason,attribute,startDate,schedule);
+        boolean[] schedule = {true};
+        Habit testHabit = new Habit(1,name,reason,attribute,startDate,schedule);
 
         try{
             testHabit.setReason(reason2);
@@ -187,11 +177,9 @@ public class HabitTest {
         String reason = "I wanna be the very best";
         String attribute = "Mental";
         LocalDate startDate = LocalDate.now();
-        Boolean[] schedule = {Boolean.FALSE,Boolean.TRUE,Boolean.TRUE,Boolean.TRUE,Boolean.TRUE,
-                Boolean.TRUE,Boolean.TRUE,Boolean.TRUE};
-        Boolean[] schedule2 = {Boolean.FALSE,Boolean.FALSE,Boolean.FALSE,Boolean.FALSE,Boolean.FALSE,
-                Boolean.FALSE,Boolean.TRUE,Boolean.FALSE};
-        Habit testHabit = new Habit(name,reason,attribute,startDate,schedule);
+        boolean[] schedule = {true};
+        boolean[] schedule2 = {false};
+        Habit testHabit = new Habit(1,name,reason,attribute,startDate,schedule);
 
         testHabit.setSchedule(schedule2);
 
@@ -206,49 +194,11 @@ public class HabitTest {
         String attribute = "Mental";
         String attribute2 = "Physical";
         LocalDate startDate = LocalDate.now();
-        Boolean[] schedule = {Boolean.FALSE,Boolean.TRUE,Boolean.TRUE,Boolean.TRUE,Boolean.TRUE,
-                Boolean.TRUE,Boolean.TRUE,Boolean.TRUE};
-        Habit testHabit = new Habit(name,reason,attribute,startDate,schedule);
+        boolean[] schedule = {true};
+        Habit testHabit = new Habit(1,name,reason,attribute,startDate,schedule);
 
         testHabit.setAttribute(attribute2);
         assertTrue(testHabit.getHabitAttribute()== attribute2); //check attribute match
     }
-
-    //Tests addHabitEvent adds a HabitEvent to the Habit
-    @Test //temporary
-    public void testAddHabitEvent(){
-        HabitEvent habitEvent = new HabitEvent();
-        String name = "name";
-        String reason = "I wanna be the very best";
-        String attribute = "Mental";
-        LocalDate startDate = LocalDate.now();
-        Boolean[] schedule = {Boolean.FALSE,Boolean.TRUE,Boolean.TRUE,Boolean.TRUE,Boolean.TRUE,
-                Boolean.TRUE,Boolean.TRUE,Boolean.TRUE};
-        Habit testHabit = new Habit(name,reason,attribute,startDate,schedule);
-
-        testHabit.addHabitEvent(habitEvent);
-        assertTrue(testHabit.getHabitEvents().contains(habitEvent));
-        //checks if habitEvent was added onto the initially empty ArrayList
-    }
-
-    //Tests removeHabitEvent if it successfully removes a habitEvent
-    @Test //temporary
-    public void testRemoveHabitEvent(){
-        HabitEvent habitEvent = new HabitEvent();
-        String name = "name";
-        String reason = "I wanna be the very best";
-        String attribute = "Mental";
-        LocalDate startDate = LocalDate.now();
-        Boolean[] schedule = {Boolean.FALSE,Boolean.TRUE,Boolean.TRUE,Boolean.TRUE,Boolean.TRUE,
-                Boolean.TRUE,Boolean.TRUE,Boolean.TRUE};
-        Habit testHabit = new Habit(name,reason,attribute,startDate,schedule);
-
-        testHabit.addHabitEvent(habitEvent); //assuming addHabitEvent works
-        testHabit.removeHabitEvent(habitEvent);
-
-        assertFalse(testHabit.getHabitEvents().contains(habitEvent));
-        //checks that habitEvent is missing
-    }
-
 
 }
