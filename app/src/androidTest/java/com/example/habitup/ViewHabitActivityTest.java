@@ -4,11 +4,14 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import android.widget.EditText;
 
+
 import com.example.habitup.Controller.ElasticSearchController;
+import com.example.habitup.Controller.HabitUpApplication;
+import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.UserAccount;
-import com.example.habitup.View.LoginActivity;
-import com.example.habitup.View.MainActivity;
+
+import com.example.habitup.View.AddHabitActivity;
 import com.example.habitup.View.ViewHabitActivity;
 import com.robotium.solo.Solo;
 
@@ -37,6 +40,8 @@ public class ViewHabitActivityTest extends ActivityInstrumentationTestCase2 {
             //nothing here
         }
 
+        HabitUpApplication.setCurrentUser(user);
+
         // get user habits
         ElasticSearchController.GetHabitsTask getHabits = new ElasticSearchController.GetHabitsTask();
         getHabits.execute("tatata");
@@ -56,9 +61,21 @@ public class ViewHabitActivityTest extends ActivityInstrumentationTestCase2 {
         Activity activity = getActivity();
     }
 
-    public void testUser() {
+    public void testViewHabit() {
         solo.assertCurrentActivity("Wrong activity", ViewHabitActivity.class);
         assertTrue(solo.waitForText("Habits"));
     }
 
+    public void testAddHabit() {
+        solo.assertCurrentActivity("Wrong activity", ViewHabitActivity.class);
+        solo.clickOnView(solo.getView(R.id.add_action_bar));
+        solo.assertCurrentActivity("Wrong activity", AddHabitActivity.class);
+
+        solo.enterText((EditText) solo.getView(R.id.habit_name), "exercise");
+        solo.enterText((EditText) solo.getView(R.id.habit_reason), "swole goals");
+        solo.clickOnCheckBox(0);
+        solo.clickOnButton("Save");
+        solo.assertCurrentActivity("Wrong activity", ViewHabitActivity.class);
+        assertTrue(solo.waitForText("exercise"));
+    }
 }

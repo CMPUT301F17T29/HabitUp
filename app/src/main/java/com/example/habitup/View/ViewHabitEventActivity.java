@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -29,6 +30,8 @@ import com.example.habitup.R;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Locale;
 
 /**
  * This is the activity where the user can see their habit event history, which displays
@@ -153,7 +156,6 @@ public class ViewHabitEventActivity extends BaseActivity {
         ElasticSearchController.GetUserHabitsTask userHabits = new ElasticSearchController.GetUserHabitsTask();
         userHabits.execute(HabitUpApplication.getCurrentUIDAsString());
 
-        ArrayList<Habit> habitTypes;
         try {
             habitTypes = userHabits.get();
         } catch (Exception e) {
