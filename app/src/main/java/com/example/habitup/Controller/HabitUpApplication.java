@@ -14,7 +14,7 @@ import com.example.habitup.Model.UserAccountList;
 public class HabitUpApplication {
 
     public final static int MAX_USERNAME_LENGTH = 15;
-    public final static int MAX_REALNAME_LENGTH = 20;
+    public final static int MAX_REALNAME_LENGTH = 25;
     public static final int MAX_PHOTO_BYTECOUNT = 65536;
     public final static int XP_INCREASE_AMOUNT = 25;
     public final static int XP_PER_HABITEVENT = 1;
@@ -22,23 +22,17 @@ public class HabitUpApplication {
 
     static UserAccount currentUser;
     static Attributes currentAttrs;
-    static Boolean setupDone = Boolean.FALSE;
+
+    public static int NUM_OF_ES_RESULTS = 50;
+    public static int NUM_OF_ES_RESULTS_FOR_DELETE = 99999;
 
     static public UserAccount getCurrentUser() { return currentUser; }
     static public int getCurrentUID() { return currentUser.getUID(); }
     static public String getCurrentUIDAsString() { return String.valueOf(currentUser.getUID()); }
-
     static public Attributes getCurrentAttrs() { return currentAttrs; }
-
-    public void testAccount() {
-        // DEBUG
-        if (!setupDone) {
-            currentUser = new UserAccount("gojeffcho", "Jeff Cho", null);
-            currentUser.getAttributes().setValue("Mental", 5);
-            currentUser.getAttributes().setValue("Discipline", -10);
-            currentUser.increaseXP(4);
-            setupDone = Boolean.TRUE;
-        }
+    static public void logoutCurrentUser() {
+        currentUser = null;
+        currentAttrs = null;
     }
 
     static public void setCurrentUser(UserAccount user) {

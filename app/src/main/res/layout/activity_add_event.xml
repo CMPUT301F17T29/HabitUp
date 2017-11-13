@@ -142,6 +142,9 @@
         android:background="@drawable/text_input"
         android:hint="Add a comment"
         android:textSize="16sp"
+        android:singleLine="true"
+        android:inputType="textFilter"
+        android:maxLength="20"
         android:paddingLeft="5dp"/>
 
     <TextView

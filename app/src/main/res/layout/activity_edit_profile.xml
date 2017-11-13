@@ -65,12 +65,13 @@
         android:id="@+id/full_name_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Full name"
-        app:layout_constraintTop_toBottomOf="@+id/profile_username"
+        android:layout_marginTop="30dp"
+        android:text="Full name (max 25 characters)"
         android:textColor="@color/teal"
         android:textSize="16sp"
-        android:layout_marginTop="30dp"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/profile_username"
+        tools:layout_editor_absoluteX="20dp" />
 
     <EditText
         android:id="@+id/edit_full_name"
@@ -81,6 +82,9 @@
         android:hint="Current user's name"
         app:layout_constraintTop_toBottomOf="@+id/full_name_label"
         android:paddingLeft="5dp"
+        android:singleLine="true"
+        android:inputType="textFilter"
+        android:maxLength="25"
         android:textSize="16sp"/>
 
     <Button
