@@ -678,10 +678,10 @@ public class ElasticSearchController {
                 Log.i("HabitUpDEBUG", "ESCtl/HabitByNameForUID - Exception");
             }
 
-            Log.i("HabitUpDEBUG", "ESCtl/HabitEventCommentSearch - " + commentMatches.size() + " matches");
-            for (HabitEvent ev : commentMatches) {
-                Log.i("HabitUpDEBUG", "ESCtl/HabitEventCommentSearch - matched " + ev.getComment() + " #" + ev.getEID());
-            }
+//            Log.i("HabitUpDEBUG", "ESCtl/HabitEventCommentSearch - " + commentMatches.size() + " matches");
+//            for (HabitEvent ev : commentMatches) {
+//                Log.i("HabitUpDEBUG", "ESCtl/HabitEventCommentSearch - matched " + ev.getComment() + " #" + ev.getEID());
+//            }
 
             return commentMatches;
         }
