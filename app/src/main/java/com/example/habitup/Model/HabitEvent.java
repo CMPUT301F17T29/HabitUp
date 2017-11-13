@@ -107,7 +107,7 @@ public class HabitEvent implements Comparable<HabitEvent> {
      * @throws IllegalArgumentException (if comment not legal)
      */
     public void setComment (String comment) throws IllegalArgumentException {
-        if (comment.length() >= 0 || comment.length() <= 20) {
+        if (comment.length() <= 20) {
             this.comment = comment;
         } else {
             throw new IllegalArgumentException("Comment must be between 0 and 20 characters.");
