@@ -40,18 +40,12 @@ import java.util.HashMap;
 import java.util.Locale;
 
 /**
- * This is the activity for adding a habit event. A user must select one of
- * their habits to create a new event. By default, the completion date for the event
+ * This is the activity for adding a habit event. A user must select from one of
+ * their existing habits to create a new event. By default, the completion date for the event
  * is set to the current date, but the user may choose another date that is before the
- * current date only.
- *
- * When the user turns on the switch, the user's current location will be associated
- * with the event. This is optional.
- *
- * The user can also choose to associate a photo with the event. The photo must be stored
- * as less than 65 536 bytes.
- *
- * @see HabitEvent
+ * current date only. Optionally, when the user turns on the location switch, the user's current
+ * location will be associated with the event. The user can also choose to associate an optional
+ * photo with the event. The photo must be stored as less than 65,536 bytes.
  *
  * @author Shari Barboza
  */
@@ -68,10 +62,6 @@ public class AddHabitEventActivity extends AppCompatActivity {
 
     private int habit_pos = -1;
 
-    /**
-     * Called when the activity is first created.
-     * @param savedInstanceState the saved instance state
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -250,11 +240,6 @@ public class AddHabitEventActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Opening the date picker dialog
-     * @param id the dialog id
-     * @return the dialog
-     */
     @Override
     protected Dialog onCreateDialog(int id) {
         if (id == DIALOG_ID) {
@@ -263,12 +248,6 @@ public class AddHabitEventActivity extends AppCompatActivity {
         return null;
     }
 
-    /**
-     * Includes activity for taking picture
-     * @param requestCode the request code for some activity
-     * @param resultCode the result code of the activity
-     * @param data data from the activity
-     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -282,11 +261,6 @@ public class AddHabitEventActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Listens for when the user clicks on the back button
-     * @param menuItem the item in the menu
-     * @return true if the item was selected
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
@@ -301,9 +275,6 @@ public class AddHabitEventActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Updates the date string in the date text view
-     */
     private void setDateString() {
         String monthName = new DateFormatSymbols().getShortMonths()[month_x];
         String dateString = (monthName) + " " + day_x + ", " + year_x;

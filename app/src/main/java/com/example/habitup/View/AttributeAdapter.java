@@ -11,8 +11,9 @@ import com.example.habitup.Model.Attributes;
 import com.example.habitup.R;
 
 /**
- * This is the adapter for creating a dropdown spinner menu for
- * attibutes during a create habit activity.
+ * This is the adapter for creating a dropdown spinner menu for attributes during a
+ * create habit activity. It displays only the attribute name with the text color set
+ * accordingly for each attribute.
  *
  * @author Shari Barboza
  */
@@ -22,24 +23,11 @@ public class AttributeAdapter extends ArrayAdapter<String> {
     // The attributes list
     private String[] attributes;
 
-    /**
-     * Instantiates a new attribute adapter.
-     * @param context the activity context
-     * @param resource the ID of the resource layout
-     * @param attributes the list of attributes
-     */
     public AttributeAdapter(Context context, int resource, String[] attributes) {
         super(context, resource, attributes);
         this.attributes = attributes;
     }
 
-    /**
-     * Get the view list item in the drop down spinner menu.
-     * @param position the position of the row in the spinner
-     * @param convertView the view to convert
-     * @param parent the parent view
-     * @return
-     */
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent)
     {

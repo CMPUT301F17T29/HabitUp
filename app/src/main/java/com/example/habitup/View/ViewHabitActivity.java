@@ -4,11 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -23,7 +19,6 @@ import android.widget.Toast;
 import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
-import com.example.habitup.Model.Attributes;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
 import com.example.habitup.R;
@@ -31,6 +26,16 @@ import com.example.habitup.R;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * This is the activity where all the user's habits are displayed alphabetically by habit
+ * name. To view a habit's details, the user must click on a habit. To either edit or delete
+ * a habit, the user must click and hold on a habit, which will open a context menu. When a user
+ * deletes a habit, all habit events associated with that habit will be delete as well.
+ * <p>
+ * The drawer navigation menu can be accessed here.
+ *
+ * @author Shari Barboza
+ */
 public class ViewHabitActivity extends BaseActivity {
 
     final private Context context = ViewHabitActivity.this;

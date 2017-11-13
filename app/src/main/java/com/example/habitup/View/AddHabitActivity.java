@@ -33,17 +33,11 @@ import java.util.Calendar;
 import java.util.Locale;
 
 /**
- * This is the activity to add a Habit. The user must set a habit name and a reason for
+ * This is the activity to add a habit. The user must set a habit name and a reason for
  * creating the habit. By default, the start date of the habit is set to the current date.
- * The user, if they wish, may choose to change it to another date.
- *
- * The user must also associate one of the pre-set Attributes to a habit. When a habit is
- * completed, it will allocate points to that Attribute category.
- *
- * The user must select at least 1 day for the habit schedule. This helps to set a routine
- * for the user and remind them which habits to complete each day.
- *
- * @see Habit
+ * The user may change it to another date. The user must also associate one of the pre-set
+ * Attributes to a habit. When a habit is completed, it will allocate points to that Attribute
+ * category. The user must select at least 1 day for the habit schedule.
  *
  * @author Shari Barboza
  */
@@ -54,11 +48,6 @@ public class AddHabitActivity extends AppCompatActivity {
     private static final int DIALOG_ID = 0;
     private TextView dateView;
 
-    /**
-     * This is called when the activity is first created. Views will be initialized
-     * here as well as click events.
-     * @param savedInstanceState the saved instance state
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -205,11 +194,6 @@ public class AddHabitActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Opening the date picker dialog
-     * @param id the dialog id
-     * @return the dialog
-     */
     @Override
     protected Dialog onCreateDialog(int id) {
         if (id == DIALOG_ID) {
@@ -218,11 +202,6 @@ public class AddHabitActivity extends AppCompatActivity {
         return null;
     }
 
-    /**
-     * Listens for when the user clicks on the back button
-     * @param menuItem the item in the menu
-     * @return true if the item was selected
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
@@ -234,9 +213,6 @@ public class AddHabitActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Updates the date string in the date text view
-     */
     private void setDateString() {
         String monthName = new DateFormatSymbols().getShortMonths()[month_x];
         String dateString = (monthName) + " " + day_x + ", " + year_x;

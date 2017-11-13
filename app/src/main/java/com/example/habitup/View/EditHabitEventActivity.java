@@ -39,18 +39,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * This is the activity for editing a habit event. A user must select one of
- * their habits to create a new event. By default, the completion date for the event
- * is set to the current date, but the user may choose another date that is before the
- * current date only.
- *
- * When the user turns on the switch, the user's current location will be associated
- * with the event. This is optional.
- *
- * The user can also choose to associate a photo with the event. The photo must be stored
- * as less than 65 536 bytes.
- *
- * @see HabitEvent
+ * This is the activity for editing a habit event. A user can change the associated habit type.
+ * The completion date can be changed as long as the date selected is before the current
+ * date. The user can also switch on or off the location switch. The event photo can be changed as
+ * long as it is under 65,536 bytes.
  *
  * @author Shari Barboza
  */
@@ -281,11 +273,6 @@ public class EditHabitEventActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Listens for when the user clicks on the back button
-     * @param menuItem the item in the menu
-     * @return true if the item was selected
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
@@ -300,11 +287,6 @@ public class EditHabitEventActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Opening the date picker dialog
-     * @param id the dialog id
-     * @return the dialog
-     */
     @Override
     protected Dialog onCreateDialog(int id) {
         if (id == DIALOG_ID) {
@@ -313,12 +295,6 @@ public class EditHabitEventActivity extends AppCompatActivity {
         return null;
     }
 
-    /**
-     * Includes activity for taking picture
-     * @param requestCode the request code for some activity
-     * @param resultCode the result code of the activity
-     * @param data data from the activity
-     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -332,18 +308,12 @@ public class EditHabitEventActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Updates the date string in the date text view
-     */
     private void setDateString() {
         String monthName = new DateFormatSymbols().getShortMonths()[month_x];
         String dateString = (monthName) + " " + day_x + ", " + year_x;
         dateView.setText(dateString);
     }
 
-    /**
-     * Disables editable fields and specific resources for viewing an event
-     */
     private void viewMode() {
         // Disable habit type spinner
         habitSpinner.setBackgroundResource(0);
