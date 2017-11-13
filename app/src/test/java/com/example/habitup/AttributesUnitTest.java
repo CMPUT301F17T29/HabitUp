@@ -11,7 +11,7 @@ import org.junit.Test;
 public class AttributesUnitTest extends ActivityInstrumentationTestCase2 {
 
     public AttributesUnitTest(){
-        super(HabitListUnitTest.class);
+        super(Attributes.class);
     }
     @Override
     public void setUp() throws Exception{
