@@ -76,18 +76,6 @@ public class HabitUpController {
         getDeleteEvents.execute(String.valueOf(h.getHID()));
         ArrayList<HabitEvent> eventsToDelete = null;
 
-        // Increment User XP and write back
-        UserAccount currentUser = HabitUpApplication.getCurrentUser();
-
-        if (currentUser.getXP() + 1 >= currentUser.getXPtoNext()) {
-            currentUser.incrementLevel();
-            currentUser.setXPtoNext();
-        }
-
-        currentUser.increaseXP(HabitUpApplication.XP_PER_HABITEVENT);
-        ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
-        updateUser.execute(currentUser);
-
         try {
             eventsToDelete = getDeleteEvents.get();
         } catch (Exception e) {
@@ -107,6 +95,8 @@ public class HabitUpController {
     static public int addHabitEvent(HabitEvent event) {
 //        Log.d("EVENT:", "Adding HabitEvent to HID #" + String.valueOf(event.getHID()));
 
+
+
         if (!habitEventAlreadyExists(event)) {
 
             // Add the HabitEvent object to ES
@@ -115,6 +105,12 @@ public class HabitUpController {
 
             // Increment User XP and write back
             UserAccount currentUser = HabitUpApplication.getCurrentUser();
+
+            if (currentUser.getXP() + 1 >= currentUser.getXPtoNext()) {
+                currentUser.incrementLevel();
+                currentUser.setXPtoNext();
+            }
+
             currentUser.increaseXP(HabitUpApplication.XP_PER_HABITEVENT);
             ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
             updateUser.execute(currentUser);
