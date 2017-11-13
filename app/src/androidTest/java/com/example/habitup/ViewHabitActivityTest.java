@@ -51,7 +51,7 @@ public class ViewHabitActivityTest extends ActivityInstrumentationTestCase2 {
 
         HabitUpApplication.setCurrentUser(user);
 
-        solo = new Solo(getInstrumentation(),getActivity());
+        solo = new Solo(getInstrumentation(), getActivity());
     }
 
     public void testStart() throws Exception {
@@ -87,8 +87,8 @@ public class ViewHabitActivityTest extends ActivityInstrumentationTestCase2 {
         solo.clickOnView(solo.getView(R.id.add_action_bar));
         solo.assertCurrentActivity("Wrong activity", AddHabitActivity.class);
 
-        solo.enterText((EditText) solo.getView(R.id.habit_name), "exercise");
-        solo.enterText((EditText) solo.getView(R.id.habit_reason), "swole goals");
+        solo.enterText(0, "exercise");
+        solo.enterText(1, "swole goals");
         solo.clickOnImage(0);
         solo.setDatePicker(0,2017,10,10);
         solo.clickOnText("OK");
@@ -106,8 +106,8 @@ public class ViewHabitActivityTest extends ActivityInstrumentationTestCase2 {
         solo.clickOnView(solo.getView(R.id.add_action_bar));
         solo.assertCurrentActivity("Wrong activity", AddHabitActivity.class);
 
-        solo.enterText((EditText) solo.getView(R.id.habit_name), "eat");
-        solo.enterText((EditText) solo.getView(R.id.habit_reason), "gainz");
+        solo.enterText(0, "eat");
+        solo.enterText(1, "gainz");
         solo.clickOnCheckBox(0);
         solo.clickOnButton("Save");
         solo.assertCurrentActivity("Wrong activity", ViewHabitActivity.class);
@@ -125,8 +125,8 @@ public class ViewHabitActivityTest extends ActivityInstrumentationTestCase2 {
         solo.clickOnView(solo.getView(R.id.add_action_bar));
         solo.assertCurrentActivity("Wrong activity", AddHabitActivity.class);
 
-        solo.enterText((EditText) solo.getView(R.id.habit_name), "push ups");
-        solo.enterText((EditText) solo.getView(R.id.habit_reason), "moar gainz");
+        solo.enterText(0, "push ups");
+        solo.enterText(1, "moar gainz");
         solo.clickOnCheckBox(0);
         solo.clickOnButton("Save");
         solo.assertCurrentActivity("Wrong activity", ViewHabitActivity.class);
