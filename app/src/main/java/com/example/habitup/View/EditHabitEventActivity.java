@@ -124,26 +124,35 @@ public class EditHabitEventActivity extends AppCompatActivity {
         ArrayList<String> habitNames = new ArrayList<>();
         final HashMap<String, Integer> hids = new HashMap<>();
 
-        // Retrieve habits from current user
-        ArrayList<Habit> habitList;
-        ElasticSearchController.GetUserHabitsTask getUserHabits = new ElasticSearchController.GetUserHabitsTask();
-        getUserHabits.execute(String.valueOf(HabitUpApplication.getCurrentUID()));
+        if (action == ViewHabitEventActivity.EDIT_EVENT) {
+            // Retrieve habits from current user
+            ArrayList<Habit> habitList;
+            ElasticSearchController.GetUserHabitsTask getUserHabits = new ElasticSearchController.GetUserHabitsTask();
+            getUserHabits.execute(String.valueOf(HabitUpApplication.getCurrentUID()));
 
-        try {
-            habitList = getUserHabits.get();
-        } catch (Exception e) {
-            Log.i("HabitUpDEBUG", "EditHabitEvent - couldn't get User Habits");
-            habitList = new ArrayList<>();
-        }
-
-        // Populate habitNames, hids for dropdown menu and back-translation to Habit
-        for (Habit habit : habitList) {
-            habitNames.add(habit.getHabitName());
-            hids.put(habit.getHabitName(), habit.getHID());
-            if (event.getHID() == habit.getHID()) {
-                entryIndex = habitList.indexOf(habit);
-                Log.i("HabitUpDEBUG", "EditHabitEvent - matched, " + String.valueOf(event.getHID()) + "; index " + String.valueOf(entryIndex));
+            try {
+                habitList = getUserHabits.get();
+            } catch (Exception e) {
+                Log.i("HabitUpDEBUG", "EditHabitEvent - couldn't get User Habits");
+                habitList = new ArrayList<>();
             }
+
+            // Populate habitNames, hids for dropdown menu and back-translation to Habit
+            for (Habit habit : habitList) {
+                habitNames.add(habit.getHabitName());
+                hids.put(habit.getHabitName(), habit.getHID());
+            }
+        } else {
+            ElasticSearchController.GetHabitsTask getHabit = new ElasticSearchController.GetHabitsTask();
+            getHabit.execute(String.valueOf(event.getHID()));
+            Habit eventHabit;
+            try {
+                eventHabit = getHabit.get().get(0);
+            } catch (Exception e) {
+                eventHabit = new Habit(-1);
+                eventHabit.setHabitName("ERROR");
+            }
+            habitNames.add(eventHabit.getHabitName());
         }
 
         ArrayAdapter adapter = new ArrayAdapter(this, R.layout.spinner_item, habitNames);
@@ -199,7 +208,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
         saveButton = (Button) findViewById(R.id.save_event);
 
         // Disable edit fields if viewing activity
-        if (action == 2) {
+        if (action == ViewHabitEventActivity.VIEW_EVENT) {
             viewMode();
         }
 
@@ -368,7 +377,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
             TextView spinnerText = view.findViewById(R.id.spinner_text);
             spinnerText.setTextColor(color);
 
-            if (action == 2) {
+            if (action == ViewHabitEventActivity.VIEW_EVENT) {
                 spinnerText.setPadding(0, 0, 0, 0);
             }
         }

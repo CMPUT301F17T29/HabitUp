@@ -325,4 +325,14 @@ public class Habit implements Comparable<Habit> {
      * @return int (Number of times Habit could have been done if schedule was followed from start date)
      */
     public int getHabitsPossible() { return this.habitsPossible; }
+
+    public int getPercent() {
+        int yValue = getHabitsPossible();
+        if (yValue != 0) {
+            int xValue = getHabitsDone();
+            return (xValue / yValue) * 100;
+        } else {
+            return 0;
+        }
+    }
 }

@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/signup_title"
         android:layout_marginLeft="35dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
         android:text="Enter username (max 15 characters)"
         android:textColor="@color/white"
         android:textSize="16sp"
@@ -42,7 +42,7 @@
         android:singleLine="true"
         android:inputType="textFilter"
         android:maxLength="15"
-        android:paddingLeft="5dp"
+        android:paddingLeft="10dp"
         android:background="@color/white"/>
 
     <TextView
@@ -92,15 +92,16 @@
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="25dp"
+            android:text="ADD PROFILE PICTURE"
             android:background="@color/colorPrimary"
-            android:drawableTop="@drawable/ic_add_photo"
             style="?android:attr/borderlessButtonStyle"
-            android:scaleX="2"
-            android:scaleY="2"
-            android:textColor="#FFFFFF"
-            android:textSize="5sp"
+            android:textColor="@color/white"
+            android:textSize="6sp"
             android:paddingTop="10sp"
-            android:text="ADD PROFILE PICTURE"/>
+            android:paddingBottom="15sp"
+            android:drawableTop="@drawable/ic_add_photo"
+            android:scaleY="2"
+            android:scaleX="2"/>
 
         <ImageView
             android:id="@+id/signup_taken_image"
@@ -125,17 +126,6 @@
         android:layout_below="@+id/signup_photo_display">
 
         <Button
-            android:id="@+id/signup_button"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
-            android:layout_weight="0.5"
-            android:text="Sign Up"
-            android:layout_marginRight="5dp"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/green"
-            android:layout_marginTop="35dp" />
-
-        <Button
             android:id="@+id/cancel_signup"
             android:layout_width="150dp"
             android:layout_height="50dp"
@@ -144,6 +134,17 @@
             android:layout_marginLeft="5dp"
             android:textColor="@color/white"
             android:backgroundTint="@color/lightgray"
+            android:layout_marginTop="35dp" />
+
+        <Button
+            android:id="@+id/signup_button"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_weight="0.5"
+            android:text="Sign Up"
+            android:layout_marginRight="5dp"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/green"
             android:layout_marginTop="35dp" />
     </LinearLayout>
 

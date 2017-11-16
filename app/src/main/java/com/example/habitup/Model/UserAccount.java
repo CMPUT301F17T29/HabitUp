@@ -9,6 +9,7 @@ import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 
 /**
  * @author gojeffcho

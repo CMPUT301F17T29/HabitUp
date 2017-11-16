@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -87,8 +88,6 @@ public class ViewHabitEventActivity extends BaseActivity {
     public void onStart() {
         super.onStart();
 
-//        Log.i("HabitUpDEBUG", "ViewHabitEvents/OnStart triggered");
-
         // Retrieve events from ES for user
         ElasticSearchController.GetHabitEventsByUidTask getHabitEvents = new ElasticSearchController.GetHabitEventsByUidTask();
         getHabitEvents.execute(HabitUpApplication.getCurrentUIDAsString());
@@ -99,21 +98,12 @@ public class ViewHabitEventActivity extends BaseActivity {
             Log.i("HabitUpDEBUG", "ViewHabitEvent - Couldn't get HabitEvents");
         }
 
-        eventListView = (RecyclerView) findViewById(R.id.event_list);
-        eventListView.setHasFixedSize(true);
-
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        eventListView.addItemDecoration(itemDecoration);
-
         eventAdapter = new EventListAdapter(this, events);
+        eventListView.setAdapter(eventAdapter);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setAutoMeasureEnabled(true);
-
-        eventListView.setAdapter(eventAdapter);
         eventListView.setLayoutManager(layoutManager);
-
-        eventAdapter.notifyDataSetChanged();
 
         eventAdapter.setOnLongClickListener(new View.OnLongClickListener() {
             @Override

@@ -59,6 +59,7 @@ public class MainActivity extends BaseActivity {
 
         // Set up the array and adapter
         habitsArrayList = HabitUpController.getTodaysHabits();
+
         Collections.sort(habitsArrayList);
 
         adapter = new ProfileHabitsAdapter(this, habitsArrayList);

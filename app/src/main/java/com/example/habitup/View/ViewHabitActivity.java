@@ -100,8 +100,6 @@ public class ViewHabitActivity extends BaseActivity {
         adapter = new HabitListAdapter(this, R.layout.habit_list_item, habits);
         habitListView.setAdapter(adapter);
 
-        adapter.notifyDataSetChanged();
-
         if (habits.size() == 0) {
             TextView subHeading = (TextView) findViewById(R.id.habits_subheading);
             subHeading.setText("You currently have no habits.");

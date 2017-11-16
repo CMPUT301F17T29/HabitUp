@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -44,7 +45,6 @@ public class ProfileHabitsAdapter extends RecyclerView.Adapter<RecyclerView.View
         this.context = context;
     }
 
-
     public class HeaderViewHolder extends RecyclerView.ViewHolder {
 
         private CircleImageView profilePic;
@@ -58,7 +58,6 @@ public class ProfileHabitsAdapter extends RecyclerView.Adapter<RecyclerView.View
         private TextView attr3Field;
         private TextView attr4Field;
         private TextView today_subheading;
-
 
         public HeaderViewHolder(View itemView) {
             super(itemView);
@@ -140,7 +139,7 @@ public class ProfileHabitsAdapter extends RecyclerView.Adapter<RecyclerView.View
             super(itemView);
             this.itemView = itemView;
 
-            this.habitNameView = itemView.findViewById(R.id.todays_habit_name);
+            this.habitNameView = itemView.findViewById(R.id.habit_name);
             this.monView = itemView.findViewById(R.id.mon_box);
             this.tueView = itemView.findViewById(R.id.tue_box);
             this.wedView = itemView.findViewById(R.id.wed_box);
@@ -254,6 +253,5 @@ public class ProfileHabitsAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         return 1;
     }
-
-
 }
+

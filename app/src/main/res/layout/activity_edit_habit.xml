@@ -97,6 +97,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.40"
             android:text="@string/habit_attr_label"
+            android:layout_marginStart="8dp"
             android:textSize="16sp"
             android:textColor="@color/teal"
             android:textStyle="bold" />
@@ -117,7 +118,8 @@
             android:layout_height="35dp"
             android:layout_weight="0.5"
             android:text="Current date"
-            android:textSize="16sp"
+            android:textSize="15sp"
+            android:textColor="@color/darkgray"
             android:gravity="start|center_vertical"
             android:paddingLeft="10dp"
             android:background="@color/whitegray"

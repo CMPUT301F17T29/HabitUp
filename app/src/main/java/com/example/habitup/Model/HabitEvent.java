@@ -74,7 +74,9 @@ public class HabitEvent implements Comparable<HabitEvent> {
      * Set the Habit the HabitEvent belongs to
      * @param hid int (Habit id)
      */
-    public void setHabit(int hid) { this.hid = hid; }
+    public void setHabit(int hid) {
+        this.hid = hid;
+    }
 
     /**
      * Set the unique HabitEvent id

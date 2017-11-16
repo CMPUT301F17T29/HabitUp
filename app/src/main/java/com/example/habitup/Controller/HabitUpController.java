@@ -9,6 +9,8 @@ import com.example.habitup.Model.UserAccount;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * HabitUpController is used for core functionality relating to Habits and HabitEvents.  It is the
@@ -337,14 +339,14 @@ public class HabitUpController {
         }
 
         boolean alreadyExists = false;
+
         for (HabitEvent ev : matchedEvents) {
 //            Log.i("HabitUpDEBUG", "HUCtl/habitDoneToday - looking at HabitEvent " + ev.getEID());
             if (ev.getCompletedate().equals(LocalDate.now())) {
                 alreadyExists = true;
-//                Log.i("HabitUpDEBUG", "HUCtl/habitDoneToday - HabitEvent " + ev.getEID() + " was done today.");
+                break;
             }
         }
-
         return alreadyExists;
     }
 
