@@ -30,6 +30,7 @@ import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
+import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
 import java.text.DateFormatSymbols;
@@ -92,16 +93,11 @@ public class EditHabitEventActivity extends AppCompatActivity {
         // Get the habit from intent
         Intent intent = getIntent();
         action = intent.getExtras().getInt(ViewHabitEventActivity.HABIT_EVENT_ACTION);
-        String eid = intent.getExtras().getString(ViewHabitEventActivity.HABIT_EVENT_EID);
+        int position = intent.getExtras().getInt("EVENT POSITION");
 
-        ElasticSearchController.GetHabitEventsByEIDTask getHabitEvent = new ElasticSearchController.GetHabitEventsByEIDTask();
-        getHabitEvent.execute(eid);
-
-        try {
-            event = getHabitEvent.get().get(0);
-        } catch (Exception e) {
-            Log.i("HabitUpDEBUG", "EditHabitEvent - couldn't get habit match for eid " + eid);
-        }
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+        final HabitEvent event = currentUser.getEventList().get(position);
+        final Habit habit = currentUser.getHabitList().getHabit(event.getHabitName());
 
         // Get the event's date
         year_x = event.getCompletedate().getYear();
@@ -120,39 +116,17 @@ public class EditHabitEventActivity extends AppCompatActivity {
         habitSpinner = (Spinner) findViewById(R.id.event_edit_spinner);
 
         // Set up habit types list
-        int entryIndex = 0;
+        int entryIndex;
         ArrayList<String> habitNames = new ArrayList<>();
-        final HashMap<String, Integer> hids = new HashMap<>();
 
         if (action == ViewHabitEventActivity.EDIT_EVENT) {
             // Retrieve habits from current user
-            ArrayList<Habit> habitList;
-            ElasticSearchController.GetUserHabitsTask getUserHabits = new ElasticSearchController.GetUserHabitsTask();
-            getUserHabits.execute(String.valueOf(HabitUpApplication.getCurrentUID()));
-
-            try {
-                habitList = getUserHabits.get();
-            } catch (Exception e) {
-                Log.i("HabitUpDEBUG", "EditHabitEvent - couldn't get User Habits");
-                habitList = new ArrayList<>();
-            }
-
-            // Populate habitNames, hids for dropdown menu and back-translation to Habit
-            for (Habit habit : habitList) {
-                habitNames.add(habit.getHabitName());
-                hids.put(habit.getHabitName(), habit.getHID());
-            }
+            habitNames = currentUser.getHabitList().getHabitNames();
+            entryIndex = position;
         } else {
-            ElasticSearchController.GetHabitsTask getHabit = new ElasticSearchController.GetHabitsTask();
-            getHabit.execute(String.valueOf(event.getHID()));
-            Habit eventHabit;
-            try {
-                eventHabit = getHabit.get().get(0);
-            } catch (Exception e) {
-                eventHabit = new Habit(-1);
-                eventHabit.setHabitName("ERROR");
-            }
-            habitNames.add(eventHabit.getHabitName());
+            habitNames.clear();
+            habitNames.add(event.getHabitName());
+            entryIndex = 0;
         }
 
         ArrayAdapter adapter = new ArrayAdapter(this, R.layout.spinner_item, habitNames);
@@ -236,7 +210,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
 
                 // Validation for habit event
                 try {
-                    event.setHabit(hids.get(eventType));
+                    event.setHabit(habit.getHID());
                 } catch (IllegalArgumentException e) {
                     // do stuff
                     Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
@@ -272,7 +246,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
                 if (eventOK) {
                     // Pass to the controller
                     try {
-                        HabitUpController.editHabitEvent(event);
+                        HabitUpController.editHabitEvent(event, habit);
                         finish();
                     } catch (Exception e) {
                         Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();

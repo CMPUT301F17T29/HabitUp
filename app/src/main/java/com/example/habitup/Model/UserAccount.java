@@ -34,6 +34,9 @@ public class UserAccount {
     private int XP;
     private int XPtoNext;
 
+    private HabitEventList eventList;
+    private HabitList habitList;
+
     /**
      * Constructor for a UserAccount.
      *
@@ -52,6 +55,9 @@ public class UserAccount {
         level = 1;
         XP = 0;
         XPtoNext = 20;
+
+        this.eventList = new HabitEventList();
+        this.habitList = new HabitList();
     }
 
     /**
@@ -255,6 +261,14 @@ public class UserAccount {
      */
     public void setXPtoNext() {
         this.XPtoNext += HabitUpApplication.XP_INCREASE_AMOUNT;
+    }
+
+    public HabitList getHabitList() {
+        return this.habitList;
+    }
+
+    public HabitEventList getEventList() {
+        return this.eventList;
     }
 
 }

@@ -243,7 +243,7 @@
         app:layout_constraintTop_toBottomOf="@+id/today_heading"
         android:paddingBottom="10dp"
         android:textColor="@color/lightgray"
-        android:textSize="15sp"
+        android:textSize="13sp"
         android:text="@string/todays_instructions"/>
 
 </android.support.constraint.ConstraintLayout>

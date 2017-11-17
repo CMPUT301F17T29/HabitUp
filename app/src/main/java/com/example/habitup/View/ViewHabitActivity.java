@@ -21,6 +21,7 @@ import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
+import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
 import java.util.ArrayList;
@@ -69,7 +70,8 @@ public class ViewHabitActivity extends BaseActivity {
 
                 final Habit habit = (Habit) adapter.getItem(pos);
                 int hid = habit.getHID();
-                goToEditActivity(VIEW_HABIT, hid);
+                String habitName = habit.getHabitName();
+                goToEditActivity(VIEW_HABIT, hid, habitName);
 
             }
         });
@@ -81,16 +83,8 @@ public class ViewHabitActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
 
-//        habits = HabitUpApplication.getCurrentUser().getHabits().getHabitArrayList();
-
-        // Get user habits
-        ElasticSearchController.GetUserHabitsTask getUserHabits = new ElasticSearchController.GetUserHabitsTask();
-        getUserHabits.execute(String.valueOf(HabitUpApplication.getCurrentUID()));
-        try {
-            habits = getUserHabits.get();
-        } catch (Exception e) {
-            Toast.makeText(getBaseContext(), "Error retrieving Habits.", Toast.LENGTH_LONG).show();
-        }
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+        habits = currentUser.getHabitList().getHabits();
 
         // Sort 'em.
         Collections.sort(habits);
@@ -110,35 +104,6 @@ public class ViewHabitActivity extends BaseActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-//        Log.i("HabitUpDEBUG", "OnActivityResult in HabitView");
-
-        // Update the Habits List
-        ElasticSearchController.GetUserHabitsTask getUserHabits = new ElasticSearchController.GetUserHabitsTask();
-        getUserHabits.execute(String.valueOf(HabitUpApplication.getCurrentUID()));
-
-        try {
-            habits = getUserHabits.get();
-        } catch (Exception e) {
-            Toast.makeText(getBaseContext(), "Error retrieving Habits.", Toast.LENGTH_LONG).show();
-        }
-
-        Collections.sort(habits);
-
-        adapter = new HabitListAdapter(this, R.layout.habit_list_item, habits);
-        habitListView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-
-        // If no habits in list, display default message
-        if (habits.size() == 0) {
-            TextView subHeading = (TextView) findViewById(R.id.habits_subheading);
-            subHeading.setText("You currently have no habits.");
-        }
-    }
-
-    @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.setHeaderTitle("Select action");
@@ -153,10 +118,11 @@ public class ViewHabitActivity extends BaseActivity {
 
         final Habit habit = (Habit) adapter.getItem(position);
         int hid = habit.getHID();
+        String habitName = habit.getHabitName();
 
         switch (item.getItemId()) {
             case 1:
-                goToEditActivity(EDIT_HABIT, hid);
+                goToEditActivity(EDIT_HABIT, hid, habitName);
                 return true;
             case 2:
                 deleteHabit(habit);
@@ -166,14 +132,14 @@ public class ViewHabitActivity extends BaseActivity {
         }
     }
 
-    private void goToEditActivity(int requestCode, int hid) {
+    private void goToEditActivity(int requestCode, int hid, String name) {
         setResult(RESULT_OK);
 
         Intent editIntent = new Intent(context, EditHabitActivity.class);
         editIntent.putExtra(INTENT_HID, hid);
         editIntent.putExtra(INTENT_ACTION, requestCode);
-
-        startActivityForResult(editIntent, requestCode);
+        editIntent.putExtra("HABIT NAME", name);
+        startActivity(editIntent);
     }
 
     @Override

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -25,19 +24,20 @@
         android:id="@+id/habits_subheading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/habits_title"
+        android:layout_below="@+id/habits_title"
         android:textColor="@color/lightgray"
-        android:textSize="15sp"
+        android:textSize="13sp"
         android:paddingLeft="20dp"
-        android:paddingRight="20dp"
         android:text="Tap a habit to view details, or tap and hold for more options." />
 
     <ListView
         android:id="@+id/OldHabitLists"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/habits_subheading"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="20dp"
+        android:layout_below="@+id/habits_subheading"
         android:clickable="true" />
 
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>
