@@ -62,7 +62,7 @@ public class SignUpActivityTest extends ActivityInstrumentationTestCase2<SignUpA
 
         SystemClock.sleep(10000);
 
-        //check whether we add that user
+        //check whether we Cadd that user
         solo.enterText((EditText) solo.getView(R.id.signup_username), testName);
         solo.enterText((EditText) solo.getView(R.id.signup_displayname), "usernametest");
         solo.clickOnButton("SIGN UP");
