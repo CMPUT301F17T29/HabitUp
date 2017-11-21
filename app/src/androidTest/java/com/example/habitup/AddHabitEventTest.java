@@ -8,6 +8,8 @@ import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
+import com.example.habitup.Model.HabitEventList;
+import com.example.habitup.Model.HabitList;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.View.AddHabitEventActivity;
 import com.example.habitup.View.EditHabitEventActivity;
@@ -21,6 +23,7 @@ import java.util.Collections;
 
 public class AddHabitEventTest extends ActivityInstrumentationTestCase2{
     private Solo solo;
+    private int spinnerIndex;
 
     public AddHabitEventTest() {
         super(ViewHabitEventActivity.class);
@@ -28,49 +31,42 @@ public class AddHabitEventTest extends ActivityInstrumentationTestCase2{
 
     public void setUp() throws Exception {
         // get user info
+        UserAccount user = new UserAccount("tatata2", "tatata2", null);
         ElasticSearchController.GetUser getUser = new ElasticSearchController.GetUser();
-        getUser.execute("tatata");
+        getUser.execute("tatata2");
 
-        UserAccount user = new UserAccount("tatata","tatata",null);
         try {
             user = getUser.get().get(0);
-        }
-        catch (Exception e) {
-            //nothing here
+        } catch (Exception e) {
+            HabitUpApplication.addUserAccount(user);
         }
 
         HabitUpApplication.setCurrentUser(user);
 
         // get user habits
-        ElasticSearchController.GetHabitsTask getHabits = new ElasticSearchController.GetHabitsTask();
-        getHabits.execute("tatata");
-        ArrayList<Habit> habits = new ArrayList<Habit>();
-        try {
-            habits.addAll(getHabits.get());
-            Collections.sort(habits);
-            if (habits.size() == 0) {
-                Habit h = new Habit(HabitUpApplication.getCurrentUID());
-                h.setHabitName("live");
-                h.setReason("YOLO");
-                h.setAttribute("Physical");
-                h.setStartDate(LocalDate.of(2016,10,20));
-                boolean[] schedule = new boolean[8];
-                schedule[0] = false;
-                schedule[1] = true;
-                schedule[2] = true;
-                schedule[3] = true;
-                schedule[4] = true;
-                schedule[5] = true;
-                schedule[6] = true;
-                schedule[7] = true;
-                h.setSchedule(schedule);
-                HabitUpController.addHabit(h);
+        HabitList habitList = user.getHabitList();
+        HabitEventList eventList = user.getEventList();
 
-            }
+        if (!habitList.containsName("live")) {
+            Habit h = new Habit(HabitUpApplication.getCurrentUID());
+            h.setHabitName("live");
+            h.setReason("YOLO");
+            h.setAttribute("Physical");
+            h.setStartDate(LocalDate.of(2016,9,1));
+            boolean[] schedule = new boolean[8];
+            schedule[0] = false;
+            schedule[1] = true;
+            schedule[2] = true;
+            schedule[3] = true;
+            schedule[4] = true;
+            schedule[5] = true;
+            schedule[6] = true;
+            schedule[7] = true;
+            h.setSchedule(schedule);
+            habitList.add(h);
+            HabitUpController.addHabit(h);
         }
-        catch (Exception e) {
-            Log.d("Error", "Failed to retrieve habits from ES");
-        }
+        spinnerIndex = habitList.size() - 1;
 
         solo = new Solo(getInstrumentation(),getActivity());
     }
@@ -84,9 +80,9 @@ public class AddHabitEventTest extends ActivityInstrumentationTestCase2{
         solo.clickOnView(solo.getView(R.id.add_action_bar));
         solo.assertCurrentActivity("Wrong activity", AddHabitEventActivity.class);
 
-        solo.pressSpinnerItem(0,0);
+        solo.pressSpinnerItem(0, spinnerIndex);
         solo.clickOnImage(0);
-        solo.setDatePicker(0,2017,10,10);
+        solo.setDatePicker(0,2017,10,2);
         solo.clickOnText("OK");
         solo.enterText(0, "I lived");
         solo.clickOnButton("Save");
@@ -106,9 +102,9 @@ public class AddHabitEventTest extends ActivityInstrumentationTestCase2{
         solo.clickOnView(solo.getView(R.id.add_action_bar));
         solo.assertCurrentActivity("Wrong activity", AddHabitEventActivity.class);
 
-        solo.pressSpinnerItem(0,0);
+        solo.pressSpinnerItem(0, spinnerIndex);
         solo.clickOnImage(0);
-        solo.setDatePicker(0,2017,10,10);
+        solo.setDatePicker(0,2017,10,2);
         solo.clickOnText("OK");
         solo.enterText(0, "I lived");
         solo.clickOnButton("Save");

@@ -38,15 +38,15 @@ public class ViewHabitActivityTest extends ActivityInstrumentationTestCase2 {
 
     public void setUp() throws Exception {
         // get user info
-        ElasticSearchController.GetUser getUser = new ElasticSearchController.GetUser();
-        getUser.execute("tatata");
 
-        UserAccount user = new UserAccount("tatata","tatata",null);
+        UserAccount user = new UserAccount("tatata2", "tatata2", null);
+        ElasticSearchController.GetUser getUser = new ElasticSearchController.GetUser();
+        getUser.execute("tatata2");
+
         try {
             user = getUser.get().get(0);
-        }
-        catch (Exception e) {
-            //nothing here
+        } catch (Exception e) {
+            HabitUpApplication.addUserAccount(user);
         }
 
         HabitUpApplication.setCurrentUser(user);

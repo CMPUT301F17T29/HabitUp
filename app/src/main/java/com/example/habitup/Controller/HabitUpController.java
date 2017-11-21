@@ -103,7 +103,7 @@ public class HabitUpController {
     static public int deleteHabit(Habit h) {
 
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
-        currentUser.getHabitList().delete(h);
+        currentUser.getHabitList().delete(h.getHabitName());
 
         ElasticSearchController.DeleteHabitTask delHabit = new ElasticSearchController.DeleteHabitTask();
         delHabit.execute(Integer.toString(h.getHID()));
@@ -181,8 +181,13 @@ public class HabitUpController {
             String attrName = habit.getHabitAttribute();
 
             // Increment User Attribute
+
+
             HabitUpApplication.updateCurrentAttrs();
             HabitUpApplication.getCurrentAttrs().increaseValueBy(attrName, HabitUpApplication.ATTR_INCREMENT_PER_HABITEVENT);
+
+            ElasticSearchController.AddAttrsTask writeAttrs = new ElasticSearchController.AddAttrsTask();
+            writeAttrs.execute(HabitUpApplication.getCurrentAttrs());
 
             return 0;
 
