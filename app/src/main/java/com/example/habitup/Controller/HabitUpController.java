@@ -86,6 +86,7 @@ public class HabitUpController {
         }
 
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
+        currentUser.getEventList().updateEvents(h);
 
         ElasticSearchController.AddHabitsTask addHabit = new ElasticSearchController.AddHabitsTask();
         addHabit.execute(h);
@@ -220,6 +221,7 @@ public class HabitUpController {
         if (!habitEventAlreadyExists(event, habit)) {
             ElasticSearchController.AddHabitEventsTask addHabitEvent = new ElasticSearchController.AddHabitEventsTask();
             addHabitEvent.execute(event);
+            event.setHabitStrings(habit);
 
             UserAccount currentUser = HabitUpApplication.getCurrentUser();
             ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();

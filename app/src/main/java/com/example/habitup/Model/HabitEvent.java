@@ -78,6 +78,7 @@ public class HabitEvent implements Comparable<HabitEvent> {
      * @param hid int (Habit id)
      */
     public void setHabit(int hid) {
+
         this.hid = hid;
     }
 
@@ -298,10 +299,18 @@ public class HabitEvent implements Comparable<HabitEvent> {
         this.habitAttribute = habit.getHabitAttribute();
     }
 
+    /**
+     * Get the event's habit name
+     * @return the name of the habit the event belongs to
+     */
     public String getHabitName() {
         return this.habitName;
     }
 
+    /**
+     * Get the event's habit attribute
+     * @return the name of the attribute the event's habit belongs to
+     */
     public String getHabitAttribute() {
         return this.habitAttribute;
     }

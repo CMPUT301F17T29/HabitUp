@@ -101,4 +101,15 @@ public class HabitEventList {
             return null;
         }
     }
+
+    /**
+     * Updates the names and attributes of the events that belong to a habit
+     * @param habit the Habit that was updated
+     */
+    public void updateEvents(Habit habit) {
+        ArrayList<HabitEvent> eventsMatched = getEventsFromHabit(habit.getHID());
+        for (HabitEvent event : eventsMatched) {
+            event.setHabitStrings(habit);
+        }
+    }
 }

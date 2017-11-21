@@ -102,4 +102,35 @@ public class HabitEventListUnitTest {
             assertTrue(otherEvent.getCompletedate().isBefore(recentEvent.getCompletedate()));
         }
     }
+
+    @Test
+    public void testUpdateHabitStrings() {
+        HabitEventList eventList = new HabitEventList();
+        int uid = 1;
+
+        String habitName1 = "Go to the gym";
+        String habitName2 = "Go to class";
+        String attribute1 = "Physical";
+        String attribute2 = "Discipline";
+
+        Habit habit1 = new Habit(uid);
+        habit1.setHabitName(habitName1);
+        habit1.setAttribute(attribute1);
+
+        HabitEvent event1 = new HabitEvent(uid,habit1.getHID());
+        event1.setHabitStrings(habit1);
+        assertTrue(event1.getHabitName().equals(habitName1));
+        assertTrue(event1.getHabitAttribute().equals(attribute1));
+
+        eventList.add(event1);
+
+        habit1.setHabitName(habitName2);
+        habit1.setAttribute(attribute2);
+        eventList.updateEvents(habit1);
+
+        HabitEvent updatedEvent1 = eventList.get(0);
+        assertTrue(updatedEvent1.getHabitName().equals(habitName2));
+        assertTrue(updatedEvent1.getHabitAttribute().equals(attribute2));
+
+    }
 }
