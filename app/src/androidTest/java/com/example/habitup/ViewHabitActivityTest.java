@@ -7,6 +7,7 @@ import android.widget.EditText;
 import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Model.Habit;
+import com.example.habitup.Model.HabitList;
 import com.example.habitup.Model.UserAccount;
 
 import com.example.habitup.View.AddHabitActivity;
