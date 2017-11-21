@@ -1,8 +1,6 @@
 package com.example.habitup;
 import android.app.Activity;
 import android.test.ActivityInstrumentationTestCase2;
-import android.util.Log;
-
 
 import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
@@ -17,7 +15,6 @@ import com.example.habitup.View.ViewHabitEventActivity;
 import com.robotium.solo.Solo;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collections;
 
 

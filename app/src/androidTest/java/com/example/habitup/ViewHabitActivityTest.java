@@ -1,22 +1,15 @@
 package com.example.habitup;
 import android.app.Activity;
 import android.test.ActivityInstrumentationTestCase2;
-import android.util.Log;
-import android.widget.EditText;
 
 import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
-import com.example.habitup.Model.Habit;
-import com.example.habitup.Model.HabitList;
 import com.example.habitup.Model.UserAccount;
 
 import com.example.habitup.View.AddHabitActivity;
 import com.example.habitup.View.EditHabitActivity;
 import com.example.habitup.View.ViewHabitActivity;
 import com.robotium.solo.Solo;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * Tests viewing the Habits (ViewHabitActivity) along with testing AddHabit, ViewHabit, EditHabit,
