@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.habitup">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality. 
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -12,44 +20,44 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity android:name=".View.BaseActivity" />
-
         <activity
             android:name=".View.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".View.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                 <category android:name="android.intent.category.LAUNCHER" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".View.SignUpActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".View.ViewHabitActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".View.ViewHabitEventActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity android:name=".View.AddHabitActivity" />
-
         <activity android:name=".View.AddHabitEventActivity" />
-
         <activity android:name=".View.EditProfileActivity" />
-
         <activity android:name=".View.EditHabitActivity" />
-
         <activity android:name=".View.EditHabitEventActivity" />
+
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/maps_api_key"
+            />
+
+        <activity
+            android:name=".View.MapsActivity"
+            android:label="@string/title_activity_maps"
+            android:exported="true"></activity>
     </application>
 
 </manifest>
