@@ -163,15 +163,8 @@ public class HabitUpController {
             // Add the HabitEvent object to ES
             ElasticSearchController.AddHabitEventsTask addHabitEvent = new ElasticSearchController.AddHabitEventsTask();
             addHabitEvent.execute(event);
-
-            // Increment User XP and write back
             UserAccount currentUser = HabitUpApplication.getCurrentUser();
             currentUser.getEventList().add(event);
-
-            if (currentUser.getXP() + 1 >= currentUser.getXPtoNext()) {
-                currentUser.incrementLevel();
-                currentUser.setXPtoNext();
-            }
 
             currentUser.increaseXP(HabitUpApplication.XP_PER_HABITEVENT);
             ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
@@ -189,6 +182,23 @@ public class HabitUpController {
         } else {
             throw new IllegalArgumentException("Error: this Habit has already been completed on this date.");
         }
+    }
+
+    static public boolean levelUp() {
+        // Increment User XP and write back
+        boolean levelledUp = false;
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+
+        if (currentUser.getXP() + 1 >= currentUser.getXPtoNext()) {
+            currentUser.incrementLevel();
+            currentUser.setXPtoNext();
+            levelledUp = true;
+        }
+
+        ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
+        updateUser.execute(currentUser);
+
+        return levelledUp;
     }
 
     /**

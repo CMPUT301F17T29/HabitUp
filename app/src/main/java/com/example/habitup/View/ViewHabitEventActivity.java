@@ -10,13 +10,16 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -215,6 +218,15 @@ public class ViewHabitEventActivity extends BaseActivity {
         startActivity(editIntent);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        int levelledUp = data.getExtras().getInt("levelled_up");
+
+        if (levelledUp == 1) {
+            displayLevelUp();
+        }
+    }
+
     private void deleteEvent() {
         AlertDialog.Builder alert = new AlertDialog.Builder(ViewHabitEventActivity.this);
         alert.setTitle("Delete");
@@ -309,6 +321,33 @@ public class ViewHabitEventActivity extends BaseActivity {
             return true;
         }
     };
+
+    private void displayLevelUp() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ViewHabitEventActivity.this);
+
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View v = inflater.inflate(R.layout.levelup_dialog, null);
+        builder.setView(v);
+
+        TextView newLevel = v.findViewById(R.id.new_level);
+
+        // Get user's new level
+        int level = HabitUpApplication.getCurrentUser().getLevel();
+        newLevel.setText("Level " + level);
+
+        Button closeButton = v.findViewById(R.id.close_level_dialog);
+
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // Close dialog
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.cancel();
+            }
+        });
+    }
 
 }
 
