@@ -95,9 +95,8 @@ public class EditHabitEventActivity extends AppCompatActivity {
         action = intent.getExtras().getInt(ViewHabitEventActivity.HABIT_EVENT_ACTION);
         int position = intent.getExtras().getInt("EVENT POSITION");
 
-        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+        final UserAccount currentUser = HabitUpApplication.getCurrentUser();
         final HabitEvent event = currentUser.getEventList().get(position);
-        final Habit habit = currentUser.getHabitList().getHabit(event.getHabitName());
 
         // Get the event's date
         year_x = event.getCompletedate().getYear();
@@ -198,6 +197,8 @@ public class EditHabitEventActivity extends AppCompatActivity {
 
                 // Get all the values
                 String eventType = habitSpinner.getSelectedItem().toString();
+                Habit habit = currentUser.getHabitList().getHabit(eventType);
+
                 String eventComment = commentText.getText().toString();
 
                 String dateString = dateView.getText().toString();

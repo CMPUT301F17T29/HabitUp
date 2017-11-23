@@ -25,15 +25,16 @@ public class ViewHabitEventActivityTest extends ActivityInstrumentationTestCase2
      */
     public void setUp() throws Exception{
         // get user info
+        UserAccount user = new UserAccount("tatata2", "tatata2", null);
         ElasticSearchController.GetUser getUser = new ElasticSearchController.GetUser();
-        getUser.execute("tatata");
-        UserAccount user = new UserAccount("tatata","tatata",null);
+        getUser.execute("tatata2");
+
         try {
             user = getUser.get().get(0);
+        } catch (Exception e) {
+            HabitUpApplication.addUserAccount(user);
         }
-        catch (Exception e) {
-            //nothing here
-        }
+
         HabitUpApplication.setCurrentUser(user);
 
         solo = new Solo(getInstrumentation(),getActivity());

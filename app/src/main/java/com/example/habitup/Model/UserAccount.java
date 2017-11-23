@@ -263,10 +263,18 @@ public class UserAccount {
         this.XPtoNext += HabitUpApplication.XP_INCREASE_AMOUNT;
     }
 
+    /**
+     * Return the user's list of habits
+     * @return the HabitList model
+     */
     public HabitList getHabitList() {
         return this.habitList;
     }
 
+    /**
+     * Return the user's list of habit events
+     * @return the HabitEventList model
+     */
     public HabitEventList getEventList() {
         return this.eventList;
     }

@@ -86,6 +86,7 @@ public class HabitUpController {
         }
 
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
+        currentUser.getEventList().updateEvents(h);
 
         ElasticSearchController.AddHabitsTask addHabit = new ElasticSearchController.AddHabitsTask();
         addHabit.execute(h);
@@ -103,7 +104,7 @@ public class HabitUpController {
     static public int deleteHabit(Habit h) {
 
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
-        currentUser.getHabitList().delete(h);
+        currentUser.getHabitList().delete(h.getHabitName());
 
         ElasticSearchController.DeleteHabitTask delHabit = new ElasticSearchController.DeleteHabitTask();
         delHabit.execute(Integer.toString(h.getHID()));
@@ -174,8 +175,13 @@ public class HabitUpController {
             String attrName = habit.getHabitAttribute();
 
             // Increment User Attribute
+
+
             HabitUpApplication.updateCurrentAttrs();
             HabitUpApplication.getCurrentAttrs().increaseValueBy(attrName, HabitUpApplication.ATTR_INCREMENT_PER_HABITEVENT);
+
+            ElasticSearchController.AddAttrsTask writeAttrs = new ElasticSearchController.AddAttrsTask();
+            writeAttrs.execute(HabitUpApplication.getCurrentAttrs());
 
             return 0;
 
@@ -225,6 +231,7 @@ public class HabitUpController {
         if (!habitEventAlreadyExists(event, habit)) {
             ElasticSearchController.AddHabitEventsTask addHabitEvent = new ElasticSearchController.AddHabitEventsTask();
             addHabitEvent.execute(event);
+            event.setHabitStrings(habit);
 
             UserAccount currentUser = HabitUpApplication.getCurrentUser();
             ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
