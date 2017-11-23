@@ -118,7 +118,6 @@ public class MainActivity extends BaseActivity {
 
     private void displayLevelUp() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle("You levelled up!");
 
         LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
         View v = inflater.inflate(R.layout.levelup_dialog, null);
