@@ -6,26 +6,24 @@
     android:layout_height="wrap_content"
     android:id="@+id/cv"
     android:layout_margin="5dp"
-    card_view:cardElevation="8dp"
-    card_view:cardCornerRadius="7dp"
-    card_view:contentPadding="2dp"
-    android:clickable = "true"
-    >
+    card_view:cardElevation="0dp"
+    android:clickable = "true">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
         >
+
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/person_photo"
             android:layout_width="60dp"
             android:layout_height="60dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="11dp"
             android:adjustViewBounds="false"
-            android:layout_marginLeft="0dp"
-            android:layout_centerVertical="true"
-            android:src="@drawable/default_user"
-            />
+            android:src="@drawable/default_user" />
 
         <TextView
             android:id="@+id/person_name"
@@ -33,9 +31,11 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/person_photo"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="15dp"
             android:text="UserName"
-            android:textSize="20sp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/darkgray"
             />
 
         <TextView
@@ -44,23 +44,34 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/person_photo"
             android:text = "Nickname"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="15dp"
             android:layout_below="@+id/person_name"
+            android:textSize="14sp"
             />
+
         <Button
-            android:id="@+id/accpet_button"
+            android:id="@+id/accept_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:backgroundTint="@color/green"
-            android:layout_toRightOf="@+id/person_name"
             android:layout_centerVertical="true"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/person_nick_name"
+            android:layout_toRightOf="@+id/person_photo"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/white"
             android:text="Accept"/>
+
         <Button
             android:id="@+id/ignore_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/accpet_button"
+            android:layout_height="40dp"
+            android:layout_toRightOf="@+id/accept_button"
             android:layout_centerVertical="true"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/person_nick_name"
+            android:backgroundTint="@color/darkgray"
+            android:textColor="@color/white"
             android:text="Ignore"/>
 
     </RelativeLayout>
