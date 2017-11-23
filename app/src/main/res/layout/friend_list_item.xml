@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="15dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/friend_pic"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:adjustViewBounds="false"
+        android:src="@drawable/default_user"
+        android:scaleX="1"
+        android:scaleY="1"
+        android:alpha="255" />
+
+    <TextView
+        android:id="@+id/friend_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/friend_pic"
+        android:layout_marginStart="25dp"
+        android:layout_toEndOf="@+id/friend_pic"
+        android:layout_marginTop="4dp"
+        android:text="Jeff Cho"
+        android:textColor="@color/lightgray"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+
+    <TextView
+        android:id="@+id/friend_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/friend_name"
+        android:layout_below="@+id/friend_name"
+        android:text="gojeffcho"
+        android:textColor="@color/teal"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/friend_level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:drawableTint="@color/yellow"
+        android:drawableTop="@drawable/ic_events"
+        android:layout_marginTop="-5dp"
+        android:text="Level 40"
+        android:textSize="16sp" />
+
+</RelativeLayout>

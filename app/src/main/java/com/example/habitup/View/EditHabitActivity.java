@@ -22,9 +22,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.habitup.Controller.ElasticSearchController;
+import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Attributes;
 import com.example.habitup.Model.Habit;
+import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
 import java.text.DateFormatSymbols;
@@ -88,13 +90,9 @@ public class EditHabitActivity extends AppCompatActivity {
         action = intent.getExtras().getInt(ViewHabitActivity.INTENT_ACTION);
 
         // Get habit object from controller and set editable fields
-        ElasticSearchController.GetHabitsTask habitTask = new ElasticSearchController.GetHabitsTask();
-        habitTask.execute(String.valueOf(hid));
-        try {
-            habit = habitTask.get().get(0);
-        } catch (Exception e) {
-            Log.i("HabitUpDEBUG", "EditHabit - Couldn't get Habit from HID");
-        }
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+        String habitName = intent.getExtras().getString("HABIT NAME");
+        habit = currentUser.getHabitList().getHabit(habitName);
 
         // Set habit name
         editName = (EditText) findViewById(R.id.habit_name);

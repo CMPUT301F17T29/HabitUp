@@ -4,6 +4,7 @@ package com.example.habitup;
 import android.graphics.Bitmap;
 
 
+import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
 
 import org.junit.Test;
@@ -72,6 +73,32 @@ public class HabitEventUnitTest {
         event1.setPhoto(bm1);
         assertTrue(event1.hasImage());
 
+    }
+
+    @Test
+    public void testEditHabitType() {
+        String habitName1 = "Go to gym";
+        String attribute1 = "Physical";
+        String habitName2 = "Go to class";
+        String attribute2 = "Discipline";
+
+        Habit habit1 = new Habit(1);
+        habit1.setHabitName(habitName1);
+        habit1.setAttribute(attribute1);
+
+        Habit habit2 = new Habit(2);
+        habit2.setHabitName(habitName2);
+        habit2.setAttribute(attribute2);
+
+        HabitEvent event = new HabitEvent(1, habit1.getHID());
+        event.setHabitStrings(habit1);
+        assertTrue(event.getHabitName().equals(habitName1));
+        assertTrue(event.getHabitAttribute().equals(attribute1));
+
+        event.setHabit(2);
+        event.setHabitStrings(habit2);
+        assertTrue(event.getHabitName().equals(habitName2));
+        assertTrue(event.getHabitAttribute().equals(attribute2));
     }
 
 }

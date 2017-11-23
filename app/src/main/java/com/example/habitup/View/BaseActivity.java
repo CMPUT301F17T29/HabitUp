@@ -75,7 +75,8 @@ public class BaseActivity extends AppCompatActivity {
                         startActivity(eventsIntent);
                         break;
                     case R.id.friends:
-                        drawerLayout.closeDrawers();
+                        Intent friendsIntent = new Intent(context, ViewFriendsActivity.class);
+                        startActivity(friendsIntent);
                         break;
                     case R.id.requests:
                         drawerLayout.closeDrawers();
@@ -88,7 +89,6 @@ public class BaseActivity extends AppCompatActivity {
                         break;
                     case R.id.logout:
                         logout();
-                        drawerLayout.closeDrawers();
                         break;
                 }
 
@@ -111,6 +111,7 @@ public class BaseActivity extends AppCompatActivity {
             }
         };
 
+        drawerLayout.closeDrawers();
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
     }

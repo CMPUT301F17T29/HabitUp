@@ -9,6 +9,7 @@ import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 
 /**
  * @author gojeffcho
@@ -33,6 +34,9 @@ public class UserAccount {
     private int XP;
     private int XPtoNext;
 
+    private HabitEventList eventList;
+    private HabitList habitList;
+
     /**
      * Constructor for a UserAccount.
      *
@@ -51,6 +55,9 @@ public class UserAccount {
         level = 1;
         XP = 0;
         XPtoNext = 20;
+
+        this.eventList = new HabitEventList();
+        this.habitList = new HabitList();
     }
 
     /**
@@ -254,6 +261,22 @@ public class UserAccount {
      */
     public void setXPtoNext() {
         this.XPtoNext += HabitUpApplication.XP_INCREASE_AMOUNT;
+    }
+
+    /**
+     * Return the user's list of habits
+     * @return the HabitList model
+     */
+    public HabitList getHabitList() {
+        return this.habitList;
+    }
+
+    /**
+     * Return the user's list of habit events
+     * @return the HabitEventList model
+     */
+    public HabitEventList getEventList() {
+        return this.eventList;
     }
 
 }

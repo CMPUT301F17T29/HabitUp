@@ -5,10 +5,13 @@ import android.util.Log;
 
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
+import com.example.habitup.Model.HabitEventList;
 import com.example.habitup.Model.UserAccount;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * HabitUpController is used for core functionality relating to Habits and HabitEvents.  It is the
@@ -29,17 +32,9 @@ public class HabitUpController {
      * @return ArrayList<Habit> of today's Habits
      */
     static public ArrayList<Habit> getTodaysHabits() {
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
         ArrayList<Habit> habits = new ArrayList<>();
-        ArrayList<Habit> allHabits;
-        ElasticSearchController.GetUserHabitsTask getUserHabits = new ElasticSearchController.GetUserHabitsTask();
-        getUserHabits.execute(String.valueOf(HabitUpApplication.getCurrentUID()));
-
-        try {
-            allHabits = getUserHabits.get();
-        } catch (Exception e) {
-            Log.i("HabitUpDEBUG", "HUCont - couldn't get Habits");
-            return null;
-        }
+        ArrayList<Habit> allHabits = currentUser.getHabitList().getHabits();
 
         for (Habit habit : allHabits) {
 //            Log.i("HabitUpDEBUG", "getTodaysHabits: " + habit.getHabitName());
@@ -58,8 +53,15 @@ public class HabitUpController {
     static public int addHabit(Habit h) throws IllegalArgumentException {
 
         if (!habitAlreadyExists(h)) {
+            UserAccount currentUser = HabitUpApplication.getCurrentUser();
+            currentUser.getHabitList().add(h);
+
             ElasticSearchController.AddHabitsTask addHabit = new ElasticSearchController.AddHabitsTask();
             addHabit.execute(h);
+
+            ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
+            updateUser.execute(currentUser);
+
             return 0;
         } else {
             throw new IllegalArgumentException("Error: a Habit with this name already exists!");
@@ -83,8 +85,14 @@ public class HabitUpController {
             }
         }
 
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+        currentUser.getEventList().updateEvents(h);
+
         ElasticSearchController.AddHabitsTask addHabit = new ElasticSearchController.AddHabitsTask();
         addHabit.execute(h);
+
+        ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
+        updateUser.execute(currentUser);
         return 0;
     }
 
@@ -94,8 +102,16 @@ public class HabitUpController {
      * @return int successCode (0 for success)
      */
     static public int deleteHabit(Habit h) {
+
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+        currentUser.getHabitList().delete(h.getHabitName());
+
         ElasticSearchController.DeleteHabitTask delHabit = new ElasticSearchController.DeleteHabitTask();
         delHabit.execute(Integer.toString(h.getHID()));
+
+        ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
+        updateUser.execute(currentUser);
+
         return 0;
     }
 
@@ -105,22 +121,17 @@ public class HabitUpController {
      * @return int successCode (0 for success)
      */
     static public int deleteHabitEventsForHabit(Habit h) {
-        ElasticSearchController.GetHabitEventsForDelete getDeleteEvents = new ElasticSearchController.GetHabitEventsForDelete();
-        getDeleteEvents.execute(String.valueOf(h.getHID()));
-        ArrayList<HabitEvent> eventsToDelete = null;
-
-        try {
-            eventsToDelete = getDeleteEvents.get();
-        } catch (Exception e) {
-            Log.i("HabitUpDEBUG", "HUCtl/deleteHabitEventsForHabit - couldn't get eventsToDelete");
-        }
-
-//        Log.i("HabitUpDEBUG", "HUCtl/deleteHabitEventsForHabit - found " + String.valueOf(eventsToDelete.size()) + " matches.");
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+        ArrayList<HabitEvent> eventsToDelete = currentUser.getEventList().getEventsFromHabit(h.getHID());
 
         for (HabitEvent ev : eventsToDelete) {
             ElasticSearchController.DeleteHabitEventTask deleter = new ElasticSearchController.DeleteHabitEventTask();
             deleter.execute(ev.getEID());
+            currentUser.getEventList().delete(ev);
         }
+
+        ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
+        updateUser.execute(currentUser);
 
         return 0;
     }
@@ -135,12 +146,11 @@ public class HabitUpController {
      * @return int successCode (0 for success)
      * @throws IllegalArgumentException if HabitEvent already exists for Habit on that day
      */
-    static public int addHabitEvent(HabitEvent event) throws IllegalArgumentException {
-//        Log.d("EVENT:", "Adding HabitEvent to HID #" + String.valueOf(event.getHID()));
+    static public int addHabitEvent(HabitEvent event, Habit habit) throws IllegalArgumentException {
 
         // Check if HabitEvent is completed before Habit start date
         try {
-            if (habitEventBeforeHabitStartDate(event)) {
+            if (habitEventBeforeHabitStartDate(event, habit)) {
                 throw new IllegalArgumentException("Error: Habit cannot be completed before its start date.");
             }
         } catch (Exception e) {
@@ -149,7 +159,7 @@ public class HabitUpController {
         }
 
         // Check if HabitEvent for the parent Habit already exists on that day
-        if (!habitEventAlreadyExists(event)) {
+        if (!habitEventAlreadyExists(event, habit)) {
 
             // Add the HabitEvent object to ES
             ElasticSearchController.AddHabitEventsTask addHabitEvent = new ElasticSearchController.AddHabitEventsTask();
@@ -157,6 +167,7 @@ public class HabitUpController {
 
             // Increment User XP and write back
             UserAccount currentUser = HabitUpApplication.getCurrentUser();
+            currentUser.getEventList().add(event);
 
             if (currentUser.getXP() + 1 >= currentUser.getXPtoNext()) {
                 currentUser.incrementLevel();
@@ -168,22 +179,14 @@ public class HabitUpController {
             updateUser.execute(currentUser);
 
             // Setup for attribute increment: need the Habit's Attribute type
-            ElasticSearchController.GetHabitsTask getHabit = new ElasticSearchController.GetHabitsTask();
-            getHabit.execute(String.valueOf(event.getHID()));
-            String attrName = "";
-            try {
-                attrName = getHabit.get().get(0).getHabitAttribute();
-            } catch (Exception e) {
-                Log.i("HabitUpDEBUG", "HUCtrl / Couldn't get Attribute name for Habit");
-            }
+            String attrName = habit.getHabitAttribute();
 
             // Increment User Attribute
-            if (attrName != "") {
-                HabitUpApplication.updateCurrentAttrs();
-                HabitUpApplication.getCurrentAttrs().increaseValueBy(attrName, HabitUpApplication.ATTR_INCREMENT_PER_HABITEVENT);
-            }
 
-            // Write back User Attribute
+
+            HabitUpApplication.updateCurrentAttrs();
+            HabitUpApplication.getCurrentAttrs().increaseValueBy(attrName, HabitUpApplication.ATTR_INCREMENT_PER_HABITEVENT);
+
             ElasticSearchController.AddAttrsTask writeAttrs = new ElasticSearchController.AddAttrsTask();
             writeAttrs.execute(HabitUpApplication.getCurrentAttrs());
 
@@ -202,11 +205,11 @@ public class HabitUpController {
      * @return int successCode (0 for success)
      * @throws IllegalArgumentException if a different HabitEvent exists for the same Habit on that date
      */
-    static public int editHabitEvent(HabitEvent event) throws IllegalArgumentException {
+    static public int editHabitEvent(HabitEvent event, Habit habit) throws IllegalArgumentException {
 
         // Check if HabitEvent is completed before Habit start date
         try {
-            if (habitEventBeforeHabitStartDate(event)) {
+            if (habitEventBeforeHabitStartDate(event, habit)) {
                 throw new IllegalArgumentException("Error: Habit cannot be completed before its start date.");
             }
         } catch (Exception e) {
@@ -215,9 +218,14 @@ public class HabitUpController {
         }
 
         // Check if HabitEvent for the parent Habit already exists on that day
-        if (!habitEventAlreadyExists(event)) {
+        if (!habitEventAlreadyExists(event, habit)) {
             ElasticSearchController.AddHabitEventsTask addHabitEvent = new ElasticSearchController.AddHabitEventsTask();
             addHabitEvent.execute(event);
+            event.setHabitStrings(habit);
+
+            UserAccount currentUser = HabitUpApplication.getCurrentUser();
+            ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
+            updateUser.execute(currentUser);
             return 0;
         } else {
             throw new IllegalArgumentException("Error: this Habit has already been completed on this date.");
@@ -230,9 +238,16 @@ public class HabitUpController {
      * @return successCode (0 for success)
      */
     static public int deleteHabitEvent(HabitEvent event) {
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+        currentUser.getEventList().delete(event);
+
 //        Log.d("EVENT DELETE:", "Deleting HabitEvent belonging to HID #" + String.valueOf(event.getHID()));
         ElasticSearchController.DeleteHabitEventTask delHabitEvent = new ElasticSearchController.DeleteHabitEventTask();
         delHabitEvent.execute(event.getEID());
+
+        ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
+        updateUser.execute(currentUser);
+
         return 0;
     }
 
@@ -264,26 +279,9 @@ public class HabitUpController {
      * @param event HabitEvent to check
      * @return True if a different HabitEvent already exists on that date
      */
-    static public boolean habitEventAlreadyExists(HabitEvent event) {
-//        ElasticSearchController.GetHabitsEventDuplicates getDupes = new ElasticSearchController.GetHabitsEventDuplicates();
-//        getDupes.execute(event);
-//        ArrayList<HabitEvent> matches = null;
-//        try {
-//            matches = getDupes.get();
-//        } catch (Exception e) {
-//            Log.i("HabitUpDEBUG", "HUCtl/addHabitEvent - exception in getting dupes");
-//        }
-//
-//        Log.i("HabitUpDEBUG", "HUCtl/addHabitEvent - found " + String.valueOf(matches.size()) + " matches.");
-
-        ElasticSearchController.GetHabitEventsByHidTask getEventsForHabit = new ElasticSearchController.GetHabitEventsByHidTask();
-        getEventsForHabit.execute(String.valueOf(event.getHID()));
-        ArrayList<HabitEvent> matchedEvents = null;
-        try {
-            matchedEvents = getEventsForHabit.get();
-        } catch (Exception e) {
-            Log.i("HabitUpDEBUG", "HUCtl/addHabitEvent - exception in events for same habit");
-        }
+    static public boolean habitEventAlreadyExists(HabitEvent event, Habit habit) {
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+        ArrayList<HabitEvent> matchedEvents = currentUser.getEventList().getEventsFromHabit(habit.getHID());
 
         boolean alreadyExists = false;
         for (HabitEvent ev : matchedEvents) {
@@ -301,21 +299,8 @@ public class HabitUpController {
      * @return True if HabitEvent happens before the Habit's startDate
      * @throws RuntimeException if parentHabit could not be obtained
      */
-    static private boolean habitEventBeforeHabitStartDate(HabitEvent event) throws RuntimeException {
-        ElasticSearchController.GetHabitsTask getHabit = new ElasticSearchController.GetHabitsTask();
-        getHabit.execute(String.valueOf(event.getHID()));
-        Habit parentHabit = null;
-        try {
-            parentHabit = getHabit.get().get(0);
-        } catch (Exception e) {
-            Log.i("HabitUpDEBUG", "HUCtl/habitEventBeforeHabitStartDate - exception getting parentHabit");
-        }
-
-        if (parentHabit == null) {
-            throw new RuntimeException("Couldn't get parent Habit for this HabitEvent.");
-        }
-
-        return parentHabit.getStartDate().isAfter(event.getCompletedate());
+    static private boolean habitEventBeforeHabitStartDate(HabitEvent event, Habit habit) throws RuntimeException {
+        return habit.getStartDate().isAfter(event.getCompletedate());
     }
 
     /**
@@ -327,25 +312,14 @@ public class HabitUpController {
 
 //        Log.i("HabitUpDEBUG", "HUCtl/habitDoneToday - in method");
 
-        ElasticSearchController.GetHabitEventsByHidTask getEventsForHabit = new ElasticSearchController.GetHabitEventsByHidTask();
-        getEventsForHabit.execute(String.valueOf(h.getHID()));
-        ArrayList<HabitEvent> matchedEvents = null;
-        try {
-            matchedEvents = getEventsForHabit.get();
-        } catch (Exception e) {
-            Log.i("HabitUpDEBUG", "HUCtl/addHabitEvent - exception in events for same habit");
-        }
+        HabitEventList eventList = HabitUpApplication.getCurrentUser().getEventList();
+        HabitEvent recentEvent = eventList.getRecentEventFromHabit(h.getHID());
 
-        boolean alreadyExists = false;
-        for (HabitEvent ev : matchedEvents) {
-//            Log.i("HabitUpDEBUG", "HUCtl/habitDoneToday - looking at HabitEvent " + ev.getEID());
-            if (ev.getCompletedate().equals(LocalDate.now())) {
-                alreadyExists = true;
-//                Log.i("HabitUpDEBUG", "HUCtl/habitDoneToday - HabitEvent " + ev.getEID() + " was done today.");
-            }
+        if (recentEvent != null) {
+            return recentEvent.getCompletedate().equals(LocalDate.now());
+        } else {
+            return false;
         }
-
-        return alreadyExists;
     }
 
 

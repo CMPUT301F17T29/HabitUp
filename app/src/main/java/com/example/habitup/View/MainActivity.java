@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 
+import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.R;
@@ -59,6 +60,7 @@ public class MainActivity extends BaseActivity {
 
         // Set up the array and adapter
         habitsArrayList = HabitUpController.getTodaysHabits();
+
         Collections.sort(habitsArrayList);
 
         adapter = new ProfileHabitsAdapter(this, habitsArrayList);

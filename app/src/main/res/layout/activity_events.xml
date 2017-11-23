@@ -14,9 +14,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Habit Event History"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="15dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="15dp"
         android:textColor="@color/darkgray"
         android:textSize="20sp"
         android:textStyle="bold"/>
@@ -37,11 +37,11 @@
             android:id="@+id/filter_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:text="Search comments or Filter by Habit"
+            android:text="Search comments or filter by habit"
             android:textColor="@color/teal"
             android:textSize="15sp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             android:textStyle="bold" />
 
         <EditText
@@ -49,8 +49,8 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_below="@+id/filter_title"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             android:layout_marginTop="5dp"
             android:background="@drawable/white_text_input"
             android:drawableLeft="@drawable/ic_find"
@@ -68,9 +68,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/filter_comment"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:layout_marginTop="8dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             android:background="@color/white">
 
             <Spinner
@@ -85,21 +85,23 @@
 
     </RelativeLayout>
 
+
     <TextView
         android:id="@+id/select_event"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/filters"
-        android:layout_marginLeft="10dp"
+        android:paddingLeft="20dp"
         android:layout_marginTop="10dp"
         android:text="Tap an event to view details, or tap and hold for more options."
-        android:textSize="15sp"
+        android:textSize="13sp"
         android:textColor="@color/lightgray"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/event_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="15dp"
         android:layout_below="@+id/select_event"
         app:layoutManager="LinearLayoutManager"
         android:scrollbars="vertical"

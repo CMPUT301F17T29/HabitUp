@@ -29,6 +29,7 @@ import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
+import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
 import java.text.DateFormatSymbols;
@@ -88,19 +89,8 @@ public class AddHabitEventActivity extends AppCompatActivity {
         Spinner habitSpinner = (Spinner) findViewById(R.id.event_habit_spinner);
 
         // Set up habit types list
-        ArrayList<String> habitNames = new ArrayList<>();
-        final HashMap<String, Integer> hids = new HashMap<>();
-
-        // Retrieve habits from current user
-        ArrayList<Habit> habitList;
-        ElasticSearchController.GetUserHabitsTask getUserHabits = new ElasticSearchController.GetUserHabitsTask();
-        getUserHabits.execute(String.valueOf(HabitUpApplication.getCurrentUID()));
-        try {
-            habitList = getUserHabits.get();
-        } catch (Exception e) {
-            Log.i("HabitUpDEBUG", "AddHabitEvent - couldn't get User Habits");
-            habitList = new ArrayList<>();
-        }
+        final UserAccount currentUser = HabitUpApplication.getCurrentUser();
+        ArrayList<String> habitNames = currentUser.getHabitList().getHabitNames();
 
         // Get the habit's name if coming from the main profile
         String currentName = null;
@@ -114,16 +104,9 @@ public class AddHabitEventActivity extends AppCompatActivity {
         ArrayAdapter adapter = new ArrayAdapter(this, R.layout.spinner_item, habitNames);
         habitSpinner.setAdapter(adapter);
 
-        // Populate habitNames, hids for dropdown menu and back-translation to Habit
-        for (int i = 0; i < habitList.size(); i++) {
-            Habit habit = habitList.get(i);
-            String habitName = habit.getHabitName();
-            adapter.add(habitName);
-            hids.put(habit.getHabitName(), habit.getHID());
-
-            // Selected row in spinner if adding event from profile
+        for (int i = 0; i < habitNames.size(); i++) {
+            String habitName = habitNames.get(i);
             if (currentName != null && currentName.equals(habitName)) {
-                Log.i("Spinner", "Found a match");
                 habitSpinner.setSelection(i);
             }
         }
@@ -194,11 +177,16 @@ public class AddHabitEventActivity extends AppCompatActivity {
 
                 // Create new habit event
                 int uid = HabitUpApplication.getCurrentUID();
-                int hid = hids.get(habitType);
+
+                Habit eventHabit = currentUser.getHabitList().getHabit(habitType);
+                int hid = eventHabit.getHID();
                 HabitEvent newEvent = new HabitEvent(uid, hid);
                 Boolean eventOK = Boolean.TRUE;
                 newEvent.setHabit(hid);
                 newEvent.setScheduled();
+
+                // Set habit strings
+                newEvent.setHabitStrings(eventHabit);
 
                 // Validation for habit event
                 try {
@@ -225,7 +213,7 @@ public class AddHabitEventActivity extends AppCompatActivity {
                 if (eventOK) {
                     // Pass to the controller
                     try {
-                        HabitUpController.addHabitEvent(newEvent);
+                        HabitUpController.addHabitEvent(newEvent, eventHabit);
                         Intent result = new Intent();
                         result.putExtra("habit_pos", -1);
                         setResult(Activity.RESULT_OK, result);

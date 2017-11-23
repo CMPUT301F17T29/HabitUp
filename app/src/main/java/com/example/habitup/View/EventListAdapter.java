@@ -119,7 +119,6 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
         private final ImageView photoIcon;
         private final ImageView markerIcon;
 
-        private HabitEvent event;
         private Habit eventHabit;
         private Context context;
 
@@ -166,21 +165,10 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
         }
 
         public void bindEvent(HabitEvent event) {
-            this.event = event;
-
-            // Get the habit associated with the event
-            ElasticSearchController.GetHabitsTask getHabit = new ElasticSearchController.GetHabitsTask();
-            getHabit.execute(String.valueOf(event.getHID()));
-            try {
-                eventHabit = getHabit.get().get(0);
-            } catch (Exception e) {
-                eventHabit = new Habit(-1);
-                eventHabit.setHabitName("ERROR");
-            }
 
             // Set the event's habit name with it's corresponding Attribute color
-            String eventName = eventHabit.getHabitName();
-            String eventAttribute = eventHabit.getHabitAttribute();
+            String eventName = event.getHabitName();
+            String eventAttribute = event.getHabitAttribute();
             String attributeColour = Attributes.getColour(eventAttribute);
             this.eventNameView.setText(eventName);
             this.eventNameView.setTextColor(Color.parseColor(attributeColour));

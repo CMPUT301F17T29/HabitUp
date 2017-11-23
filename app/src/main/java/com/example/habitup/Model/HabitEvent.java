@@ -36,6 +36,9 @@ public class HabitEvent implements Comparable<HabitEvent> {
     private Location location;
     private Boolean scheduled;
 
+    private String habitName = "";
+    private String habitAttribute = "";
+
     /**
      * Constructor - needs a uid and hid to uniquely identify it.  eid is set upon transmission to
      * ElasticSearch.
@@ -74,7 +77,10 @@ public class HabitEvent implements Comparable<HabitEvent> {
      * Set the Habit the HabitEvent belongs to
      * @param hid int (Habit id)
      */
-    public void setHabit(int hid) { this.hid = hid; }
+    public void setHabit(int hid) {
+
+        this.hid = hid;
+    }
 
     /**
      * Set the unique HabitEvent id
@@ -286,6 +292,27 @@ public class HabitEvent implements Comparable<HabitEvent> {
      */
     public boolean hasLocation() {
         return this.location != null;
+    }
+
+    public void setHabitStrings(Habit habit) {
+        this.habitName = habit.getHabitName();
+        this.habitAttribute = habit.getHabitAttribute();
+    }
+
+    /**
+     * Get the event's habit name
+     * @return the name of the habit the event belongs to
+     */
+    public String getHabitName() {
+        return this.habitName;
+    }
+
+    /**
+     * Get the event's habit attribute
+     * @return the name of the attribute the event's habit belongs to
+     */
+    public String getHabitAttribute() {
+        return this.habitAttribute;
     }
 
 }
