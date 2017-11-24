@@ -104,10 +104,6 @@ public class ViewHabitEventActivity extends BaseActivity {
         eventAdapter = new EventListAdapter(this, events);
         eventListView.setAdapter(eventAdapter);
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setAutoMeasureEnabled(true);
-        eventListView.setLayoutManager(layoutManager);
-
         eventAdapter.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {

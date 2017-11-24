@@ -7,7 +7,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 
+import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Model.UserAccount;
+import com.example.habitup.Model.UserAccountList;
 import com.example.habitup.R;
 
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ public class ViewFriendsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
+        friends = new ArrayList<>();
 
         // Initialize friends list view
         friendsListView = (RecyclerView) findViewById(R.id.friends_listview);
@@ -43,8 +46,10 @@ public class ViewFriendsActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
 
-        // TODO: Get user's friend list from ES Controller
-        friends = new ArrayList<>();
+        friends.clear();
+
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+        friends = currentUser.getFriendsList().getUserList();
 
         friendsAdapter = new FriendsListAdapter(this, friends);
         friendsListView.setAdapter(friendsAdapter);

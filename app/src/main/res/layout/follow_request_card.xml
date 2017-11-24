@@ -26,27 +26,28 @@
             android:src="@drawable/default_user" />
 
         <TextView
-            android:id="@+id/person_name"
+            android:id="@+id/person_nick_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/person_photo"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="20dp"
             android:text="UserName"
-            android:textSize="16sp"
+            android:textSize="17sp"
             android:textStyle="bold"
             android:textColor="@color/darkgray"
             />
 
         <TextView
-            android:id="@+id/person_nick_name"
+            android:id="@+id/person_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/person_photo"
             android:text = "Nickname"
-            android:layout_marginLeft="15dp"
-            android:layout_below="@+id/person_name"
+            android:layout_marginLeft="20dp"
+            android:layout_below="@+id/person_nick_name"
             android:textSize="14sp"
+            android:textColor="@color/teal"
             />
 
         <Button
@@ -56,9 +57,9 @@
             android:backgroundTint="@color/green"
             android:layout_centerVertical="true"
             android:layout_marginTop="5dp"
-            android:layout_below="@+id/person_nick_name"
+            android:layout_below="@+id/person_name"
             android:layout_toRightOf="@+id/person_photo"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="15dp"
             android:textColor="@color/white"
             android:text="Accept"/>
 
@@ -69,8 +70,8 @@
             android:layout_toRightOf="@+id/accept_button"
             android:layout_centerVertical="true"
             android:layout_marginTop="5dp"
-            android:layout_below="@+id/person_nick_name"
-            android:backgroundTint="@color/darkgray"
+            android:layout_below="@+id/person_name"
+            android:backgroundTint="@color/lightgray"
             android:textColor="@color/white"
             android:text="Ignore"/>
 
