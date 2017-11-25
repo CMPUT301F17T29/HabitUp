@@ -366,7 +366,6 @@ public class HabitUpController {
      */
     static public int addFriend(UserAccount follower) throws IllegalArgumentException {
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
-        UserAccountList requestList = currentUser.getRequestList();
 
         if (removeFriendRequest(follower) == 0) {
             currentUser.getFriendsList().add(follower);
@@ -377,17 +376,9 @@ public class HabitUpController {
         }
     }
 
-    static public int removeFriend(UserAccount follower) throws IllegalArgumentException {
-        UserAccount currentUser = HabitUpApplication.getCurrentUser();
-
-        if (currentUser.getFriendsList().delete(follower) == 0) {
-            updateUser();
-            return 0;
-        } else {
-            throw new IllegalArgumentException("Error: Failed to remove friend.");
-        }
-    }
-
+    /**
+     * Updates the current user's model in ElasticSearch
+     */
     static public void updateUser() {
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
         ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();

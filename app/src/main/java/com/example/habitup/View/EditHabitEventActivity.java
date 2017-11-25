@@ -95,8 +95,15 @@ public class EditHabitEventActivity extends AppCompatActivity {
         action = intent.getExtras().getInt(ViewHabitEventActivity.HABIT_EVENT_ACTION);
         int position = intent.getExtras().getInt("EVENT POSITION");
 
-        final UserAccount currentUser = HabitUpApplication.getCurrentUser();
-        final HabitEvent event = currentUser.getEventList().get(position);
+        UserAccount user = HabitUpApplication.getCurrentUser();
+        int uid = intent.getExtras().getInt("HABIT_EVENT_UID");
+        if (user.getUID() != uid) {
+            int friendIndex = intent.getExtras().getInt("FRIEND_INDEX");
+            user = user.getFriendsList().getUserList().get(friendIndex);
+        }
+        final UserAccount eventUser = user;
+
+        final HabitEvent event = eventUser.getEventList().get(position);
 
         // Get the event's date
         year_x = event.getCompletedate().getYear();
@@ -120,7 +127,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
 
         if (action == ViewHabitEventActivity.EDIT_EVENT) {
             // Retrieve habits from current user
-            habitNames = currentUser.getHabitList().getHabitNames();
+            habitNames = eventUser.getHabitList().getHabitNames();
             entryIndex = position;
         } else {
             habitNames.clear();
@@ -197,7 +204,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
 
                 // Get all the values
                 String eventType = habitSpinner.getSelectedItem().toString();
-                Habit habit = currentUser.getHabitList().getHabit(eventType);
+                Habit habit = eventUser.getHabitList().getHabit(eventType);
 
                 String eventComment = commentText.getText().toString();
 
