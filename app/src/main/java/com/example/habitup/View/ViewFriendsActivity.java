@@ -1,12 +1,12 @@
 package com.example.habitup.View;
 
-
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 
+import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
@@ -19,17 +19,15 @@ import java.util.ArrayList;
  */
 public class ViewFriendsActivity extends BaseActivity {
 
-    public static final int VIEW_FRIEND_HABIT = 4;
-
     private ArrayList<UserAccount> friends;
     private RecyclerView friendsListView;
-    private RecyclerView habitsListView;
     private FriendsListAdapter friendsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
+        friends = new ArrayList<>();
 
         // Initialize friends list view
         friendsListView = (RecyclerView) findViewById(R.id.friends_listview);
@@ -37,14 +35,9 @@ public class ViewFriendsActivity extends BaseActivity {
 
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         friendsListView.addItemDecoration(itemDecoration);
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        // TODO: Get user's friend list from ES Controller
-        friends = new ArrayList<>();
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+        friends = currentUser.getFriendsList().getUserList();
 
         friendsAdapter = new FriendsListAdapter(this, friends);
         friendsListView.setAdapter(friendsAdapter);
@@ -52,8 +45,11 @@ public class ViewFriendsActivity extends BaseActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setAutoMeasureEnabled(true);
         friendsListView.setLayoutManager(layoutManager);
+    }
 
-        friendsAdapter.notifyDataSetChanged();
+    @Override
+    protected void onStart() {
+        super.onStart();
 
         if (friends.size() == 0) {
             TextView subHeading = (TextView) findViewById(R.id.friends_subheading);

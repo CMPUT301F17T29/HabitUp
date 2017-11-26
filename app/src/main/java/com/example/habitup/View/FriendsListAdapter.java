@@ -12,15 +12,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Model.Attributes;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
+import com.example.habitup.Model.HabitEventList;
+import com.example.habitup.Model.HabitList;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by sharidanbarboza on 2017-11-15.
@@ -32,15 +35,16 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private final static int CHILD = 1;
 
     private Context context;
-    private ArrayList<UserAccount> friends;
     private ArrayList<Item> data;
+
+    private int lastPos = -1;
 
     public FriendsListAdapter(Context context, ArrayList<UserAccount> friends) {
         this.context = context;
 
         this.data = new ArrayList<>();
-        for (UserAccount friend : friends) {
-            Item friendItem = new Item(HEADER, friend);
+        for (int i = 0; i < friends.size(); i++) {
+            Item friendItem = new Item(HEADER, friends.get(i), i);
             data.add(friendItem);
         }
     }
@@ -74,57 +78,41 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             final FriendHolder fh = (FriendHolder) holder;
             fh.bind(friend);
 
+            final HabitList habitList = friend.getHabitList();
+            final ArrayList<Habit> habits = habitList.getHabits();
+            Collections.sort(habits);
+
             fh.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    lastPos = position;
                     if (friendItem.invisibleChildren == null) {
-                        Log.i("Initializing friend habits once", friendItem.friend.getRealname());
-
                         friendItem.invisibleChildren = new ArrayList<>();
-
-                        // TODO: Get friend's habits from ES Controller
-                        ArrayList<Habit> habits = new ArrayList<>();
 
                         // Convert habits to items
                         ArrayList<Item> habitItems = new ArrayList<>();
                         for (Habit habit : habits) {
-                            Item item = new Item(CHILD, habit);
+                            Item item = new Item(CHILD, habit, friend, friendItem.friendIndex);
+
                             habitItems.add(item);
                         }
-
                         friendItem.invisibleChildren.addAll(habitItems);
                     }
 
-                    if (fh.isClicked()) {
-                        // Habit list is open and displayed
-                        int pos = data.indexOf(friendItem);
-                        int count = 0;
-
-                        // Add to adapter
-                        while (data.size() > pos + 1 && data.get(pos + 1).type == CHILD) {
-                            data.remove(pos + 1);
-                            count++;
-                        }
-                        notifyItemRangeRemoved(pos + 1, count);
-                        fh.setClicked(false);
+                    if (!friendItem.clicked && habits.size() > 0) {
+                        openList(position);
+                    } else if (friendItem.clicked) {
+                        closeList(position);
                     } else {
-                        // Habit list is closed and hidden
-                        int pos = data.indexOf(friendItem);
-                        int index = pos + 1;
-
-                        // Remove from adapter
-                        for (Item i : friendItem.invisibleChildren) {
-                            data.add(index, i);
-                            index++;
-                        }
-                        notifyItemRangeInserted(pos + 1, index - pos - 1);
-                        fh.setClicked(true);
+                        String noHabitsMsg = friend.getRealname() + " has no habits.";
+                        Toast.makeText(context, noHabitsMsg, Toast.LENGTH_LONG).show();
                     }
                 }
             });
         } else {
-            Item habitItem = data.get(position);
+            final Item habitItem = data.get(position);
             final Habit habit = habitItem.habit;
+            final UserAccount friend = habitItem.friend;
             HabitHolder hh = (HabitHolder) holder;
             hh.bind(habit);
 
@@ -132,16 +120,23 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 @Override
                 public void onClick(View view) {
                     Intent viewIntent = new Intent(context, EditHabitEventActivity.class);
-                    int uid = habit.getUID();
-                    int hid = habit.getHID();
 
-                    // TODO: Get the most recent habit event from specific habit from ES Controller
-                    HabitEvent recentEvent = new HabitEvent(uid, hid);
-                    String eid = recentEvent.getEID();
+                    HabitEventList eventList = friend.getEventList();
+                    HabitEvent recentEvent = eventList.getRecentEventFromHabit(habit.getHID());
 
-                    viewIntent.putExtra("FRIEND_EVENT_EID", eid);
-                    viewIntent.putExtra("HABIT_EVENT_ACTION", ViewHabitEventActivity.HABIT_EVENT_ACTION);
-                    context.startActivity(viewIntent);
+                    if (recentEvent != null) {
+                        String eid = recentEvent.getEID();
+                        viewIntent.putExtra("HABIT_EVENT_UID", friend.getUID());
+                        viewIntent.putExtra("HABIT_EVENT_HID", habit.getHID());
+                        viewIntent.putExtra("HABIT_EVENT_EID", eid);
+                        viewIntent.putExtra("HABIT_EVENT_ACTION", ViewHabitEventActivity.VIEW_EVENT);
+                        viewIntent.putExtra("profile", 0);
+                        viewIntent.putExtra("EVENT_POSITION", position);
+                        viewIntent.putExtra("FRIEND_INDEX", habitItem.friendIndex);
+                        ((ViewFriendsActivity) context).startActivityForResult(viewIntent, 1);
+                    } else {
+                        Toast.makeText(context, "This habit has no events.", Toast.LENGTH_LONG).show();
+                    }
                 }
             });
         }
@@ -157,6 +152,39 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return data.get(position).type;
     }
 
+    public void openList(int pos) {
+        Log.i("HabitUpDEBUG", "Opened friend's habits");
+        // Habit list is closed and hidden
+        int index = pos + 1;
+
+        // Remove from adapter
+        Item friendItem = data.get(pos);
+        for (Item i : friendItem.invisibleChildren) {
+            data.add(index, i);
+            index++;
+        }
+        notifyItemRangeInserted(pos + 1, index - pos - 1);
+        friendItem.clicked = true;
+    }
+
+    public void closeList(int pos) {
+        Log.i("HabitUpDEBUG", "Closed friend's habits");
+        // Habit list is open and displayed
+        int count = 0;
+
+        // Add to adapter
+        while (data.size() > pos + 1 && data.get(pos + 1).type == CHILD) {
+            data.remove(pos + 1);
+            count++;
+        }
+        notifyItemRangeRemoved(pos + 1, count);
+        data.get(pos).clicked = false;
+    }
+
+    public int getLastPos() {
+        return this.lastPos;
+    }
+
     public class FriendHolder extends RecyclerView.ViewHolder {
 
         public final View itemView;
@@ -165,7 +193,6 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         private final TextView fullName;
         private final TextView level;
 
-        private ArrayList<Habit> habits;
         private boolean clicked;
 
         public FriendHolder(View itemView) {
@@ -197,10 +224,6 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             // Set friend's level
             int level = friend.getLevel();
             this.level.setText("Level " + String.valueOf(level));
-        }
-
-        public ArrayList<Habit> getHabits() {
-            return this.habits;
         }
 
         public void setClicked(boolean clicked) {
@@ -254,17 +277,22 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         public ArrayList<Item> invisibleChildren;
         public UserAccount friend;
         public Habit habit;
+        public int friendIndex;
+        public boolean clicked;
 
-        public Item() {}
-
-        public Item(int type, UserAccount friend) {
+        public Item(int type, UserAccount friend, int friendIndex) {
             this.type = type;
             this.friend = friend;
+            this.friendIndex = friendIndex;
+            this.clicked = false;
         }
 
-        public Item(int type, Habit habit) {
+        public Item(int type, Habit habit, UserAccount friend, int friendIndex) {
             this.type = type;
             this.habit = habit;
+            this.friend = friend;
+            this.friendIndex = friendIndex;
+            this.clicked = false;
         }
     }
 }

@@ -37,12 +37,15 @@
         <activity
             android:name=".View.ViewFriendsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".View.FollowActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity android:name=".View.AddHabitActivity" />
         <activity android:name=".View.AddHabitEventActivity" />
         <activity android:name=".View.EditProfileActivity" />
         <activity android:name=".View.EditHabitActivity" />
         <activity android:name=".View.EditHabitEventActivity" />
-        <activity android:name=".View.FriendsHabitsAdapter"></activity>
     </application>
 
 </manifest>
