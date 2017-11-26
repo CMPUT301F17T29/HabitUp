@@ -57,8 +57,11 @@ public class ViewFriendsActivityTest extends ActivityInstrumentationTestCase2 {
         habit1.setAttribute("Physical");
 
         HabitEvent event1 = new HabitEvent(user.getUID(), habit1.getHID());
+        event1.setHabitStrings(habit1);
         event1.setCompletedate(LocalDate.of(2017, 11, 24));
+
         HabitEvent event2 = new HabitEvent(user.getUID(), habit1.getHID());
+        event2.setHabitStrings(habit1);
         event2.setCompletedate(LocalDate.of(2017, 11, 23));
 
         HabitEventList eventList = friend1.getEventList();
@@ -129,9 +132,11 @@ public class ViewFriendsActivityTest extends ActivityInstrumentationTestCase2 {
 
         solo.assertCurrentActivity("Wrong activity", EditHabitEventActivity.class);
         assertTrue(solo.waitForText("Go to the gym"));
+        assertTrue(solo.waitForText("Nov 24, 2017"));
 
-        solo.goBack();
+        solo.clickOnActionBarHomeButton();
         solo.assertCurrentActivity("Wrong activity", ViewFriendsActivity.class);
         assertTrue(solo.waitForText("Go to the gym"));
+        assertTrue(solo.waitForText("Clean room"));
     }
 }

@@ -93,7 +93,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
         // Get the habit from intent
         Intent intent = getIntent();
         action = intent.getExtras().getInt(ViewHabitEventActivity.HABIT_EVENT_ACTION);
-        int position = intent.getExtras().getInt("EVENT POSITION");
+        final int position = intent.getExtras().getInt("EVENT POSITION");
 
         UserAccount user = HabitUpApplication.getCurrentUser();
         int uid = intent.getExtras().getInt("HABIT_EVENT_UID");
@@ -103,7 +103,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
         }
         final UserAccount eventUser = user;
 
-        final HabitEvent event = eventUser.getEventList().get(position);
+        event = eventUser.getEventList().get(position);
 
         // Get the event's date
         year_x = event.getCompletedate().getYear();
@@ -330,10 +330,14 @@ public class EditHabitEventActivity extends AppCompatActivity {
         commentText.setPadding(0, 0, 0, 0);
 
         // Disable photo button
-        // TODO: Check whether event has an image, if it does not, remove all photo labels
         RelativeLayout photoLayout = (RelativeLayout) findViewById(R.id.photo_display);
         photoLayout.setBackgroundColor(getResources().getColor(android.R.color.transparent));
         imageButton.setVisibility(View.INVISIBLE);
+
+        if (!event.hasImage()) {
+            TextView photoLabel = (TextView) findViewById(R.id.photo_label);
+            photoLabel.setVisibility(View.INVISIBLE);
+        }
 
         // Disable save button
         saveButton.setVisibility(View.INVISIBLE);

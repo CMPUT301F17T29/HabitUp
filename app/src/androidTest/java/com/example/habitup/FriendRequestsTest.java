@@ -69,6 +69,10 @@ public class FriendRequestsTest extends ActivityInstrumentationTestCase2 {
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
         assertTrue(currentUser.getRequestList().size() == 0);
         assertTrue(currentUser.getFriendsList().size() == 0);
+
+        solo.clickOnImageButton(0);
+        solo.clickOnText("Friends");
+        assertTrue(!solo.waitForText("user1"));
     }
 
     public void testAcceptRequest() {
@@ -85,8 +89,8 @@ public class FriendRequestsTest extends ActivityInstrumentationTestCase2 {
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
         assertTrue(currentUser.getRequestList().size() == 0);
 
-        UserAccountList friendsList = currentUser.getFriendsList();
-        assertTrue(friendsList.size() == 1);
-        assertTrue(friendsList.getUserList().get(0).getUsername().equals("user1"));
+        solo.clickOnImageButton(0);
+        solo.clickOnText("Friends");
+        assertTrue(solo.waitForText("user1"));
     }
 }

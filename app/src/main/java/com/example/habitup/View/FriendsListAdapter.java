@@ -1,5 +1,6 @@
 package com.example.habitup.View;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -37,6 +38,8 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private Context context;
     private ArrayList<Item> data;
+
+    private int lastPos = -1;
 
     public FriendsListAdapter(Context context, ArrayList<UserAccount> friends) {
         this.context = context;
@@ -84,6 +87,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             fh.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    lastPos = position;
                     if (friendItem.invisibleChildren == null) {
                         friendItem.invisibleChildren = new ArrayList<>();
 
@@ -94,36 +98,13 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                             habitItems.add(item);
                         }
-
                         friendItem.invisibleChildren.addAll(habitItems);
                     }
 
-                    if (!fh.isClicked() && habits.size() > 0) {
-                        Log.i("HabitUpDEBUG", "Opened friend's habits");
-                        // Habit list is closed and hidden
-                        int pos = data.indexOf(friendItem);
-                        int index = pos + 1;
-
-                        // Remove from adapter
-                        for (Item i : friendItem.invisibleChildren) {
-                            data.add(index, i);
-                            index++;
-                        }
-                        notifyItemRangeInserted(pos + 1, index - pos - 1);
-                        fh.setClicked(true);
-                    } else if (fh.isClicked()) {
-                        Log.i("HabitUpDEBUG", "Closed friend's habits");
-                        // Habit list is open and displayed
-                        int pos = data.indexOf(friendItem);
-                        int count = 0;
-
-                        // Add to adapter
-                        while (data.size() > pos + 1 && data.get(pos + 1).type == CHILD) {
-                            data.remove(pos + 1);
-                            count++;
-                        }
-                        notifyItemRangeRemoved(pos + 1, count);
-                        fh.setClicked(false);
+                    if (!friendItem.clicked && habits.size() > 0) {
+                        openList(position);
+                    } else if (friendItem.clicked) {
+                        closeList(position);
                     } else {
                         String noHabitsMsg = friend.getRealname() + " has no habits.";
                         Toast.makeText(context, noHabitsMsg, Toast.LENGTH_LONG).show();
@@ -154,7 +135,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         viewIntent.putExtra("profile", 0);
                         viewIntent.putExtra("EVENT_POSITION", position);
                         viewIntent.putExtra("FRIEND_INDEX", habitItem.friendIndex);
-                        context.startActivity(viewIntent);
+                        ((ViewFriendsActivity) context).startActivityForResult(viewIntent, 1);
                     } else {
                         Toast.makeText(context, "This habit has no events.", Toast.LENGTH_LONG).show();
                     }
@@ -173,8 +154,37 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return data.get(position).type;
     }
 
-    public void openList() {
+    public void openList(int pos) {
+        Log.i("HabitUpDEBUG", "Opened friend's habits");
+        // Habit list is closed and hidden
+        int index = pos + 1;
 
+        // Remove from adapter
+        Item friendItem = data.get(pos);
+        for (Item i : friendItem.invisibleChildren) {
+            data.add(index, i);
+            index++;
+        }
+        notifyItemRangeInserted(pos + 1, index - pos - 1);
+        friendItem.clicked = true;
+    }
+
+    public void closeList(int pos) {
+        Log.i("HabitUpDEBUG", "Closed friend's habits");
+        // Habit list is open and displayed
+        int count = 0;
+
+        // Add to adapter
+        while (data.size() > pos + 1 && data.get(pos + 1).type == CHILD) {
+            data.remove(pos + 1);
+            count++;
+        }
+        notifyItemRangeRemoved(pos + 1, count);
+        data.get(pos).clicked = false;
+    }
+
+    public int getLastPos() {
+        return this.lastPos;
     }
 
     public class FriendHolder extends RecyclerView.ViewHolder {
@@ -270,11 +280,13 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         public UserAccount friend;
         public Habit habit;
         public int friendIndex;
+        public boolean clicked;
 
         public Item(int type, UserAccount friend, int friendIndex) {
             this.type = type;
             this.friend = friend;
             this.friendIndex = friendIndex;
+            this.clicked = false;
         }
 
         public Item(int type, Habit habit, UserAccount friend, int friendIndex) {
@@ -282,6 +294,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             this.habit = habit;
             this.friend = friend;
             this.friendIndex = friendIndex;
+            this.clicked = false;
         }
     }
 }

@@ -1,19 +1,25 @@
 package com.example.habitup.View;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Model.Habit;
+import com.example.habitup.Model.HabitEvent;
+import com.example.habitup.Model.HabitEventList;
+import com.example.habitup.Model.HabitList;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.Model.UserAccountList;
 import com.example.habitup.R;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 /**
@@ -27,7 +33,6 @@ public class ViewFriendsActivity extends BaseActivity {
 
     private ArrayList<UserAccount> friends;
     private RecyclerView friendsListView;
-    private RecyclerView habitsListView;
     private FriendsListAdapter friendsAdapter;
 
     @Override
@@ -42,11 +47,6 @@ public class ViewFriendsActivity extends BaseActivity {
 
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         friendsListView.addItemDecoration(itemDecoration);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
 
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
         friends = currentUser.getFriendsList().getUserList();
@@ -57,8 +57,11 @@ public class ViewFriendsActivity extends BaseActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setAutoMeasureEnabled(true);
         friendsListView.setLayoutManager(layoutManager);
+    }
 
-        friendsAdapter.notifyDataSetChanged();
+    @Override
+    protected void onStart() {
+        super.onStart();
 
         if (friends.size() == 0) {
             TextView subHeading = (TextView) findViewById(R.id.friends_subheading);
