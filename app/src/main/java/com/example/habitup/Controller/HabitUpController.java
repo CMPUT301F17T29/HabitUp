@@ -7,6 +7,7 @@ import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
 import com.example.habitup.Model.HabitEventList;
 import com.example.habitup.Model.UserAccount;
+import com.example.habitup.Model.UserAccountList;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -59,8 +60,7 @@ public class HabitUpController {
             ElasticSearchController.AddHabitsTask addHabit = new ElasticSearchController.AddHabitsTask();
             addHabit.execute(h);
 
-            ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
-            updateUser.execute(currentUser);
+            updateUser();
 
             return 0;
         } else {
@@ -91,8 +91,7 @@ public class HabitUpController {
         ElasticSearchController.AddHabitsTask addHabit = new ElasticSearchController.AddHabitsTask();
         addHabit.execute(h);
 
-        ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
-        updateUser.execute(currentUser);
+        updateUser();
         return 0;
     }
 
@@ -109,8 +108,7 @@ public class HabitUpController {
         ElasticSearchController.DeleteHabitTask delHabit = new ElasticSearchController.DeleteHabitTask();
         delHabit.execute(Integer.toString(h.getHID()));
 
-        ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
-        updateUser.execute(currentUser);
+        updateUser();
 
         return 0;
     }
@@ -130,8 +128,7 @@ public class HabitUpController {
             currentUser.getEventList().delete(ev);
         }
 
-        ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
-        updateUser.execute(currentUser);
+        updateUser();
 
         return 0;
     }
@@ -164,25 +161,13 @@ public class HabitUpController {
             // Add the HabitEvent object to ES
             ElasticSearchController.AddHabitEventsTask addHabitEvent = new ElasticSearchController.AddHabitEventsTask();
             addHabitEvent.execute(event);
-
-            // Increment User XP and write back
             UserAccount currentUser = HabitUpApplication.getCurrentUser();
             currentUser.getEventList().add(event);
 
-            if (currentUser.getXP() + 1 >= currentUser.getXPtoNext()) {
-                currentUser.incrementLevel();
-                currentUser.setXPtoNext();
-            }
-
             currentUser.increaseXP(HabitUpApplication.XP_PER_HABITEVENT);
-            ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
-            updateUser.execute(currentUser);
 
             // Setup for attribute increment: need the Habit's Attribute type
             String attrName = habit.getHabitAttribute();
-
-            // Increment User Attribute
-
 
             HabitUpApplication.updateCurrentAttrs();
             HabitUpApplication.getCurrentAttrs().increaseValueBy(attrName, HabitUpApplication.ATTR_INCREMENT_PER_HABITEVENT);
@@ -190,11 +175,29 @@ public class HabitUpController {
             ElasticSearchController.AddAttrsTask writeAttrs = new ElasticSearchController.AddAttrsTask();
             writeAttrs.execute(HabitUpApplication.getCurrentAttrs());
 
+            updateUser();
+
             return 0;
 
         } else {
             throw new IllegalArgumentException("Error: this Habit has already been completed on this date.");
         }
+    }
+
+    static public boolean levelUp() {
+        // Increment User XP and write back
+        boolean levelledUp = false;
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+
+        if (currentUser.getXP() + 1 >= currentUser.getXPtoNext()) {
+            currentUser.incrementLevel();
+            currentUser.setXPtoNext();
+            levelledUp = true;
+        }
+
+        updateUser();
+
+        return levelledUp;
     }
 
     /**
@@ -223,9 +226,8 @@ public class HabitUpController {
             addHabitEvent.execute(event);
             event.setHabitStrings(habit);
 
-            UserAccount currentUser = HabitUpApplication.getCurrentUser();
-            ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
-            updateUser.execute(currentUser);
+            updateUser();
+
             return 0;
         } else {
             throw new IllegalArgumentException("Error: this Habit has already been completed on this date.");
@@ -245,8 +247,7 @@ public class HabitUpController {
         ElasticSearchController.DeleteHabitEventTask delHabitEvent = new ElasticSearchController.DeleteHabitEventTask();
         delHabitEvent.execute(event.getEID());
 
-        ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
-        updateUser.execute(currentUser);
+        updateUser();
 
         return 0;
     }
@@ -322,5 +323,68 @@ public class HabitUpController {
         }
     }
 
+    /**
+     * Remove a follow request from the user's requests list.
+     * @param follower the UserAccount to remove
+     * @return 1 if user successfully removed, 0 if not
+     */
+    static public int removeFriendRequest(UserAccount follower) throws IllegalArgumentException {
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+        UserAccountList requestList = currentUser.getRequestList();
+
+        if (requestList.delete(follower) == 0) {
+            updateUser();
+            Log.i("HabitUpDEBUG", String.valueOf(requestList.size()));
+            return 0;
+        } else {
+            throw new IllegalArgumentException("Error: Failed to remove friend request.");
+        }
+    }
+
+
+    /**
+     * Add another user to the user's requests list.
+     * @param follower the UserAccount to add
+     * @return 1 if user successfully added, 0 if not
+     */
+    static public int addFriendRequest(UserAccount follower) throws IllegalArgumentException {
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+        UserAccountList requestList = currentUser.getRequestList();
+
+        if (requestList.add(follower) == 0) {
+            updateUser();
+            return 0;
+        } else {
+            throw new IllegalArgumentException("Error: Failed to add friend request.");
+        }
+    }
+
+    /**
+     * Add another user to the user's friends list.
+     * @param follower the UserAccount to add
+     * @return 1 if user successfully added, 0 if not
+     */
+    static public int addFriend(UserAccount follower) throws IllegalArgumentException {
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+
+        if (removeFriendRequest(follower) == 0) {
+            currentUser.getFriendsList().add(follower);
+            updateUser();
+            return 0;
+        } else {
+            throw new IllegalArgumentException("Error: Failed to add friend.");
+        }
+    }
+
+    /**
+     * Updates the current user's model in ElasticSearch
+     */
+    static public void updateUser() {
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+        ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
+        updateUser.execute(currentUser);
+    }
+
 
 }
+
