@@ -44,6 +44,4 @@ dependencies {
     // Required for instrumented tests
     androidTestCompile 'com.android.support:support-annotations:24.0.0'
     androidTestCompile 'com.android.support.test:runner:0.5'
-
-    compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.8'
 }

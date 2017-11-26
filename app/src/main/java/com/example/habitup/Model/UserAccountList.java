@@ -23,14 +23,6 @@ public class UserAccountList {
     }
 
     /**
-     * Get the array list of user accounts
-     * @return the user accounts list
-     */
-    public ArrayList<UserAccount> getUserList() {
-        return this.userList;
-    }
-
-    /**
      * Get the number of UserAccounts in the UserAccountList
      * @return Int (number of elements in UserAccountList)
      */
@@ -50,21 +42,6 @@ public class UserAccountList {
         } else {
             userList.add(userToAdd);
             return 0;
-        }
-    }
-
-    /**
-     * Removes a UserAccount from the list
-     * @param userToRemove UserAccount to delete
-     * @return -1 if user is not in the list, 0 if successfully removes
-     */
-    public int delete(UserAccount userToRemove) {
-
-        if (this.contains(userToRemove)) {
-            userList.remove(userToRemove);
-            return 0;
-        } else {
-            return -1;
         }
     }
 

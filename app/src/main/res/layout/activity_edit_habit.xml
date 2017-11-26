@@ -323,9 +323,9 @@
     <Button
         android:id="@+id/save_edit_habit"
         android:layout_width="0dp"
-        android:layout_height="50dp"
+        android:layout_height="38dp"
         android:layout_marginTop="30dp"
-        android:backgroundTint="@color/colorPrimary"
+        android:background="@drawable/primary_button"
         android:text="@string/save"
         android:textColor="@color/white"
         app:layout_constraintLeft_toLeftOf="parent"

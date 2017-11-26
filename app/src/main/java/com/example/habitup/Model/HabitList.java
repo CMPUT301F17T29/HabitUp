@@ -1,7 +1,6 @@
 package com.example.habitup.Model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 
 /**
@@ -25,7 +24,6 @@ public class HabitList {
      * @param habit the Habit object to add
      */
     public void add(Habit habit) {
-
         this.habitMap.put(habit.getHabitName(), habit);
     }
 
@@ -59,7 +57,6 @@ public class HabitList {
      * @return the habits hash map
      */
     public ArrayList<Habit> getHabits() {
-
         return new ArrayList<>(this.habitMap.values());
     }
 

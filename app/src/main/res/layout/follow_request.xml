@@ -1,42 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginTop="?attr/actionBarSize"
-    android:background="@color/white"
-    tools:context="com.example.habitup.View.FollowActivity"
-    android:fitsSystemWindows="true">
-
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <TextView
-        android:id="@+id/requests_title"
+        android:id="@+id/person_level"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/darkgray"
-        android:textStyle="bold"
+        android:text = "Friend Requests"
         android:textSize="20sp"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:text="Follow Requests" />
-
-    <TextView
-        android:id="@+id/requests_subheading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/requests_title"
-        android:textColor="@color/lightgray"
-        android:textSize="15sp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginBottom="10dp"
-        android:text="You currently have no friend requests." />
-
+        />
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/request_listview"
+        android:id="@+id/recycler_view"
         android:layout_width = "match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/requests_subheading"/>
+        android:layout_height="match_parent"/>
 
 
-</RelativeLayout>
+</LinearLayout>

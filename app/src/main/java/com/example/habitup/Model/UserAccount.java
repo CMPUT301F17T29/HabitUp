@@ -36,8 +36,6 @@ public class UserAccount {
 
     private HabitEventList eventList;
     private HabitList habitList;
-    private UserAccountList requestList;
-    private UserAccountList friendsList;
 
     /**
      * Constructor for a UserAccount.
@@ -60,8 +58,6 @@ public class UserAccount {
 
         this.eventList = new HabitEventList();
         this.habitList = new HabitList();
-        this.friendsList = new UserAccountList();
-        this.requestList = new UserAccountList();
     }
 
     /**
@@ -281,18 +277,6 @@ public class UserAccount {
      */
     public HabitEventList getEventList() {
         return this.eventList;
-    }
-
-    /**
-     * Get the user's list of follow requests
-     * @return the UserAccountList
-     */
-    public UserAccountList getRequestList() {
-        return this.requestList;
-    }
-
-    public UserAccountList getFriendsList() {
-        return this.friendsList;
     }
 
 }
