@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="?attr/actionBarSize"
+    android:background="@color/white"
+    tools:context="com.example.habitup.View.FindUserActivity"
+    android:paddingTop="15dp"
+    android:fitsSystemWindows="true">
+    
+    <SearchView
+        android:id="@+id/user_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="-5dp"
+        android:paddingRight="15dp"
+        android:clickable="true"></SearchView>
+
+    <TextView
+        android:id="@+id/results_found"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0 users found."
+        android:paddingLeft="15dp"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/user_search"
+        android:textSize="15sp"
+        android:textColor="@color/lightgray"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/search_listview"
+        android:layout_width = "match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/results_found"/>
+
+</RelativeLayout>

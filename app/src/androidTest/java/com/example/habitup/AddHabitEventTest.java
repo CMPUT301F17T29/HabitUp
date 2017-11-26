@@ -44,25 +44,29 @@ public class AddHabitEventTest extends ActivityInstrumentationTestCase2{
         HabitList habitList = user.getHabitList();
         HabitEventList eventList = user.getEventList();
 
-        if (!habitList.containsName("live")) {
-            Habit h = new Habit(HabitUpApplication.getCurrentUID());
-            h.setHabitName("live");
-            h.setReason("YOLO");
-            h.setAttribute("Physical");
-            h.setStartDate(LocalDate.of(2016,9,1));
-            boolean[] schedule = new boolean[8];
-            schedule[0] = false;
-            schedule[1] = true;
-            schedule[2] = true;
-            schedule[3] = true;
-            schedule[4] = true;
-            schedule[5] = true;
-            schedule[6] = true;
-            schedule[7] = true;
-            h.setSchedule(schedule);
-            habitList.add(h);
+        Habit h = new Habit(HabitUpApplication.getCurrentUID());
+        h.setHabitName("live");
+        h.setReason("YOLO");
+        h.setAttribute("Physical");
+        h.setStartDate(LocalDate.of(2016,9,1));
+        boolean[] schedule = new boolean[8];
+        schedule[0] = false;
+        schedule[1] = true;
+        schedule[2] = true;
+        schedule[3] = true;
+        schedule[4] = true;
+        schedule[5] = true;
+        schedule[6] = true;
+        schedule[7] = true;
+        h.setSchedule(schedule);
+        habitList.add(h);
+
+        try {
             HabitUpController.addHabit(h);
+        } catch (IllegalArgumentException e) {
+
         }
+
         spinnerIndex = habitList.size() - 1;
 
         solo = new Solo(getInstrumentation(),getActivity());
@@ -87,14 +91,12 @@ public class AddHabitEventTest extends ActivityInstrumentationTestCase2{
         solo.assertCurrentActivity("Wrong activity", ViewHabitEventActivity.class);
         assertTrue(solo.waitForText("I lived"));
 
-        solo.clickLongOnTextAndPress("I lived",1);
+        solo.clickLongOnTextAndPress("I lived",2);
         solo.clickOnButton("Yes");
 
     }
 
     public void testViewHabitEvent() {
-        solo.clickOnView(solo.getView(R.id.add_action_bar));
-        solo.assertCurrentActivity("Wrong activity", AddHabitEventActivity.class);
         solo.assertCurrentActivity("Wrong activity", ViewHabitEventActivity.class);
         solo.clickOnView(solo.getView(R.id.add_action_bar));
         solo.assertCurrentActivity("Wrong activity", AddHabitEventActivity.class);
@@ -112,7 +114,7 @@ public class AddHabitEventTest extends ActivityInstrumentationTestCase2{
         solo.assertCurrentActivity("Wrong activity", EditHabitEventActivity.class);
         solo.goBack();
 
-        solo.clickLongOnTextAndPress("I lived",1);
+        solo.clickLongOnTextAndPress("I lived",2);
         solo.clickOnButton("Yes");
     }
 }

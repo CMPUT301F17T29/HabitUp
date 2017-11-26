@@ -83,7 +83,8 @@ public class BaseActivity extends AppCompatActivity {
                         startActivity(requestsIntent);
                         break;
                     case R.id.finds:
-                        drawerLayout.closeDrawers();
+                        Intent findIntent = new Intent(context, FindUserActivity.class);
+                        startActivity(findIntent);
                         break;
                     case R.id.map:
                         drawerLayout.closeDrawers();

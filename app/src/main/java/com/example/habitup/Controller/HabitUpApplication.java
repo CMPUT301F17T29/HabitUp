@@ -33,7 +33,7 @@ public class HabitUpApplication {
     static UserAccount currentUser;
     static Attributes currentAttrs;
 
-    public static int NUM_OF_ES_RESULTS = 50;
+    public static int NUM_OF_ES_RESULTS = 200;
     public static int NUM_OF_ES_RESULTS_LARGE = 99999;
 
     /**

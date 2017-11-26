@@ -39,7 +39,7 @@ public class FollowActivity extends BaseActivity {
     }
 
     @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
 
         requestList.clear();

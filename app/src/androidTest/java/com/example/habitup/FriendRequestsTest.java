@@ -27,9 +27,10 @@ public class FriendRequestsTest extends ActivityInstrumentationTestCase2 {
     }
 
     public void setUp() throws Exception {
-        UserAccount user = new UserAccount("testrequests", "testrequests", null);
+
+        UserAccount user = new UserAccount("tatata3", "tatata3", null);
         ElasticSearchController.GetUser getUser = new ElasticSearchController.GetUser();
-        getUser.execute("testrequests");
+        getUser.execute("tatata3");
 
         try {
             user = getUser.get().get(0);
@@ -40,8 +41,17 @@ public class FriendRequestsTest extends ActivityInstrumentationTestCase2 {
         HabitUpApplication.setCurrentUser(user);
 
         UserAccount requestUser = new UserAccount("user1", "test user 1", null);
+        ElasticSearchController.GetUser getRequest = new ElasticSearchController.GetUser();
+        getRequest.execute("user1");
+
+        try {
+            requestUser = getRequest.get().get(0);
+        } catch (Exception e) {
+            HabitUpApplication.addUserAccount(requestUser);
+        }
+
         if (user.getRequestList().size() == 0) {
-            HabitUpController.addFriendRequest(requestUser);
+            HabitUpController.addFriendRequest(user, requestUser);
         }
 
         UserAccountList friendsList = user.getFriendsList();

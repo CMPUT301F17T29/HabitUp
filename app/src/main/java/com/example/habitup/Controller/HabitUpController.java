@@ -258,20 +258,8 @@ public class HabitUpController {
      * @return True if a Habit with that name already exists
      */
     static public boolean habitAlreadyExists(Habit h) {
-        ElasticSearchController.GetHabitsByNameForCurrentUserTask checkHabit = new ElasticSearchController.GetHabitsByNameForCurrentUserTask();
-        checkHabit.execute(h.getHabitName());
-        ArrayList<Habit> matched = null;
-        try {
-            matched = checkHabit.get();
-        } catch (Exception e) {
-            Log.i("HabitUpDEBUG", "HUCtl/addHabit - Execute check failed");
-        }
-
-//        for (Habit match : matched) {
-//            Log.i("HabitUpDEBUG", "matched habit: " + match.getHabitName());
-//        }
-
-        return matched.size() > 0;
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+        return currentUser.getHabitList().containsName(h.getHabitName());
     }
 
     /**
@@ -344,15 +332,16 @@ public class HabitUpController {
 
     /**
      * Add another user to the user's requests list.
-     * @param follower the UserAccount to add
-     * @return 1 if user successfully added, 0 if not
+     * @param followee the UserAccount being sent the request
+     * @param follower the UserAccount that is sending the request
+     * @return 1 if request successfully added, 0 if not
      */
-    static public int addFriendRequest(UserAccount follower) throws IllegalArgumentException {
-        UserAccount currentUser = HabitUpApplication.getCurrentUser();
-        UserAccountList requestList = currentUser.getRequestList();
+    static public int addFriendRequest(UserAccount followee, UserAccount follower) throws IllegalArgumentException {
+        UserAccountList requestList = followee.getRequestList();
 
         if (requestList.add(follower) == 0) {
-            updateUser();
+            ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
+            updateUser.execute(followee);
             return 0;
         } else {
             throw new IllegalArgumentException("Error: Failed to add friend request.");
