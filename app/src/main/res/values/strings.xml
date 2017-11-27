@@ -6,7 +6,7 @@
     <string name="edit">Edit</string>
     <string name="stats">Stats</string>
     <string name="add_habit">Add Habit</string>
-    <string name="maps_api_key">AIzaSyC-eLq1flpbB8oIjuq3tAcgrFSMgoj-LTA</string>
+    <!--<string name="maps_api_key">AIzaSyC-eLq1flpbB8oIjuq3tAcgrFSMgoj-LTA</string>-->
     <string name="view">View</string>
     <string name="delete">Delete</string>
     <string name="todays_habits">Today\'s Habits</string>
