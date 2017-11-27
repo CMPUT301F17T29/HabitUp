@@ -10,7 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 ;
-import com.example.habitup.Controller.HabitUpController;
+import com.example.habitup.Controller.FollowController;
+import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
@@ -73,13 +74,14 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
     public void onBindViewHolder(FollowRequestHolder followrequestholder, int position) {
         final UserAccount Follower = afollowrequestList.get(position);
         followrequestholder.bindEvent(Follower);
+        final UserAccount currentUser = HabitUpApplication.getCurrentUser();
 
         followrequestholder.ignoreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Remove from user's request list
                 try {
-                    HabitUpController.removeFriendRequest(Follower);
+                    FollowController.removeFriendRequest(currentUser, Follower);
                     removeRequest(Follower);
                 } catch (Exception e) {
                     Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
@@ -92,7 +94,8 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
             public void onClick(View view) {
                 // Add user to friend's list
                 try {
-                    HabitUpController.addFriend(Follower);
+                    FollowController.addFriend(currentUser, Follower);
+                    FollowController.removeFriendRequest(currentUser, Follower);
                     removeRequest(Follower);
 
                     String addMsg = "Added " + Follower.getRealname() + " as a friend.";

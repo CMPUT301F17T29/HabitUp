@@ -9,8 +9,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.habitup.Controller.FollowController;
 import com.example.habitup.Controller.HabitUpApplication;
-import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
@@ -74,19 +74,21 @@ public class FindUserAdapter extends RecyclerView.Adapter<FindUserAdapter.Search
             @Override
             public void onClick(View v) {
                 UserAccount currentUser = HabitUpApplication.getCurrentUser();
+                String name = user.getRealname();
 
-                if (currentUser.getFriendsList().contains(user)) {
+                if (currentUser.getUID() == user.getUID()) {
+                    // Check if requesting to follow the current user
+                    Toast.makeText(context, "You cannot follow yourself", Toast.LENGTH_LONG).show();
+                } else if (currentUser.getFriendsList().contains(user)) {
                     // Check if already following
-                    Toast.makeText(context, "You are already following " + user.getRealname(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "You are already following " + name, Toast.LENGTH_LONG).show();
                 } else if (user.getRequestList().contains(currentUser)) {
                     // Check if already sent request
-                    Toast.makeText(context, "You already sent a request to " + user.getRealname(), Toast.LENGTH_SHORT).show();
-                } else if (currentUser.getUID() == user.getUID()) {
-                    // Check if requesting to follow the current user
-                    Toast.makeText(context, "You cannot follow yourself", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "You already sent a request to " + name, Toast.LENGTH_LONG).show();
                 } else {
                     // Send friend request to user
-                    HabitUpController.addFriendRequest(currentUser, user);
+                    FollowController.addFriendRequest(user, currentUser);
+                    Toast.makeText(context, "A request was sent to " + name, Toast.LENGTH_LONG).show();
                 }
             }
         });

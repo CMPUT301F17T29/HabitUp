@@ -1,17 +1,16 @@
 package com.example.habitup;
 
 import android.app.Activity;
-import android.support.v7.widget.RecyclerView;
 import android.test.ActivityInstrumentationTestCase2;
-import android.view.View;
-import android.widget.Button;
 
 import com.example.habitup.Controller.ElasticSearchController;
+import com.example.habitup.Controller.FollowController;
 import com.example.habitup.Controller.HabitUpApplication;
-import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.UserAccount;
-import com.example.habitup.Model.UserAccountList;
 import com.example.habitup.View.FollowActivity;
+import com.example.habitup.View.LoginActivity;
+import com.example.habitup.View.MainActivity;
+import com.example.habitup.View.ViewFriendsActivity;
 import com.robotium.solo.Solo;
 
 /**
@@ -21,6 +20,8 @@ import com.robotium.solo.Solo;
 public class FriendRequestsTest extends ActivityInstrumentationTestCase2 {
 
     private Solo solo;
+    private UserAccount user;
+    private UserAccount requestUser;
 
     public FriendRequestsTest() {
         super(FollowActivity.class);
@@ -28,9 +29,9 @@ public class FriendRequestsTest extends ActivityInstrumentationTestCase2 {
 
     public void setUp() throws Exception {
 
-        UserAccount user = new UserAccount("tatata3", "tatata3", null);
+        user = new UserAccount("tatata4", "tatata4", null);
         ElasticSearchController.GetUser getUser = new ElasticSearchController.GetUser();
-        getUser.execute("tatata3");
+        getUser.execute("tatata4");
 
         try {
             user = getUser.get().get(0);
@@ -40,7 +41,7 @@ public class FriendRequestsTest extends ActivityInstrumentationTestCase2 {
 
         HabitUpApplication.setCurrentUser(user);
 
-        UserAccount requestUser = new UserAccount("user1", "test user 1", null);
+        requestUser = new UserAccount("user1", "test user 1", null);
         ElasticSearchController.GetUser getRequest = new ElasticSearchController.GetUser();
         getRequest.execute("user1");
 
@@ -50,13 +51,12 @@ public class FriendRequestsTest extends ActivityInstrumentationTestCase2 {
             HabitUpApplication.addUserAccount(requestUser);
         }
 
-        if (user.getRequestList().size() == 0) {
-            HabitUpController.addFriendRequest(user, requestUser);
-        }
+        requestUser.getFriendsList().getUserList().clear();
+        HabitUpApplication.updateUser(requestUser);
 
-        UserAccountList friendsList = user.getFriendsList();
-        friendsList.getUserList().clear();
-        HabitUpController.updateUser();
+        if (user.getRequestList().size() == 0) {
+            FollowController.addFriendRequest(user, requestUser);
+        }
 
         solo = new Solo(getInstrumentation(), getActivity());
     }
@@ -67,40 +67,47 @@ public class FriendRequestsTest extends ActivityInstrumentationTestCase2 {
 
     public void testIgnoreRequest() {
         solo.assertCurrentActivity("Wrong activity", FollowActivity.class);
-
-        RecyclerView followListView = (RecyclerView) solo.getView(R.id.request_listview);
-        View requestView = followListView.getChildAt(0);
-        Button ignoreButton = requestView.findViewById(R.id.ignore_button);
-        solo.clickOnView(ignoreButton);
+        solo.clickOnButton("Ignore");
 
         assertTrue(solo.waitForText("You have 0 friend requests."));
         assertTrue(!solo.waitForText("user1"));
 
-        UserAccount currentUser = HabitUpApplication.getCurrentUser();
-        assertTrue(currentUser.getRequestList().size() == 0);
-        assertTrue(currentUser.getFriendsList().size() == 0);
+        solo.clickOnImageButton(0);
+        solo.clickOnText("Log Out");
+        solo.waitForActivity(LoginActivity.class);
+        solo.assertCurrentActivity("Wrong activity", LoginActivity.class);
+        solo.enterText(0,"user1");
+        solo.clickOnButton("Login");
 
+        solo.waitForActivity(MainActivity.class);
+        solo.assertCurrentActivity("Wrong activity", MainActivity.class);
         solo.clickOnImageButton(0);
         solo.clickOnText("Friends");
-        assertTrue(!solo.waitForText("user1"));
+
+        solo.assertCurrentActivity("Wrong activity", ViewFriendsActivity.class);
+        assertTrue(solo.waitForText("You currently have no friends."));
     }
 
     public void testAcceptRequest() {
         solo.assertCurrentActivity("Wrong activity", FollowActivity.class);
-
-        RecyclerView followListView = (RecyclerView) solo.getView(R.id.request_listview);
-        View requestView = followListView.getChildAt(0);
-        Button acceptButton = requestView.findViewById(R.id.accept_button);
-        solo.clickOnView(acceptButton);
+        solo.clickOnButton("Accept");
 
         assertTrue(solo.waitForText("You have 0 friend requests."));
         assertTrue(!solo.waitForText("user1"));
 
-        UserAccount currentUser = HabitUpApplication.getCurrentUser();
-        assertTrue(currentUser.getRequestList().size() == 0);
+        solo.clickOnImageButton(0);
+        solo.clickOnText("Log Out");
+        solo.waitForActivity(LoginActivity.class);
+        solo.assertCurrentActivity("Wrong activity", LoginActivity.class);
+        solo.enterText(0,"user1");
+        solo.clickOnButton("Login");
 
+        solo.waitForActivity(MainActivity.class);
+        solo.assertCurrentActivity("Wrong activity", MainActivity.class);
         solo.clickOnImageButton(0);
         solo.clickOnText("Friends");
-        assertTrue(solo.waitForText("user1"));
+
+        solo.assertCurrentActivity("Wrong activity", ViewFriendsActivity.class);
+        assertTrue(solo.waitForText("tatata4"));
     }
 }

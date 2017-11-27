@@ -312,60 +312,6 @@ public class HabitUpController {
     }
 
     /**
-     * Remove a follow request from the user's requests list.
-     * @param follower the UserAccount to remove
-     * @return 1 if user successfully removed, 0 if not
-     */
-    static public int removeFriendRequest(UserAccount follower) throws IllegalArgumentException {
-        UserAccount currentUser = HabitUpApplication.getCurrentUser();
-        UserAccountList requestList = currentUser.getRequestList();
-
-        if (requestList.delete(follower) == 0) {
-            updateUser();
-            Log.i("HabitUpDEBUG", String.valueOf(requestList.size()));
-            return 0;
-        } else {
-            throw new IllegalArgumentException("Error: Failed to remove friend request.");
-        }
-    }
-
-
-    /**
-     * Add another user to the user's requests list.
-     * @param followee the UserAccount being sent the request
-     * @param follower the UserAccount that is sending the request
-     * @return 1 if request successfully added, 0 if not
-     */
-    static public int addFriendRequest(UserAccount followee, UserAccount follower) throws IllegalArgumentException {
-        UserAccountList requestList = followee.getRequestList();
-
-        if (requestList.add(follower) == 0) {
-            ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
-            updateUser.execute(followee);
-            return 0;
-        } else {
-            throw new IllegalArgumentException("Error: Failed to add friend request.");
-        }
-    }
-
-    /**
-     * Add another user to the user's friends list.
-     * @param follower the UserAccount to add
-     * @return 1 if user successfully added, 0 if not
-     */
-    static public int addFriend(UserAccount follower) throws IllegalArgumentException {
-        UserAccount currentUser = HabitUpApplication.getCurrentUser();
-
-        if (removeFriendRequest(follower) == 0) {
-            currentUser.getFriendsList().add(follower);
-            updateUser();
-            return 0;
-        } else {
-            throw new IllegalArgumentException("Error: Failed to add friend.");
-        }
-    }
-
-    /**
      * Updates the current user's model in ElasticSearch
      */
     static public void updateUser() {
@@ -373,7 +319,6 @@ public class HabitUpController {
         ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
         updateUser.execute(currentUser);
     }
-
 
 }
 

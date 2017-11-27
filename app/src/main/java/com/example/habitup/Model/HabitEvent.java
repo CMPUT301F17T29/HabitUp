@@ -315,4 +315,35 @@ public class HabitEvent implements Comparable<HabitEvent> {
         return this.habitAttribute;
     }
 
+    /**
+     * When two events are compared, they should be equal if they have the same EIDs
+     * @param obj the other event to compare with
+     * @return true if the two events have the same EID
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (!HabitEvent.class.isAssignableFrom(obj.getClass())) {
+            return false;
+        }
+
+        final HabitEvent other = (HabitEvent) obj;
+
+        return this.getEID() == other.getEID();
+    }
+
+    /**
+     * Override hash code to include EID
+     * @return the event's hash code
+     */
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 37 * hash + this.getEID().hashCode();
+        return hash;
+    }
+
 }

@@ -33,7 +33,8 @@ public class HabitUpApplication {
     static UserAccount currentUser;
     static Attributes currentAttrs;
 
-    public static int NUM_OF_ES_RESULTS = 200;
+    public static int NUM_OF_USER_RESULTS = 200;
+    public static int NUM_OF_ES_RESULTS = 50;
     public static int NUM_OF_ES_RESULTS_LARGE = 99999;
 
     /**
@@ -169,6 +170,15 @@ public class HabitUpApplication {
         ConnectivityManager cm = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnected();
+    }
+
+    /**
+     * Updates a user's model in ElasticSearch (can be users that are not the current user)
+     * @param user the user to update
+     */
+    static public void updateUser(UserAccount user) {
+        ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
+        updateUser.execute(user);
     }
 
 }

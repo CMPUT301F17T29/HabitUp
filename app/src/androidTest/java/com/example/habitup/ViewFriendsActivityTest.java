@@ -22,7 +22,7 @@ import com.robotium.solo.Solo;
 import java.time.LocalDate;
 
 /**
- * Created by sharidanbarboza on 2017-11-24.
+ * Created by barboza on 2017-11-24.
  */
 
 public class ViewFriendsActivityTest extends ActivityInstrumentationTestCase2 {
