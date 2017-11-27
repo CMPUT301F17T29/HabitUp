@@ -3,12 +3,13 @@ package com.example.habitup.View;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.habitup.Controller.HabitUpApplication;
+import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
@@ -88,6 +90,7 @@ public class BaseActivity extends AppCompatActivity {
                         drawerLayout.closeDrawers();
                         break;
                     case R.id.logout:
+                        //logOutCleanUp();
                         logout();
                         break;
                 }
@@ -137,6 +140,20 @@ public class BaseActivity extends AppCompatActivity {
             ImageView photoView = header.findViewById(R.id.drawer_pic);
             photoView.setImageBitmap(profilePic);
         }
+    }
+
+    private void logOutCleanUp(){
+        Log.i("debug", "logout method");
+        if(HabitUpApplication.isOnline(getApplicationContext())){
+            Log.i("debug", "logout method2");
+            if (!(HabitUpApplication.getCurrentUser().getCommandQueue().isEmpty())){
+                Log.i("debug", "logout method3");
+                UserAccount currentUser = HabitUpApplication.getCurrentUser();
+                HabitUpController.executeCommands(getApplicationContext(),currentUser);
+                Log.i("Debug", "update ES on logout");
+            }
+        }
+        Log.i("debug", "logout method4");
     }
 
     private void logout() {

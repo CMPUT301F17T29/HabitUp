@@ -9,7 +9,7 @@ import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * @author gojeffcho
@@ -34,6 +34,8 @@ public class UserAccount {
     private int XP;
     private int XPtoNext;
 
+    private LinkedList<HabitEventCommand> cmdQueue;
+
     private HabitEventList eventList;
     private HabitList habitList;
 
@@ -55,6 +57,8 @@ public class UserAccount {
         level = 1;
         XP = 0;
         XPtoNext = 20;
+
+        this.cmdQueue = new LinkedList<>();
 
         this.eventList = new HabitEventList();
         this.habitList = new HabitList();
@@ -278,5 +282,9 @@ public class UserAccount {
     public HabitEventList getEventList() {
         return this.eventList;
     }
+
+    public LinkedList<HabitEventCommand> getCommandQueue() { return this.cmdQueue; }
+
+    public void addCommand(HabitEventCommand cmd){ cmdQueue.add(cmd); }
 
 }
