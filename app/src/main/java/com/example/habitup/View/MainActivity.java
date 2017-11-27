@@ -86,6 +86,8 @@ public class MainActivity extends BaseActivity {
                 startActivity(editIntent);
                 return true;
             case R.id.stats_profile:
+                Intent statsIntent = new Intent(this, HabitStatistics.class);
+                startActivity(statsIntent);
                 return true;
         }
 

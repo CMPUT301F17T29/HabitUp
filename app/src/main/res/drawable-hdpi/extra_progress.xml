@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Taken from https://stackoverflow.com/questions/42646574/progress-bar-with-rounded-corners -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item android:id="@android:id/background">
+        <shape>
+            <gradient
+                android:startColor="@color/white"
+                android:centerColor="@color/white"
+                android:centerY="1.0"
+                android:endColor="#0d1522"
+                android:angle="270"/>
+        </shape>
+    </item>
+
+    <item android:id="@android:id/progress">
+        <scale android:scaleWidth="100%">
+            <shape>
+                <gradient
+                    android:startColor="@color/purple"
+                    android:centerColor="@color/purple"
+                    android:centerY="1.0"
+                    android:endColor="#06101d"
+                    android:angle="270"/>
+            </shape>
+        </scale>
+    </item>
+
+</layer-list>
