@@ -84,7 +84,8 @@ public class BaseActivity extends AppCompatActivity {
                         drawerLayout.closeDrawers();
                         break;
                     case R.id.map:
-                        drawerLayout.closeDrawers();
+                        Intent mapsIntent = new Intent(context, MapsActivity.class);
+                        startActivity(mapsIntent);
                         break;
                     case R.id.logout:
                         logout();
