@@ -1,6 +1,7 @@
 package com.example.habitup.Model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 
 /**
@@ -23,16 +24,28 @@ public class HabitList {
      * Adds a new habit to the habits hash map
      * @param habit the Habit object to add
      */
-    public void add(Habit habit) {
-        this.habitMap.put(habit.getHabitName(), habit);
+    public int add(Habit habit) {
+
+        if (this.habitMap.containsKey(habit.getHabitName())) {
+            return -1;
+        } else {
+            this.habitMap.put(habit.getHabitName(), habit);
+            return 0;
+        }
     }
 
     /**
      * Removes a habit from the habits hash map
      * @param habitName the name of the habit
      */
-    public void delete(String habitName) {
-        this.habitMap.remove(habitName);
+    public int delete(String habitName) {
+
+        if (this.habitMap.containsKey(habitName)) {
+            this.habitMap.remove(habitName);
+            return 0;
+        } else {
+            return -1;
+        }
     }
 
     /**
@@ -57,6 +70,7 @@ public class HabitList {
      * @return the habits hash map
      */
     public ArrayList<Habit> getHabits() {
+
         return new ArrayList<>(this.habitMap.values());
     }
 

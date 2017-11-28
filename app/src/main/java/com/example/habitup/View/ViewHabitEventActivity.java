@@ -5,12 +5,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -103,10 +101,6 @@ public class ViewHabitEventActivity extends BaseActivity {
 
         eventAdapter = new EventListAdapter(this, events);
         eventListView.setAdapter(eventAdapter);
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setAutoMeasureEnabled(true);
-        eventListView.setLayoutManager(layoutManager);
 
         eventAdapter.setOnLongClickListener(new View.OnLongClickListener() {
             @Override

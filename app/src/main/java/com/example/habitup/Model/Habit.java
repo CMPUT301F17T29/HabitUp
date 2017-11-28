@@ -326,6 +326,10 @@ public class Habit implements Comparable<Habit> {
      */
     public int getHabitsPossible() { return this.habitsPossible; }
 
+    /**
+     * Get the percentage of the habit's progression status
+     * @return the percentage
+     */
     public int getPercent() {
         int yValue = getHabitsPossible();
         if (yValue != 0) {
@@ -334,5 +338,36 @@ public class Habit implements Comparable<Habit> {
         } else {
             return 0;
         }
+    }
+
+    /**
+     * When two habit are compared, they should be equal if they have the same HIDs
+     * @param obj the other habit to compare with
+     * @return true if the two habits have the same HID
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (!Habit.class.isAssignableFrom(obj.getClass())) {
+            return false;
+        }
+
+        final Habit other = (Habit) obj;
+
+        return this.getHID() == other.getHID();
+    }
+
+    /**
+     * Override hash code to include HID
+     * @return the habit's hash code
+     */
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 37 * hash + this.getHID();
+        return hash;
     }
 }
