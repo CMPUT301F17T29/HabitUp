@@ -66,7 +66,6 @@ public class AddHabitEventTest extends ActivityInstrumentationTestCase2{
         } catch (IllegalArgumentException e) {
 
         }
-
         spinnerIndex = habitList.size() - 1;
 
         solo = new Solo(getInstrumentation(),getActivity());

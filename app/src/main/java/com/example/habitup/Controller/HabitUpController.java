@@ -225,7 +225,6 @@ public class HabitUpController {
             ElasticSearchController.AddHabitEventsTask addHabitEvent = new ElasticSearchController.AddHabitEventsTask();
             addHabitEvent.execute(event);
             event.setHabitStrings(habit);
-
             updateUser();
 
             return 0;
