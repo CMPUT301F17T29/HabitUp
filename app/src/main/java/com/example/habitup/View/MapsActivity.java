@@ -6,11 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-<<<<<<< HEAD
 import android.widget.Toast;
-=======
-import android.support.v7.app.ActionBar;
->>>>>>> 7f7fbb69c77584dfae000648febdd97b0c412722
+
 
 import com.example.habitup.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
