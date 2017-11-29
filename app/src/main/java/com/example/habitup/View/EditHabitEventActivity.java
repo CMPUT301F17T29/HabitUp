@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
@@ -235,6 +236,8 @@ public class EditHabitEventActivity extends AppCompatActivity {
                             == PackageManager.PERMISSION_GRANTED) {
                         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                         currentLocation = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, (long) 100, (float) 1, locationListener);
+
                         Log.i("HabitUpDEBUG", "CurrentLocation: " + String.valueOf(currentLocation));
                     } else {
                         currentLocation = null;
@@ -405,5 +408,23 @@ public class EditHabitEventActivity extends AppCompatActivity {
 
         @Override
         public void onNothingSelected(AdapterView<?> parent) {}
+    };
+
+    private final LocationListener locationListener = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            Log.i("HabitUpDEBUG", "Location Changed: " + String.valueOf(location));
+        }
+
+        public void onStatusChanged(String s, int i, Bundle b) {
+
+        }
+
+        public void onProviderEnabled(String s) {
+
+        }
+
+        public void onProviderDisabled(String s) {
+
+        }
     };
 }
