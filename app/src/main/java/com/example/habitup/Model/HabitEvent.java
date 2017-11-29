@@ -139,6 +139,7 @@ public class HabitEvent implements Comparable<HabitEvent> {
      * Set or update UserAccount photo
      * @param photo Bitmap (photo to set for event)
      */
+
     public void setPhoto(Bitmap photo) {
 
         if (photo != null) {
