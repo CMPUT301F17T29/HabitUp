@@ -145,8 +145,9 @@ public class HabitUpController {
      * @param event HabitEvent to add
      * @return int successCode (0 for success)
      * @throws IllegalArgumentException if HabitEvent already exists for Habit on that day
-     */
+     *//*
     static public int addHabitEvent(HabitEvent event, Habit habit, Context ctx) throws IllegalArgumentException {
+        Log.i("Debug", "addHabit");
 
         // Check if HabitEvent is completed before Habit start date
         try {
@@ -158,8 +159,8 @@ public class HabitUpController {
             throw new IllegalArgumentException(e.getMessage());
         }
 
-            // Check if HabitEvent for the parent Habit already exists on that day
-        if ((!habitEventAlreadyExists(event, habit)) || habitEventInQueue(event, "add")) {
+         Check if HabitEvent for the parent Habit already exists on that day
+        if ((!habitEventAlreadyExists(event)) || habitEventInQueue(event, "add")) {
             //check if connected to the internet
             if (HabitUpApplication.isOnline(ctx)){
                 // Add the HabitEvent object to ES
@@ -170,7 +171,7 @@ public class HabitUpController {
                 UserAccount currentUser = HabitUpApplication.getCurrentUser();
 
                 //check if this has been added already
-                if(!habitEventInQueue(event, "add")) {
+                if(!habitEventAlreadyExists(event)) {
                     currentUser.getEventList().add(event);
                 }
 
@@ -213,6 +214,69 @@ public class HabitUpController {
         }
         return 0;
         }
+*/
+    static public int addHabitEvent(HabitEvent event, Habit habit, Context ctx){
+        addHabitEventLocal(event, habit);
+        executeCommands(ctx);
+        return 0;
+    }
+
+    static public int addHabitEventLocal(HabitEvent event, Habit habit) throws IllegalArgumentException{
+
+        try {
+            if (habitEventBeforeHabitStartDate(event, habit)) {
+                throw new IllegalArgumentException("Error: Habit cannot be completed before its start date.");
+            }
+        } catch (Exception e) {
+            // Pass any exception from habitEventBeforeHabitStartDate to caller
+            throw new IllegalArgumentException(e.getMessage());
+        }
+
+        if(!habitEventAlreadyExists(event)){
+            UserAccount currentUser = HabitUpApplication.getCurrentUser();
+            currentUser.getEventList().add(event);
+            HabitEventCommand cmd = new HabitEventCommand("add", event);
+            currentUser.addCommand(cmd);
+        }else {
+            throw new IllegalArgumentException("Error: this Habit has already been completed on this date.");
+        }
+
+        return 0;
+    }
+
+    static public int addHabitEventOnline(HabitEvent event, Habit habit, Context ctx) throws IllegalArgumentException {
+        Log.i("Debug", "addHabit");
+
+        if (HabitUpApplication.isOnline(ctx)) {
+            UserAccount currentUser = HabitUpApplication.getCurrentUser();
+
+            //event has not been uploaded to es
+            ElasticSearchController.AddHabitEventsTask addHabitEvent = new ElasticSearchController.AddHabitEventsTask();
+            addHabitEvent.execute(event);
+
+            if (currentUser.getXP() + 1 >= currentUser.getXPtoNext()) {
+                currentUser.incrementLevel();
+                currentUser.setXPtoNext();
+            }
+
+            currentUser.increaseXP(HabitUpApplication.XP_PER_HABITEVENT);
+            ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
+            updateUser.execute(currentUser);
+
+            // Setup for attribute increment: need the Habit's Attribute type
+            String attrName = habit.getHabitAttribute();
+
+            // Increment User Attribute
+
+            HabitUpApplication.updateCurrentAttrs();
+            HabitUpApplication.getCurrentAttrs().increaseValueBy(attrName, HabitUpApplication.ATTR_INCREMENT_PER_HABITEVENT);
+
+            ElasticSearchController.AddAttrsTask writeAttrs = new ElasticSearchController.AddAttrsTask();
+            writeAttrs.execute(HabitUpApplication.getCurrentAttrs());
+            return 0;
+        }
+        return -1;
+    }
 
 
     /**
@@ -237,7 +301,7 @@ public class HabitUpController {
 
 
             // Check if HabitEvent for the parent Habit already exists on that day
-            if (!habitEventAlreadyExists(event, habit)) {
+            if (!habitEventAlreadyExists(event)) {
                 ElasticSearchController.AddHabitEventsTask addHabitEvent = new ElasticSearchController.AddHabitEventsTask();
                 addHabitEvent.execute(event);
                 event.setHabitStrings(habit);
@@ -301,13 +365,15 @@ public class HabitUpController {
      * @param event HabitEvent to check
      * @return True if a different HabitEvent already exists on that date
      */
-    static public boolean habitEventAlreadyExists(HabitEvent event, Habit habit) {
+    static public boolean habitEventAlreadyExists(HabitEvent event) {
+       // Log.i("debug", "event date: " + event.getCompletedate() + " event HID: " + event.getHID());
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
-        ArrayList<HabitEvent> matchedEvents = currentUser.getEventList().getEventsFromHabit(habit.getHID());
+        ArrayList<HabitEvent> matchedEvents = currentUser.getEventList().getEventsFromHabit(event.getHID());
 
         boolean alreadyExists = false;
         for (HabitEvent ev : matchedEvents) {
-            if (ev.getCompletedate().equals(event.getCompletedate()) && !ev.getEID().equals(event.getEID())) {
+            //Log.i("debug", "event date: " + event.getCompletedate() + " event HID: " + event.getHID());
+            if (ev.getCompletedate().equals(event.getCompletedate()) && (ev.getHID() == (event.getHID()))) {
                 alreadyExists = true;
             }
         }
@@ -356,16 +422,27 @@ public class HabitUpController {
         return false;
     }
 
-    static public int executeCommands(Context ctx, UserAccount currentUser){
+    static public int executeCommands(Context ctx){
+
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
         LinkedList<HabitEventCommand> cQueue = currentUser.getCommandQueue();
-        for (int i =0; i < cQueue.size(); ++i) {
+
+        Log.i("Debug", "length of queue is: "+cQueue.size());
+        if(HabitUpApplication.isOnline(ctx)){
             HabitEventCommand hec = cQueue.poll();
-            if (hec.getType().equals("add")) {
-                HabitEvent habitEvent = hec.getEvent();
-                Habit habit = currentUser.getHabitList().getHabit(habitEvent.getHabitName());
-                addHabitEvent(habitEvent, habit, ctx);
+            while (hec!=null) {
+                Log.i("Debug", "Habit events date is: "+hec.getEvent().getCompletedate());
+                if (hec.getType().equals("add")) {
+                    HabitEvent habitEvent = hec.getEvent();
+                    Habit habit = currentUser.getHabitList().getHabit(habitEvent.getHabitName());
+                    addHabitEventOnline(habitEvent, habit, ctx);
+                    hec = cQueue.poll();
+                }
             }
         }
+
+        Log.i("Debug", "length of queue is: "+cQueue.size());
+
         return 0;
     }
 
