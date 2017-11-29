@@ -70,8 +70,9 @@ public class MapsActivity extends AppCompatActivity
     private Location currentLocation;
     boolean myMarkerVisible;
     boolean friendsMarkerVisible;
-    ArrayList<HabitEvent> habitEventList;
+    ArrayList<HabitEvent> myHabitEventList;
     LatLng allLatLng;
+    Location myLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -91,10 +92,11 @@ public class MapsActivity extends AppCompatActivity
         getHabitEvents.execute(HabitUpApplication.getCurrentUIDAsString());
 
         try {
-            habitEventList.addAll(getHabitEvents.get());
+            myHabitEventList= getHabitEvents.get();
         } catch (Exception e) {
             Log.i("HabitUpDEBUG", "MapsActivity - Couldn't get HabitEvents");
         }
+
 
 
     }
@@ -174,15 +176,18 @@ public class MapsActivity extends AppCompatActivity
 
     private void updateMyMap(boolean visible) {
 
-        for (HabitEvent habitEvent:habitEventList){
-            allLatLng = new LatLng(habitEvent.getLocation().getLatitude(), habitEvent.getLocation().getLongitude());
-            // You can customize the marker image using images bundled with
-            // your app, or dynamically generated bitmaps.
-            myMarker=mGoogleMap.addMarker(new MarkerOptions()
-                    //.icon(BitmapDescriptorFactory.fromResource(R.drawable.house_flag))
-                    .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
-                    .position(allLatLng));
-            myMarker.setVisible(visible);
+        for (HabitEvent habitEvent:myHabitEventList){
+            myLocation = habitEvent.getLocation();
+            if(myLocation != null){
+                allLatLng = new LatLng((myLocation.getLatitude()), myLocation.getLongitude());
+                myMarker=mGoogleMap.addMarker(new MarkerOptions()
+                        //.icon(BitmapDescriptorFactory.fromResource(R.drawable.house_flag))
+                        .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
+                        .position(allLatLng));
+                myMarker.setVisible(visible);
+
+            }
+
         }
     }
 
@@ -190,20 +195,20 @@ public class MapsActivity extends AppCompatActivity
 
         Location hLocation;
 
-        for (HabitEvent habitEvent:habitEventList){
-            hLocation = habitEvent.getLocation();
-            allLatLng = new LatLng( hLocation.getLatitude(),  hLocation.getLongitude());
-            Float distance = currentLocation.distanceTo(hLocation);
-            if (distance < 5000 && myMarkerVisible){
-                myMarker=mGoogleMap.addMarker(new MarkerOptions()
-                        //.icon(BitmapDescriptorFactory.fromResource(R.drawable.house_flag))
-                        .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
-                        .position(allLatLng));
-                myMarker.setVisible(myMarkerVisible);
-                myMarker.setAlpha((float) 1);
+        for (HabitEvent habitEvent:myHabitEventList){
+            myLocation = habitEvent.getLocation();
+            if(myLocation != null){
+                allLatLng = new LatLng( myLocation.getLatitude(), myLocation.getLongitude());
+                Float distance = currentLocation.distanceTo(myLocation);
+                if (distance < 5000 && myMarkerVisible){
+                    myMarker=mGoogleMap.addMarker(new MarkerOptions()
+                            //.icon(BitmapDescriptorFactory.fromResource(R.drawable.house_flag))
+                            .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
+                            .position(allLatLng));
+                    myMarker.setVisible(myMarkerVisible);
+                    myMarker.setAlpha((float) 1);
+                }
             }
-
-
         }
 
 
