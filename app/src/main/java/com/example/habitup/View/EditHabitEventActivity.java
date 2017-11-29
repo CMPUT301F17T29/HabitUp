@@ -10,7 +10,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,7 +24,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
@@ -37,7 +35,6 @@ import java.text.DateFormatSymbols;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * This is the activity for editing a habit event. A user can change the associated habit type.
@@ -93,10 +90,17 @@ public class EditHabitEventActivity extends AppCompatActivity {
         // Get the habit from intent
         Intent intent = getIntent();
         action = intent.getExtras().getInt(ViewHabitEventActivity.HABIT_EVENT_ACTION);
-        int position = intent.getExtras().getInt("EVENT POSITION");
+        final int position = intent.getExtras().getInt("EVENT POSITION");
 
-        final UserAccount currentUser = HabitUpApplication.getCurrentUser();
-        final HabitEvent event = currentUser.getEventList().get(position);
+        UserAccount user = HabitUpApplication.getCurrentUser();
+        int uid = intent.getExtras().getInt("HABIT_EVENT_UID");
+        if (user.getUID() != uid) {
+            int friendIndex = intent.getExtras().getInt("FRIEND_INDEX");
+            user = user.getFriendsList().getUserList().get(friendIndex);
+        }
+        final UserAccount eventUser = user;
+
+        event = eventUser.getEventList().get(position);
 
         // Get the event's date
         year_x = event.getCompletedate().getYear();
@@ -120,7 +124,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
 
         if (action == ViewHabitEventActivity.EDIT_EVENT) {
             // Retrieve habits from current user
-            habitNames = currentUser.getHabitList().getHabitNames();
+            habitNames = eventUser.getHabitList().getHabitNames();
             entryIndex = position;
         } else {
             habitNames.clear();
@@ -197,7 +201,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
 
                 // Get all the values
                 String eventType = habitSpinner.getSelectedItem().toString();
-                Habit habit = currentUser.getHabitList().getHabit(eventType);
+                Habit habit = eventUser.getHabitList().getHabit(eventType);
 
                 String eventComment = commentText.getText().toString();
 
@@ -323,10 +327,14 @@ public class EditHabitEventActivity extends AppCompatActivity {
         commentText.setPadding(0, 0, 0, 0);
 
         // Disable photo button
-        // TODO: Check whether event has an image, if it does not, remove all photo labels
         RelativeLayout photoLayout = (RelativeLayout) findViewById(R.id.photo_display);
         photoLayout.setBackgroundColor(getResources().getColor(android.R.color.transparent));
         imageButton.setVisibility(View.INVISIBLE);
+
+        if (!event.hasImage()) {
+            TextView photoLabel = (TextView) findViewById(R.id.photo_label);
+            photoLabel.setVisibility(View.INVISIBLE);
+        }
 
         // Disable save button
         saveButton.setVisibility(View.INVISIBLE);

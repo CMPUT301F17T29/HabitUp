@@ -1,28 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/stats_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="10dp"
-        android:textColor="@color/darkgray"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:text="Habit Statuses" />
-
-
-    <ListView
-        android:id="@+id/stats_listview"
+    <android.support.design.widget.TabLayout
+        android:id="@+id/stats_tab"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/stats_title"
-        android:layout_marginTop="20dp"></ListView>
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TabItem
+            android:id="@+id/status_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Habit Statuses" />
+
+
+        <android.support.design.widget.TabItem
+            android:id="@+id/chart_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Event Graph" />
+    </android.support.design.widget.TabLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/statsPager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/stats_tab"/>
 
 </RelativeLayout>

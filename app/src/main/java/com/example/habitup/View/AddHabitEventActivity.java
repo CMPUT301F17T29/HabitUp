@@ -197,7 +197,6 @@ public class AddHabitEventActivity extends AppCompatActivity {
 
                 try {
                     newEvent.setCompletedate(completeDate);
-                    newEvent.setScheduled();
                 } catch (IllegalArgumentException e) {
                     Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     eventOK = Boolean.FALSE;
@@ -214,8 +213,17 @@ public class AddHabitEventActivity extends AppCompatActivity {
                     // Pass to the controller
                     try {
                         HabitUpController.addHabitEvent(newEvent, eventHabit);
+
                         Intent result = new Intent();
                         result.putExtra("habit_pos", -1);
+
+                        // Check if user levelled up
+                        int levelledUp = 0;
+                        if (HabitUpController.levelUp()) {
+                            levelledUp = 1;
+                        }
+                        result.putExtra("levelled_up", levelledUp);
+
                         setResult(Activity.RESULT_OK, result);
                         finish();
                     } catch (Exception e) {

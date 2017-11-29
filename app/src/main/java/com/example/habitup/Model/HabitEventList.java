@@ -33,16 +33,28 @@ public class HabitEventList {
      * Adds a new habit events to the events array list
      * @param event a HabitEvent object to add
      */
-    public void add(HabitEvent event) {
-        this.eventList.add(event);
+    public int add(HabitEvent event) {
+
+        if (this.eventList.contains(event)) {
+            return -1;
+        } else {
+            this.eventList.add(event);
+            return 0;
+        }
     }
 
     /**
      * Removes a habit event from the events array list
      * @param event a HabitEvent object to delete
      */
-    public void delete(HabitEvent event) {
-        this.eventList.remove(event);
+    public int delete(HabitEvent event) {
+
+        if (this.eventList.contains(event)) {
+            this.eventList.remove(event);
+            return 0;
+        } else {
+            return -1;
+        }
     }
 
     /**
@@ -112,4 +124,5 @@ public class HabitEventList {
             event.setHabitStrings(habit);
         }
     }
+
 }

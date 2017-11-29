@@ -36,6 +36,8 @@ public class UserAccount {
 
     private HabitEventList eventList;
     private HabitList habitList;
+    private UserAccountList requestList;
+    private UserAccountList friendsList;
 
     /**
      * Constructor for a UserAccount.
@@ -58,6 +60,8 @@ public class UserAccount {
 
         this.eventList = new HabitEventList();
         this.habitList = new HabitList();
+        this.friendsList = new UserAccountList();
+        this.requestList = new UserAccountList();
     }
 
     /**
@@ -277,6 +281,53 @@ public class UserAccount {
      */
     public HabitEventList getEventList() {
         return this.eventList;
+    }
+
+    /**
+     * Get the user's list of follow requests
+     * @return the UserAccountList array of request user accounts
+     */
+    public UserAccountList getRequestList() {
+        return this.requestList;
+    }
+
+    /**
+     * Get the user's list of friends
+     * @return the UserAccountList array of friend user accounts
+     */
+    public UserAccountList getFriendsList() {
+        return this.friendsList;
+    }
+
+    /**
+     * When two user accounts are compared, they should be equal if they have the same UIDs
+     * @param obj the other user account to compare with
+     * @return true if the two user accounts have the same UID
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (!UserAccount.class.isAssignableFrom(obj.getClass())) {
+            return false;
+        }
+
+        final UserAccount other = (UserAccount) obj;
+
+        return this.getUID() == other.getUID();
+    }
+
+    /**
+     * Override hash code to include UID
+     * @return the user account's hash code
+     */
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 37 * hash + this.getUID();
+        return hash;
     }
 
 }
