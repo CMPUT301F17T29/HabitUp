@@ -1,10 +1,15 @@
 package com.example.habitup.View;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Location;
+import android.location.LocationManager;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -187,7 +192,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
             }
         });
 
-        // Open the date picke dialog when clicking date field
+        // Open the date picker dialog when clicking date field
         dateView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -220,6 +225,25 @@ public class EditHabitEventActivity extends AppCompatActivity {
                 String dateString = dateView.getText().toString();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy");
                 LocalDate completeDate = LocalDate.parse(dateString, formatter);
+
+                Location currentLocation;
+
+                // Get location
+                if (locationSwitch.isChecked()) {
+                    if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                            Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                        currentLocation = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        Log.i("HabitUpDEBUG", "CurrentLocation: " + String.valueOf(currentLocation));
+                    } else {
+                        currentLocation = null;
+                        Toast.makeText(EditHabitEventActivity.this, "Unable to get location.", Toast.LENGTH_SHORT).show();
+                        locationSwitch.setChecked(false);
+                    }
+                } else {
+                    currentLocation = null;
+                }
 
                 Bitmap photo = imageBitMap;
 
@@ -258,6 +282,12 @@ public class EditHabitEventActivity extends AppCompatActivity {
                         Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                         eventOK = Boolean.FALSE;
                     }
+                }
+
+                if (locationSwitch.isChecked()) {
+                    event.setLocation(currentLocation);
+                } else {
+                    event.setLocation(null);
                 }
 
                 if (eventOK) {
