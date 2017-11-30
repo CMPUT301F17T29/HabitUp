@@ -1,9 +1,12 @@
 package com.example.habitup.View;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.habitup.Controller.HabitUpApplication;
@@ -46,6 +49,15 @@ public class ViewFriendsActivity extends BaseActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setAutoMeasureEnabled(true);
         friendsListView.setLayoutManager(layoutManager);
+
+        Button findButton = (Button) findViewById(R.id.find_user_button);
+        findButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent findIntent = new Intent(ViewFriendsActivity.this, FindUserActivity.class);
+                startActivity(findIntent);
+            }
+        });
     }
 
     @Override
