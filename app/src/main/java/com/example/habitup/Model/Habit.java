@@ -246,7 +246,7 @@ public class Habit implements Comparable<Habit> {
      * @return Boolean (True if Habit is scheduled for current day)
      */
     public Boolean isTodayHabit() {
-        return schedule[LocalDate.now().getDayOfWeek().getValue()];
+        return this.schedule[LocalDate.now().getDayOfWeek().getValue()];
     }
 
     /**

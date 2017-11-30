@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.habitup.Controller.ElasticSearchController;
+import com.example.habitup.Controller.FollowController;
 import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
@@ -16,6 +17,8 @@ import com.example.habitup.Model.HabitList;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.Model.UserAccountList;
 import com.example.habitup.View.EditHabitEventActivity;
+import com.example.habitup.View.LoginActivity;
+import com.example.habitup.View.MainActivity;
 import com.example.habitup.View.ViewFriendsActivity;
 import com.robotium.solo.Solo;
 
@@ -50,7 +53,7 @@ public class ViewFriendsActivityTest extends ActivityInstrumentationTestCase2 {
         friendsList.getUserList().clear();
         HabitUpController.updateUser();
 
-        UserAccount friend1 = new UserAccount("user1", "user 1", null);
+        UserAccount friend1 = new UserAccount("user2", "user 2", null);
 
         Habit habit1 = new Habit(1);
         habit1.setHabitName("Go to the gym");
@@ -75,8 +78,9 @@ public class ViewFriendsActivityTest extends ActivityInstrumentationTestCase2 {
         HabitList habitList = friend1.getHabitList();
         habitList.add(habit1);
         habitList.add(habit2);
+        HabitUpApplication.updateUser(friend1);
 
-        user.getFriendsList().add(friend1);
+        FollowController.addFriend(friend1, user);
 
         solo = new Solo(getInstrumentation(), getActivity());
     }
@@ -87,7 +91,7 @@ public class ViewFriendsActivityTest extends ActivityInstrumentationTestCase2 {
 
     public void testViewFriendHabits() {
         solo.assertCurrentActivity("Wrong activity", ViewFriendsActivity.class);
-        assertTrue(solo.waitForText("user1"));
+        assertTrue(solo.waitForText("user2"));
 
         assertTrue(!solo.waitForText("Go to the gym"));
         assertTrue(!solo.waitForText("Clean room"));
@@ -106,16 +110,16 @@ public class ViewFriendsActivityTest extends ActivityInstrumentationTestCase2 {
         TextView habit2 = habitView2.findViewById(R.id.friend_habit_name);
         assertTrue(habit2.getText().equals("Go to the gym"));
 
-        solo.clickOnText("user1");
+        solo.clickOnText("user2");
         assertTrue(!solo.waitForText("Go to the gym"));
         assertTrue(!solo.waitForText("Clean room"));
     }
 
     public void testHabitWithNoRecentEvent() {
         solo.assertCurrentActivity("Wrong activity", ViewFriendsActivity.class);
-        assertTrue(solo.waitForText("user1"));
+        assertTrue(solo.waitForText("user2"));
 
-        solo.clickOnText("user1");
+        solo.clickOnText("user2");
         assertTrue(solo.waitForText("Clean room"));
         solo.clickOnText("Clean room");
 
@@ -124,9 +128,9 @@ public class ViewFriendsActivityTest extends ActivityInstrumentationTestCase2 {
 
     public void testHabitWithMostRecentEvent() {
         solo.assertCurrentActivity("Wrong activity", ViewFriendsActivity.class);
-        assertTrue(solo.waitForText("user1"));
+        assertTrue(solo.waitForText("user2"));
 
-        solo.clickOnText("user1");
+        solo.clickOnText("user2");
         assertTrue(solo.waitForText("Go to the gym"));
         solo.clickOnText("Go to the gym");
 

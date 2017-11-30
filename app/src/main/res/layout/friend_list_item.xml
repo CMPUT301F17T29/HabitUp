@@ -7,8 +7,8 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/friend_pic"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:adjustViewBounds="false"
         android:src="@drawable/default_user"
         android:scaleX="1"
@@ -22,9 +22,9 @@
         android:layout_alignTop="@+id/friend_pic"
         android:layout_marginStart="25dp"
         android:layout_toEndOf="@+id/friend_pic"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="2dp"
         android:text="Jeff Cho"
-        android:textColor="@color/lightgray"
+        android:textColor="@color/darkgray"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -46,7 +46,7 @@
         android:layout_alignParentEnd="true"
         android:drawableTint="@color/yellow"
         android:drawableTop="@drawable/ic_events"
-        android:layout_marginTop="-5dp"
+        android:layout_marginTop="-6dp"
         android:text="Level 40"
         android:textSize="16sp" />
 

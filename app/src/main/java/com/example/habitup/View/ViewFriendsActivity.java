@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 
 import com.example.habitup.Controller.HabitUpApplication;
+import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 

@@ -6,6 +6,7 @@ import android.test.ActivityInstrumentationTestCase2;
 import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.FollowController;
 import com.example.habitup.Controller.HabitUpApplication;
+import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.View.FollowActivity;
 import com.example.habitup.View.LoginActivity;
@@ -29,9 +30,9 @@ public class FriendRequestsTest extends ActivityInstrumentationTestCase2 {
 
     public void setUp() throws Exception {
 
-        user = new UserAccount("tatata4", "tatata4", null);
+        user = new UserAccount("tatata6", "tatata6", null);
         ElasticSearchController.GetUser getUser = new ElasticSearchController.GetUser();
-        getUser.execute("tatata4");
+        getUser.execute("tatata6");
 
         try {
             user = getUser.get().get(0);
@@ -41,9 +42,9 @@ public class FriendRequestsTest extends ActivityInstrumentationTestCase2 {
 
         HabitUpApplication.setCurrentUser(user);
 
-        requestUser = new UserAccount("user1", "test user 1", null);
+        requestUser = new UserAccount("testfriend2", "testfriend2", null);
         ElasticSearchController.GetUser getRequest = new ElasticSearchController.GetUser();
-        getRequest.execute("user1");
+        getRequest.execute("testfriend2");
 
         try {
             requestUser = getRequest.get().get(0);
@@ -52,6 +53,7 @@ public class FriendRequestsTest extends ActivityInstrumentationTestCase2 {
         }
 
         requestUser.getFriendsList().getUserList().clear();
+        requestUser.getRequestList().getUserList().clear();
         HabitUpApplication.updateUser(requestUser);
 
         if (user.getRequestList().size() == 0) {
@@ -70,13 +72,12 @@ public class FriendRequestsTest extends ActivityInstrumentationTestCase2 {
         solo.clickOnButton("Ignore");
 
         assertTrue(solo.waitForText("You have 0 friend requests."));
-        assertTrue(!solo.waitForText("user1"));
 
         solo.clickOnImageButton(0);
         solo.clickOnText("Log Out");
         solo.waitForActivity(LoginActivity.class);
         solo.assertCurrentActivity("Wrong activity", LoginActivity.class);
-        solo.enterText(0,"user1");
+        solo.enterText(0,"testfriend2");
         solo.clickOnButton("Login");
 
         solo.waitForActivity(MainActivity.class);
@@ -93,13 +94,12 @@ public class FriendRequestsTest extends ActivityInstrumentationTestCase2 {
         solo.clickOnButton("Accept");
 
         assertTrue(solo.waitForText("You have 0 friend requests."));
-        assertTrue(!solo.waitForText("user1"));
 
         solo.clickOnImageButton(0);
         solo.clickOnText("Log Out");
         solo.waitForActivity(LoginActivity.class);
         solo.assertCurrentActivity("Wrong activity", LoginActivity.class);
-        solo.enterText(0,"user1");
+        solo.enterText(0,"testfriend2");
         solo.clickOnButton("Login");
 
         solo.waitForActivity(MainActivity.class);
@@ -108,6 +108,28 @@ public class FriendRequestsTest extends ActivityInstrumentationTestCase2 {
         solo.clickOnText("Friends");
 
         solo.assertCurrentActivity("Wrong activity", ViewFriendsActivity.class);
-        assertTrue(solo.waitForText("tatata4"));
+        assertTrue(solo.waitForText("tatata6"));
+    }
+
+    public void testAcceptAndSendRequest() {
+        solo.assertCurrentActivity("Wrong activity", FollowActivity.class);
+        solo.clickOnButton("Accept/Follow");
+
+        assertTrue(solo.waitForText("You have 0 friend requests."));
+
+        solo.clickOnImageButton(0);
+        solo.clickOnText("Log Out");
+        solo.waitForActivity(LoginActivity.class);
+        solo.assertCurrentActivity("Wrong activity", LoginActivity.class);
+        solo.enterText(0,"testfriend2");
+        solo.clickOnButton("Login");
+
+        solo.waitForActivity(MainActivity.class);
+        solo.assertCurrentActivity("Wrong activity", MainActivity.class);
+        solo.clickOnImageButton(0);
+        solo.clickOnText("Friend Requests");
+
+        solo.assertCurrentActivity("Wrong activity", FollowActivity.class);
+        assertTrue(solo.waitForText("tatata6"));
     }
 }
