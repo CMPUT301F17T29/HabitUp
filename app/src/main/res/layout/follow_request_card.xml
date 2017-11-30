@@ -78,7 +78,7 @@
             android:layout_toRightOf="@+id/accept_button"
             android:textColor="@color/white"
             android:textSize="14sp"
-            android:text="Accept/Follow"/>
+            android:text="Accept &amp; Follow"/>
 
         <Button
             android:id="@+id/ignore_button"
