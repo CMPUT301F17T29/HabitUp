@@ -49,6 +49,8 @@
         <activity android:name=".View.EditProfileActivity" />
         <activity android:name=".View.EditHabitActivity" />
         <activity android:name=".View.EditHabitEventActivity" />
+        <activity android:name=".View.HabitStatistics" />
+
     </application>
 
 </manifest>

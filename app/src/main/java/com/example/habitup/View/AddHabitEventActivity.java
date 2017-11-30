@@ -183,7 +183,6 @@ public class AddHabitEventActivity extends AppCompatActivity {
                 HabitEvent newEvent = new HabitEvent(uid, hid);
                 Boolean eventOK = Boolean.TRUE;
                 newEvent.setHabit(hid);
-                newEvent.setScheduled();
 
                 // Set habit strings
                 newEvent.setHabitStrings(eventHabit);

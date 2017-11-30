@@ -164,11 +164,25 @@ public class HabitUpController {
             UserAccount currentUser = HabitUpApplication.getCurrentUser();
             currentUser.getEventList().add(event);
 
+            // Update habit status
+            event.setScheduled();
+            if (event.getScheduled()) {
+                habit.incrementHabitsDone();
+            } else {
+                habit.incrementHabitsDoneExtra();
+            }
+
+            if (currentUser.getXP() + 1 >= currentUser.getXPtoNext()) {
+                currentUser.incrementLevel();
+                currentUser.setXPtoNext();
+            }
+
             currentUser.increaseXP(HabitUpApplication.XP_PER_HABITEVENT);
 
             // Setup for attribute increment: need the Habit's Attribute type
             String attrName = habit.getHabitAttribute();
 
+            // Increment User Attribute
             HabitUpApplication.updateCurrentAttrs();
             HabitUpApplication.getCurrentAttrs().increaseValueBy(attrName, HabitUpApplication.ATTR_INCREMENT_PER_HABITEVENT);
 

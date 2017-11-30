@@ -94,17 +94,21 @@ public class HabitEvent implements Comparable<HabitEvent> {
      * Sets whether or not this HabitEvent was completed on a scheduled date.  Used in stats
      * calculations.
      */
-    public void setScheduled() {
+    public void setScheduled() throws IllegalArgumentException {
+        Habit habit = HabitUpApplication.getCurrentUser().getHabitList().getHabit(this.habitName);
+        int day;
 
-        // Get Habit corresponding to hid from ES
+        if (this.completedate != null) {
+            day = this.completedate.getDayOfWeek().getValue();
+        } else {
+            throw new IllegalArgumentException("Error: This event must have a complete date before setting scheduled.");
+        }
 
-        // Get schedule from Habit
-
-        // Check if completedate is a scheduled date
-
-            // If yes, set TRUE
-
-            // If not, set FALSE
+        try {
+            this.scheduled = habit.getHabitSchedule()[day];
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Error: Could not set scheduled.");
+        }
     }
 
     /**
