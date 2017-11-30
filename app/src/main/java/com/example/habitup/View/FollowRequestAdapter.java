@@ -33,6 +33,7 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
         ImageView FollowerPhoto;
         Button acceptButton;
         Button ignoreButton;
+        Button sendButton;
 
         public FollowRequestHolder(View itemView) {
             super(itemView);
@@ -41,6 +42,7 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
             FollowerPhoto = itemView.findViewById(R.id.person_photo);
             acceptButton = itemView.findViewById(R.id.accept_button);
             ignoreButton = itemView.findViewById(R.id.ignore_button);
+            sendButton = itemView.findViewById(R.id.accept_send_button);
         }
 
         public void bindEvent(UserAccount friendRequest) {
@@ -74,6 +76,7 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
     public void onBindViewHolder(FollowRequestHolder followrequestholder, int position) {
         final UserAccount Follower = afollowrequestList.get(position);
         followrequestholder.bindEvent(Follower);
+
         final UserAccount currentUser = HabitUpApplication.getCurrentUser();
 
         followrequestholder.ignoreButton.setOnClickListener(new View.OnClickListener() {
@@ -95,11 +98,46 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
                 // Add user to friend's list
                 try {
                     FollowController.addFriend(currentUser, Follower);
-                    FollowController.removeFriendRequest(currentUser, Follower);
+                    if (currentUser.getRequestList().size() > 0) {
+                        FollowController.removeFriendRequest(currentUser, Follower);
+                    } else {
+                        throw new IllegalArgumentException("Error: No requests.");
+                    }
                     removeRequest(Follower);
 
                     String addMsg = "Added " + Follower.getRealname() + " as a friend.";
                     Toast.makeText(context, addMsg, Toast.LENGTH_LONG).show();
+                } catch (Exception e) {
+                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        followrequestholder.sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    FollowController.addFriend(currentUser, Follower);
+                    if (currentUser.getRequestList().size() > 0) {
+                        FollowController.removeFriendRequest(currentUser, Follower);
+                    } else {
+                        throw new IllegalArgumentException("Error: No requests.");
+                    }
+                    removeRequest(Follower);
+
+                    String name = Follower.getRealname();
+                    if (currentUser.getFriendsList().contains(Follower)) {
+                        // Check if already following
+                        Toast.makeText(context, "You are already following " + name, Toast.LENGTH_LONG).show();
+                    } else if (Follower.getRequestList().contains(currentUser)) {
+                        // Check if already sent request
+                        Toast.makeText(context, "You already sent a request to " + name, Toast.LENGTH_LONG).show();
+                    } else {
+                        // Send friend request to user
+                        FollowController.addFriendRequest(Follower, currentUser);
+                        Toast.makeText(context, "A request was sent to " + name, Toast.LENGTH_LONG).show();
+                    }
+
                 } catch (Exception e) {
                     Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
                 }

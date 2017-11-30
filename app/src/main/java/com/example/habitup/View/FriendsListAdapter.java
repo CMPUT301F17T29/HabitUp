@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Model.Attributes;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
@@ -74,7 +75,9 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         if (item.type == HEADER) {
             final Item friendItem = data.get(position);
-            final UserAccount friend = friendItem.friend;
+            UserAccount oldModel = friendItem.friend;
+            final UserAccount friend = HabitUpApplication.getUserAccount(oldModel.getUsername());
+
             final FriendHolder fh = (FriendHolder) holder;
             fh.bind(friend);
 

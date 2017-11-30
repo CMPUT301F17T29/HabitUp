@@ -310,24 +310,9 @@ public class UserAccount {
             return false;
         }
 
-        if (!UserAccount.class.isAssignableFrom(obj.getClass())) {
-            return false;
-        }
-
         final UserAccount other = (UserAccount) obj;
 
         return this.getUID() == other.getUID();
-    }
-
-    /**
-     * Override hash code to include UID
-     * @return the user account's hash code
-     */
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 37 * hash + this.getUID();
-        return hash;
     }
 
 }
