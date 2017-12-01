@@ -124,8 +124,10 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 public void onClick(View view) {
                     Intent viewIntent = new Intent(context, EditHabitEventActivity.class);
 
+                    int hid = habit.getHID();
                     HabitEventList eventList = friend.getEventList();
-                    HabitEvent recentEvent = eventList.getRecentEventFromHabit(habit.getHID());
+                    HabitEvent recentEvent = eventList.getRecentEventFromHabit(hid);
+                    int pos = eventList.getEvents().indexOf(recentEvent);
 
                     if (recentEvent != null) {
                         String eid = recentEvent.getEID();
@@ -134,7 +136,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         viewIntent.putExtra("HABIT_EVENT_EID", eid);
                         viewIntent.putExtra("HABIT_EVENT_ACTION", ViewHabitEventActivity.VIEW_EVENT);
                         viewIntent.putExtra("profile", 0);
-                        viewIntent.putExtra("EVENT_POSITION", position);
+                        viewIntent.putExtra("EVENT POSITION", pos);
                         viewIntent.putExtra("FRIEND_INDEX", habitItem.friendIndex);
                         ((ViewFriendsActivity) context).startActivityForResult(viewIntent, 1);
                     } else {
