@@ -35,6 +35,7 @@ import java.text.DateFormatSymbols;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * This is the activity for editing a habit event. A user can change the associated habit type.
@@ -101,7 +102,9 @@ public class EditHabitEventActivity extends AppCompatActivity {
         }
         final UserAccount eventUser = user;
 
-        event = eventUser.getEventList().get(position);
+        ArrayList<HabitEvent> eventList = eventUser.getEventList().getEvents();
+        Collections.sort(eventList);
+        event = eventList.get(position);
 
         // Get the event's date
         year_x = event.getCompletedate().getYear();
