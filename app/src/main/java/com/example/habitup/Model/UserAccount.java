@@ -9,6 +9,7 @@ import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 
 /**
  * @author gojeffcho
@@ -33,6 +34,11 @@ public class UserAccount {
     private int XP;
     private int XPtoNext;
 
+    private HabitEventList eventList;
+    private HabitList habitList;
+    private UserAccountList requestList;
+    private UserAccountList friendsList;
+
     /**
      * Constructor for a UserAccount.
      *
@@ -51,6 +57,11 @@ public class UserAccount {
         level = 1;
         XP = 0;
         XPtoNext = 20;
+
+        this.eventList = new HabitEventList();
+        this.habitList = new HabitList();
+        this.friendsList = new UserAccountList();
+        this.requestList = new UserAccountList();
     }
 
     /**
@@ -254,6 +265,54 @@ public class UserAccount {
      */
     public void setXPtoNext() {
         this.XPtoNext += HabitUpApplication.XP_INCREASE_AMOUNT;
+    }
+
+    /**
+     * Return the user's list of habits
+     * @return the HabitList model
+     */
+    public HabitList getHabitList() {
+        return this.habitList;
+    }
+
+    /**
+     * Return the user's list of habit events
+     * @return the HabitEventList model
+     */
+    public HabitEventList getEventList() {
+        return this.eventList;
+    }
+
+    /**
+     * Get the user's list of follow requests
+     * @return the UserAccountList array of request user accounts
+     */
+    public UserAccountList getRequestList() {
+        return this.requestList;
+    }
+
+    /**
+     * Get the user's list of friends
+     * @return the UserAccountList array of friend user accounts
+     */
+    public UserAccountList getFriendsList() {
+        return this.friendsList;
+    }
+
+    /**
+     * When two user accounts are compared, they should be equal if they have the same UIDs
+     * @param obj the other user account to compare with
+     * @return true if the two user accounts have the same UID
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        final UserAccount other = (UserAccount) obj;
+
+        return this.getUID() == other.getUID();
     }
 
 }

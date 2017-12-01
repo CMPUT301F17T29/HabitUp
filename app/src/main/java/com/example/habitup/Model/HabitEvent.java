@@ -36,6 +36,9 @@ public class HabitEvent implements Comparable<HabitEvent> {
     private Location location;
     private Boolean scheduled;
 
+    private String habitName = "";
+    private String habitAttribute = "";
+
     /**
      * Constructor - needs a uid and hid to uniquely identify it.  eid is set upon transmission to
      * ElasticSearch.
@@ -74,7 +77,10 @@ public class HabitEvent implements Comparable<HabitEvent> {
      * Set the Habit the HabitEvent belongs to
      * @param hid int (Habit id)
      */
-    public void setHabit(int hid) { this.hid = hid; }
+    public void setHabit(int hid) {
+
+        this.hid = hid;
+    }
 
     /**
      * Set the unique HabitEvent id
@@ -88,17 +94,21 @@ public class HabitEvent implements Comparable<HabitEvent> {
      * Sets whether or not this HabitEvent was completed on a scheduled date.  Used in stats
      * calculations.
      */
-    public void setScheduled() {
+    public void setScheduled() throws IllegalArgumentException {
+        Habit habit = HabitUpApplication.getCurrentUser().getHabitList().getHabit(this.habitName);
+        int day;
 
-        // Get Habit corresponding to hid from ES
+        if (this.completedate != null) {
+            day = this.completedate.getDayOfWeek().getValue();
+        } else {
+            throw new IllegalArgumentException("Error: This event must have a complete date before setting scheduled.");
+        }
 
-        // Get schedule from Habit
-
-        // Check if completedate is a scheduled date
-
-            // If yes, set TRUE
-
-            // If not, set FALSE
+        try {
+            this.scheduled = habit.getHabitSchedule()[day];
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Error: Could not set scheduled.");
+        }
     }
 
     /**
@@ -287,6 +297,58 @@ public class HabitEvent implements Comparable<HabitEvent> {
      */
     public boolean hasLocation() {
         return this.location != null;
+    }
+
+    public void setHabitStrings(Habit habit) {
+        this.habitName = habit.getHabitName();
+        this.habitAttribute = habit.getHabitAttribute();
+    }
+
+    /**
+     * Get the event's habit name
+     * @return the name of the habit the event belongs to
+     */
+    public String getHabitName() {
+        return this.habitName;
+    }
+
+    /**
+     * Get the event's habit attribute
+     * @return the name of the attribute the event's habit belongs to
+     */
+    public String getHabitAttribute() {
+        return this.habitAttribute;
+    }
+
+    /**
+     * When two events are compared, they should be equal if they have the same EIDs
+     * @param obj the other event to compare with
+     * @return true if the two events have the same EID
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (!HabitEvent.class.isAssignableFrom(obj.getClass())) {
+            return false;
+        }
+
+        final HabitEvent other = (HabitEvent) obj;
+
+        return this.getEID() == other.getEID();
+    }
+
+    /**
+     * Override hash code to include EID
+     * @return the event's hash code
+     */
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 37 * hash + this.getEID().hashCode();
+        return hash;
     }
 
 }

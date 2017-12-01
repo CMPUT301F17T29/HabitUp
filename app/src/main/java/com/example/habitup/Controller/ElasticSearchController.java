@@ -149,12 +149,11 @@ public class ElasticSearchController {
 //            UserQuery = "{\"query\": {\"match_all\" : {}}}";
 
             String query = "{" +
-                                "\"size\": " + HabitUpApplication.NUM_OF_ES_RESULTS + "," +
+                                "\"size\": " + HabitUpApplication.NUM_OF_USER_RESULTS + "," +
                                 "\"query\": {" +
                                     "\"match_all\" : {}" +
                                 "}" +
                             "}";
-
 
             //Log.i("Debug", "username to search for is: "+ search_parameters[0]);
 

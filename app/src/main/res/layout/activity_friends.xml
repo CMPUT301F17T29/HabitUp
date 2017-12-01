@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="?attr/actionBarSize"
+    android:background="@color/white"
+    tools:context="com.example.habitup.View.ViewHabitActivity"
+    android:fitsSystemWindows="true">
+
+    <TextView
+        android:id="@+id/friends_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:textColor="@color/darkgray"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:text="Friends" />
+
+    <TextView
+        android:id="@+id/friends_subheading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/friends_title"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:textColor="@color/lightgray"
+        android:textSize="15sp"
+        android:text="Tap on a friend to see their habits. Tap a habit to view it's most recent event." />
+
+    <Button
+        android:id="@+id/find_user_button"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:backgroundTint="@color/teal"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_below="@+id/friends_subheading"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:text="Find Friends"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/friends_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/find_user_button"
+        app:layoutManager="LinearLayoutManager"
+        android:layout_marginTop="20dp"
+        android:scrollbars="vertical"
+        android:clickable="true">
+    </android.support.v7.widget.RecyclerView>
+
+</RelativeLayout>

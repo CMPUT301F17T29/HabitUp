@@ -50,4 +50,10 @@ dependencies {
     //compile 'com.google.android.gms:play-services-maps:YourVersionOfGoolgePlayServicesHereIfItsNot-10.2.6'
     //implementation 'com.google.android.gms:play-services:11.6.0'
     implementation 'com.google.android.gms:play-services-maps:11.0.4'
+
+    androidTestCompile 'com.android.support:support-annotations:24.0.0'
+    androidTestCompile 'com.android.support.test:runner:0.5'
+
+    compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.8'
+    compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
 }

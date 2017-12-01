@@ -4,8 +4,11 @@ package com.example.habitup.Model;
 import android.util.Log;
 
 import com.example.habitup.Controller.ElasticSearchController;
+import com.example.habitup.Controller.HabitUpApplication;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 /**
  * Habit is the object representing a habit type, belonging to a specific user.  It specifies a
@@ -44,6 +47,9 @@ public class Habit implements Comparable<Habit> {
     public Habit(int uid) {
         this.uid = uid;
         setUniqueHID();
+        this.habitsDone = 0;
+        this.habitsDoneExtra = 0;
+        this.habitsPossible = 0;
     }
 
     /**
@@ -246,7 +252,7 @@ public class Habit implements Comparable<Habit> {
      * @return Boolean (True if Habit is scheduled for current day)
      */
     public Boolean isTodayHabit() {
-        return schedule[LocalDate.now().getDayOfWeek().getValue()];
+        return this.schedule[LocalDate.now().getDayOfWeek().getValue()];
     }
 
     /**
@@ -256,27 +262,38 @@ public class Habit implements Comparable<Habit> {
     public void updateHabitsPossible() {
 
         // Get today's date - we will compare this to lastCalculated
-        LocalDate today = LocalDate.now();
-        LocalDate curr = this.lastUpdated;
+        LocalDate localDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy");
+        String formattedString = localDate.format(formatter);
+        LocalDate today = LocalDate.parse(formattedString, formatter);
 
-        // New lastCalculated is today, because we're recalculating.
+        LocalDate curr = this.startDate;
+
         this.lastUpdated = today;
+        Log.i("HabitUpDEBUG", String.valueOf(curr));
 
-        while (curr != today) {
+        int count = 0;
+        while (curr != null && !curr.equals(today)) {
 
             // Check if curr is one of the days set for the Habit to be done
             // NOTE: DayOfWeek is an enum - Mon == 1, Tue == 2, etc.
             if (this.schedule[curr.getDayOfWeek().getValue()]) {
 
                 // If so, increment habitsPossible
-                ++this.habitsPossible;
+                ++count;
             }
 
             // Increment to next day
             // Careful!  Check for month rollover, weird possibilities
-            curr.plusDays(1);
-
+            curr = curr.plusDays(1);
+            Log.i("HabitUpDEBUG", String.valueOf(curr.getDayOfWeek()));
         }
+
+        if (this.schedule[today.getDayOfWeek().getValue()]) {
+            ++count;
+        }
+
+        this.habitsPossible = count;
     }
 
     /**
@@ -289,40 +306,93 @@ public class Habit implements Comparable<Habit> {
     }
 
     /**
-     * Increment how many times Habit was done on schedule.
-     */
-    public void incrementHabitsDone() { ++this.habitsDone; }
-
-    /**
-     * Increment how any times Habit was done outside of schedule.
-     */
-    public void incrementHabitsDoneExtra() { ++this.habitsDoneExtra; }
-
-    /**
-     * Decrement how many times Habit was done on schedule.
-     */
-    public void decrementHabitsDone() { --this.habitsDone; }
-
-    /**
-     * Decrement how many times Habit was done outside of schedule.
-     */
-    public void decrementHabitsDoneExtra() { --this.habitsDoneExtra; }
-
-    /**
      * Get how many times Habit was done on schedule.
      * @return int (Number of times Habit was done on schedule)
      */
-    public int getHabitsDone() { return this.habitsDone; }
+    public int getHabitsDone() {
+        UserAccount user = HabitUpApplication.getCurrentUser();
+        ArrayList<HabitEvent> events = user.getEventList().getEventsFromHabit(this.hid);
+
+        int count = 0;
+        for (HabitEvent event : events) {
+            event.setScheduled();
+            if (event.getScheduled()) {
+                ++count;
+            }
+        }
+        this.habitsDone = count;
+
+        return this.habitsDone;
+    }
 
     /**
      * Get how many times Habit was done outside of schedule.
      * @return int (Number of times Habit was done outside of schedule)
      */
-    public int getHabitsDoneExtra() { return this.habitsDoneExtra; }
+    public int getHabitsDoneExtra() {
+        UserAccount user = HabitUpApplication.getCurrentUser();
+        ArrayList<HabitEvent> events = user.getEventList().getEventsFromHabit(this.hid);
+
+        int count = 0;
+        for (HabitEvent event : events) {
+            event.setScheduled();
+            if (!event.getScheduled()) {
+                ++count;
+            }
+        }
+        this.habitsDoneExtra = count;
+
+        return this.habitsDoneExtra;
+    }
 
     /**
      * Get how many times Habit could have been done if schedule was followed from start date.
      * @return int (Number of times Habit could have been done if schedule was followed from start date)
      */
     public int getHabitsPossible() { return this.habitsPossible; }
+
+    /**
+     * Get the percentage of the habit's progression status
+     * @return the percentage
+     */
+    public int getPercent() {
+        int yValue = this.habitsPossible;
+        if (yValue != 0) {
+            int xValue = this.habitsDone;
+            return xValue * 100 / yValue;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * When two habit are compared, they should be equal if they have the same HIDs
+     * @param obj the other habit to compare with
+     * @return true if the two habits have the same HID
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (!Habit.class.isAssignableFrom(obj.getClass())) {
+            return false;
+        }
+
+        final Habit other = (Habit) obj;
+
+        return this.getHID() == other.getHID();
+    }
+
+    /**
+     * Override hash code to include HID
+     * @return the habit's hash code
+     */
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 37 * hash + this.getHID();
+        return hash;
+    }
 }

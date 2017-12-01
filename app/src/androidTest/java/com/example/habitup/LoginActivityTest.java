@@ -7,9 +7,11 @@ import android.util.Log;
 import android.widget.EditText;
 
 import com.example.habitup.Controller.ElasticSearchController;
+import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.View.LoginActivity;
 import com.example.habitup.View.MainActivity;
+import com.example.habitup.View.SignUpActivity;
 import com.robotium.solo.Solo;
 
 import org.junit.Test;
@@ -25,11 +27,18 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
     private Solo solo;
     private String testName;
 
-    public LoginActivityTest(){ super(LoginActivity.class);}
-    @Test
+    public LoginActivityTest(){
+        super(com.example.habitup.View.LoginActivity.class);}
+    @Override
     public void setUp() throws Exception{
         solo = new Solo(getInstrumentation(), getActivity());
     }
+
+    @Override
+    public void tearDown() throws Exception {
+        solo.finishOpenedActivities();
+    }
+
     @Test
     public void testStart() throws Exception{
         AppCompatActivity activity = getActivity();
@@ -58,15 +67,20 @@ public class LoginActivityTest extends ActivityInstrumentationTestCase2<LoginAct
         }
         UserAccount u1 = new UserAccount(testName, "usernametest", null);
 
-        ElasticSearchController.AddUsersTask addUsersTask = new ElasticSearchController.AddUsersTask();
-        addUsersTask.execute(u1);
+        HabitUpApplication.addUserAccount(u1);
 
         SystemClock.sleep(10000);
+
 
         //check whether we add that user
         solo.enterText((EditText) solo.getView(R.id.login_edit), testName);
         solo.clickOnButton("Login");
-        solo.assertCurrentActivity("Wrong Activity", LoginActivity.class);
+        solo.assertCurrentActivity("Wrong Activity", MainActivity.class);
 
+    }
+    @Test
+    public void testSignUp(){
+        solo.clickOnButton("SIGN UP");
+        solo.assertCurrentActivity("Wrong Activity", SignUpActivity.class);
     }
 }
