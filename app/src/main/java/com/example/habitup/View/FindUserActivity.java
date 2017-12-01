@@ -84,6 +84,8 @@ public class FindUserActivity extends BaseActivity implements SearchView.OnQuery
         resultsListView.setAdapter(resultsAdapter);
 
         updateResultsCount();
+
+        navigationView.setCheckedItem(R.id.finds);
     }
 
     @Override

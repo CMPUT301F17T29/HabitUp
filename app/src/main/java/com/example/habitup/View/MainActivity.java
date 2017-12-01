@@ -74,6 +74,7 @@ public class MainActivity extends BaseActivity {
         habitListView.setAdapter(adapter);
         habitListView.setLayoutManager(layoutManager);
 
+        navigationView.setCheckedItem(R.id.profile);
     }
 
     @Override

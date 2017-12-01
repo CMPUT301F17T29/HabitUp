@@ -51,6 +51,8 @@ public class FollowActivity extends BaseActivity {
         requestsListView.setAdapter(requestAdapter);
 
         updateTotal();
+
+        navigationView.setCheckedItem(R.id.requests);
     }
 
     public void updateTotal() {
