@@ -1,6 +1,8 @@
 package com.example.habitup.View;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.widget.Toast;
 import com.example.habitup.Controller.FollowController;
 import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Model.UserAccount;
+import com.example.habitup.Model.UserAccountList;
 import com.example.habitup.R;
 
 import java.util.ArrayList;
@@ -48,6 +51,15 @@ public class FindUserAdapter extends RecyclerView.Adapter<FindUserAdapter.Search
 
             resultNickName.setText(result.getRealname());
             resultName.setText(result.getUsername());
+
+            UserAccountList requestList = result.getRequestList();
+            if (requestList.contains(HabitUpApplication.getCurrentUser())) {
+                disableButton();
+            }
+        }
+
+        public void disableButton() {
+            followButton.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -64,7 +76,7 @@ public class FindUserAdapter extends RecyclerView.Adapter<FindUserAdapter.Search
     }
 
     @Override
-    public void onBindViewHolder(SearchResultHolder holder, int position) {
+    public void onBindViewHolder(final SearchResultHolder holder, final int position) {
         UserAccount resultUser = resultsList.get(position);
         holder.bind(resultUser);
         final UserAccount user = resultsList.get(position);
@@ -89,6 +101,9 @@ public class FindUserAdapter extends RecyclerView.Adapter<FindUserAdapter.Search
                     // Send friend request to user
                     FollowController.addFriendRequest(user, currentUser);
                     Toast.makeText(context, "A request was sent to " + name, Toast.LENGTH_LONG).show();
+
+                    holder.disableButton();
+                    notifyItemChanged(position);
                 }
             }
         });

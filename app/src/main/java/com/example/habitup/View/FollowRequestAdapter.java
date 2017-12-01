@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.example.habitup.Controller.FollowController;
 import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Model.UserAccount;
+import com.example.habitup.Model.UserAccountList;
 import com.example.habitup.R;
 
 import java.util.ArrayList;
@@ -56,6 +57,12 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
             // Set follower photo
             if (friendRequest.getPhoto() != null) {
                 FollowerPhoto.setImageBitmap(friendRequest.getPhoto());
+            }
+
+            // Check if user is following the requester already
+            UserAccountList friendList = HabitUpApplication.getCurrentUser().getFriendsList();
+            if (friendList.contains(friendRequest)) {
+                sendButton.setVisibility(View.GONE);
             }
         }
     }
