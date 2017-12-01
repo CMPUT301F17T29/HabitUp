@@ -212,12 +212,6 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
         public void bind(UserAccount friend) {
-            // Set friend's profile pic
-            Bitmap profilePic = friend.getPhoto();
-            if (profilePic != null) {
-                friendPhoto.setImageBitmap(profilePic);
-            }
-
             // Set friend's name
             String name = friend.getRealname();
             this.fullName.setText(name);
@@ -229,6 +223,16 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             // Set friend's level
             int level = friend.getLevel();
             this.level.setText("Level " + String.valueOf(level));
+
+            // Set friend's profile pic
+            Bitmap profilePic = friend.getPhoto();
+            if (profilePic != null) {
+                try {
+                    friendPhoto.setImageBitmap(profilePic);
+                } catch (Exception e) {
+                    Log.i("Error:", "Failed to set photo for " + name);
+                }
+            }
         }
 
         public void setClicked(boolean clicked) {

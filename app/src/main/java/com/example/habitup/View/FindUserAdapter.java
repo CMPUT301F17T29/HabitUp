@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,17 +46,24 @@ public class FindUserAdapter extends RecyclerView.Adapter<FindUserAdapter.Search
         }
 
         public void bind(UserAccount result) {
-            /*
             if (result.getPhoto() != null) {
-                resultPhoto.setImageBitmap(result.getPhoto());
+                try {
+                    resultPhoto.setImageBitmap(result.getPhoto());
+                } catch (Exception e) {
+                    Log.i("Error:", "Failed to load photo for " + result.getUsername());
+                }
             }
-            */
+
             resultNickName.setText(result.getRealname());
             resultName.setText(result.getUsername());
 
-            UserAccountList requestList = result.getRequestList();
-            if (requestList.contains(HabitUpApplication.getCurrentUser())) {
-                disableButton();
+            try {
+                UserAccountList requestList = result.getRequestList();
+                if (requestList.contains(HabitUpApplication.getCurrentUser())) {
+                    disableButton();
+                }
+            } catch (Exception e) {
+                Log.i("Error:", "Could not get request list for " + result.getUsername());
             }
         }
 
