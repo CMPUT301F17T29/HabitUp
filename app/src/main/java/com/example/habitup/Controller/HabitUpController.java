@@ -279,6 +279,21 @@ public class HabitUpController {
     }
 
 
+    static public int editHabitEventLocal(HabitEvent event, Habit habit) throws IllegalArgumentException {
+
+        try {
+            if (habitEventBeforeHabitStartDate(event, habit)) {
+                throw new IllegalArgumentException("Error: Habit cannot be completed before its start date.");
+            }
+        } catch (Exception e) {
+            // Pass any exception from habitEventBeforeHabitStartDate to caller
+            throw new IllegalArgumentException(e.getMessage());
+        }
+
+
+        return 0;
+    }
+
     /**
      * Edit an existing HabitEvent - in case the date was edited, checks to make sure no HabitEvent
      * belonging to the same Habit exists for the set date, unless it is the same HabitEvent that is
@@ -316,16 +331,90 @@ public class HabitUpController {
 
     }
 
-    /**
-     * Delete a HabitEvent.
-     * @param event HabitEvent to delete
-     * @return successCode (0 for success)
-     */
-    static public int deleteHabitEvent(HabitEvent event) {
+    static public int deleteHabitEventLocal(HabitEvent event) {
 
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
         currentUser.getEventList().delete(event);
 
+        HabitEventCommand cmd = new HabitEventCommand("delete", event);
+        currentUser.addCommand(cmd);
+
+        return 0;
+
+    }
+
+    static public int deleteHabitEventOnline(HabitEvent event) {
+
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+
+//        Log.d("EVENT DELETE:", "Deleting HabitEvent belonging to HID #" + String.valueOf(event.getHID()));
+        ElasticSearchController.DeleteHabitEventTask delHabitEvent = new ElasticSearchController.DeleteHabitEventTask();
+        delHabitEvent.execute(event.getEID());
+
+        ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
+        updateUser.execute(currentUser);
+
+        return 0;
+
+    }
+
+    static public int deleteHabitEvent(HabitEvent event, Context ctx) {
+        deleteHabitEventLocal(event);
+        if (HabitUpApplication.isOnline(ctx)){
+            executeCommands(ctx);
+        }
+
+        return 0;
+    }
+
+    static public int editHabitEvent(LocalDate beforeDate, HabitEvent event, Habit habit, Context ctx) throws IllegalArgumentException{
+
+            UserAccount currentUser = HabitUpApplication.getCurrentUser();
+
+            if(editCompleteDateCheck(beforeDate, event)) {
+                Log.i("Edit Debug", "editCompleteDatePass");
+                deleteHabitEvent(event, ctx);
+                addHabitEvent(event, habit, ctx);
+
+                /*ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
+                updateUser.execute(currentUser);*/
+
+            }else throw new IllegalArgumentException("Error: You cannot edit this habit to that day");
+
+
+        return 0;
+    }
+
+
+    static public boolean editCompleteDateCheck(LocalDate before, HabitEvent event){
+        boolean date = false;
+        Log.i("Edit Debug", "Before Complete date is: "+before);
+        Log.i("Edit Debug", "Event Complete date is: "+event.getCompletedate());
+        if (before.equals(event.getCompletedate())){
+            Log.i("Edit Debug", "if (before == event.getCompletedate()) passed");
+            date = true;
+        }else if(!habitEventAlreadyExists(event)){
+            Log.i("Edit Debug", "Event Complete date is: "+event.getCompletedate());
+            date = true;
+        }
+        return date;
+    }
+
+    static public int editHabitEventLocal(HabitEvent event){
+        //check date
+
+
+        return 0;
+    }
+
+    /**
+     * Delete a HabitEvent.
+     * @param event HabitEvent to delete
+     * @return successCode (0 for success)
+     *//*
+    static public int deleteHabitEvent(HabitEvent event) {
+
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
 
 //        Log.d("EVENT DELETE:", "Deleting HabitEvent belonging to HID #" + String.valueOf(event.getHID()));
             ElasticSearchController.DeleteHabitEventTask delHabitEvent = new ElasticSearchController.DeleteHabitEventTask();
@@ -335,7 +424,7 @@ public class HabitUpController {
             updateUser.execute(currentUser);
 
         return 0;
-    }
+    }*/
 
     /**
      * Utility method to see if a Habit with the same name already exists for the current user.
@@ -366,13 +455,13 @@ public class HabitUpController {
      * @return True if a different HabitEvent already exists on that date
      */
     static public boolean habitEventAlreadyExists(HabitEvent event) {
-       // Log.i("debug", "event date: " + event.getCompletedate() + " event HID: " + event.getHID());
+       Log.i("debug", "event date: " + event.getCompletedate() + " event HID: " + event.getHID());
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
         ArrayList<HabitEvent> matchedEvents = currentUser.getEventList().getEventsFromHabit(event.getHID());
 
         boolean alreadyExists = false;
         for (HabitEvent ev : matchedEvents) {
-            //Log.i("debug", "event date: " + event.getCompletedate() + " event HID: " + event.getHID());
+            Log.i("debug", "event date: " + event.getCompletedate() + " event HID: " + event.getHID());
             if (ev.getCompletedate().equals(event.getCompletedate()) && (ev.getHID() == (event.getHID()))) {
                 alreadyExists = true;
             }
@@ -436,6 +525,20 @@ public class HabitUpController {
                     HabitEvent habitEvent = hec.getEvent();
                     Habit habit = currentUser.getHabitList().getHabit(habitEvent.getHabitName());
                     addHabitEventOnline(habitEvent, habit, ctx);
+                    hec = cQueue.poll();
+                }
+
+                else if (hec.getType().equals("edit")) {
+                    HabitEvent habitEvent = hec.getEvent();
+                    Habit habit = currentUser.getHabitList().getHabit(habitEvent.getHabitName());
+                    //editHabitEvent()
+                    hec = cQueue.poll();
+                }
+
+                else if (hec.getType().equals("delete")) {
+                    HabitEvent habitEvent = hec.getEvent();
+                    Habit habit = currentUser.getHabitList().getHabit(habitEvent.getHabitName());
+                    deleteHabitEventOnline(habitEvent);
                     hec = cQueue.poll();
                 }
             }
