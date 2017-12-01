@@ -45,10 +45,11 @@ public class FindUserAdapter extends RecyclerView.Adapter<FindUserAdapter.Search
         }
 
         public void bind(UserAccount result) {
+            /*
             if (result.getPhoto() != null) {
                 resultPhoto.setImageBitmap(result.getPhoto());
             }
-
+            */
             resultNickName.setText(result.getRealname());
             resultName.setText(result.getUsername());
 
@@ -77,9 +78,8 @@ public class FindUserAdapter extends RecyclerView.Adapter<FindUserAdapter.Search
 
     @Override
     public void onBindViewHolder(final SearchResultHolder holder, final int position) {
-        UserAccount resultUser = resultsList.get(position);
-        holder.bind(resultUser);
         final UserAccount user = resultsList.get(position);
+        holder.bind(user);
 
         // If follow button is clicked
         holder.followButton.setOnClickListener(new View.OnClickListener() {

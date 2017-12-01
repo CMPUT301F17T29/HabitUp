@@ -103,7 +103,6 @@ public class EditHabitEventActivity extends AppCompatActivity {
         final UserAccount eventUser = user;
 
         ArrayList<HabitEvent> eventList = eventUser.getEventList().getEvents();
-        Collections.sort(eventList);
         event = eventList.get(position);
 
         // Get the event's date

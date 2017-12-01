@@ -45,11 +45,11 @@ public class HabitStatsAdapter extends ArrayAdapter<Habit> {
         nameView.setText(habit.getHabitName());
         nameView.setTextColor(Color.parseColor(Attributes.getColour(habit.getHabitAttribute())));
 
-        ProgressBar progressBar = v.findViewById(R.id.stats_habit_progress);
-        progressBar.setProgress(habit.getPercent());
-
         TextView statusView = v.findViewById(R.id.stats_habit_status);
         statusView.setText(habit.getHabitsDone() + "/" + habit.getHabitsPossible());
+
+        ProgressBar progressBar = v.findViewById(R.id.stats_habit_progress);
+        progressBar.setProgress(habit.getPercent());
 
         TextView extraView = v.findViewById(R.id.stats_extra);
         extraView.setText(String.valueOf(habit.getHabitsDoneExtra()));

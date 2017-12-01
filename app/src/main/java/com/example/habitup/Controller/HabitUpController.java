@@ -164,14 +164,6 @@ public class HabitUpController {
             UserAccount currentUser = HabitUpApplication.getCurrentUser();
             currentUser.getEventList().add(event);
 
-            // Update habit status
-            event.setScheduled();
-            if (event.getScheduled()) {
-                habit.incrementHabitsDone();
-            } else {
-                habit.incrementHabitsDoneExtra();
-            }
-
             if (currentUser.getXP() + 1 >= currentUser.getXPtoNext()) {
                 currentUser.incrementLevel();
                 currentUser.setXPtoNext();
@@ -239,6 +231,7 @@ public class HabitUpController {
             ElasticSearchController.AddHabitEventsTask addHabitEvent = new ElasticSearchController.AddHabitEventsTask();
             addHabitEvent.execute(event);
             event.setHabitStrings(habit);
+
             updateUser();
 
             return 0;
