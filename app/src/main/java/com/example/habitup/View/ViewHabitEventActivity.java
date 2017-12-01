@@ -114,6 +114,7 @@ public class ViewHabitEventActivity extends BaseActivity {
             @Override
             public void onItemClick(View itemView, int pos) {
                 position = pos;
+                eventAdapter.setPosition(eventListView.getChildAdapterPosition(itemView));
                 goToEditActivity(VIEW_EVENT);
             }
         });
@@ -197,9 +198,11 @@ public class ViewHabitEventActivity extends BaseActivity {
     private void goToEditActivity(int requestCode) {
         setResult(RESULT_OK);
         Intent editIntent = new Intent(context, EditHabitEventActivity.class);
+
+        int pos = eventAdapter.getPosition();
         int uid = HabitUpApplication.getCurrentUID();
-        int hid = eventAdapter.getItem(position).getHID();
-        String eid = eventAdapter.getItem(position).getEID();
+        int hid = eventAdapter.getItem(pos).getHID();
+        String eid = eventAdapter.getItem(pos).getEID();
 
 //        Log.i("HabitUpDEBUG", "ViewHabitEvent eid " + eid);
 
@@ -208,7 +211,7 @@ public class ViewHabitEventActivity extends BaseActivity {
         editIntent.putExtra(HABIT_EVENT_EID, eid);
         editIntent.putExtra(HABIT_EVENT_ACTION, requestCode);
         editIntent.putExtra("profile", 0);
-        editIntent.putExtra("EVENT POSITION", position);
+        editIntent.putExtra("EVENT POSITION", pos);
         startActivity(editIntent);
     }
 
