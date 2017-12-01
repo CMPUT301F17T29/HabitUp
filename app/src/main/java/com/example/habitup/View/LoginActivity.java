@@ -1,7 +1,12 @@
 package com.example.habitup.View;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import android.util.Log;
@@ -71,6 +76,30 @@ public class LoginActivity extends AppCompatActivity {
                     if (loggedInUser != null) {
 
                         HabitUpApplication.setCurrentUser(loggedInUser);
+
+                        // DEBUG for demo
+                        if (loggedInUser.getUsername().equals("BojackHorseman")) {
+                            Bitmap d = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.bojack);
+
+                            try {
+//                                HabitUpApplication.getCurrentUser().setDemoPhoto(d);
+                                HabitUpApplication.getCurrentUser().setPhoto(null);
+                            } catch (Exception e) {
+                                Log.i("HabitUpDEBUG", "Login: Failed to set debug Photo");
+                            }
+                            Log.i("HabitUpDEBUG", "Login: Set Bojack Photo");
+                        } else if (loggedInUser.getUsername().equals("MrPeanutbutter")) {
+                            Bitmap d = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.peanut);
+
+                            try {
+//                                HabitUpApplication.getCurrentUser().setDemoPhoto(d);
+                                HabitUpApplication.getCurrentUser().setPhoto(null);
+                            } catch (Exception e) {
+                                Log.i("HabitUpDEBUG", "Login: Failed to set debug Photo");
+                            }
+                            Log.i("HabitUpDEBUG", "Login: Set Peanutbutter Photo");
+                        }
+                        // DEBUG for demo
 
                         Toast.makeText(getApplicationContext(), logInName + " is now logged in.",
                                 Toast.LENGTH_SHORT).show();
