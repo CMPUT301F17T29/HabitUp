@@ -129,7 +129,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
         if (action == ViewHabitEventActivity.EDIT_EVENT) {
             // Retrieve habits from current user
             habitNames = eventUser.getHabitList().getHabitNames();
-            entryIndex = position;
+            entryIndex = habitNames.indexOf(event.getHabitName());
         } else {
             habitNames.clear();
             habitNames.add(event.getHabitName());
