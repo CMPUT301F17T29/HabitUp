@@ -231,7 +231,7 @@ public class ViewHabitEventActivity extends BaseActivity {
         alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                HabitUpController.deleteHabitEvent(eventAdapter.getItem(position)); // ES delete
+                HabitUpController.deleteHabitEvent(eventAdapter.getItem(position),getApplicationContext()); // ES delete
                 eventAdapter.removeItem(position); // app view delete
                 eventListView.setAdapter(eventAdapter);
                 eventAdapter.notifyDataSetChanged();

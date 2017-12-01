@@ -11,7 +11,6 @@ import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -24,7 +23,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
@@ -37,7 +35,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Locale;
 
 /**
@@ -212,14 +209,14 @@ public class AddHabitEventActivity extends AppCompatActivity {
                 if (eventOK) {
                     // Pass to the controller
                     try {
-                        HabitUpController.addHabitEvent(newEvent, eventHabit);
+                        HabitUpController.addHabitEvent(newEvent, eventHabit, getApplicationContext());
 
                         Intent result = new Intent();
                         result.putExtra("habit_pos", -1);
 
                         // Check if user levelled up
                         int levelledUp = 0;
-                        if (HabitUpController.levelUp()) {
+                        if (HabitUpController.levelUp(getApplicationContext())) {
                             levelledUp = 1;
                         }
                         result.putExtra("levelled_up", levelledUp);

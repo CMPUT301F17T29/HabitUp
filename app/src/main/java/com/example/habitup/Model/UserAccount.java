@@ -6,10 +6,11 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.example.habitup.Controller.ElasticSearchController;
+import com.example.habitup.Controller.HabitEventCommand;
 import com.example.habitup.Controller.HabitUpApplication;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * @author gojeffcho
@@ -38,6 +39,7 @@ public class UserAccount {
     private HabitList habitList;
     private UserAccountList requestList;
     private UserAccountList friendsList;
+    private LinkedList<HabitEventCommand> cmdQueue;
 
     /**
      * Constructor for a UserAccount.
@@ -314,5 +316,9 @@ public class UserAccount {
 
         return this.getUID() == other.getUID();
     }
+
+    public LinkedList<HabitEventCommand> getCommandQueue() { return this.cmdQueue; }
+
+    public void addCommand(HabitEventCommand cmd){ cmdQueue.add(cmd); }
 
 }
