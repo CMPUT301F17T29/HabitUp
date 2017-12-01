@@ -27,6 +27,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_alignParentBottom="true"
+        android:paddingBottom="5dp"
         android:weightSum="6">
 
         <RelativeLayout
@@ -48,7 +49,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/my_habit_history_location"
                 android:maxLines="2"
-                android:text="My Habit History Location" />
+                android:layout_centerInParent="true"
+                android:text="My History" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -71,7 +73,8 @@
                 android:layout_below="@+id/my_friend_habit_history_location"
                 android:layout_centerHorizontal="true"
                 android:maxLines="2"
-                android:text="My Friends Habit History Location" />
+                android:layout_centerInParent="true"
+                android:text="My Friends" />
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="0dp"
@@ -93,7 +96,8 @@
                 android:layout_below="@+id/highlight_location"
                 android:layout_centerHorizontal="true"
                 android:maxLines="2"
-                android:text="Highlight Location within 5km" />
+                android:layout_centerInParent="true"
+                android:text="Within 5km" />
         </RelativeLayout>
 
 </LinearLayout>

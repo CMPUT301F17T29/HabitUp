@@ -3,10 +3,7 @@
 buildscript {
     repositories {
         jcenter()
-<<<<<<< HEAD
-=======
         mavenCentral()
->>>>>>> 1174e43da1ec74f96bd6cddac9846756a0a4de02
         google()
     }
     dependencies {
@@ -20,16 +17,12 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-<<<<<<< HEAD
-
         maven {
             url "https://maven.google.com"
         }
         google()
-=======
         mavenCentral()
         maven { url "https://jitpack.io" }
->>>>>>> 1174e43da1ec74f96bd6cddac9846756a0a4de02
     }
 }
 

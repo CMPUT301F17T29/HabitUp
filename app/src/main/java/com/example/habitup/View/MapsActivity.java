@@ -24,7 +24,9 @@ import android.widget.Toast;
 
 import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
+import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
+import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -63,14 +65,19 @@ public class MapsActivity extends AppCompatActivity
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     Marker mCurrLocationMarker;
+
     private CheckBox myCheckbox;
     private CheckBox friendCheckbox;
     private CheckBox highlightCheckbox;
+
     private Marker myMarker;
     private Location currentLocation;
     boolean myMarkerVisible;
     boolean friendsMarkerVisible;
+
     ArrayList<HabitEvent> myHabitEventList;
+    ArrayList<HabitEvent> friendsEvents;
+
     LatLng allLatLng;
     Location myLocation;
 
@@ -97,8 +104,19 @@ public class MapsActivity extends AppCompatActivity
             Log.i("HabitUpDEBUG", "MapsActivity - Couldn't get HabitEvents");
         }
 
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+        // Get friends
+        ArrayList<UserAccount> friendList = currentUser.getFriendsList().getUserList();
 
+        for (UserAccount friend : friendList) {
+            UserAccount updatedFriend = HabitUpApplication.getUserAccount(friend.getUsername());
 
+            for (Habit habit: updatedFriend.getHabitList().getHabits()) {
+                HabitEvent recentEvent = updatedFriend.getEventList().getRecentEventFromHabit(habit.getHID());
+                friendsEvents.add(recentEvent);
+            }
+
+        }
     }
 
     @Override
