@@ -40,7 +40,7 @@ public class UserAccountList {
 
     /**
      * Add a UserAccount to the list
-     * @param userToAdd UserAccount
+     * @param userToAdd UserAccount username
      * @return -1 if already in list, 0 if successfully added
      */
     public int add(String userToAdd) {
@@ -55,7 +55,7 @@ public class UserAccountList {
 
     /**
      * Removes a UserAccount from the list
-     * @param userToRemove UserAccount to delete
+     * @param userToRemove Username of UserAccount to delete
      * @return -1 if user is not in the list, 0 if successfully removes
      */
     public int delete(String userToRemove) {
@@ -70,7 +70,7 @@ public class UserAccountList {
 
     /**
      * Check whether UserAccountList contains a certain UserAccount
-     * @param user UserAccount
+     * @param user UserAccount username
      * @return True if contained; otherwise False
      */
     public Boolean contains(String user) {
