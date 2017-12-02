@@ -56,6 +56,14 @@ public class ViewFriendsActivityTest extends ActivityInstrumentationTestCase2 {
         HabitUpController.updateUser();
 
         UserAccount friend1 = new UserAccount(friendName, "user 2", null);
+        ElasticSearchController.GetUser getFriend = new ElasticSearchController.GetUser();
+        getFriend.execute("user2");
+
+        try {
+            friend1 = getFriend.get().get(0);
+        } catch (Exception e) {
+            HabitUpApplication.addUserAccount(friend1);
+        }
 
         Habit habit1 = new Habit(1);
         habit1.setHabitName("Go to the gym");
