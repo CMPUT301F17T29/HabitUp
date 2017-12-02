@@ -113,7 +113,7 @@ public class FriendRequestsTest extends ActivityInstrumentationTestCase2 {
 
     public void testAcceptAndSendRequest() {
         solo.assertCurrentActivity("Wrong activity", FollowActivity.class);
-        solo.clickOnButton("Accept/Follow");
+        solo.clickOnButton("Accept & Follow");
 
         assertTrue(solo.waitForText("You have 0 friend requests."));
 

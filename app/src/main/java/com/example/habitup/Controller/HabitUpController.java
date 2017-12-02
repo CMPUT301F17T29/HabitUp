@@ -322,8 +322,7 @@ public class HabitUpController {
      */
     static public void updateUser() {
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
-        ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
-        updateUser.execute(currentUser);
+        HabitUpApplication.updateUser(currentUser);
     }
 
 }

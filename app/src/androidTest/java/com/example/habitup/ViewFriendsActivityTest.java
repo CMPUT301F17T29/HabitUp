@@ -3,6 +3,7 @@ package com.example.habitup;
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.test.ActivityInstrumentationTestCase2;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -31,15 +32,16 @@ import java.time.LocalDate;
 public class ViewFriendsActivityTest extends ActivityInstrumentationTestCase2 {
 
     private Solo solo;
+    private String friendName = "test_user";
 
     public ViewFriendsActivityTest() {
         super(ViewFriendsActivity.class);
     }
 
     public void setUp() throws Exception {
-        UserAccount user = new UserAccount("testrequests", "testrequests", null);
+        UserAccount user = new UserAccount("test_requests8", "test_requests8", null);
         ElasticSearchController.GetUser getUser = new ElasticSearchController.GetUser();
-        getUser.execute("testrequests");
+        getUser.execute("test_requests8");
 
         try {
             user = getUser.get().get(0);
@@ -53,7 +55,7 @@ public class ViewFriendsActivityTest extends ActivityInstrumentationTestCase2 {
         friendsList.getUserList().clear();
         HabitUpController.updateUser();
 
-        UserAccount friend1 = new UserAccount("user2", "user 2", null);
+        UserAccount friend1 = new UserAccount(friendName, "user 2", null);
 
         Habit habit1 = new Habit(1);
         habit1.setHabitName("Go to the gym");
@@ -80,7 +82,11 @@ public class ViewFriendsActivityTest extends ActivityInstrumentationTestCase2 {
         habitList.add(habit2);
         HabitUpApplication.updateUser(friend1);
 
-        FollowController.addFriend(friend1, user);
+        try {
+            FollowController.addFriend(friend1, user);
+        } catch (Exception e) {
+            Log.i("HabitUpTestError", "Cannot add friend.");
+        }
 
         solo = new Solo(getInstrumentation(), getActivity());
     }
@@ -91,12 +97,12 @@ public class ViewFriendsActivityTest extends ActivityInstrumentationTestCase2 {
 
     public void testViewFriendHabits() {
         solo.assertCurrentActivity("Wrong activity", ViewFriendsActivity.class);
-        assertTrue(solo.waitForText("user2"));
+        assertTrue(solo.waitForText(friendName));
 
         assertTrue(!solo.waitForText("Go to the gym"));
         assertTrue(!solo.waitForText("Clean room"));
 
-        solo.clickOnText("user1");
+        solo.clickOnText(friendName);
         assertTrue(solo.waitForText("Go to the gym"));
         assertTrue(solo.waitForText("Clean room"));
 
@@ -110,16 +116,16 @@ public class ViewFriendsActivityTest extends ActivityInstrumentationTestCase2 {
         TextView habit2 = habitView2.findViewById(R.id.friend_habit_name);
         assertTrue(habit2.getText().equals("Go to the gym"));
 
-        solo.clickOnText("user2");
+        solo.clickOnText(friendName);
         assertTrue(!solo.waitForText("Go to the gym"));
         assertTrue(!solo.waitForText("Clean room"));
     }
 
     public void testHabitWithNoRecentEvent() {
         solo.assertCurrentActivity("Wrong activity", ViewFriendsActivity.class);
-        assertTrue(solo.waitForText("user2"));
+        assertTrue(solo.waitForText(friendName));
 
-        solo.clickOnText("user2");
+        solo.clickOnText(friendName);
         assertTrue(solo.waitForText("Clean room"));
         solo.clickOnText("Clean room");
 
@@ -128,9 +134,9 @@ public class ViewFriendsActivityTest extends ActivityInstrumentationTestCase2 {
 
     public void testHabitWithMostRecentEvent() {
         solo.assertCurrentActivity("Wrong activity", ViewFriendsActivity.class);
-        assertTrue(solo.waitForText("user2"));
+        assertTrue(solo.waitForText(friendName));
 
-        solo.clickOnText("user2");
+        solo.clickOnText(friendName);
         assertTrue(solo.waitForText("Go to the gym"));
         solo.clickOnText("Go to the gym");
 

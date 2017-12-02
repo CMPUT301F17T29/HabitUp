@@ -23,7 +23,7 @@ import java.util.ArrayList;
  */
 public class ViewFriendsActivity extends BaseActivity {
 
-    private ArrayList<UserAccount> friends;
+    private ArrayList<String> friends;
     private RecyclerView friendsListView;
     private FriendsListAdapter friendsAdapter;
 
