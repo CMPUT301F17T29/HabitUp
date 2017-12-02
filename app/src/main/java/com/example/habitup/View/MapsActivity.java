@@ -53,7 +53,7 @@ import java.util.ArrayList;
  *
  */
 
-public class MapsActivity extends AppCompatActivity
+public class MapsActivity extends BaseActivity
         implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -92,11 +92,6 @@ public class MapsActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-
-        getSupportActionBar().setTitle("Map Location Activity");
-        // Set back button
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
 
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFrag.getMapAsync(this);
@@ -137,6 +132,8 @@ public class MapsActivity extends AppCompatActivity
 
             }
         }
+
+        navigationView.setCheckedItem(R.id.map);
     }
 
     @Override
