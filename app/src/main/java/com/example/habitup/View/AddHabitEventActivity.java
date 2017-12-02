@@ -1,11 +1,17 @@
 package com.example.habitup.View;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
@@ -115,7 +121,7 @@ public class AddHabitEventActivity extends AppCompatActivity {
         habitSpinner.setOnItemSelectedListener(habitListener);
 
         // Get location checkbox
-        Switch locationSwitch = (Switch) findViewById(R.id.location_switch);
+        final Switch locationSwitch = (Switch) findViewById(R.id.location_switch);
 
         // Get photo icon
         Button imageButton;
@@ -167,7 +173,28 @@ public class AddHabitEventActivity extends AppCompatActivity {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy");
                 LocalDate completeDate = LocalDate.parse(completeDateString, formatter);
 
-                // TODO: M5 get location here
+                Location currentLocation;
+
+                // Get location
+                if (locationSwitch.isChecked()) {
+                    if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                            Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                        currentLocation = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, (long) 100, (float) 1, locationListener);
+                        // DEBUG
+                        Log.i("HabitUpDEBUG", "Location: " + String.valueOf(lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)));
+                        // DEBUG
+                        Log.i("HabitUpDEBUG", "CurrentLocation: " + String.valueOf(currentLocation));
+                    } else {
+                        currentLocation = null;
+                        Toast.makeText(AddHabitEventActivity.this, "Unable to get location.", Toast.LENGTH_SHORT).show();
+                        locationSwitch.setChecked(false);
+                    }
+                } else {
+                    currentLocation = null;
+                }
 
                 // Get the event photo
                 Bitmap photo = null;
@@ -208,6 +235,8 @@ public class AddHabitEventActivity extends AppCompatActivity {
                     Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     eventOK = Boolean.FALSE;
                 }
+
+                newEvent.setLocation(currentLocation);
 
                 if (eventOK) {
                     // Pass to the controller
@@ -300,6 +329,24 @@ public class AddHabitEventActivity extends AppCompatActivity {
 
         @Override
         public void onNothingSelected(AdapterView<?> parent) {}
+    };
+
+    private final LocationListener locationListener = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            Log.i("HabitUpDEBUG", "Location Changed: " + String.valueOf(location));
+        }
+
+        public void onStatusChanged(String s, int i, Bundle b) {
+
+        }
+
+        public void onProviderEnabled(String s) {
+
+        }
+
+        public void onProviderDisabled(String s) {
+
+        }
     };
 
 }
