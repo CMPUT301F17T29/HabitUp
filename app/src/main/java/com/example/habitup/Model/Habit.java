@@ -4,9 +4,11 @@ package com.example.habitup.Model;
 import android.util.Log;
 
 import com.example.habitup.Controller.ElasticSearchController;
+import com.example.habitup.Controller.HabitUpApplication;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 /**
  * Habit is the object representing a habit type, belonging to a specific user.  It specifies a
@@ -304,36 +306,44 @@ public class Habit implements Comparable<Habit> {
     }
 
     /**
-     * Increment how many times Habit was done on schedule.
-     */
-    public void incrementHabitsDone() { ++this.habitsDone; }
-
-    /**
-     * Increment how any times Habit was done outside of schedule.
-     */
-    public void incrementHabitsDoneExtra() { ++this.habitsDoneExtra; }
-
-    /**
-     * Decrement how many times Habit was done on schedule.
-     */
-    public void decrementHabitsDone() { --this.habitsDone; }
-
-    /**
-     * Decrement how many times Habit was done outside of schedule.
-     */
-    public void decrementHabitsDoneExtra() { --this.habitsDoneExtra; }
-
-    /**
      * Get how many times Habit was done on schedule.
      * @return int (Number of times Habit was done on schedule)
      */
-    public int getHabitsDone() { return this.habitsDone; }
+    public int getHabitsDone() {
+        UserAccount user = HabitUpApplication.getCurrentUser();
+        ArrayList<HabitEvent> events = user.getEventList().getEventsFromHabit(this.hid);
+
+        int count = 0;
+        for (HabitEvent event : events) {
+            event.setScheduled();
+            if (event.getScheduled()) {
+                ++count;
+            }
+        }
+        this.habitsDone = count;
+
+        return this.habitsDone;
+    }
 
     /**
      * Get how many times Habit was done outside of schedule.
      * @return int (Number of times Habit was done outside of schedule)
      */
-    public int getHabitsDoneExtra() { return this.habitsDoneExtra; }
+    public int getHabitsDoneExtra() {
+        UserAccount user = HabitUpApplication.getCurrentUser();
+        ArrayList<HabitEvent> events = user.getEventList().getEventsFromHabit(this.hid);
+
+        int count = 0;
+        for (HabitEvent event : events) {
+            event.setScheduled();
+            if (!event.getScheduled()) {
+                ++count;
+            }
+        }
+        this.habitsDoneExtra = count;
+
+        return this.habitsDoneExtra;
+    }
 
     /**
      * Get how many times Habit could have been done if schedule was followed from start date.

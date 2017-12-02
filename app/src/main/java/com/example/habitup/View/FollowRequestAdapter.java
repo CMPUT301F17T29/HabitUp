@@ -2,6 +2,7 @@ package com.example.habitup.View;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,13 +57,21 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
 
             // Set follower photo
             if (friendRequest.getPhoto() != null) {
-                FollowerPhoto.setImageBitmap(friendRequest.getPhoto());
+                try {
+                    FollowerPhoto.setImageBitmap(friendRequest.getPhoto());
+                } catch (Exception e) {
+                    Log.i("Error:", "Failed to get set photo for " + friendRequest.getUsername());
+                }
             }
 
             // Check if user is following the requester already
-            UserAccountList friendList = HabitUpApplication.getCurrentUser().getFriendsList();
-            if (friendList.contains(friendRequest)) {
-                sendButton.setVisibility(View.GONE);
+            try {
+                UserAccountList friendList = HabitUpApplication.getCurrentUser().getFriendsList();
+                if (friendList.contains(friendRequest)) {
+                    sendButton.setVisibility(View.GONE);
+                }
+            } catch (Exception e) {
+                Log.i("Error:", "Failed to get friend list for " + friendRequest.getUsername());
             }
         }
     }

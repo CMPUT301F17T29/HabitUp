@@ -124,8 +124,10 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 public void onClick(View view) {
                     Intent viewIntent = new Intent(context, EditHabitEventActivity.class);
 
+                    int hid = habit.getHID();
                     HabitEventList eventList = friend.getEventList();
-                    HabitEvent recentEvent = eventList.getRecentEventFromHabit(habit.getHID());
+                    HabitEvent recentEvent = eventList.getRecentEventFromHabit(hid);
+                    int pos = eventList.getEvents().indexOf(recentEvent);
 
                     if (recentEvent != null) {
                         String eid = recentEvent.getEID();
@@ -134,7 +136,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         viewIntent.putExtra("HABIT_EVENT_EID", eid);
                         viewIntent.putExtra("HABIT_EVENT_ACTION", ViewHabitEventActivity.VIEW_EVENT);
                         viewIntent.putExtra("profile", 0);
-                        viewIntent.putExtra("EVENT_POSITION", position);
+                        viewIntent.putExtra("EVENT POSITION", pos);
                         viewIntent.putExtra("FRIEND_INDEX", habitItem.friendIndex);
                         ((ViewFriendsActivity) context).startActivityForResult(viewIntent, 1);
                     } else {
@@ -210,12 +212,6 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
         public void bind(UserAccount friend) {
-            // Set friend's profile pic
-            Bitmap profilePic = friend.getPhoto();
-            if (profilePic != null) {
-                friendPhoto.setImageBitmap(profilePic);
-            }
-
             // Set friend's name
             String name = friend.getRealname();
             this.fullName.setText(name);
@@ -227,6 +223,16 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             // Set friend's level
             int level = friend.getLevel();
             this.level.setText("Level " + String.valueOf(level));
+
+            // Set friend's profile pic
+            Bitmap profilePic = friend.getPhoto();
+            if (profilePic != null) {
+                try {
+                    friendPhoto.setImageBitmap(profilePic);
+                } catch (Exception e) {
+                    Log.i("Error:", "Failed to set photo for " + name);
+                }
+            }
         }
 
         public void setClicked(boolean clicked) {

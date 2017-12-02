@@ -56,20 +56,11 @@ public class FindUserActivity extends BaseActivity implements SearchView.OnQuery
 
         try {
             ArrayList<UserAccount> tempUsers = getUsersTask.get();
-
-            // Filter out old user accounts in ES with non-working user models
-            // Remove this loop when all of ES is up to date
-            // Note: Had to increase NUM_ES_RESULTS to get the most recent accounts
-            for (UserAccount user : tempUsers) {
-                try {
-                    user.getFriendsList().size();
-                    allUsers.add(user);
-                } catch (Exception e) {
-                }
-            }
+            allUsers.addAll(tempUsers);
         } catch (Exception e) {
             Log.i("HabitUpDEBUG", "Failed to get all users.");
         }
+
     }
 
     @Override
@@ -78,12 +69,13 @@ public class FindUserActivity extends BaseActivity implements SearchView.OnQuery
 
         resultsList.clear();
 
-        Log.i("HabitUpDEBUG", "Users size: " + allUsers.size());
         resultsList.addAll(allUsers);
         resultsAdapter = new FindUserAdapter(this, resultsList);
         resultsListView.setAdapter(resultsAdapter);
 
         updateResultsCount();
+
+        navigationView.setCheckedItem(R.id.finds);
     }
 
     @Override

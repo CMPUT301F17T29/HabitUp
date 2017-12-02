@@ -1,15 +1,22 @@
 package com.example.habitup.View;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -103,7 +110,6 @@ public class EditHabitEventActivity extends AppCompatActivity {
         final UserAccount eventUser = user;
 
         ArrayList<HabitEvent> eventList = eventUser.getEventList().getEvents();
-        Collections.sort(eventList);
         event = eventList.get(position);
 
         // Get the event's date
@@ -177,7 +183,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
             }
         });
 
-        // Open the date picke dialog when clicking date field
+        // Open the date picker dialog when clicking date field
         dateView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -212,6 +218,27 @@ public class EditHabitEventActivity extends AppCompatActivity {
                 String dateString = dateView.getText().toString();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy");
                 LocalDate completeDate = LocalDate.parse(dateString, formatter);
+
+                Location currentLocation;
+
+                // Get location
+                if (locationSwitch.isChecked()) {
+                    if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                            Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                        currentLocation = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, (long) 100, (float) 1, locationListener);
+
+                        Log.i("HabitUpDEBUG", "CurrentLocation: " + String.valueOf(currentLocation));
+                    } else {
+                        currentLocation = null;
+                        Toast.makeText(EditHabitEventActivity.this, "Unable to get location.", Toast.LENGTH_SHORT).show();
+                        locationSwitch.setChecked(false);
+                    }
+                } else {
+                    currentLocation = null;
+                }
 
                 Bitmap photo = imageBitMap;
 
@@ -250,6 +277,12 @@ public class EditHabitEventActivity extends AppCompatActivity {
                         Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                         eventOK = Boolean.FALSE;
                     }
+                }
+
+                if (locationSwitch.isChecked()) {
+                    event.setLocation(currentLocation);
+                } else {
+                    event.setLocation(null);
                 }
 
                 if (eventOK) {
@@ -371,5 +404,23 @@ public class EditHabitEventActivity extends AppCompatActivity {
 
         @Override
         public void onNothingSelected(AdapterView<?> parent) {}
+    };
+
+    private final LocationListener locationListener = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            Log.i("HabitUpDEBUG", "Location Changed: " + String.valueOf(location));
+        }
+
+        public void onStatusChanged(String s, int i, Bundle b) {
+
+        }
+
+        public void onProviderEnabled(String s) {
+
+        }
+
+        public void onProviderDisabled(String s) {
+
+        }
     };
 }
