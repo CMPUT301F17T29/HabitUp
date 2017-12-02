@@ -41,7 +41,7 @@ import java.util.Locale;
  *
  * @author Shari Barboza
  */
-public class AddHabitActivity extends BaseActivity {
+public class AddHabitActivity extends AppCompatActivity {
 
     // Habit start date
     private int year_x, month_x, day_x;
@@ -52,6 +52,10 @@ public class AddHabitActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_habit);
+
+        // Set back button
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         // Get current date
         final Calendar cal = Calendar.getInstance(Locale.CANADA);
@@ -178,6 +182,8 @@ public class AddHabitActivity extends BaseActivity {
                     // Pass to the controller
                     try {
                         HabitUpController.addHabit(newHabit);
+                        Intent result = new Intent();
+                        setResult(Activity.RESULT_OK, result);
                         finish();
                     } catch (Exception e) {
                         Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
