@@ -40,12 +40,14 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private int lastPos = -1;
 
-    public FriendsListAdapter(Context context, ArrayList<UserAccount> friends) {
+    public FriendsListAdapter(Context context, ArrayList<String> friends) {
         this.context = context;
 
         this.data = new ArrayList<>();
         for (int i = 0; i < friends.size(); i++) {
-            Item friendItem = new Item(HEADER, friends.get(i), i);
+            UserAccount friend = HabitUpApplication.getUserAccount(friends.get(i));
+
+            Item friendItem = new Item(HEADER, friend, i);
             data.add(friendItem);
         }
     }
@@ -75,8 +77,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         if (item.type == HEADER) {
             final Item friendItem = data.get(position);
-            UserAccount oldModel = friendItem.friend;
-            final UserAccount friend = HabitUpApplication.getUserAccount(oldModel.getUsername());
+            final UserAccount friend = friendItem.friend;
 
             final FriendHolder fh = (FriendHolder) holder;
             fh.bind(friend);
@@ -235,13 +236,6 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }
         }
 
-        public void setClicked(boolean clicked) {
-            this.clicked = clicked;
-        }
-
-        public boolean isClicked() {
-            return this.clicked;
-        }
     }
 
     public class HabitHolder extends RecyclerView.ViewHolder {

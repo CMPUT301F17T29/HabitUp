@@ -13,20 +13,20 @@ import java.util.ArrayList;
 
 public class UserAccountList {
 
-    private ArrayList<UserAccount> userList;
+    private ArrayList<String> userList;
 
     /**
      * Constructor: create new ArrayList
      */
     public UserAccountList() {
-        userList = new ArrayList<UserAccount>();
+        userList = new ArrayList<>();
     }
 
     /**
      * Get the array list of user accounts
      * @return the user accounts list
      */
-    public ArrayList<UserAccount> getUserList() {
+    public ArrayList<String> getUserList() {
         return this.userList;
     }
 
@@ -43,7 +43,7 @@ public class UserAccountList {
      * @param userToAdd UserAccount
      * @return -1 if already in list, 0 if successfully added
      */
-    public int add(UserAccount userToAdd) {
+    public int add(String userToAdd) {
 
         if (this.contains(userToAdd)) {
             return -1;
@@ -58,7 +58,7 @@ public class UserAccountList {
      * @param userToRemove UserAccount to delete
      * @return -1 if user is not in the list, 0 if successfully removes
      */
-    public int delete(UserAccount userToRemove) {
+    public int delete(String userToRemove) {
 
         if (this.contains(userToRemove)) {
             userList.remove(userToRemove);
@@ -73,7 +73,7 @@ public class UserAccountList {
      * @param user UserAccount
      * @return True if contained; otherwise False
      */
-    public Boolean contains(UserAccount user) {
+    public Boolean contains(String user) {
         return userList.contains(user);
     }
 
