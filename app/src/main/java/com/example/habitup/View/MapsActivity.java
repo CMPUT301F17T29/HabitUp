@@ -206,6 +206,8 @@ public class MapsActivity extends BaseActivity
                 }
             }
         });
+
+        myCheckbox.setChecked(true);
     }
 
     private void updateMyMap(boolean visible) {
