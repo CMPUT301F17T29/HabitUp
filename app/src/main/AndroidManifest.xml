@@ -67,7 +67,8 @@
         <activity
             android:name=".View.MapsActivity"
             android:label="@string/title_activity_maps"
-            android:exported="true"></activity>
+            android:exported="true"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
 
     </application>
 
