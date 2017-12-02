@@ -111,17 +111,31 @@ public class MapsActivity extends AppCompatActivity
         }
 
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
+
         // Get friends
-        ArrayList<UserAccount> friendList = currentUser.getFriendsList().getUserList();
+        ArrayList<String> friendStringList = currentUser.getFriendsList().getUserList();
+        ArrayList<UserAccount> friendList = new ArrayList<>();
+        ElasticSearchController.GetUser getUser = new ElasticSearchController.GetUser();
 
-        for (UserAccount friend : friendList) {
-            UserAccount updatedFriend = HabitUpApplication.getUserAccount(friend.getUsername());
-
-            for (Habit habit: updatedFriend.getHabitList().getHabits()) {
-                HabitEvent recentEvent = updatedFriend.getEventList().getRecentEventFromHabit(habit.getHID());
-                friendsEvents.add(recentEvent);
+        for (String friend : friendStringList) {
+            getUser.execute(friend);
+            try {
+                friendList.add(getUser.get().get(0));
+            } catch (Exception e) {
+                Log.i("HabitUpDEBUG", "Maps: couldn't get friend " + friend);
             }
+        }
 
+        if (friendList.size() != 0) {
+            for (UserAccount friend : friendList) {
+                UserAccount updatedFriend = HabitUpApplication.getUserAccount(friend.getUsername());
+
+                for (Habit habit : updatedFriend.getHabitList().getHabits()) {
+                    HabitEvent recentEvent = updatedFriend.getEventList().getRecentEventFromHabit(habit.getHID());
+                    friendsEvents.add(recentEvent);
+                }
+
+            }
         }
     }
 
@@ -199,69 +213,72 @@ public class MapsActivity extends AppCompatActivity
 
     private void updateMyMap(boolean visible) {
 
-        for (HabitEvent mHabitEvent:myHabitEventList){
-            myLocation = mHabitEvent.getLocation();
-            if(myLocation != null){
-                myLatLng = new LatLng((myLocation.getLatitude()), myLocation.getLongitude());
-                myMarker=mGoogleMap.addMarker(new MarkerOptions()
-                        .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
-                        .position(myLatLng));
-                myMarker.setVisible(visible);
+        if (myHabitEventList != null && myHabitEventList.size() > 0) {
+            for (HabitEvent mHabitEvent : myHabitEventList) {
+                myLocation = mHabitEvent.getLocation();
+                if (myLocation != null) {
+                    myLatLng = new LatLng((myLocation.getLatitude()), myLocation.getLongitude());
+                    myMarker = mGoogleMap.addMarker(new MarkerOptions()
+                            .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
+                            .position(myLatLng));
+                    myMarker.setVisible(visible);
 
+                }
             }
-
         }
     }
-
+    
     private void updateFriendMap(boolean visible){
-        for (HabitEvent fHabitEvent:friendsEvents){
-            friendsLocation = fHabitEvent.getLocation();
-            if(friendsLocation!= null){
-                friLatLng = new LatLng((friendsLocation.getLatitude()), friendsLocation.getLongitude());
-                myMarker=mGoogleMap.addMarker(new MarkerOptions()
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_flag))
-                        .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
-                        .position(myLatLng));
-                myMarker.setVisible(visible);
+        if (friendsEvents != null && friendsEvents.size() > 0) {
+            for (HabitEvent fHabitEvent : friendsEvents) {
+                friendsLocation = fHabitEvent.getLocation();
+                if (friendsLocation != null) {
+                    friLatLng = new LatLng((friendsLocation.getLatitude()), friendsLocation.getLongitude());
+                    myMarker = mGoogleMap.addMarker(new MarkerOptions()
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_flag))
+                            .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
+                            .position(myLatLng));
+                    myMarker.setVisible(visible);
 
+                }
             }
         }
-
-
     }
 
     private void highlightMap(Location currentLocation, boolean myMarkerVisible, boolean friendMarkerVisable){
 
-        for (HabitEvent habitEvent:myHabitEventList){
-            myLocation = habitEvent.getLocation();
-            if(myLocation != null){
-                HmyLatLng = new LatLng( myLocation.getLatitude(), myLocation.getLongitude());
-                Float distance = currentLocation.distanceTo(myLocation);
-                if (distance < 5000 && myMarkerVisible){
-                    myMarker=mGoogleMap.addMarker(new MarkerOptions()
-                            .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
-                            .position(HmyLatLng));
-                    myMarker.setAlpha((float) 1);
+        if (myHabitEventList != null && myHabitEventList.size() > 0) {
+            for (HabitEvent habitEvent : myHabitEventList) {
+                myLocation = habitEvent.getLocation();
+                if (myLocation != null) {
+                    HmyLatLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+                    Float distance = currentLocation.distanceTo(myLocation);
+                    if (distance < 5000 && myMarkerVisible) {
+                        myMarker = mGoogleMap.addMarker(new MarkerOptions()
+                                .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
+                                .position(HmyLatLng));
+                        myMarker.setAlpha((float) 1);
+                    }
                 }
             }
         }
 
-        for (HabitEvent fHabitEvent:friendsEvents){
-            friendsLocation = fHabitEvent.getLocation();
-            if(friendsLocation!= null){
-                HfriLatLng = new LatLng((friendsLocation.getLatitude()),friendsLocation.getLongitude());
-                Float distance = currentLocation.distanceTo(friendsLocation);
-                if (distance < 5000 && friendMarkerVisable){
-                    myMarker=mGoogleMap.addMarker(new MarkerOptions()
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_flag))
-                            .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
-                            .position(HfriLatLng));
-                    myMarker.setAlpha((float) 1);
+        if (friendsEvents != null && friendsEvents.size() > 0) {
+            for (HabitEvent fHabitEvent : friendsEvents) {
+                friendsLocation = fHabitEvent.getLocation();
+                if (friendsLocation != null) {
+                    HfriLatLng = new LatLng((friendsLocation.getLatitude()), friendsLocation.getLongitude());
+                    Float distance = currentLocation.distanceTo(friendsLocation);
+                    if (distance < 5000 && friendMarkerVisable) {
+                        myMarker = mGoogleMap.addMarker(new MarkerOptions()
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_flag))
+                                .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
+                                .position(HfriLatLng));
+                        myMarker.setAlpha((float) 1);
+                    }
                 }
-
             }
         }
-
 
     }
 
