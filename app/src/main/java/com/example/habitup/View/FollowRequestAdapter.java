@@ -26,7 +26,7 @@ import java.util.ArrayList;
  */
 public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdapter.FollowRequestHolder>{
 
-    private ArrayList<UserAccount> afollowrequestList;
+    private ArrayList<String> afollowrequestList;
     private Context context;
 
     public static class FollowRequestHolder extends RecyclerView.ViewHolder {
@@ -67,7 +67,7 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
             // Check if user is following the requester already
             try {
                 UserAccountList friendList = HabitUpApplication.getCurrentUser().getFriendsList();
-                if (friendList.contains(friendRequest)) {
+                if (friendList.contains(friendRequest.getUsername())) {
                     sendButton.setVisibility(View.GONE);
                 }
             } catch (Exception e) {
@@ -76,7 +76,7 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
         }
     }
 
-    public FollowRequestAdapter(Context context, ArrayList<UserAccount> followrequestList){
+    public FollowRequestAdapter(Context context, ArrayList<String> followrequestList){
         this.afollowrequestList = followrequestList;
         this.context = context;
     }
@@ -90,7 +90,8 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
 
     @Override
     public void onBindViewHolder(FollowRequestHolder followrequestholder, int position) {
-        final UserAccount Follower = afollowrequestList.get(position);
+        String followerName = afollowrequestList.get(position);
+        final UserAccount Follower = HabitUpApplication.getUserAccount(followerName);
         followrequestholder.bindEvent(Follower);
 
         final UserAccount currentUser = HabitUpApplication.getCurrentUser();
@@ -142,10 +143,10 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
                     removeRequest(Follower);
 
                     String name = Follower.getRealname();
-                    if (currentUser.getFriendsList().contains(Follower)) {
+                    if (currentUser.getFriendsList().contains(Follower.getUsername())) {
                         // Check if already following
                         Toast.makeText(context, "You are already following " + name, Toast.LENGTH_LONG).show();
-                    } else if (Follower.getRequestList().contains(currentUser)) {
+                    } else if (Follower.getRequestList().contains(currentUser.getUsername())) {
                         // Check if already sent request
                         Toast.makeText(context, "You already sent a request to " + name, Toast.LENGTH_LONG).show();
                     } else {

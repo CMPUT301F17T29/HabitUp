@@ -1,6 +1,7 @@
 package com.example.habitup;
 
 import android.test.ActivityInstrumentationTestCase2;
+import android.widget.EditText;
 
 import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.FollowController;
@@ -9,6 +10,7 @@ import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.View.FindUserActivity;
 import com.example.habitup.View.FollowActivity;
+import com.example.habitup.View.LoginActivity;
 import com.example.habitup.View.MainActivity;
 import com.robotium.solo.Solo;
 
@@ -93,11 +95,15 @@ public class FindUserTest extends ActivityInstrumentationTestCase2 {
 
         solo.clickOnButton("Follow");
         assertTrue(solo.waitForText("A request was sent to andy"));
+        assertFalse(solo.searchButton("Follow", true));
 
         solo.clickOnImageButton(0);
         solo.clickOnText("Log Out");
+        solo.waitForActivity(LoginActivity.class);
+        solo.assertCurrentActivity("Wrong activity", LoginActivity.class);
 
-        solo.enterText(0, "andrew2");
+        EditText login = (EditText) solo.getView(R.id.login_edit);
+        solo.enterText(login, "andrew2");
         solo.clickOnButton("Login");
         solo.assertCurrentActivity("Wrong activity", MainActivity.class);
         solo.clickOnImageButton(0);
@@ -110,19 +116,7 @@ public class FindUserTest extends ActivityInstrumentationTestCase2 {
         solo.assertCurrentActivity("Wrong activity", FindUserActivity.class);
 
         solo.enterText(0, "anna2");
-        solo.clickOnButton("Follow");
-        assertTrue(solo.waitForText("You are already following annie"));
-    }
-
-    public void testDuplicateRequest() {
-        solo.assertCurrentActivity("Wrong activity", FindUserActivity.class);
-        solo.enterText(0, "andrew2");
-
-        solo.clickOnButton("Follow");
-        assertTrue(solo.waitForText("A request was sent to andy"));
-
-        solo.clickOnButton("Follow");
-        assertTrue(solo.waitForText("You already sent a request to andy"));
+        assertFalse(solo.searchButton("Follow", true));
     }
 
     public void testFollowCurrentUser() {
