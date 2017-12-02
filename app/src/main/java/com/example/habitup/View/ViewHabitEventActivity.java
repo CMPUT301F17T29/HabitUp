@@ -168,7 +168,7 @@ public class ViewHabitEventActivity extends BaseActivity {
                 goToEditActivity(EDIT_EVENT);
                 return true;
             case 2:
-                deleteEvent();
+                deleteEvent(HabitUpApplication.getCurrentUser());
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -224,14 +224,16 @@ public class ViewHabitEventActivity extends BaseActivity {
         }
     }
 
-    private void deleteEvent() {
+    private void deleteEvent(final UserAccount currentUser) {
         AlertDialog.Builder alert = new AlertDialog.Builder(ViewHabitEventActivity.this);
         alert.setTitle("Delete");
         alert.setMessage("Are you sure you want to delete this habit event?");
         alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                HabitUpController.deleteHabitEvent(eventAdapter.getItem(position),getApplicationContext()); // ES delete
+                HabitEvent event = eventAdapter.getItem(position);
+                String habitName = currentUser.getHabitList().getHabitByHID(event.getHID()).getHabitName();
+                HabitUpController.deleteHabitEvent(event, habitName, getApplicationContext()); // ES delete
                 eventAdapter.removeItem(position); // app view delete
                 eventListView.setAdapter(eventAdapter);
                 eventAdapter.notifyDataSetChanged();

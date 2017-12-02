@@ -11,9 +11,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.habitup.Controller.ElasticSearchController;
+import com.example.habitup.Model.HabitEventCommand;
 import com.example.habitup.Controller.HabitUpApplication;
+import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
+
+import java.util.LinkedList;
 
 /**
  * This is the the start up launch activity where the user can login into the HabitUp
@@ -71,6 +75,17 @@ public class LoginActivity extends AppCompatActivity {
                     if (loggedInUser != null) {
 
                         HabitUpApplication.setCurrentUser(loggedInUser);
+
+                        if (HabitUpApplication.loadUserData(getApplicationContext())){
+
+                            LinkedList<HabitEventCommand> oldQueue = HabitUpApplication.getOldQueue();
+                            int oldUID = HabitUpApplication.getOldUID();
+
+                            if(!oldQueue.isEmpty() &&  loggedInUser.getUID() == oldUID){
+                                HabitUpController.executeOldCommands(oldQueue,getApplicationContext());
+
+                            }
+                        }
 
                         Toast.makeText(getApplicationContext(), logInName + " is now logged in.",
                                 Toast.LENGTH_SHORT).show();

@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.habitup.Controller.HabitUpApplication;
+import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
@@ -90,6 +91,7 @@ public class BaseActivity extends AppCompatActivity {
                         drawerLayout.closeDrawers();
                         break;
                     case R.id.logout:
+                        logoutCleanUp();
                         logout();
                         break;
                 }
@@ -138,6 +140,17 @@ public class BaseActivity extends AppCompatActivity {
         if (profilePic != null) {
             ImageView photoView = header.findViewById(R.id.drawer_pic);
             photoView.setImageBitmap(profilePic);
+        }
+    }
+
+    private void logoutCleanUp(){
+        if(!HabitUpApplication.getCurrentUser().getCommandQueue().isEmpty()){
+            if(HabitUpApplication.isOnline(getApplicationContext())){
+                HabitUpController.executeCommands(getApplicationContext());
+            }
+            else{
+                HabitUpApplication.saveUserData(getApplicationContext());
+            }
         }
     }
 

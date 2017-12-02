@@ -2,10 +2,10 @@ package com.example.habitup.Controller;
 
 
 import android.content.Context;
-import android.util.Log;
 
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
+import com.example.habitup.Model.HabitEventCommand;
 import com.example.habitup.Model.HabitEventList;
 import com.example.habitup.Model.UserAccount;
 
@@ -37,7 +37,6 @@ public class HabitUpController {
         ArrayList<Habit> allHabits = currentUser.getHabitList().getHabits();
 
         for (Habit habit : allHabits) {
-//            Log.i("HabitUpDEBUG", "getTodaysHabits: " + habit.getHabitName());
             if (habit.isTodayHabit()) { habits.add(habit); }
         }
 
@@ -132,63 +131,6 @@ public class HabitUpController {
         return 0;
     }
 
-    /**
-     * Add a new HabitEvent, as long as no HabitEvent from that Habit already exists for the day it
-     * is being added for.  XP and associated Attribute are incremented if the HabitEvent is valid,
-     * and if user's next XP target is met, their level is incremented and their target XP is also
-     * increased.
-     *
-     * @param event HabitEvent to add
-     * @return int successCode (0 for success)
-     * @throws IllegalArgumentException if HabitEvent already exists for Habit on that day
-     */
-    /*static public int addHabitEvent(HabitEvent event, Habit habit) throws IllegalArgumentException {
-
-        // Check if HabitEvent is completed before Habit start date
-        try {
-            if (habitEventBeforeHabitStartDate(event, habit)) {
-                throw new IllegalArgumentException("Error: Habit cannot be completed before its start date.");
-            }
-        } catch (Exception e) {
-            // Pass any exception from habitEventBeforeHabitStartDate to caller
-            throw new IllegalArgumentException(e.getMessage());
-        }
-
-        // Check if HabitEvent for the parent Habit already exists on that day
-        if (!habitEventAlreadyExists(event, habit)) {
-
-            // Add the HabitEvent object to ES
-            ElasticSearchController.AddHabitEventsTask addHabitEvent = new ElasticSearchController.AddHabitEventsTask();
-            addHabitEvent.execute(event);
-            UserAccount currentUser = HabitUpApplication.getCurrentUser();
-            currentUser.getEventList().add(event);
-
-            if (currentUser.getXP() + 1 >= currentUser.getXPtoNext()) {
-                currentUser.incrementLevel();
-                currentUser.setXPtoNext();
-            }
-
-            currentUser.increaseXP(HabitUpApplication.XP_PER_HABITEVENT);
-
-            // Setup for attribute increment: need the Habit's Attribute type
-            String attrName = habit.getHabitAttribute();
-
-            // Increment User Attribute
-            HabitUpApplication.updateCurrentAttrs();
-            HabitUpApplication.getCurrentAttrs().increaseValueBy(attrName, HabitUpApplication.ATTR_INCREMENT_PER_HABITEVENT);
-
-            ElasticSearchController.AddAttrsTask writeAttrs = new ElasticSearchController.AddAttrsTask();
-            writeAttrs.execute(HabitUpApplication.getCurrentAttrs());
-
-            updateUser();
-
-            return 0;
-
-        } else {
-            throw new IllegalArgumentException("Error: this Habit has already been completed on this date.");
-        }
-    }*/
-
     static public int addHabitEvent(HabitEvent event, Habit habit, Context ctx){
         addHabitEventLocal(event, habit);
         executeCommands(ctx);
@@ -207,10 +149,11 @@ public class HabitUpController {
         }
 
         if(!habitEventAlreadyExists(event, habit)){
+
             UserAccount currentUser = HabitUpApplication.getCurrentUser();
             currentUser.getEventList().add(event);
-            Log.i("Debug", ""+currentUser.getEventList().size());
-            HabitEventCommand cmd = new HabitEventCommand("add", event);
+
+            HabitEventCommand cmd = new HabitEventCommand("add", event, habit.getHabitName());
             currentUser.addCommand(cmd);
         }else {
             throw new IllegalArgumentException("Error: this Habit has already been completed on this date.");
@@ -220,7 +163,6 @@ public class HabitUpController {
     }
 
     static public int addHabitEventOnline(HabitEvent event, Habit habit, Context ctx) throws IllegalArgumentException {
-        Log.i("Debug", "addHabit");
 
         if (HabitUpApplication.isOnline(ctx)) {
             UserAccount currentUser = HabitUpApplication.getCurrentUser();
@@ -253,8 +195,23 @@ public class HabitUpController {
         return -1;
     }
 
+    static public int editHabitEvent(LocalDate beforeDate, HabitEvent event, HabitEvent oldHabit, Habit habit, Context ctx) throws IllegalArgumentException{
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+
+        if(editCompleteDateCheck(beforeDate, event, habit)) {
+            deleteHabitEvent(event, habit.getHabitName(), ctx);
+            addHabitEvent(event, habit, ctx);
+
+                /*ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
+                updateUser.execute(currentUser);*/
+
+        }else throw new IllegalArgumentException("Error: You cannot edit this habit to that day");
+
+
+        return 0;
+    }
+
     static public boolean levelUp(Context ctx) {
-        Log.i("AddDebug", "levelUp called");
         // Increment User XP and write back
         boolean levelledUp = false;
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
@@ -271,64 +228,12 @@ public class HabitUpController {
         return levelledUp;
     }
 
-    /**
-     * Edit an existing HabitEvent - in case the date was edited, checks to make sure no HabitEvent
-     * belonging to the same Habit exists for the set date, unless it is the same HabitEvent that is
-     * being updated here.
-     * @param event HabitEvent
-     * @return int successCode (0 for success)
-     * @throws IllegalArgumentException if a different HabitEvent exists for the same Habit on that date
-     */
-    static public int editHabitEvent(HabitEvent event, Habit habit) throws IllegalArgumentException {
-
-        // Check if HabitEvent is completed before Habit start date
-        try {
-            if (habitEventBeforeHabitStartDate(event, habit)) {
-                throw new IllegalArgumentException("Error: Habit cannot be completed before its start date.");
-            }
-        } catch (Exception e) {
-            // Pass any exception from habitEventBeforeHabitStartDate to caller
-            throw new IllegalArgumentException(e.getMessage());
-        }
-
-        // Check if HabitEvent for the parent Habit already exists on that day
-        if (!habitEventAlreadyExists(event, habit)) {
-            ElasticSearchController.AddHabitEventsTask addHabitEvent = new ElasticSearchController.AddHabitEventsTask();
-            addHabitEvent.execute(event);
-            event.setHabitStrings(habit);
-
-            updateUser();
-
-            return 0;
-        } else {
-            throw new IllegalArgumentException("Error: this Habit has already been completed on this date.");
-        }
-    }
-
-    /**
-     * Delete a HabitEvent.
-     * @param event HabitEvent to delete
-     * @return successCode (0 for success)
-     */
-   /* static public int deleteHabitEvent(HabitEvent event) {
-        UserAccount currentUser = HabitUpApplication.getCurrentUser();
-        currentUser.getEventList().delete(event);
-
-//        Log.d("EVENT DELETE:", "Deleting HabitEvent belonging to HID #" + String.valueOf(event.getHID()));
-        ElasticSearchController.DeleteHabitEventTask delHabitEvent = new ElasticSearchController.DeleteHabitEventTask();
-        delHabitEvent.execute(event.getEID());
-
-        updateUser();
-
-        return 0;
-    }*/
-
-    static public int deleteHabitEventLocal(HabitEvent event) {
+    static public int deleteHabitEventLocal(HabitEvent event, String habitName) {
 
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
         currentUser.getEventList().delete(event);
 
-        HabitEventCommand cmd = new HabitEventCommand("delete", event);
+        HabitEventCommand cmd = new HabitEventCommand("delete", event, habitName);
         currentUser.addCommand(cmd);
 
         return 0;
@@ -350,8 +255,8 @@ public class HabitUpController {
 
     }
 
-    static public int deleteHabitEvent(HabitEvent event, Context ctx) {
-        deleteHabitEventLocal(event);
+    static public int deleteHabitEvent(HabitEvent event, String habitName, Context ctx) {
+        deleteHabitEventLocal(event, habitName);
         if (HabitUpApplication.isOnline(ctx)){
             executeCommands(ctx);
         }
@@ -381,7 +286,7 @@ public class HabitUpController {
 
         boolean alreadyExists = false;
         for (HabitEvent ev : matchedEvents) {
-            if (ev.getCompletedate().equals(event.getCompletedate()) && !ev.getEID().equals(event.getEID())) {
+            if ((ev.getCompletedate().equals(event.getCompletedate())) && (ev.getHID()==event.getHID())) {
                 alreadyExists = true;
             }
         }
@@ -401,13 +306,9 @@ public class HabitUpController {
 
     static public boolean editCompleteDateCheck(LocalDate before, HabitEvent event, Habit habit){
         boolean date = false;
-        //Log.i("Edit Debug", "Before Complete date is: "+before);
-        //Log.i("Edit Debug", "Event Complete date is: "+event.getCompletedate());
         if (before.equals(event.getCompletedate())){
-            //Log.i("Edit Debug", "if (before == event.getCompletedate()) passed");
             date = true;
         }else if(!habitEventAlreadyExists(event, habit)){
-            //Log.i("Edit Debug", "Event Complete date is: "+event.getCompletedate());
             date = true;
         }
         return date;
@@ -419,8 +320,6 @@ public class HabitUpController {
      * @return True if the Habit has a HabitEvent already for the current day
      */
     static public boolean habitDoneToday(Habit h) {
-
-//        Log.i("HabitUpDEBUG", "HUCtl/habitDoneToday - in method");
 
         HabitEventList eventList = HabitUpApplication.getCurrentUser().getEventList();
         HabitEvent recentEvent = eventList.getRecentEventFromHabit(h.getHID());
@@ -436,10 +335,31 @@ public class HabitUpController {
      * Updates the current user's model in ElasticSearch
      */
     static public void updateUser() {
-        Log.i("Debug", "UpdateUser called");
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
         ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
         updateUser.execute(currentUser);
+    }
+
+    static public int executeOldCommands(LinkedList<HabitEventCommand> oldQueue,Context ctx){
+
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+
+        HabitEventCommand hec = oldQueue.poll();
+        while (hec!=null) {
+
+            Habit habit = currentUser.getHabitList().getHabit(hec.getHabitName());
+
+            if (hec.getType().equals("add")) {
+                addHabitEvent(hec.getEvent(), habit, ctx);
+            }
+            else if (hec.getType().equals("delete")) {
+                deleteHabitEvent(hec.getEvent(), habit.getHabitName(), ctx);
+            }
+
+            hec = oldQueue.poll();
+        }
+        executeCommands(ctx);
+        return 0;
     }
 
     static public int executeCommands(Context ctx){
@@ -447,22 +367,13 @@ public class HabitUpController {
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
         LinkedList<HabitEventCommand> cQueue = currentUser.getCommandQueue();
 
-        Log.i("Debug", "length of queue is: "+cQueue.size());
         if(HabitUpApplication.isOnline(ctx)){
             HabitEventCommand hec = cQueue.poll();
             while (hec!=null) {
-                Log.i("Debug", "Habit events date is: "+hec.getEvent().getCompletedate());
                 if (hec.getType().equals("add")) {
                     HabitEvent habitEvent = hec.getEvent();
                     Habit habit = currentUser.getHabitList().getHabit(habitEvent.getHabitName());
                     addHabitEventOnline(habitEvent, habit, ctx);
-                    hec = cQueue.poll();
-                }
-
-                else if (hec.getType().equals("edit")) {
-                    HabitEvent habitEvent = hec.getEvent();
-                    Habit habit = currentUser.getHabitList().getHabit(habitEvent.getHabitName());
-                    //editHabitEvent()
                     hec = cQueue.poll();
                 }
 
@@ -474,8 +385,6 @@ public class HabitUpController {
                 }
             }
         }
-
-        Log.i("Debug", "length of queue is: "+cQueue.size());
 
         return 0;
     }

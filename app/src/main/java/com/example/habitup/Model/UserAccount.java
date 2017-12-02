@@ -6,10 +6,10 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.example.habitup.Controller.ElasticSearchController;
-import com.example.habitup.Controller.HabitEventCommand;
 import com.example.habitup.Controller.HabitUpApplication;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
 import java.util.LinkedList;
 
 /**
@@ -23,7 +23,7 @@ import java.util.LinkedList;
  *
  * Javadoc last updated 2017-11-13 by @gojeffcho.
  */
-public class UserAccount {
+public class UserAccount implements Serializable {
 
     // Members
     private int uid;
@@ -64,6 +64,7 @@ public class UserAccount {
         this.habitList = new HabitList();
         this.friendsList = new UserAccountList();
         this.requestList = new UserAccountList();
+        this.cmdQueue = new LinkedList<HabitEventCommand>();
     }
 
     /**
@@ -316,6 +317,8 @@ public class UserAccount {
 
         return this.getUID() == other.getUID();
     }
+
+    public void setCommandQueue(LinkedList<HabitEventCommand> q){this.cmdQueue = q;}
 
     public LinkedList<HabitEventCommand> getCommandQueue() { return this.cmdQueue; }
 

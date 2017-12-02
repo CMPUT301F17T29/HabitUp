@@ -5,11 +5,12 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -35,7 +36,6 @@ import java.text.DateFormatSymbols;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * This is the activity for editing a habit event. A user can change the associated habit type.
@@ -48,8 +48,8 @@ import java.util.Collections;
 public class EditHabitEventActivity extends AppCompatActivity {
 
     private int action;
+    private HabitEvent oldEvent;
     private HabitEvent event;
-
     // Event completion date
     private int year_x, month_x, day_x;
     private static final int DIALOG_ID = 1;
@@ -103,7 +103,8 @@ public class EditHabitEventActivity extends AppCompatActivity {
         final UserAccount eventUser = user;
 
         ArrayList<HabitEvent> eventList = eventUser.getEventList().getEvents();
-        event = eventList.get(position);
+        oldEvent = eventList.get(position);
+        event = new HabitEvent(oldEvent);
 
         // Get the event's date
         year_x = event.getCompletedate().getYear();
@@ -254,9 +255,10 @@ public class EditHabitEventActivity extends AppCompatActivity {
                 if (eventOK) {
                     // Pass to the controller
                     try {
-                        HabitUpController.editHabitEvent(event, habit);
+                        HabitUpController.editHabitEvent(originalDate, event, oldEvent, habit, getApplicationContext());
                         finish();
                     } catch (Exception e) {
+                        Log.i("EditDenug", "toast1");
                         Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
