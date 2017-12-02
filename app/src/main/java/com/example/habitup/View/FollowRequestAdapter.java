@@ -26,7 +26,7 @@ import java.util.ArrayList;
  */
 public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdapter.FollowRequestHolder>{
 
-    private ArrayList<String> afollowrequestList;
+    private ArrayList<Integer> afollowrequestList;
     private Context context;
 
     public static class FollowRequestHolder extends RecyclerView.ViewHolder {
@@ -67,7 +67,7 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
             // Check if user is following the requester already
             try {
                 UserAccountList friendList = HabitUpApplication.getCurrentUser().getFriendsList();
-                if (friendList.contains(friendRequest.getUsername())) {
+                if (friendList.contains(friendRequest.getUID())) {
                     sendButton.setVisibility(View.GONE);
                 }
             } catch (Exception e) {
@@ -76,7 +76,7 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
         }
     }
 
-    public FollowRequestAdapter(Context context, ArrayList<String> followrequestList){
+    public FollowRequestAdapter(Context context, ArrayList<Integer> followrequestList){
         this.afollowrequestList = followrequestList;
         this.context = context;
     }
@@ -90,11 +90,14 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
 
     @Override
     public void onBindViewHolder(FollowRequestHolder followrequestholder, int position) {
-        String followerName = afollowrequestList.get(position);
-        final UserAccount Follower = HabitUpApplication.getUserAccount(followerName);
+        Integer followerUID = afollowrequestList.get(position);
+        final UserAccount Follower = HabitUpApplication.getUserAccountByUID(followerUID);
         followrequestholder.bindEvent(Follower);
 
         final UserAccount currentUser = HabitUpApplication.getCurrentUser();
+
+        Log.i("HabitUpDEBUG", "FolReq currentUser: " + currentUser.getUsername());
+        Log.i("HabitUpDEBUG", "FolReq follower: " + Follower.getUsername());
 
         followrequestholder.ignoreButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,14 +146,15 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
                     removeRequest(Follower);
 
                     String name = Follower.getRealname();
-                    if (currentUser.getFriendsList().contains(Follower.getUsername())) {
+                    if (currentUser.getFriendsList().contains(Follower.getUID())) {
                         // Check if already following
                         Toast.makeText(context, "You are already following " + name, Toast.LENGTH_LONG).show();
-                    } else if (Follower.getRequestList().contains(currentUser.getUsername())) {
+                    } else if (Follower.getRequestList().contains(currentUser.getUID())) {
                         // Check if already sent request
                         Toast.makeText(context, "You already sent a request to " + name, Toast.LENGTH_LONG).show();
                     } else {
                         // Send friend request to user
+                        Log.i("HabitUpDEBUG", "FolReq: " + Follower.getUsername() + " from " + currentUser.getUsername());
                         FollowController.addFriendRequest(Follower, currentUser);
                         Toast.makeText(context, "A request was sent to " + name, Toast.LENGTH_LONG).show();
                     }

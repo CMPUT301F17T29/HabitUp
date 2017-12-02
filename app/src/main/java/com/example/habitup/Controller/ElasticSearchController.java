@@ -90,24 +90,24 @@ public class ElasticSearchController {
             // ... : arbitrary number of arguments in Java
             verifySettings();
 
-            UserAccount user = users[0];
+            for (UserAccount user : users) {
 
-            int jestId = user.getUID();
+                Index index = new Index.Builder(user).index(db).type(userType).id(Integer.toString(user.getUID())).build();
 
-            Index index = new Index.Builder(user).index(db).type(userType).id(Integer.toString(jestId)).build();
+                try {
+                    DocumentResult result = client.execute(index);
 
-            try {
-                // where is client?
-                DocumentResult result = client.execute(index);
-                if (result.isSucceeded()) {
-                    Log.i("Success","User successfully updated");
-                } else {
-                    Log.e("Error", "Elasticsearch was not able to update");
+                    if (result.isSucceeded()) {
+                        Log.i("HabitUpDEBUG", user.getUsername() + " successfully updated");
+                    } else {
+                        Log.e("HabitUpDEBUG", user.getUsername() + " couldn't be updated");
+                        Log.e("HabitUpDEBUG", result.getErrorMessage());
+                    }
+
+                } catch (Exception e) {
+                    Log.i("Error", "The application failed to build and send the users");
                 }
-            } catch (Exception e) {
-                Log.i("Error", "The application failed to build and send the users");
             }
-
             return null;
         }
     }
@@ -135,7 +135,7 @@ public class ElasticSearchController {
                 UserQuery = "{\"query\": {\"match\" : { \"username\" : \"" + search_parameters[0] + "\" }}}";
             }
 
-            //Log.i("Debug", "username to search for is: "+ search_parameters[0]);
+            Log.i("HabitUpDEBUG", "GetUser: username: "+ search_parameters[0]);
 
             Search search = new Search.Builder(UserQuery)
                     .addIndex(db)
@@ -147,13 +147,57 @@ public class ElasticSearchController {
                 SearchResult result = client.execute(search);
                 if (result.isSucceeded()){
 
-                    //Log.i("DeBug", "Succeeded in finding a user");
+                    Log.i("HabitUpDEBUG", "GetUser: username match found");
 
                     List<UserAccount> foundUsers = result.getSourceAsObjectList(UserAccount.class);
                     accounts.addAll(foundUsers);
                 }
                 else{
-                    Log.i("Error", "The search query failed to find any tweets that matched");
+                    Log.i("Error", "The search query failed to find any users that matched");
+                }
+            }
+            catch (Exception e) {
+                Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
+            }
+
+            return accounts;
+        }
+    }
+
+    /**
+     * Get a UserAccount object corresponding to an Integer uid
+     * .execute() with an int (uid)
+     * .get() -> ArrayList<UserAccount>
+     */
+    public static class GetUserByUID extends AsyncTask<Integer, Void, ArrayList<UserAccount>> {
+        @Override
+        protected ArrayList<UserAccount> doInBackground(Integer... search_parameters) {
+            verifySettings();
+
+            ArrayList<UserAccount> accounts = new ArrayList<>();
+            String UserQuery;
+
+                UserQuery = "{\"query\": {\"match\" : { \"uid\" : \"" + search_parameters[0] + "\" }}}";
+
+            Log.i("HabitUpDEBUG", "GetUserByUID: uid: "+ search_parameters[0]);
+
+            Search search = new Search.Builder(UserQuery)
+                    .addIndex(db)
+                    .addType(userType)
+                    .build();
+
+            try {
+                // Send request to the server to get the user
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()){
+
+                    Log.i("HabitUpDEBUG", "GetUserByUID: user match found");
+
+                    List<UserAccount> foundUsers = result.getSourceAsObjectList(UserAccount.class);
+                    accounts.addAll(foundUsers);
+                }
+                else{
+                    Log.i("Error", "The search query failed to find any users that matched");
                 }
             }
             catch (Exception e) {

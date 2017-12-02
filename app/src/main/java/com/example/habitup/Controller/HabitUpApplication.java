@@ -164,6 +164,28 @@ public class HabitUpApplication {
     }
 
     /**
+     * Look up a UserAccount by UID.
+     * @param uid int UID to search for
+     * @return UserAccount of matched username
+     */
+    static public UserAccount getUserAccountByUID(Integer uid) {
+
+        // ElasticSearch for username
+        ElasticSearchController.GetUserByUID getUser = new ElasticSearchController.GetUserByUID();
+        getUser.execute(uid);
+        UserAccount user;
+
+        try {
+            user = getUser.get().get(0);
+        } catch (Exception e) {
+            Log.i("HabitUpDEBUG", "HUApp/getUserAccount - failed");
+            return null;
+        }
+
+        return user;
+    }
+
+    /**
      * check whether Internet is connected
      * Taken from: https://stackoverflow.com/questions/1560788/how-to-check-internet-access-on-android-inetaddress-never-times-out
      * 2017-11-11
@@ -183,7 +205,7 @@ public class HabitUpApplication {
             ElasticSearchController.UpdateUsersTask updateUser = new ElasticSearchController.UpdateUsersTask();
             updateUser.execute(user);
         } catch (Exception e) {
-            Log.i("Error:", e.getMessage());
+            Log.i("HabitUpDeBUG:", "updateUser: " + e.getMessage());
         }
     }
 

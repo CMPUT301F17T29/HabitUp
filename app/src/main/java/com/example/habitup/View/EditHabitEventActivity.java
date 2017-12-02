@@ -104,8 +104,8 @@ public class EditHabitEventActivity extends AppCompatActivity {
         int uid = intent.getExtras().getInt("HABIT_EVENT_UID");
         if (user.getUID() != uid) {
             int friendIndex = intent.getExtras().getInt("FRIEND_INDEX");
-            String friendName = user.getFriendsList().getUserList().get(friendIndex);
-            user = HabitUpApplication.getUserAccount(friendName);
+            Integer friendUID = user.getFriendsList().getUserList().get(friendIndex);
+            user = HabitUpApplication.getUserAccountByUID(friendUID);
         }
         final UserAccount eventUser = user;
 

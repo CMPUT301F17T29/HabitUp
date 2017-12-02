@@ -40,12 +40,12 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private int lastPos = -1;
 
-    public FriendsListAdapter(Context context, ArrayList<String> friends) {
+    public FriendsListAdapter(Context context, ArrayList<Integer> friends) {
         this.context = context;
 
         this.data = new ArrayList<>();
         for (int i = 0; i < friends.size(); i++) {
-            UserAccount friend = HabitUpApplication.getUserAccount(friends.get(i));
+            UserAccount friend = HabitUpApplication.getUserAccountByUID(friends.get(i));
 
             Item friendItem = new Item(HEADER, friend, i);
             data.add(friendItem);

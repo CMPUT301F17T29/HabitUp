@@ -62,6 +62,8 @@ public class UserAccount {
         this.habitList = new HabitList();
         this.friendsList = new UserAccountList();
         this.requestList = new UserAccountList();
+        friendsList.add(0);
+        requestList.add(0);
     }
 
     /**

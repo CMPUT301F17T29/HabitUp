@@ -113,11 +113,11 @@ public class MapsActivity extends AppCompatActivity
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
 
         // Get friends
-        ArrayList<String> friendStringList = currentUser.getFriendsList().getUserList();
+        ArrayList<Integer> friendStringList = currentUser.getFriendsList().getUserList();
         ArrayList<UserAccount> friendList = new ArrayList<>();
-        ElasticSearchController.GetUser getUser = new ElasticSearchController.GetUser();
+        ElasticSearchController.GetUserByUID getUser = new ElasticSearchController.GetUserByUID();
 
-        for (String friend : friendStringList) {
+        for (Integer friend : friendStringList) {
             getUser.execute(friend);
             try {
                 friendList.add(getUser.get().get(0));
@@ -227,7 +227,7 @@ public class MapsActivity extends AppCompatActivity
             }
         }
     }
-    
+
     private void updateFriendMap(boolean visible){
         if (friendsEvents != null && friendsEvents.size() > 0) {
             for (HabitEvent fHabitEvent : friendsEvents) {

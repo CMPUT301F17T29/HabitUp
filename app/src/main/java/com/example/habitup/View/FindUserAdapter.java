@@ -59,7 +59,7 @@ public class FindUserAdapter extends RecyclerView.Adapter<FindUserAdapter.Search
 
             try {
                 UserAccountList requestList = result.getRequestList();
-                if (requestList.contains(HabitUpApplication.getCurrentUser().getUsername())) {
+                if (requestList.contains(HabitUpApplication.getCurrentUser().getUID())) {
                     disableButton();
                 }
             } catch (Exception e) {
@@ -68,7 +68,7 @@ public class FindUserAdapter extends RecyclerView.Adapter<FindUserAdapter.Search
 
             try {
                 UserAccountList friendList = HabitUpApplication.getCurrentUser().getFriendsList();
-                if (friendList.contains(result.getUsername())) {
+                if (friendList.contains(result.getUID())) {
                     disableButton();
                 }
             } catch (Exception e) {
@@ -108,10 +108,10 @@ public class FindUserAdapter extends RecyclerView.Adapter<FindUserAdapter.Search
                 if (currentUser.getUID() == user.getUID()) {
                     // Check if requesting to follow the current user
                     Toast.makeText(context, "You cannot follow yourself", Toast.LENGTH_LONG).show();
-                } else if (currentUser.getFriendsList().contains(user.getUsername())) {
+                } else if (currentUser.getFriendsList().contains(user.getUID())) {
                     // Check if already following
                     Toast.makeText(context, "You are already following " + name, Toast.LENGTH_LONG).show();
-                } else if (user.getRequestList().contains(currentUser.getUsername())) {
+                } else if (user.getRequestList().contains(currentUser.getUID())) {
                     // Check if already sent request
                     Toast.makeText(context, "You already sent a request to " + name, Toast.LENGTH_LONG).show();
                 } else {

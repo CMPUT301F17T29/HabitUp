@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
  */
 public class ViewFriendsActivity extends BaseActivity {
 
-    private ArrayList<String> friends;
+    private ArrayList<Integer> friends;
     private RecyclerView friendsListView;
     private FriendsListAdapter friendsAdapter;
 
@@ -41,8 +42,9 @@ public class ViewFriendsActivity extends BaseActivity {
         friendsListView.addItemDecoration(itemDecoration);
 
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
-        friends = currentUser.getFriendsList().getUserList();
+        Log.i("HabitUpDEBUG", "Current User: " + currentUser.getUsername());
 
+        friends = currentUser.getFriendsList().getUserList();
         friendsAdapter = new FriendsListAdapter(this, friends);
         friendsListView.setAdapter(friendsAdapter);
 

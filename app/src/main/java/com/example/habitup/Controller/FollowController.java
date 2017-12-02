@@ -1,5 +1,7 @@
 package com.example.habitup.Controller;
 
+import android.util.Log;
+
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.Model.UserAccountList;
 
@@ -17,7 +19,7 @@ public class FollowController {
     static public int removeFriendRequest(UserAccount followee, UserAccount follower) throws IllegalArgumentException {
         UserAccountList requestList = followee.getRequestList();
 
-        if (requestList.delete(follower.getUsername()) == 0) {
+        if (requestList.delete(follower.getUID()) == 0) {
             HabitUpApplication.updateUser(followee);
             return 0;
         } else {
@@ -33,10 +35,13 @@ public class FollowController {
      * @return 1 if request successfully added
      */
     static public int addFriendRequest(UserAccount followee, UserAccount follower) throws IllegalArgumentException {
+
         UserAccountList requestList = followee.getRequestList();
 
-        if (requestList.add(follower.getUsername()) == 0) {
+        if (requestList.add(follower.getUID()) == 0) {
+            Log.i("HabitUpDEBUG", "FolCtl - Request OK to" + follower.getUsername());
             HabitUpApplication.updateUser(followee);
+            Log.i("HabitUpDEBUG", "FolCtl - followee requestlist now: " + followee.getRequestList().getUserList());
             return 0;
         } else {
             throw new IllegalArgumentException("Error: Failed to add friend request.");
@@ -52,7 +57,7 @@ public class FollowController {
     static public int addFriend(UserAccount followee, UserAccount follower) throws IllegalArgumentException {
         UserAccountList friendList = follower.getFriendsList();
 
-        if (friendList.add(followee.getUsername()) == 0) {
+        if (friendList.add(followee.getUID()) == 0) {
             HabitUpApplication.updateUser(follower);
             return 0;
         } else {
@@ -70,7 +75,7 @@ public class FollowController {
     static public int removeFriend(UserAccount user, UserAccount friend) throws IllegalArgumentException {
         UserAccountList friendList = user.getFriendsList();
 
-        if (friendList.delete(friend.getUsername()) == 0) {
+        if (friendList.delete(friend.getUID()) == 0) {
             HabitUpApplication.updateUser(user);
             return 0;
         } else {

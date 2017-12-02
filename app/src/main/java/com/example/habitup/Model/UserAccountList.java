@@ -13,20 +13,22 @@ import java.util.ArrayList;
 
 public class UserAccountList {
 
-    private ArrayList<String> userList;
+    private ArrayList<Integer> userList;
 
     /**
      * Constructor: create new ArrayList
      */
     public UserAccountList() {
+
         userList = new ArrayList<>();
+        userList.add(0);
     }
 
     /**
      * Get the array list of user accounts
      * @return the user accounts list
      */
-    public ArrayList<String> getUserList() {
+    public ArrayList<Integer> getUserList() {
         return this.userList;
     }
 
@@ -40,28 +42,28 @@ public class UserAccountList {
 
     /**
      * Add a UserAccount to the list
-     * @param userToAdd UserAccount username
+     * @param uidToAdd UserAccount username
      * @return -1 if already in list, 0 if successfully added
      */
-    public int add(String userToAdd) {
+    public int add(Integer uidToAdd) {
 
-        if (this.contains(userToAdd)) {
+        if (this.contains(uidToAdd)) {
             return -1;
         } else {
-            userList.add(userToAdd);
+            userList.add(uidToAdd);
             return 0;
         }
     }
 
     /**
      * Removes a UserAccount from the list
-     * @param userToRemove Username of UserAccount to delete
+     * @param uidToRemove Username of UserAccount to delete
      * @return -1 if user is not in the list, 0 if successfully removes
      */
-    public int delete(String userToRemove) {
+    public int delete(Integer uidToRemove) {
 
-        if (this.contains(userToRemove)) {
-            userList.remove(userToRemove);
+        if (this.contains(uidToRemove)) {
+            userList.remove(uidToRemove);
             return 0;
         } else {
             return -1;
@@ -73,7 +75,7 @@ public class UserAccountList {
      * @param user UserAccount username
      * @return True if contained; otherwise False
      */
-    public Boolean contains(String user) {
+    public Boolean contains(Integer user) {
         return userList.contains(user);
     }
 
