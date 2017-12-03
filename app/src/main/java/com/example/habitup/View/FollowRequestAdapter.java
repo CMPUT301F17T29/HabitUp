@@ -168,7 +168,7 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
     }
 
     private void removeRequest(UserAccount follower) {
-        afollowrequestList.remove(follower);
+        afollowrequestList.remove(follower.getUsername());
         notifyDataSetChanged();
         ((FollowActivity) context).updateTotal();
     }
