@@ -51,6 +51,7 @@ import java.util.HashMap;
  * The Map activity is used for viewing the participant current location,
  * view habit events that have location and view other participant habit event
  * with location that is 5 km near me.
+ * 
  * @author Shuyang Li
  */
 
