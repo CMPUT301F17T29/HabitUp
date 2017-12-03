@@ -57,10 +57,13 @@ public class FindUserAdapter extends RecyclerView.Adapter<FindUserAdapter.Search
             resultNickName.setText(result.getRealname());
             resultName.setText(result.getUsername());
 
+            Boolean visible = true;
+
             try {
                 UserAccountList requestList = result.getRequestList();
                 if (requestList.contains(HabitUpApplication.getCurrentUser().getUsername())) {
                     disableButton();
+                    visible = false;
                 } else {
                     enableButton();
                 }
@@ -68,15 +71,17 @@ public class FindUserAdapter extends RecyclerView.Adapter<FindUserAdapter.Search
                 Log.i("Error:", "Could not get request list for " + result.getUsername());
             }
 
-            try {
-                UserAccountList friendList = HabitUpApplication.getCurrentUser().getFriendsList();
-                if (friendList.contains(result.getUsername())) {
-                    disableButton();
-                } else {
-                    enableButton();
+            if (visible) {
+                try {
+                    UserAccountList friendList = HabitUpApplication.getCurrentUser().getFriendsList();
+                    if (friendList.contains(result.getUsername())) {
+                        disableButton();
+                    } else {
+                        enableButton();
+                    }
+                } catch (Exception e) {
+                    Log.i("Error:", "Could not get friends list for " + result.getUsername());
                 }
-            } catch (Exception e) {
-                Log.i("Error:", "Could not get friends list for " + result.getUsername());
             }
         }
 
