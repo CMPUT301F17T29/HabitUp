@@ -98,16 +98,12 @@ public class MapsActivity extends BaseActivity
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFrag.getMapAsync(this);
 
-        ElasticSearchController.GetHabitEventsByUidTask getHabitEvents = new ElasticSearchController.GetHabitEventsByUidTask();
-        getHabitEvents.execute(HabitUpApplication.getCurrentUIDAsString());
-
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
         try {
-            myHabitEventList= getHabitEvents.get();
+            myHabitEventList = currentUser.getEventList().getEvents();
         } catch (Exception e) {
             Log.i("HabitUpDEBUG", "MapsActivity - Couldn't get HabitEvents");
         }
-
-        UserAccount currentUser = HabitUpApplication.getCurrentUser();
         friendMap = new HashMap<>();
 
         // Get friends
