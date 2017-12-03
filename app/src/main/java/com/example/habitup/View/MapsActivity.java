@@ -51,7 +51,7 @@ import java.util.HashMap;
  * The Map activity is used for viewing the participant current location,
  * view habit events that have location and view other participant habit event
  * with location that is 5 km near me.
- * 
+ *
  * @author Shuyang Li
  */
 
@@ -255,7 +255,7 @@ public class MapsActivity extends BaseActivity
                     friendsMarker = mGoogleMap.addMarker(new MarkerOptions()
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                             .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
-                            .position(myLatLng));
+                            .position(friLatLng));
                     friendsMarker.setTitle(fHabitEvent.getHabitName());
                     friendsMarker.setSnippet("Created by " + friendMap.get(fHabitEvent));
                     friendsMarker.setAlpha((float) 0.5);
