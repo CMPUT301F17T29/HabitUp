@@ -131,12 +131,27 @@ public class HabitUpController {
         return 0;
     }
 
+    /**
+     * Add a habit Event to a Users local list and if we are connected to the internet Send to ES
+     * @param event event to be added
+     * @param habit the habit of the event
+     * @param ctx state of the app, fo connectivity check
+     * @return 0 for success
+     */
     static public int addHabitEvent(HabitEvent event, Habit habit, Context ctx){
         addHabitEventLocal(event, habit);
         executeCommands(ctx);
         return 0;
     }
 
+    /**
+     * Add a habit event to the local list if it passes the error checking
+     * @param event event to be added
+     * @param habit habit of the event
+     * @return 0 for success
+     * @throws IllegalArgumentException if the event was completed before the habit start date or
+     * if there is already a habit event with that date and type
+     */
     static public int addHabitEventLocal(HabitEvent event, Habit habit) throws IllegalArgumentException{
 
         try {
@@ -201,9 +216,6 @@ public class HabitUpController {
         if(editCompleteDateCheck(beforeDate, event, habit)) {
             deleteHabitEvent(event, habit.getHabitName(), ctx);
             addHabitEvent(event, habit, ctx);
-
-                /*ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
-                updateUser.execute(currentUser);*/
 
         }else throw new IllegalArgumentException("Error: You cannot edit this habit to that day");
 
@@ -340,6 +352,9 @@ public class HabitUpController {
         updateUser.execute(currentUser);
     }
 
+    /**
+     *Updates the local user model and ES based on a queue stored in local data
+     */
     static public int executeOldCommands(LinkedList<HabitEventCommand> oldQueue,Context ctx){
 
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
@@ -362,6 +377,9 @@ public class HabitUpController {
         return 0;
     }
 
+    /**
+     *Updates ES based on a queue of events to add or edit when connected to the internet.
+     */
     static public int executeCommands(Context ctx){
 
         UserAccount currentUser = HabitUpApplication.getCurrentUser();

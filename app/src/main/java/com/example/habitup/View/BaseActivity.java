@@ -142,7 +142,7 @@ public class BaseActivity extends AppCompatActivity {
             photoView.setImageBitmap(profilePic);
         }
     }
-
+    
     private void logoutCleanUp(){
         if(!HabitUpApplication.getCurrentUser().getCommandQueue().isEmpty()){
             if(HabitUpApplication.isOnline(getApplicationContext())){
