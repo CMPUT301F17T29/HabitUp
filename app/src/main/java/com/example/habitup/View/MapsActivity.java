@@ -72,6 +72,9 @@ public class MapsActivity extends BaseActivity
     private CheckBox highlightCheckbox;
 
     private Marker myMarker;
+    private Marker friendsMarker;
+    private Marker hmyMarker;
+    private Marker hFriendsMarker;
     private Location currentLocation;
     private Location friendsLocation;
     boolean myMarkerVisible;
@@ -80,6 +83,10 @@ public class MapsActivity extends BaseActivity
     ArrayList<HabitEvent> myHabitEventList;
     ArrayList<HabitEvent> friendsEvents;
     HashMap<HabitEvent,String> friendMap;
+
+    ArrayList<Marker> myMarkerList = new ArrayList<Marker>();
+    ArrayList<Marker> friendsMarkerList = new ArrayList<Marker>();
+
 
     LatLng myLatLng;
     LatLng friLatLng;
@@ -202,7 +209,7 @@ public class MapsActivity extends BaseActivity
             }
         });
 
-        myCheckbox.setChecked(true);
+        //myCheckbox.setChecked(true);
     }
 
     private void updateMyMap(boolean visible) {
@@ -217,9 +224,21 @@ public class MapsActivity extends BaseActivity
                             .position(myLatLng));
                     myMarker.setTitle(mHabitEvent.getHabitName());
                     myMarker.setSnippet("Created by " + HabitUpApplication.getCurrentUser().getRealname());
-                    myMarker.setVisible(visible);
-
+                    myMarker.setAlpha((float) 0.5);
+                    myMarker.setVisible(false);
+                    myMarkerList.add(myMarker);
                 }
+            }
+            if (visible){
+                for (Marker myMarker:myMarkerList){
+                    myMarker.setVisible(true);
+                }
+            }
+            else{
+                for (Marker myMarker:myMarkerList){
+                    myMarker.remove();
+                }
+
             }
         }
     }
@@ -230,20 +249,26 @@ public class MapsActivity extends BaseActivity
                 friendsLocation = fHabitEvent.getLocation();
                 if (friendsLocation != null) {
                     friLatLng = new LatLng((friendsLocation.getLatitude()), friendsLocation.getLongitude());
-                    myMarker = mGoogleMap.addMarker(new MarkerOptions()
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_flag))
+                    friendsMarker = mGoogleMap.addMarker(new MarkerOptions()
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                             .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
                             .position(myLatLng));
-                    myMarker.setTitle(fHabitEvent.getHabitName());
-                    myMarker.setSnippet("Created by " + friendMap.get(fHabitEvent));
-                    myMarker.setVisible(visible);
+                    friendsMarker.setTitle(fHabitEvent.getHabitName());
+                    friendsMarker.setSnippet("Created by " + friendMap.get(fHabitEvent));
+                    friendsMarker.setVisible(visible);
+                    friendsMarker.setAlpha((float) 0.3);
 
                 }
             }
         }
     }
 
-    private void highlightMap(Location currentLocation, boolean myMarkerVisible, boolean friendMarkerVisable){
+    private void highlightMap(Location currentLocation, boolean myMarkerVisible, boolean friendMarkerVisible){
+
+        Log.i("aaaaaaaaaaa",  String.valueOf(myMarkerVisible));
+        Log.i("bbbbbbbbbb",  String.valueOf(currentLocation));
+
+
 
         if (myHabitEventList != null && myHabitEventList.size() > 0) {
             for (HabitEvent habitEvent : myHabitEventList) {
@@ -252,12 +277,12 @@ public class MapsActivity extends BaseActivity
                     HmyLatLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
                     Float distance = currentLocation.distanceTo(myLocation);
                     if (distance < 5000 && myMarkerVisible) {
-                        myMarker = mGoogleMap.addMarker(new MarkerOptions()
+                        hmyMarker = mGoogleMap.addMarker(new MarkerOptions()
                                 .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
                                 .position(HmyLatLng));
-                        myMarker.setTitle(habitEvent.getHabitName());
-                        myMarker.setSnippet("Created by " + HabitUpApplication.getCurrentUser().getRealname());
-                        myMarker.setAlpha((float) 1);
+                        hmyMarker.setTitle(habitEvent.getHabitName());
+                        hmyMarker.setSnippet("Created by " + HabitUpApplication.getCurrentUser().getRealname());
+                        hmyMarker.setAlpha((float) 1);
                     }
                 }
             }
@@ -269,14 +294,14 @@ public class MapsActivity extends BaseActivity
                 if (friendsLocation != null) {
                     HfriLatLng = new LatLng((friendsLocation.getLatitude()), friendsLocation.getLongitude());
                     Float distance = currentLocation.distanceTo(friendsLocation);
-                    if (distance < 5000 && friendMarkerVisable) {
-                        myMarker = mGoogleMap.addMarker(new MarkerOptions()
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_flag))
+                    if (distance < 5000 && friendMarkerVisible) {
+                        friendsMarker = mGoogleMap.addMarker(new MarkerOptions()
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                                 .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
                                 .position(HfriLatLng));
-                        myMarker.setTitle(fHabitEvent.getHabitName());
-                        myMarker.setSnippet("Created by" + friendMap.get(fHabitEvent));
-                        myMarker.setAlpha((float) 1);
+                        friendsMarker.setTitle(fHabitEvent.getHabitName());
+                        friendsMarker.setSnippet("Created by" + friendMap.get(fHabitEvent));
+                        friendsMarker.setAlpha((float) 1);
                     }
                 }
             }
