@@ -24,6 +24,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import java.util.ArrayList;
+
 /**
  * HabitUpApplication is the controller at the app-level.  It deals with functionality at the
  * highest level, including checking for connectivity, dealing with logins, and anything to do with
@@ -212,8 +214,12 @@ public class HabitUpApplication {
      * @param user the user to update
      */
     static public void updateUser(UserAccount user) {
-        ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
-        updateUser.execute(user);
+        try {
+            ElasticSearchController.UpdateUsersTask updateUser = new ElasticSearchController.UpdateUsersTask();
+            updateUser.execute(user);
+        } catch (Exception e) {
+            Log.i("Error:", e.getMessage());
+        }
     }
 
     public static LinkedList<HabitEventCommand> getOldQueue(){

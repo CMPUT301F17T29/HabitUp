@@ -10,8 +10,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Model.Attributes;
 import com.example.habitup.Model.Habit;
+import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
 import java.util.ArrayList;
@@ -38,6 +40,8 @@ public class HabitStatsAdapter extends ArrayAdapter<Habit> {
             v = inflater.inflate(R.layout.stat_habit, null);
         }
 
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+
         Habit habit = this.habits.get(position);
         habit.updateHabitsPossible();
 
@@ -46,13 +50,13 @@ public class HabitStatsAdapter extends ArrayAdapter<Habit> {
         nameView.setTextColor(Color.parseColor(Attributes.getColour(habit.getHabitAttribute())));
 
         TextView statusView = v.findViewById(R.id.stats_habit_status);
-        statusView.setText(habit.getHabitsDone() + "/" + habit.getHabitsPossible());
+        statusView.setText(habit.getHabitsDone(currentUser) + "/" + habit.getHabitsPossible());
 
         ProgressBar progressBar = v.findViewById(R.id.stats_habit_progress);
         progressBar.setProgress(habit.getPercent());
 
         TextView extraView = v.findViewById(R.id.stats_extra);
-        extraView.setText(String.valueOf(habit.getHabitsDoneExtra()));
+        extraView.setText(String.valueOf(habit.getHabitsDoneExtra(currentUser)));
 
         return v;
     }

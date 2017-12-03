@@ -182,6 +182,8 @@ public class AddHabitActivity extends AppCompatActivity {
                     // Pass to the controller
                     try {
                         HabitUpController.addHabit(newHabit);
+                        Intent result = new Intent();
+                        setResult(Activity.RESULT_OK, result);
                         finish();
                     } catch (Exception e) {
                         Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();

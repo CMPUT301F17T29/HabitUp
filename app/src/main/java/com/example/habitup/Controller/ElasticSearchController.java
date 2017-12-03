@@ -81,6 +81,37 @@ public class ElasticSearchController {
         }
     }
 
+    /**
+     * This is the main task used to update a user in the elastic search server.
+     */
+    public static class UpdateUsersTask extends AsyncTask<UserAccount, Void, Void> {
+        @Override
+        protected Void doInBackground(UserAccount... users) {
+            // ... : arbitrary number of arguments in Java
+            verifySettings();
+
+            UserAccount user = users[0];
+
+            int jestId = user.getUID();
+
+            Index index = new Index.Builder(user).index(db).type(userType).id(Integer.toString(jestId)).build();
+
+            try {
+                // where is client?
+                DocumentResult result = client.execute(index);
+                if (result.isSucceeded()) {
+                    Log.i("Success","User successfully updated");
+                } else {
+                    Log.e("Error", "Elasticsearch was not able to update");
+                }
+            } catch (Exception e) {
+                Log.i("Error", "The application failed to build and send the users");
+            }
+
+            return null;
+        }
+    }
+
     // Given a username, returns the user object corresponding to it
 
     /**

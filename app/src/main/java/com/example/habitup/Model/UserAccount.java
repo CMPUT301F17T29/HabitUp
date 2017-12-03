@@ -42,6 +42,13 @@ public class UserAccount implements Serializable {
     private LinkedList<HabitEventCommand> cmdQueue;
 
     /**
+     * Empty constructor for GSON
+     */
+    public UserAccount() {
+
+    }
+
+    /**
      * Constructor for a UserAccount.
      *
      * @param username String (max 15 chars)
@@ -190,12 +197,12 @@ public class UserAccount implements Serializable {
 
         if (photo != null) {
 
-            //Log.i("HabitUpDEBUG", "Photo is " + String.valueOf(photo.getByteCount()) + " bytes.");
+            Log.i("HabitUpDEBUG", "Photo is " + String.valueOf(photo.getByteCount()) + " bytes.");
 
             if (photo.getByteCount() > HabitUpApplication.MAX_PHOTO_BYTECOUNT) {
                 for (int i = 0; i < 3; ++i) {
                     photo = resizeImage(photo);
-                    //Log.i("HabitUpDEBUG", "Resized to " + String.valueOf(photo.getByteCount()) + " bytes.");
+                    Log.i("HabitUpDEBUG", "Resized to " + String.valueOf(photo.getByteCount()) + " bytes.");
                     if (photo.getByteCount() <= HabitUpApplication.MAX_PHOTO_BYTECOUNT) {
                         break;
                     }
@@ -315,7 +322,7 @@ public class UserAccount implements Serializable {
 
         final UserAccount other = (UserAccount) obj;
 
-        return this.getUID() == other.getUID();
+        return this.getUsername() == other.getUsername();
     }
 
     public void setCommandQueue(LinkedList<HabitEventCommand> q){this.cmdQueue = q;}

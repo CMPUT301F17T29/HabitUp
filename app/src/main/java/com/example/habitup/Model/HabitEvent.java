@@ -33,7 +33,9 @@ public class HabitEvent implements Comparable<HabitEvent> {
     private LocalDate completedate;
     private Bitmap photo;
     private String encodedPhoto;
-    private Location location;
+    private Boolean hasLocation;
+    private double latitude;
+    private double longitude;
     private Boolean scheduled;
 
     private String habitName = "";
@@ -48,6 +50,7 @@ public class HabitEvent implements Comparable<HabitEvent> {
     public HabitEvent (int uid, int hid) {
         this.uid = uid;
         this.hid = hid;
+        this.hasLocation = false;
     }
 
     /**
@@ -63,7 +66,9 @@ public class HabitEvent implements Comparable<HabitEvent> {
         this.setComment(e.getComment());
         this.setCompletedate(e.getCompletedate());
         this.setPhoto(e.getPhoto());
-        this.setLocation(e.getLocation());
+        if (e.hasLocation()) {
+            this.setLocation(e.getLocation());
+        }
         this.scheduled = e.getScheduled();
         this.habitName = e.getHabitName();
         this.habitAttribute = e.getHabitAttribute();
@@ -92,13 +97,11 @@ public class HabitEvent implements Comparable<HabitEvent> {
     public void setEID(String uuid) { this.eid = uuid; }
 
     /**
-     * TODO: IMPLEMENT
-     *
      * Sets whether or not this HabitEvent was completed on a scheduled date.  Used in stats
      * calculations.
      */
-    public void setScheduled() throws IllegalArgumentException {
-        Habit habit = HabitUpApplication.getCurrentUser().getHabitList().getHabit(this.habitName);
+    public void setScheduled(UserAccount user) throws IllegalArgumentException {
+        Habit habit = user.getHabitList().getHabit(this.habitName);
         int day;
 
         if (this.completedate != null) {
@@ -145,13 +148,18 @@ public class HabitEvent implements Comparable<HabitEvent> {
      * @param location Location (location of event)
      */
     public void setLocation(Location location){
-        this.location =  location;
+        if (location != null) {
+            this.hasLocation = true;
+            this.longitude = location.getLongitude();
+            this.latitude = location.getLatitude();
+        }
     }
 
     /**
      * Set or update UserAccount photo
      * @param photo Bitmap (photo to set for event)
      */
+
     public void setPhoto(Bitmap photo) {
 
         if (photo != null) {
@@ -245,8 +253,18 @@ public class HabitEvent implements Comparable<HabitEvent> {
      * Get the location of the HabitEvent
      * @return Location (Location of HabitEvent)
      */
-    public Location getLocation(){
-        return location;
+    public Location getLocation() {
+
+        if (hasLocation) {
+
+            Location loc = new Location("");
+            loc.setLatitude(latitude);
+            loc.setLongitude(longitude);
+            return loc;
+
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -298,7 +316,7 @@ public class HabitEvent implements Comparable<HabitEvent> {
      * @return boolean (True if the HabitEvent has a location)
      */
     public boolean hasLocation() {
-        return this.location != null;
+        return hasLocation;
     }
 
     public void setHabitStrings(Habit habit) {

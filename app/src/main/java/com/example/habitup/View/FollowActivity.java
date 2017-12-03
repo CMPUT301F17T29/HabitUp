@@ -20,7 +20,7 @@ import java.util.ArrayList;
  */
 public class FollowActivity extends BaseActivity {
 
-    private ArrayList<UserAccount> requestList;
+    private ArrayList<String> requestList;
     private RecyclerView requestsListView;
     private FollowRequestAdapter requestAdapter;
 

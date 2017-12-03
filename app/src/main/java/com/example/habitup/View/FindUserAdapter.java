@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,22 +46,51 @@ public class FindUserAdapter extends RecyclerView.Adapter<FindUserAdapter.Search
         }
 
         public void bind(UserAccount result) {
-            /*
             if (result.getPhoto() != null) {
-                resultPhoto.setImageBitmap(result.getPhoto());
+                try {
+                    resultPhoto.setImageBitmap(result.getPhoto());
+                } catch (Exception e) {
+                    Log.i("Error:", "Failed to load photo for " + result.getUsername());
+                }
             }
-            */
+
             resultNickName.setText(result.getRealname());
             resultName.setText(result.getUsername());
 
-            UserAccountList requestList = result.getRequestList();
-            if (requestList.contains(HabitUpApplication.getCurrentUser())) {
-                disableButton();
+            Boolean visible = true;
+
+            try {
+                UserAccountList requestList = result.getRequestList();
+                if (requestList.contains(HabitUpApplication.getCurrentUser().getUsername())) {
+                    disableButton();
+                    visible = false;
+                } else {
+                    enableButton();
+                }
+            } catch (Exception e) {
+                Log.i("Error:", "Could not get request list for " + result.getUsername());
+            }
+
+            if (visible) {
+                try {
+                    UserAccountList friendList = HabitUpApplication.getCurrentUser().getFriendsList();
+                    if (friendList.contains(result.getUsername())) {
+                        disableButton();
+                    } else {
+                        enableButton();
+                    }
+                } catch (Exception e) {
+                    Log.i("Error:", "Could not get friends list for " + result.getUsername());
+                }
             }
         }
 
         public void disableButton() {
-            followButton.setVisibility(View.INVISIBLE);
+            this.followButton.setVisibility(View.INVISIBLE);
+        }
+
+        public void enableButton() {
+            this.followButton.setVisibility(View.VISIBLE);
         }
     }
 
@@ -91,10 +121,10 @@ public class FindUserAdapter extends RecyclerView.Adapter<FindUserAdapter.Search
                 if (currentUser.getUID() == user.getUID()) {
                     // Check if requesting to follow the current user
                     Toast.makeText(context, "You cannot follow yourself", Toast.LENGTH_LONG).show();
-                } else if (currentUser.getFriendsList().contains(user)) {
+                } else if (currentUser.getFriendsList().contains(user.getUsername())) {
                     // Check if already following
                     Toast.makeText(context, "You are already following " + name, Toast.LENGTH_LONG).show();
-                } else if (user.getRequestList().contains(currentUser)) {
+                } else if (user.getRequestList().contains(currentUser.getUsername())) {
                     // Check if already sent request
                     Toast.makeText(context, "You already sent a request to " + name, Toast.LENGTH_LONG).show();
                 } else {

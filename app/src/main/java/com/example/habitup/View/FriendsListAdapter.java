@@ -40,12 +40,14 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private int lastPos = -1;
 
-    public FriendsListAdapter(Context context, ArrayList<UserAccount> friends) {
+    public FriendsListAdapter(Context context, ArrayList<String> friends) {
         this.context = context;
 
         this.data = new ArrayList<>();
         for (int i = 0; i < friends.size(); i++) {
-            Item friendItem = new Item(HEADER, friends.get(i), i);
+            UserAccount friend = HabitUpApplication.getUserAccount(friends.get(i));
+
+            Item friendItem = new Item(HEADER, friend, i);
             data.add(friendItem);
         }
     }
@@ -75,8 +77,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         if (item.type == HEADER) {
             final Item friendItem = data.get(position);
-            UserAccount oldModel = friendItem.friend;
-            final UserAccount friend = HabitUpApplication.getUserAccount(oldModel.getUsername());
+            final UserAccount friend = friendItem.friend;
 
             final FriendHolder fh = (FriendHolder) holder;
             fh.bind(friend);
@@ -117,7 +118,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             final Habit habit = habitItem.habit;
             final UserAccount friend = habitItem.friend;
             HabitHolder hh = (HabitHolder) holder;
-            hh.bind(habit);
+            hh.bind(habit, habitItem.friend);
 
             hh.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -212,12 +213,6 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
         public void bind(UserAccount friend) {
-            // Set friend's profile pic
-            Bitmap profilePic = friend.getPhoto();
-            if (profilePic != null) {
-                friendPhoto.setImageBitmap(profilePic);
-            }
-
             // Set friend's name
             String name = friend.getRealname();
             this.fullName.setText(name);
@@ -229,15 +224,18 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             // Set friend's level
             int level = friend.getLevel();
             this.level.setText("Level " + String.valueOf(level));
+
+            // Set friend's profile pic
+            Bitmap profilePic = friend.getPhoto();
+            if (profilePic != null) {
+                try {
+                    friendPhoto.setImageBitmap(profilePic);
+                } catch (Exception e) {
+                    Log.i("Error:", "Failed to set photo for " + name);
+                }
+            }
         }
 
-        public void setClicked(boolean clicked) {
-            this.clicked = clicked;
-        }
-
-        public boolean isClicked() {
-            return this.clicked;
-        }
     }
 
     public class HabitHolder extends RecyclerView.ViewHolder {
@@ -256,7 +254,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             this.habitStatus = itemView.findViewById(R.id.friend_habit_status);
         }
 
-        public void bind(Habit habit) {
+        public void bind(Habit habit, UserAccount friend) {
             // Set habit name
             String name = habit.getHabitName();
             this.habitName.setText(name);
@@ -265,13 +263,13 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             String color = Attributes.getColour(habit.getHabitAttribute());
             this.habitName.setTextColor(Color.parseColor(color));
 
-            // Set habit progress
-            habitProgress.setProgress(habit.getPercent());
-
             // Set habit status
-            int xValue = habit.getHabitsDone();
+            int xValue = habit.getHabitsDone(friend);
             int yValue = habit.getHabitsPossible();
             habitStatus.setText(xValue + "/" + yValue);
+
+            // Set habit progress
+            habitProgress.setProgress(habit.getPercent());
 
         }
     }

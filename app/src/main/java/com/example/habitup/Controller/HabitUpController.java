@@ -228,7 +228,7 @@ public class HabitUpController {
         boolean levelledUp = false;
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
 
-        if (currentUser.getXP() + 1 >= currentUser.getXPtoNext()) {
+        if (currentUser.getXP() >= currentUser.getXPtoNext()) {
             currentUser.incrementLevel();
             currentUser.setXPtoNext();
             levelledUp = true;
@@ -348,8 +348,7 @@ public class HabitUpController {
      */
     static public void updateUser() {
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
-        ElasticSearchController.AddUsersTask updateUser = new ElasticSearchController.AddUsersTask();
-        updateUser.execute(currentUser);
+        HabitUpApplication.updateUser(currentUser);
     }
 
     /**
