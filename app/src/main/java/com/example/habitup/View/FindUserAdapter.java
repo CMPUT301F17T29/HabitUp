@@ -61,6 +61,8 @@ public class FindUserAdapter extends RecyclerView.Adapter<FindUserAdapter.Search
                 UserAccountList requestList = result.getRequestList();
                 if (requestList.contains(HabitUpApplication.getCurrentUser().getUsername())) {
                     disableButton();
+                } else {
+                    enableButton();
                 }
             } catch (Exception e) {
                 Log.i("Error:", "Could not get request list for " + result.getUsername());
@@ -70,6 +72,8 @@ public class FindUserAdapter extends RecyclerView.Adapter<FindUserAdapter.Search
                 UserAccountList friendList = HabitUpApplication.getCurrentUser().getFriendsList();
                 if (friendList.contains(result.getUsername())) {
                     disableButton();
+                } else {
+                    enableButton();
                 }
             } catch (Exception e) {
                 Log.i("Error:", "Could not get friends list for " + result.getUsername());
@@ -77,7 +81,11 @@ public class FindUserAdapter extends RecyclerView.Adapter<FindUserAdapter.Search
         }
 
         public void disableButton() {
-            followButton.setVisibility(View.INVISIBLE);
+            this.followButton.setVisibility(View.INVISIBLE);
+        }
+
+        public void enableButton() {
+            this.followButton.setVisibility(View.VISIBLE);
         }
     }
 
