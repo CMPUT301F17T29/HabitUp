@@ -109,15 +109,10 @@ public class MapsActivity extends BaseActivity
         // Get friends
         ArrayList<String> friendStringList = currentUser.getFriendsList().getUserList();
         ArrayList<UserAccount> friendList = new ArrayList<>();
-        ElasticSearchController.GetUser getUser = new ElasticSearchController.GetUser();
 
         for (String friend : friendStringList) {
-            getUser.execute(friend);
-            try {
-                friendList.add(getUser.get().get(0));
-            } catch (Exception e) {
-                Log.i("HabitUpDEBUG", "Maps: couldn't get friend " + friend);
-            }
+            UserAccount userFriend = HabitUpApplication.getUserAccount(friend);
+            friendList.add(userFriend);
         }
 
         if (friendList.size() != 0) {
