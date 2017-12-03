@@ -115,6 +115,7 @@ public class MapsActivity extends BaseActivity
             friendList.add(userFriend);
         }
 
+        friendsEvents = new ArrayList<HabitEvent>();
         if (friendList.size() != 0) {
             for (UserAccount friend : friendList) {
                 UserAccount updatedFriend = HabitUpApplication.getUserAccount(friend.getUsername());
