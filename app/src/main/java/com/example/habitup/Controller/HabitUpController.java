@@ -186,7 +186,7 @@ public class HabitUpController {
             ElasticSearchController.AddHabitEventsTask addHabitEvent = new ElasticSearchController.AddHabitEventsTask();
             addHabitEvent.execute(event);
 
-            if (currentUser.getXP() + 1 >= currentUser.getXPtoNext()) {
+            if (currentUser.getXP() >= currentUser.getXPtoNext()) {
                 currentUser.incrementLevel();
                 currentUser.setXPtoNext();
             }

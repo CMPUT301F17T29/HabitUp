@@ -324,4 +324,8 @@ public class UserAccount implements Serializable {
 
     public void addCommand(HabitEventCommand cmd){ cmdQueue.add(cmd); }
 
+    public void setDemoPhoto(Bitmap photo) {
+        this.photo = photo;
+    }
+
 }

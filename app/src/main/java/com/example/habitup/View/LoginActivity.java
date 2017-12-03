@@ -1,9 +1,10 @@
 package com.example.habitup.View;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -11,9 +12,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.habitup.Controller.ElasticSearchController;
-import com.example.habitup.Model.HabitEventCommand;
 import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
+import com.example.habitup.Model.HabitEventCommand;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
@@ -86,6 +87,30 @@ public class LoginActivity extends AppCompatActivity {
 
                             }
                         }
+
+                        // DEBUG for demo
+                        if (loggedInUser.getUsername().equals("BojackHorseman")) {
+                            Bitmap d = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.bojack);
+
+                            try {
+//                                HabitUpApplication.getCurrentUser().setDemoPhoto(d);
+                                HabitUpApplication.getCurrentUser().setPhoto(null);
+                            } catch (Exception e) {
+                                Log.i("HabitUpDEBUG", "Login: Failed to set debug Photo");
+                            }
+                            Log.i("HabitUpDEBUG", "Login: Set Bojack Photo");
+                        } else if (loggedInUser.getUsername().equals("MrPeanutbutter")) {
+                            Bitmap d = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.peanut);
+
+                            try {
+//                                HabitUpApplication.getCurrentUser().setDemoPhoto(d);
+                                HabitUpApplication.getCurrentUser().setPhoto(null);
+                            } catch (Exception e) {
+                                Log.i("HabitUpDEBUG", "Login: Failed to set debug Photo");
+                            }
+                            Log.i("HabitUpDEBUG", "Login: Set Peanutbutter Photo");
+                        }
+                        // DEBUG for demo
 
                         Toast.makeText(getApplicationContext(), logInName + " is now logged in.",
                                 Toast.LENGTH_SHORT).show();
