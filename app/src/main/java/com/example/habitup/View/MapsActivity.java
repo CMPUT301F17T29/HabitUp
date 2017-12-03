@@ -327,7 +327,7 @@ public class MapsActivity extends BaseActivity
                         hfriendsMarker.setSnippet("Created by" + friendMap.get(fHabitEvent));
                         hfriendsMarker.setAlpha((float) 1);
                         hfriendsMarker.setVisible(false);
-                        hfriendsMarkerList.add(friendsMarker);
+                        hfriendsMarkerList.add(hfriendsMarker);
                     }
                 }
             }
