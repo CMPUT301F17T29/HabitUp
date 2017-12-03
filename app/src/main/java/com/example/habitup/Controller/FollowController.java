@@ -17,7 +17,7 @@ public class FollowController {
     static public int removeFriendRequest(UserAccount followee, UserAccount follower) throws IllegalArgumentException {
         UserAccountList requestList = followee.getRequestList();
 
-        if (requestList.delete(follower.getUsername()) == 0) {
+        if (requestList.delete(follower) == 0) {
             HabitUpApplication.updateUser(followee);
             return 0;
         } else {
@@ -35,7 +35,7 @@ public class FollowController {
     static public int addFriendRequest(UserAccount followee, UserAccount follower) throws IllegalArgumentException {
         UserAccountList requestList = followee.getRequestList();
 
-        if (requestList.add(follower.getUsername()) == 0) {
+        if (requestList.add(follower) == 0) {
             HabitUpApplication.updateUser(followee);
             return 0;
         } else {
@@ -50,9 +50,10 @@ public class FollowController {
      * @return 1 if user successfully added
      */
     static public int addFriend(UserAccount followee, UserAccount follower) throws IllegalArgumentException {
+
         UserAccountList friendList = follower.getFriendsList();
 
-        if (friendList.add(followee.getUsername()) == 0) {
+        if (friendList.add(followee) == 0) {
             HabitUpApplication.updateUser(follower);
             return 0;
         } else {
@@ -70,7 +71,7 @@ public class FollowController {
     static public int removeFriend(UserAccount user, UserAccount friend) throws IllegalArgumentException {
         UserAccountList friendList = user.getFriendsList();
 
-        if (friendList.delete(friend.getUsername()) == 0) {
+        if (friendList.delete(friend) == 0) {
             HabitUpApplication.updateUser(user);
             return 0;
         } else {

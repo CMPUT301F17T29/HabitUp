@@ -11,6 +11,7 @@ import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.Model.UserAccountList;
+import com.example.habitup.Model.UserWrapper;
 import com.example.habitup.R;
 
 import java.util.ArrayList;
@@ -45,7 +46,9 @@ public class FollowActivity extends BaseActivity {
         requestList.clear();
 
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
-        requestList = currentUser.getRequestList().getUserList();
+        for (UserWrapper friend : currentUser.getRequestList().getUserList()) {
+            requestList.add(friend.getUsername());
+        }
 
         requestAdapter = new FollowRequestAdapter(this, requestList);
         requestsListView.setAdapter(requestAdapter);

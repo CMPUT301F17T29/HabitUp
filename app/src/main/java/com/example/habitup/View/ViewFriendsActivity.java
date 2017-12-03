@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.UserAccount;
+import com.example.habitup.Model.UserWrapper;
 import com.example.habitup.R;
 
 import java.util.ArrayList;
@@ -41,7 +42,9 @@ public class ViewFriendsActivity extends BaseActivity {
         friendsListView.addItemDecoration(itemDecoration);
 
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
-        friends = currentUser.getFriendsList().getUserList();
+        for (UserWrapper friend : currentUser.getFriendsList().getUserList()) {
+            friends.add(friend.getUsername());
+        }
 
         friendsAdapter = new FriendsListAdapter(this, friends);
         friendsListView.setAdapter(friendsAdapter);

@@ -1,5 +1,7 @@
 package com.example.habitup.Model;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 /**
@@ -13,7 +15,7 @@ import java.util.ArrayList;
 
 public class UserAccountList {
 
-    private ArrayList<String> userList;
+    private ArrayList<UserWrapper> userList;
 
     /**
      * Constructor: create new ArrayList
@@ -26,7 +28,7 @@ public class UserAccountList {
      * Get the array list of user accounts
      * @return the user accounts list
      */
-    public ArrayList<String> getUserList() {
+    public ArrayList<UserWrapper> getUserList() {
         return this.userList;
     }
 
@@ -43,12 +45,14 @@ public class UserAccountList {
      * @param userToAdd UserAccount username
      * @return -1 if already in list, 0 if successfully added
      */
-    public int add(String userToAdd) {
+    public int add(UserAccount userToAdd) {
 
-        if (this.contains(userToAdd)) {
+        UserWrapper user = new UserWrapper(userToAdd);
+
+        if (this.contains(user)) {
             return -1;
         } else {
-            userList.add(userToAdd);
+            userList.add(user);
             return 0;
         }
     }
@@ -58,12 +62,16 @@ public class UserAccountList {
      * @param userToRemove Username of UserAccount to delete
      * @return -1 if user is not in the list, 0 if successfully removes
      */
-    public int delete(String userToRemove) {
+    public int delete(UserAccount userToRemove) {
 
-        if (this.contains(userToRemove)) {
-            userList.remove(userToRemove);
+        UserWrapper user = new UserWrapper(userToRemove);
+
+        if (this.contains(user)) {
+            Log.i("HabitUpDEBUG", "UAL - Try to remove: " + user.getUsername());
+            userList.remove(user);
             return 0;
         } else {
+            Log.i("HabitUpDEBUG", "UAL - No match for: " + user.getUsername());
             return -1;
         }
     }
@@ -73,8 +81,12 @@ public class UserAccountList {
      * @param user UserAccount username
      * @return True if contained; otherwise False
      */
-    public Boolean contains(String user) {
+    public Boolean contains(UserWrapper user) {
         return userList.contains(user);
+    }
+
+    public Boolean contains(UserAccount user) {
+        return userList.contains(new UserWrapper(user));
     }
 
 }

@@ -27,6 +27,7 @@ import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
 import com.example.habitup.Model.UserAccount;
+import com.example.habitup.Model.UserWrapper;
 import com.example.habitup.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -108,12 +109,12 @@ public class MapsActivity extends BaseActivity
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
 
         // Get friends
-        ArrayList<String> friendStringList = currentUser.getFriendsList().getUserList();
+        ArrayList<UserWrapper> friendStringList = currentUser.getFriendsList().getUserList();
         ArrayList<UserAccount> friendList = new ArrayList<>();
         ElasticSearchController.GetUser getUser = new ElasticSearchController.GetUser();
 
-        for (String friend : friendStringList) {
-            getUser.execute(friend);
+        for (UserWrapper friend : friendStringList) {
+            getUser.execute(friend.getUsername());
             try {
                 friendList.add(getUser.get().get(0));
             } catch (Exception e) {

@@ -90,22 +90,21 @@ public class ElasticSearchController {
             // ... : arbitrary number of arguments in Java
             verifySettings();
 
-            UserAccount user = users[0];
+            for (UserAccount user : users) {
 
-            int jestId = user.getUID();
+                Index index = new Index.Builder(user).index(db).type(userType).id(Integer.toString(user.getUID())).build();
 
-            Index index = new Index.Builder(user).index(db).type(userType).id(Integer.toString(jestId)).build();
-
-            try {
-                // where is client?
-                DocumentResult result = client.execute(index);
-                if (result.isSucceeded()) {
-                    Log.i("Success","User successfully updated");
-                } else {
-                    Log.e("Error", "Elasticsearch was not able to update");
+                try {
+                    DocumentResult result = client.execute(index);
+                    if (result.isSucceeded()) {
+                        Log.i("HabitUpDEBUG", "User " + user.getUsername() + "successfully updated");
+                    } else {
+                        Log.e("HabitUpDEBUG", "ESCtl - UpdateUsersTask failed for " + user.getUsername());
+                        Log.e("HabitUpDEBUG", result.getErrorMessage());
+                    }
+                } catch (Exception e) {
+                    Log.i("Error", "The application failed to build and send the users");
                 }
-            } catch (Exception e) {
-                Log.i("Error", "The application failed to build and send the users");
             }
 
             return null;
