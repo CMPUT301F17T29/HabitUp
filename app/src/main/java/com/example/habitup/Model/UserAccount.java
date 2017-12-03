@@ -40,6 +40,13 @@ public class UserAccount {
     private UserAccountList friendsList;
 
     /**
+     * Empty constructor for GSON
+     */
+    public UserAccount() {
+
+    }
+
+    /**
      * Constructor for a UserAccount.
      *
      * @param username String (max 15 chars)
