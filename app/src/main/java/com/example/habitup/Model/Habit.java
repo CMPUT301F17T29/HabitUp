@@ -309,13 +309,12 @@ public class Habit implements Comparable<Habit> {
      * Get how many times Habit was done on schedule.
      * @return int (Number of times Habit was done on schedule)
      */
-    public int getHabitsDone() {
-        UserAccount user = HabitUpApplication.getCurrentUser();
+    public int getHabitsDone(UserAccount user) {
         ArrayList<HabitEvent> events = user.getEventList().getEventsFromHabit(this.hid);
-
+        Log.i("EVENTS SIZE", String.valueOf(events.size()));
         int count = 0;
         for (HabitEvent event : events) {
-            event.setScheduled();
+            event.setScheduled(user);
             if (event.getScheduled()) {
                 ++count;
             }
@@ -329,13 +328,12 @@ public class Habit implements Comparable<Habit> {
      * Get how many times Habit was done outside of schedule.
      * @return int (Number of times Habit was done outside of schedule)
      */
-    public int getHabitsDoneExtra() {
-        UserAccount user = HabitUpApplication.getCurrentUser();
+    public int getHabitsDoneExtra(UserAccount user) {
         ArrayList<HabitEvent> events = user.getEventList().getEventsFromHabit(this.hid);
 
         int count = 0;
         for (HabitEvent event : events) {
-            event.setScheduled();
+            event.setScheduled(user);
             if (!event.getScheduled()) {
                 ++count;
             }

@@ -319,7 +319,7 @@ public class UserAccount {
 
         final UserAccount other = (UserAccount) obj;
 
-        return this.getUID() == other.getUID();
+        return this.getUsername() == other.getUsername();
     }
 
     public void setDemoPhoto(Bitmap photo) {

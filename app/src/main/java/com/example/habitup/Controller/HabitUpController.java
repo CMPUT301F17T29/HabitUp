@@ -164,7 +164,7 @@ public class HabitUpController {
             UserAccount currentUser = HabitUpApplication.getCurrentUser();
             currentUser.getEventList().add(event);
 
-            if (currentUser.getXP() + 1 >= currentUser.getXPtoNext()) {
+            if (currentUser.getXP() >= currentUser.getXPtoNext()) {
                 currentUser.incrementLevel();
                 currentUser.setXPtoNext();
             }
@@ -195,7 +195,7 @@ public class HabitUpController {
         boolean levelledUp = false;
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
 
-        if (currentUser.getXP() + 1 >= currentUser.getXPtoNext()) {
+        if (currentUser.getXP() >= currentUser.getXPtoNext()) {
             currentUser.incrementLevel();
             currentUser.setXPtoNext();
             levelledUp = true;

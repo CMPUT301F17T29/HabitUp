@@ -118,7 +118,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             final Habit habit = habitItem.habit;
             final UserAccount friend = habitItem.friend;
             HabitHolder hh = (HabitHolder) holder;
-            hh.bind(habit);
+            hh.bind(habit, habitItem.friend);
 
             hh.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -254,7 +254,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             this.habitStatus = itemView.findViewById(R.id.friend_habit_status);
         }
 
-        public void bind(Habit habit) {
+        public void bind(Habit habit, UserAccount friend) {
             // Set habit name
             String name = habit.getHabitName();
             this.habitName.setText(name);
@@ -263,13 +263,13 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             String color = Attributes.getColour(habit.getHabitAttribute());
             this.habitName.setTextColor(Color.parseColor(color));
 
-            // Set habit progress
-            habitProgress.setProgress(habit.getPercent());
-
             // Set habit status
-            int xValue = habit.getHabitsDone();
+            int xValue = habit.getHabitsDone(friend);
             int yValue = habit.getHabitsPossible();
             habitStatus.setText(xValue + "/" + yValue);
+
+            // Set habit progress
+            habitProgress.setProgress(habit.getPercent());
 
         }
     }

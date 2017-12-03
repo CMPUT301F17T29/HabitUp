@@ -27,6 +27,7 @@ public class FindUserActivity extends BaseActivity implements SearchView.OnQuery
     RecyclerView resultsListView;
     FindUserAdapter resultsAdapter;
     TextView resultCount;
+    String prevQuery = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,8 +87,12 @@ public class FindUserActivity extends BaseActivity implements SearchView.OnQuery
     @Override
     public boolean onQueryTextChange(String searchText) {
         String query = searchText.toLowerCase();
-        ;
         ArrayList<UserAccount> tempList = new ArrayList<>();
+
+        if (prevQuery.length() > query.length()) {
+            resultsList.clear();
+            resultsList.addAll(allUsers);
+        }
 
         // Check in existing results list when chaining letters
         for (int i = 0; i < resultsList.size(); i++) {
@@ -109,6 +114,8 @@ public class FindUserActivity extends BaseActivity implements SearchView.OnQuery
 
         resultsAdapter.notifyDataSetChanged();
         updateResultsCount();
+
+        prevQuery = query;
 
         return false;
     }
