@@ -44,6 +44,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.LocationListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -78,6 +79,7 @@ public class MapsActivity extends BaseActivity
 
     ArrayList<HabitEvent> myHabitEventList;
     ArrayList<HabitEvent> friendsEvents;
+    HashMap<HabitEvent,String> friendMap;
 
     LatLng myLatLng;
     LatLng friLatLng;
@@ -106,6 +108,7 @@ public class MapsActivity extends BaseActivity
         }
 
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
+        friendMap = new HashMap<>();
 
         // Get friends
         ArrayList<String> friendStringList = currentUser.getFriendsList().getUserList();
@@ -128,6 +131,7 @@ public class MapsActivity extends BaseActivity
                 for (Habit habit : updatedFriend.getHabitList().getHabits()) {
                     HabitEvent recentEvent = updatedFriend.getEventList().getRecentEventFromHabit(habit.getHID());
                     friendsEvents.add(recentEvent);
+                    friendMap.put(recentEvent, friend.getRealname());
                 }
 
             }
@@ -220,6 +224,8 @@ public class MapsActivity extends BaseActivity
                     myMarker = mGoogleMap.addMarker(new MarkerOptions()
                             .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
                             .position(myLatLng));
+                    myMarker.setTitle(mHabitEvent.getHabitName());
+                    myMarker.setSnippet("Created by " + HabitUpApplication.getCurrentUser().getRealname());
                     myMarker.setVisible(visible);
 
                 }
@@ -237,6 +243,8 @@ public class MapsActivity extends BaseActivity
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_flag))
                             .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
                             .position(myLatLng));
+                    myMarker.setTitle(fHabitEvent.getHabitName());
+                    myMarker.setSnippet("Created by " + friendMap.get(fHabitEvent));
                     myMarker.setVisible(visible);
 
                 }
@@ -256,6 +264,8 @@ public class MapsActivity extends BaseActivity
                         myMarker = mGoogleMap.addMarker(new MarkerOptions()
                                 .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
                                 .position(HmyLatLng));
+                        myMarker.setTitle(habitEvent.getHabitName());
+                        myMarker.setSnippet("Created by " + HabitUpApplication.getCurrentUser().getRealname());
                         myMarker.setAlpha((float) 1);
                     }
                 }
@@ -273,6 +283,8 @@ public class MapsActivity extends BaseActivity
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_flag))
                                 .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
                                 .position(HfriLatLng));
+                        myMarker.setTitle(fHabitEvent.getHabitName());
+                        myMarker.setSnippet("Created by" + friendMap.get(fHabitEvent));
                         myMarker.setAlpha((float) 1);
                     }
                 }
