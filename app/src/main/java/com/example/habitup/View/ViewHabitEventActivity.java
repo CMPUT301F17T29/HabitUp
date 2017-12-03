@@ -98,6 +98,8 @@ public class ViewHabitEventActivity extends BaseActivity {
         events.clear();
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
         events.addAll(currentUser.getEventList().getEvents());
+        // Sort by completedate
+        Collections.sort(events);
 
         eventAdapter = new EventListAdapter(this, events);
         eventListView.setAdapter(eventAdapter);
@@ -118,9 +120,6 @@ public class ViewHabitEventActivity extends BaseActivity {
                 goToEditActivity(VIEW_EVENT);
             }
         });
-
-        // Sort by completedate
-        Collections.sort(events);
 
         // Display if there are no events
         if (events.size() == 0) {
