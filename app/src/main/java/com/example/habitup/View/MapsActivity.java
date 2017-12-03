@@ -74,7 +74,7 @@ public class MapsActivity extends BaseActivity
     private Marker myMarker;
     private Marker friendsMarker;
     private Marker hmyMarker;
-    private Marker hFriendsMarker;
+    private Marker hfriendsMarker;
     private Location currentLocation;
     private Location friendsLocation;
     boolean myMarkerVisible;
@@ -86,6 +86,8 @@ public class MapsActivity extends BaseActivity
 
     ArrayList<Marker> myMarkerList = new ArrayList<Marker>();
     ArrayList<Marker> friendsMarkerList = new ArrayList<Marker>();
+    ArrayList<Marker> hmyMarkerList = new ArrayList<Marker>();
+    ArrayList<Marker> hfriendsMarkerList = new ArrayList<Marker>();
 
 
     LatLng myLatLng;
@@ -204,7 +206,7 @@ public class MapsActivity extends BaseActivity
                 if (mGoogleMap != null) {
                     myMarkerVisible = myCheckbox.isChecked();
                     friendsMarkerVisible = friendCheckbox.isChecked();
-                    highlightMap(currentLocation,myMarkerVisible,friendsMarkerVisible);
+                    highlightMap(currentLocation,isChecked,myMarkerVisible,friendsMarkerVisible);
                 }
             }
         });
@@ -255,19 +257,27 @@ public class MapsActivity extends BaseActivity
                             .position(myLatLng));
                     friendsMarker.setTitle(fHabitEvent.getHabitName());
                     friendsMarker.setSnippet("Created by " + friendMap.get(fHabitEvent));
-                    friendsMarker.setVisible(visible);
-                    friendsMarker.setAlpha((float) 0.3);
+                    friendsMarker.setAlpha((float) 0.5);
+                    friendsMarker.setVisible(false);
+                    friendsMarkerList.add(friendsMarker);
+                }
+                if (visible){
+                    for (Marker friendsMarker:friendsMarkerList){
+                        friendsMarker.setVisible(true);
+
+                    }
+                }
+                else{
+                    for (Marker friendsMarker:myMarkerList){
+                        friendsMarker.remove();
+                    }
 
                 }
             }
         }
     }
 
-    private void highlightMap(Location currentLocation, boolean myMarkerVisible, boolean friendMarkerVisible){
-
-        Log.i("aaaaaaaaaaa",  String.valueOf(myMarkerVisible));
-        Log.i("bbbbbbbbbb",  String.valueOf(currentLocation));
-
+    private void highlightMap(Location currentLocation,boolean highlightVisible, boolean myMarkerVisible, boolean friendMarkerVisible){
 
 
         if (myHabitEventList != null && myHabitEventList.size() > 0) {
@@ -283,7 +293,21 @@ public class MapsActivity extends BaseActivity
                         hmyMarker.setTitle(habitEvent.getHabitName());
                         hmyMarker.setSnippet("Created by " + HabitUpApplication.getCurrentUser().getRealname());
                         hmyMarker.setAlpha((float) 1);
+                        hmyMarker.setVisible(false);
+                        hmyMarkerList.add(hmyMarker);
                     }
+                }
+
+            }
+            if(highlightVisible){
+                for (Marker hmyMarker:hmyMarkerList){
+                    hmyMarker.setVisible(true);
+                }
+
+            }
+            else{
+                for (Marker hmyMarker:hmyMarkerList){
+                    hmyMarker.setVisible(false);
                 }
             }
         }
@@ -295,14 +319,27 @@ public class MapsActivity extends BaseActivity
                     HfriLatLng = new LatLng((friendsLocation.getLatitude()), friendsLocation.getLongitude());
                     Float distance = currentLocation.distanceTo(friendsLocation);
                     if (distance < 5000 && friendMarkerVisible) {
-                        friendsMarker = mGoogleMap.addMarker(new MarkerOptions()
+                        hfriendsMarker = mGoogleMap.addMarker(new MarkerOptions()
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                                 .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
                                 .position(HfriLatLng));
-                        friendsMarker.setTitle(fHabitEvent.getHabitName());
-                        friendsMarker.setSnippet("Created by" + friendMap.get(fHabitEvent));
-                        friendsMarker.setAlpha((float) 1);
+                        hfriendsMarker.setTitle(fHabitEvent.getHabitName());
+                        hfriendsMarker.setSnippet("Created by" + friendMap.get(fHabitEvent));
+                        hfriendsMarker.setAlpha((float) 1);
+                        hfriendsMarker.setVisible(false);
+                        hfriendsMarkerList.add(friendsMarker);
                     }
+                }
+            }
+            if(highlightVisible){
+                for (Marker hfriendsMarker:hfriendsMarkerList){
+                    hfriendsMarker.setVisible(true);
+                }
+
+            }
+            else{
+                for (Marker hfriendsMarker:hfriendsMarkerList){
+                    hfriendsMarker.setVisible(false);
                 }
             }
         }
