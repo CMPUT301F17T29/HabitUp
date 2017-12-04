@@ -1,5 +1,7 @@
 package com.example.habitup.Model;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -34,14 +36,25 @@ public class HabitEventList {
      * @param event a HabitEvent object to add
      */
     public int add(HabitEvent event) {
-
-        if (this.eventList.contains(event)) {
+        /*if (this.eventList.contains(event)) {
             return -1;
-        } else {
+        } else {*/
+            for (int i = 0; i < this.eventList.size(); i++) {
+                HabitEvent listEvent = eventList.get(i);
+                if (event.getCompletedate().isAfter((listEvent.getCompletedate()))) {
+                    //found the insert point
+                    this.eventList.add(i, event);
+                    Log.i("HabitEventListDebug", "adding habit event at index: "+i);
+                    return 0;
+                }
+
+            }
+            Log.i("HabitEventListDebug", "Length of eventList after adding is: "+eventList.size());
+
             this.eventList.add(event);
             return 0;
         }
-    }
+
 
     /**
      * Removes a habit event from the events array list

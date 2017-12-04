@@ -9,7 +9,8 @@ import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
+import java.io.Serializable;
+import java.util.LinkedList;
 
 /**
  * @author gojeffcho
@@ -22,7 +23,7 @@ import java.util.ArrayList;
  *
  * Javadoc last updated 2017-11-13 by @gojeffcho.
  */
-public class UserAccount {
+public class UserAccount implements Serializable {
 
     // Members
     private int uid;
@@ -38,6 +39,7 @@ public class UserAccount {
     private HabitList habitList;
     private UserAccountList requestList;
     private UserAccountList friendsList;
+    private LinkedList<HabitEventCommand> cmdQueue;
 
     /**
      * Empty constructor for GSON
@@ -69,6 +71,7 @@ public class UserAccount {
         this.habitList = new HabitList();
         this.friendsList = new UserAccountList();
         this.requestList = new UserAccountList();
+        this.cmdQueue = new LinkedList<HabitEventCommand>();
     }
 
     /**
@@ -322,7 +325,14 @@ public class UserAccount {
         return this.getUsername() == other.getUsername();
     }
 
+    public void setCommandQueue(LinkedList<HabitEventCommand> q){this.cmdQueue = q;}
+
+    public LinkedList<HabitEventCommand> getCommandQueue() { return this.cmdQueue; }
+
+    public void addCommand(HabitEventCommand cmd){ cmdQueue.add(cmd); }
+
     public void setDemoPhoto(Bitmap photo) {
         this.photo = photo;
     }
+
 }

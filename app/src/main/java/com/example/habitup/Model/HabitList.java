@@ -1,7 +1,6 @@
 package com.example.habitup.Model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 
 /**
@@ -90,4 +89,15 @@ public class HabitList {
     public Habit getHabit(String habitName) {
         return this.habitMap.get(habitName);
     }
+
+    public Habit getHabitByHID(int hid){
+        ArrayList<String> habitNames = getHabitNames();
+        for (String habitName:habitNames){
+            if (getHabit(habitName).getHID() == hid){
+                return getHabit(habitName);
+            }
+        }
+        return null;
+    }
+
 }

@@ -500,12 +500,9 @@ public class ElasticSearchController {
                 } else {
                     index = new Index.Builder(habitEvent).index(db).type(habitEventType).id(habitEvent.getEID()).refresh(true).build();
                 }
-
                 try {
-
                     DocumentResult result = client.execute(index);
                     if (result.isSucceeded()) {
-//                        Log.i("HabitUpDEBUG", "AddHabitEventTask getId: " + result.getId());
 
                         if (habitEvent.getEID() == null) {
                             habitEvent.setEID(result.getId());
@@ -925,7 +922,7 @@ public class ElasticSearchController {
                 try {
                     client.execute(deleteHabit);
                 } catch (Exception e) {
-                    Log.i("Error", "The application failed to build the query and delete the User");
+                    Log.i("Error", "The application failed to build the query and delete the HabitEvent");
 
                 }
 //                Log.i("HabitUpDEBUG", "ESCtl/Deleted " + ESids[0]);

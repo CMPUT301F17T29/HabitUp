@@ -6,8 +6,23 @@ import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.example.habitup.Model.Attributes;
+import com.example.habitup.Model.HabitEventCommand;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.Model.UserAccountList;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 import java.util.ArrayList;
 
@@ -31,8 +46,10 @@ public class HabitUpApplication {
     public final static int XP_INCREASE_AMOUNT = 25;
     public final static int XP_PER_HABITEVENT = 1;
     public final static int ATTR_INCREMENT_PER_HABITEVENT = 1;
+    public final static String FILENAME = "localUserData2.sav";
 
     static UserAccount currentUser;
+    static UserAccount fileUser;
     static Attributes currentAttrs;
 
     public static int NUM_OF_USER_RESULTS = 200;
@@ -41,27 +58,39 @@ public class HabitUpApplication {
 
     /**
      * Get the current logged-in UserAccount
+     *
      * @return UserAccount of logged-in user
      */
-    static public UserAccount getCurrentUser() { return currentUser; }
+    static public UserAccount getCurrentUser() {
+        return currentUser;
+    }
 
     /**
      * Get the UID of the logged-in user
+     *
      * @return int UID
      */
-    static public int getCurrentUID() { return currentUser.getUID(); }
+    static public int getCurrentUID() {
+        return currentUser.getUID();
+    }
 
     /**
      * Get the UID of the logged-in user as String; useful for ElasticSearch queries
+     *
      * @return String UID
      */
-    static public String getCurrentUIDAsString() { return String.valueOf(currentUser.getUID()); }
+    static public String getCurrentUIDAsString() {
+        return String.valueOf(currentUser.getUID());
+    }
 
     /**
      * Gets the Attributes object of the current logged-in user.
+     *
      * @return Attributes
      */
-    static public Attributes getCurrentAttrs() { return currentAttrs; }
+    static public Attributes getCurrentAttrs() {
+        return currentAttrs;
+    }
 
     /**
      * Utility method to clear the current login
@@ -73,6 +102,7 @@ public class HabitUpApplication {
 
     /**
      * Utility method to set the current logged-in UserAccount and get their Attributes object
+     *
      * @param user (UserAccount)
      */
     static public void setCurrentUser(UserAccount user) {
@@ -95,6 +125,7 @@ public class HabitUpApplication {
 
     /**
      * Creating a new UserAccount, and an Attributes object to go with it, since it is new
+     *
      * @param user UserAccount of new user
      * @return 0 for success
      */
@@ -112,6 +143,7 @@ public class HabitUpApplication {
 
     /**
      * Edit a new UserAccount
+     *
      * @param user UserAccount of user to update
      * @return 0 for success
      */
@@ -126,6 +158,7 @@ public class HabitUpApplication {
     /**
      * Gets all UserAccounts stored in the DB.  Used for inter-user functionality such as friends.
      * TODO: IMPLEMENT
+     *
      * @return UserAccountList of all users.
      */
     static public UserAccountList getAllUserAccounts() {
@@ -143,6 +176,7 @@ public class HabitUpApplication {
 
     /**
      * Look up a UserAccount by username.
+     *
      * @param username String of username to search for
      * @return UserAccount of matched username
      */
@@ -176,6 +210,7 @@ public class HabitUpApplication {
 
     /**
      * Updates a user's model in ElasticSearch (can be users that are not the current user)
+     *
      * @param user the user to update
      */
     static public void updateUser(UserAccount user) {
@@ -187,4 +222,67 @@ public class HabitUpApplication {
         }
     }
 
+    public static LinkedList<HabitEventCommand> getOldQueue(){
+        LinkedList<HabitEventCommand> q;
+        q = new LinkedList<>();
+        if (fileUser != null){
+            Log.i("Debug", "we even get here");
+            return fileUser.getCommandQueue();
+        }
+        return q;
+    }
+
+    public static int getOldUID(){
+        if(fileUser!=null) {
+            return fileUser.getUID();
+        }
+        return -1;
+    }
+
+    public static boolean loadUserData(Context ctx) {
+        try {
+            ArrayList<UserAccount> userList;
+            FileInputStream fis = ctx.openFileInput(FILENAME);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+
+            Gson gson = new Gson();
+
+            //Taken from https://stackoverflow.com/questions/12384064/gson-convert-from-json-to-a-typed-arraylistt
+            // 2017-09-19
+            Type listType = new TypeToken<ArrayList<UserAccount>>(){}.getType();
+            userList = gson.fromJson(in, listType);
+            Log.i("debug", "userList is null?"+userList.size());
+            fileUser = userList.get(0);
+            Log.i("debug", "user is null?"+getOldUID());
+            return true;
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            return false;
+        }
+    }
+
+
+    public static void saveUserData(Context ctx) {
+        try {
+            ArrayList<UserAccount> userList = new ArrayList<>();
+            FileOutputStream fos = ctx.openFileOutput(FILENAME, Context.MODE_PRIVATE);
+
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
+
+            Gson gson = new Gson();
+            Log.i("debug","saving, is user null?" + String.valueOf((currentUser == null)));
+            userList.add(currentUser);
+            gson.toJson(userList, out);
+            out.flush();
+
+            fos.close();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException();
+        }
+
+    }
 }
