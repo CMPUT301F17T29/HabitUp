@@ -68,6 +68,9 @@ public class HabitEvent implements Comparable<HabitEvent> {
         this.setPhoto(e.getPhoto());
         if (e.hasLocation()) {
             this.setLocation(e.getLocation());
+            this.hasLocation = true;
+        }else {
+            this.hasLocation = false;
         }
         this.scheduled = e.getScheduled();
         this.habitName = e.getHabitName();
