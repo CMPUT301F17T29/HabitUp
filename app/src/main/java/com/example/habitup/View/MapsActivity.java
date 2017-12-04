@@ -270,7 +270,7 @@ public class MapsActivity extends BaseActivity
                     }
                 }
                 else{
-                    for (Marker friendsMarker:myMarkerList){
+                    for (Marker friendsMarker:friendsMarkerList){
                         friendsMarker.remove();
                     }
 
