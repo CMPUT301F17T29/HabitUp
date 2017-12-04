@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
@@ -86,6 +87,14 @@ public class FindUserActivity extends BaseActivity implements SearchView.OnQuery
 
     @Override
     public boolean onQueryTextChange(String searchText) {
+
+        if (!HabitUpApplication.isOnline(getApplicationContext())) {
+            Toast.makeText(getApplicationContext(),
+                    "Error: No connection to the internet.",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
         String query = searchText.toLowerCase();
         ArrayList<UserAccount> tempList = new ArrayList<>();
 
