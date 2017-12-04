@@ -99,6 +99,14 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
         followrequestholder.ignoreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if (!HabitUpApplication.isOnline(context)) {
+                    Toast.makeText(context,
+                            "Error: No connection to the internet.",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 // Remove from user's request list
                 try {
                     FollowController.removeFriendRequest(currentUser, Follower);
@@ -112,6 +120,13 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
         followrequestholder.acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!HabitUpApplication.isOnline(context)) {
+                    Toast.makeText(context,
+                            "Error: No connection to the internet.",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 // Add user to friend's list
                 try {
                     FollowController.addFriend(currentUser, Follower);
@@ -133,6 +148,13 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
         followrequestholder.sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!HabitUpApplication.isOnline(context)) {
+                    Toast.makeText(context,
+                            "Error: No connection to the internet.",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 try {
                     FollowController.addFriend(currentUser, Follower);
                     if (currentUser.getRequestList().size() > 0) {

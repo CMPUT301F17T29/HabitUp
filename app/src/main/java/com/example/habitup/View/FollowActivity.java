@@ -6,6 +6,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
@@ -43,6 +44,13 @@ public class FollowActivity extends BaseActivity {
         super.onStart();
 
         requestList.clear();
+
+        if (!HabitUpApplication.isOnline(getApplicationContext())) {
+            Toast.makeText(getApplicationContext(),
+                    "Error: No connection to the internet.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
         requestList = currentUser.getRequestList().getUserList();

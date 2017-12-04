@@ -185,6 +185,13 @@ public class EditHabitActivity extends AppCompatActivity {
              * @param v View
              */
             public void onClick(View v) {
+
+                if (!HabitUpApplication.isOnline(getApplicationContext())) {
+                    Toast.makeText(getApplicationContext(),
+                            "Error: No connection to the internet.",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 setResult(RESULT_OK);
 
                 // Get all the values

@@ -122,9 +122,21 @@ public class ViewHabitActivity extends BaseActivity {
 
         switch (item.getItemId()) {
             case 1:
+                if (!HabitUpApplication.isOnline(getApplicationContext())) {
+                    Toast.makeText(getApplicationContext(),
+                            "Error: No connection to the internet.",
+                            Toast.LENGTH_SHORT).show();
+                    return false;
+                }
                 goToEditActivity(EDIT_HABIT, hid, habitName);
                 return true;
             case 2:
+                if (!HabitUpApplication.isOnline(getApplicationContext())) {
+                    Toast.makeText(getApplicationContext(),
+                            "Error: No connection to the internet.",
+                            Toast.LENGTH_SHORT).show();
+                    return false;
+                }
                 deleteHabit(habit);
                 return true;
             default:
@@ -152,6 +164,13 @@ public class ViewHabitActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add_action_bar:
+
+                if (!HabitUpApplication.isOnline(getApplicationContext())) {
+                    Toast.makeText(getApplicationContext(),
+                            "Error: No connection to the internet.",
+                            Toast.LENGTH_SHORT).show();
+                    return false;
+                }
 
                 Intent addHabitIntent = new Intent(context, AddHabitActivity.class);
                 startActivityForResult(addHabitIntent, NEW_HABIT);
