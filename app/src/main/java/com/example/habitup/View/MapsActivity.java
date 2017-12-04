@@ -170,6 +170,7 @@ public class MapsActivity extends BaseActivity
                 mUiSettings.setZoomControlsEnabled(true);
                 LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
                 currentLocation = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, (long) 100, (float) 1, locationListener);
             } else {
                 //Request Location Permission
                 checkLocationPermission();
@@ -206,9 +207,17 @@ public class MapsActivity extends BaseActivity
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (mGoogleMap != null) {
-                    myMarkerVisible = myCheckbox.isChecked();
-                    friendsMarkerVisible = friendCheckbox.isChecked();
-                    highlightMap(currentLocation,isChecked,myMarkerVisible,friendsMarkerVisible);
+                    try{
+                        Log.i("HabitUpDebug","Subscribe Highlight");
+                        myMarkerVisible = myCheckbox.isChecked();
+                        friendsMarkerVisible = friendCheckbox.isChecked();
+                        highlightMap(currentLocation,isChecked,myMarkerVisible,friendsMarkerVisible);
+                    }catch (Exception e){
+                        Log.i("Error:", String.valueOf(e));
+
+                    }
+
+
                 }
             }
         });
@@ -281,6 +290,7 @@ public class MapsActivity extends BaseActivity
 
     private void highlightMap(Location currentLocation,boolean highlightVisible, boolean myMarkerVisible, boolean friendMarkerVisible){
 
+        Log.i("HabitUpDebug","Into highlight function");
 
         if (myHabitEventList != null && myHabitEventList.size() > 0) {
             for (HabitEvent habitEvent : myHabitEventList) {
@@ -288,6 +298,7 @@ public class MapsActivity extends BaseActivity
                 if (myLocation != null) {
                     HmyLatLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
                     Float distance = currentLocation.distanceTo(myLocation);
+                    Log.i("HabitUpDebug", "My Habit History Distance:"+String.valueOf(distance));
                     if (distance < 5000 && myMarkerVisible) {
                         hmyMarker = mGoogleMap.addMarker(new MarkerOptions()
                                 .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
@@ -320,6 +331,7 @@ public class MapsActivity extends BaseActivity
                 if (friendsLocation != null) {
                     HfriLatLng = new LatLng((friendsLocation.getLatitude()), friendsLocation.getLongitude());
                     Float distance = currentLocation.distanceTo(friendsLocation);
+                    Log.i("HabitUpDebug", "My Friends Distance:"+String.valueOf(distance));
                     if (distance < 5000 && friendMarkerVisible) {
                         hfriendsMarker = mGoogleMap.addMarker(new MarkerOptions()
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
@@ -471,6 +483,24 @@ public class MapsActivity extends BaseActivity
 
 
     }
+    private final android.location.LocationListener locationListener = new android.location.LocationListener() {
+        public void onLocationChanged(Location location) {
+            Log.i("HabitUpDEBUG", "Location Changed: " + String.valueOf(location));
+        }
+
+        public void onStatusChanged(String s, int i, Bundle b) {
+
+        }
+
+        public void onProviderEnabled(String s) {
+
+        }
+
+        public void onProviderDisabled(String s) {
+
+        }
+    };
+
 
 
 }
