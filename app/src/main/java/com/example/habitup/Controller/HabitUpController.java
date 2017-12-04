@@ -2,7 +2,6 @@ package com.example.habitup.Controller;
 
 
 import android.content.Context;
-import android.util.Log;
 
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
@@ -257,7 +256,7 @@ public class HabitUpController {
 
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
 
-        Log.d("EVENT DELETE:", "Deleting HabitEvent belonging to HID #" + String.valueOf(event.getHID()));
+//        Log.d("EVENT DELETE:", "Deleting HabitEvent belonging to HID #" + String.valueOf(event.getHID()));
         ElasticSearchController.DeleteHabitEventTask delHabitEvent = new ElasticSearchController.DeleteHabitEventTask();
         delHabitEvent.execute(event.getEID());
 
@@ -270,8 +269,9 @@ public class HabitUpController {
 
     static public int deleteHabitEvent(HabitEvent event, String habitName, Context ctx) {
         deleteHabitEventLocal(event, habitName);
-        executeCommands(ctx);
-
+        if (HabitUpApplication.isOnline(ctx)){
+            executeCommands(ctx);
+        }
 
         return 0;
     }
@@ -356,8 +356,6 @@ public class HabitUpController {
      */
     static public int executeOldCommands(LinkedList<HabitEventCommand> oldQueue,Context ctx){
 
-        Log.i("DebugOldCommand", "in method");
-
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
 
         HabitEventCommand hec = oldQueue.poll();
@@ -369,7 +367,6 @@ public class HabitUpController {
                 addHabitEvent(hec.getEvent(), habit, ctx);
             }
             else if (hec.getType().equals("delete")) {
-                Log.i("DebugOldCommand", "in delete");
                 deleteHabitEvent(hec.getEvent(), habit.getHabitName(), ctx);
             }
 

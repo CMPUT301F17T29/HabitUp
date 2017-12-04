@@ -105,7 +105,6 @@ public class LoginActivity extends AppCompatActivity {
 
                                 }
                             }
-                            HabitUpApplication.deleteLocalUserData(getApplicationContext());
                         }
 
                         Toast.makeText(getApplicationContext(), logInName + " is now logged in.",
