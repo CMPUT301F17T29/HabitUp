@@ -2,6 +2,7 @@ package com.example.habitup.Controller;
 
 
 import android.content.Context;
+import android.util.Log;
 
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
@@ -256,7 +257,7 @@ public class HabitUpController {
 
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
 
-//        Log.d("EVENT DELETE:", "Deleting HabitEvent belonging to HID #" + String.valueOf(event.getHID()));
+        Log.d("EVENT DELETE:", "Deleting HabitEvent belonging to HID #" + String.valueOf(event.getHID()));
         ElasticSearchController.DeleteHabitEventTask delHabitEvent = new ElasticSearchController.DeleteHabitEventTask();
         delHabitEvent.execute(event.getEID());
 
@@ -269,9 +270,8 @@ public class HabitUpController {
 
     static public int deleteHabitEvent(HabitEvent event, String habitName, Context ctx) {
         deleteHabitEventLocal(event, habitName);
-        if (HabitUpApplication.isOnline(ctx)){
-            executeCommands(ctx);
-        }
+        executeCommands(ctx);
+
 
         return 0;
     }
@@ -356,6 +356,8 @@ public class HabitUpController {
      */
     static public int executeOldCommands(LinkedList<HabitEventCommand> oldQueue,Context ctx){
 
+        Log.i("DebugOldCommand", "in method");
+
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
 
         HabitEventCommand hec = oldQueue.poll();
@@ -367,6 +369,7 @@ public class HabitUpController {
                 addHabitEvent(hec.getEvent(), habit, ctx);
             }
             else if (hec.getType().equals("delete")) {
+                Log.i("DebugOldCommand", "in delete");
                 deleteHabitEvent(hec.getEvent(), habit.getHabitName(), ctx);
             }
 
@@ -383,22 +386,23 @@ public class HabitUpController {
 
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
         LinkedList<HabitEventCommand> cQueue = currentUser.getCommandQueue();
+        if(cQueue.size()>0){
+            if(HabitUpApplication.isOnline(ctx)){
+                HabitEventCommand hec = cQueue.poll();
+                while (hec!=null) {
+                    if (hec.getType().equals("add")) {
+                        HabitEvent habitEvent = hec.getEvent();
+                        Habit habit = currentUser.getHabitList().getHabit(habitEvent.getHabitName());
+                        addHabitEventOnline(habitEvent, habit, ctx);
+                        hec = cQueue.poll();
+                    }
 
-        if(HabitUpApplication.isOnline(ctx)){
-            HabitEventCommand hec = cQueue.poll();
-            while (hec!=null) {
-                if (hec.getType().equals("add")) {
-                    HabitEvent habitEvent = hec.getEvent();
-                    Habit habit = currentUser.getHabitList().getHabit(habitEvent.getHabitName());
-                    addHabitEventOnline(habitEvent, habit, ctx);
-                    hec = cQueue.poll();
-                }
-
-                else if (hec.getType().equals("delete")) {
-                    HabitEvent habitEvent = hec.getEvent();
-                    Habit habit = currentUser.getHabitList().getHabit(habitEvent.getHabitName());
-                    deleteHabitEventOnline(habitEvent);
-                    hec = cQueue.poll();
+                    else if (hec.getType().equals("delete")) {
+                        HabitEvent habitEvent = hec.getEvent();
+                        Habit habit = currentUser.getHabitList().getHabit(habitEvent.getHabitName());
+                        deleteHabitEventOnline(habitEvent);
+                        hec = cQueue.poll();
+                    }
                 }
             }
         }
