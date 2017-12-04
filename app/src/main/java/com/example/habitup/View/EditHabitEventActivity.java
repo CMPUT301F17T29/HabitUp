@@ -359,6 +359,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
         dateView.setPadding(0, 0, 0, 0);
 
         // Disable location switch
+        locationSwitch.setChecked(event.hasLocation());
         locationSwitch.setClickable(false);
         locationSwitch.setBackgroundResource(0);
         TextView markerLabel = (TextView) findViewById(R.id.marker_label);
