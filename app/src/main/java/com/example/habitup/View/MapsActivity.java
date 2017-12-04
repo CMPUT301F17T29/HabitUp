@@ -215,7 +215,7 @@ public class MapsActivity extends BaseActivity
             }
         });
 
-        //myCheckbox.setChecked(true);
+        myCheckbox.setChecked(true);
     }
 
     private void updateMyMap(boolean visible) {
@@ -479,29 +479,39 @@ public class MapsActivity extends BaseActivity
 
     private void zoomFit() {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        ArrayList<Marker> markers = new ArrayList<>();
 
         for (Marker marker : myMarkerList) {
             builder.include(marker.getPosition());
+            markers.add(marker);
         }
 
         for (Marker marker : friendsMarkerList) {
             builder.include(marker.getPosition());
+            markers.add(marker);
         }
 
         for (Marker marker : hmyMarkerList) {
             builder.include(marker.getPosition());
+            markers.add(marker);
         }
 
         for (Marker marker : hfriendsMarkerList) {
             builder.include(marker.getPosition());
+            markers.add(marker);
         }
 
         LatLngBounds bounds = builder.build();
 
-        int padding = 0; // offset from edges of the map in pixels
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+        CameraUpdate cu;
+        if (markers.size() == 1) {
+            cu = CameraUpdateFactory.newLatLngZoom(markers.get(0).getPosition(), 12f);
+        } else {
+            cu = CameraUpdateFactory.newLatLngBounds(bounds, 500);
+        }
 
         mGoogleMap.moveCamera(cu);
+
 
     }
 
