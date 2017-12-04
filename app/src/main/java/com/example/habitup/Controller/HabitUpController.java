@@ -383,22 +383,23 @@ public class HabitUpController {
 
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
         LinkedList<HabitEventCommand> cQueue = currentUser.getCommandQueue();
+        if(cQueue.size()>0){
+            if(HabitUpApplication.isOnline(ctx)){
+                HabitEventCommand hec = cQueue.poll();
+                while (hec!=null) {
+                    if (hec.getType().equals("add")) {
+                        HabitEvent habitEvent = hec.getEvent();
+                        Habit habit = currentUser.getHabitList().getHabit(habitEvent.getHabitName());
+                        addHabitEventOnline(habitEvent, habit, ctx);
+                        hec = cQueue.poll();
+                    }
 
-        if(HabitUpApplication.isOnline(ctx)){
-            HabitEventCommand hec = cQueue.poll();
-            while (hec!=null) {
-                if (hec.getType().equals("add")) {
-                    HabitEvent habitEvent = hec.getEvent();
-                    Habit habit = currentUser.getHabitList().getHabit(habitEvent.getHabitName());
-                    addHabitEventOnline(habitEvent, habit, ctx);
-                    hec = cQueue.poll();
-                }
-
-                else if (hec.getType().equals("delete")) {
-                    HabitEvent habitEvent = hec.getEvent();
-                    Habit habit = currentUser.getHabitList().getHabit(habitEvent.getHabitName());
-                    deleteHabitEventOnline(habitEvent);
-                    hec = cQueue.poll();
+                    else if (hec.getType().equals("delete")) {
+                        HabitEvent habitEvent = hec.getEvent();
+                        Habit habit = currentUser.getHabitList().getHabit(habitEvent.getHabitName());
+                        deleteHabitEventOnline(habitEvent);
+                        hec = cQueue.poll();
+                    }
                 }
             }
         }

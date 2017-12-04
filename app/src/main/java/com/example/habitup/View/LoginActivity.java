@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -32,6 +33,8 @@ import java.util.LinkedList;
 public class LoginActivity extends AppCompatActivity {
     protected EditText loginText;
     private String logInName;
+    private final Handler handler = new Handler();
+    private final int delay = 10000; //milliseconds
 
 
     @Override
@@ -76,6 +79,18 @@ public class LoginActivity extends AppCompatActivity {
                     if (loggedInUser != null) {
 
                         HabitUpApplication.setCurrentUser(loggedInUser);
+
+                        //Checks for network connection every 10 seconds and uploads any habitEvents added, deleted, or edited while offline
+                        Log.i("handler Debug", ".postDelayed");
+                        handler.postDelayed(new Runnable(){
+                            public void run(){
+                                Log.i("handler Debug", "run()");
+                                if(HabitUpApplication.getCurrentUser() != null) {
+                                    HabitUpController.executeCommands(getApplicationContext());
+                                }
+                                handler.postDelayed(this, delay);
+                            }
+                        }, delay);
 
                         if (HabitUpApplication.loadUserData(getApplicationContext())){
 
