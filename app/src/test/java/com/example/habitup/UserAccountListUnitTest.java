@@ -21,11 +21,11 @@ public class UserAccountListUnitTest {
 
         UserAccount user1 = new UserAccount(u1, u2, null);
 
-        assertFalse(testUserAccountList.contains(user1));
+        assertFalse(testUserAccountList.contains(user1.getUsername()));
 
-        testUserAccountList.add(user1);
+        testUserAccountList.add(user1.getUsername());
 
-        assertTrue(testUserAccountList.contains(user1));
+        assertTrue(testUserAccountList.contains(user1.getUsername()));
     }
 
     @Test
@@ -38,8 +38,8 @@ public class UserAccountListUnitTest {
 
         UserAccount user1 = new UserAccount(u1, u2, null);
 
-        testUserAccountList.add(user1);
-        assertTrue(testUserAccountList.contains(user1));
+        testUserAccountList.add(user1.getUsername());
+        assertTrue(testUserAccountList.contains(user1.getUsername()));
 
     }
 
@@ -52,10 +52,10 @@ public class UserAccountListUnitTest {
         UserAccountList testUserAccountList = new UserAccountList();
         UserAccount user1 = new UserAccount(u1, u2, null);
 
-        testUserAccountList.add(user1);
-        testUserAccountList.add(user1);
+        testUserAccountList.add(user1.getUsername());
+        testUserAccountList.add(user1.getUsername());
 
-        assertEquals(-1,testUserAccountList.add(user1));
+        assertEquals(-1,testUserAccountList.add(user1.getUsername()));
     }
 
     @Test
@@ -66,11 +66,11 @@ public class UserAccountListUnitTest {
         String u2 = "Tyler Heise";
 
         UserAccount user1 = new UserAccount(u1, u2, null);
-        list.add(user1);
+        list.add(user1.getUsername());
         assertTrue(list.size() == 1);
 
         UserAccount user2 = new UserAccount("billgates", "Bill Gates", null);
-        list.add(user2);
+        list.add(user2.getUsername());
         assertTrue(list.size() == 2);
 
     }

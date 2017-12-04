@@ -10,12 +10,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -26,6 +28,7 @@ import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
+import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
 import java.util.ArrayList;
@@ -76,6 +79,10 @@ public class ViewHabitEventActivity extends BaseActivity {
         eventListView = (RecyclerView) findViewById(R.id.event_list);
         eventListView.setHasFixedSize(true);
 
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setAutoMeasureEnabled(true);
+        eventListView.setLayoutManager(layoutManager);
+
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         eventListView.addItemDecoration(itemDecoration);
     }
@@ -87,33 +94,15 @@ public class ViewHabitEventActivity extends BaseActivity {
     public void onStart() {
         super.onStart();
 
-//        Log.i("HabitUpDEBUG", "ViewHabitEvents/OnStart triggered");
-
-        // Retrieve events from ES for user
-        ElasticSearchController.GetHabitEventsByUidTask getHabitEvents = new ElasticSearchController.GetHabitEventsByUidTask();
-        getHabitEvents.execute(HabitUpApplication.getCurrentUIDAsString());
-        try {
-            events.clear();
-            events.addAll(getHabitEvents.get());
-        } catch (Exception e) {
-            Log.i("HabitUpDEBUG", "ViewHabitEvent - Couldn't get HabitEvents");
-        }
-
-        eventListView = (RecyclerView) findViewById(R.id.event_list);
-        eventListView.setHasFixedSize(true);
-
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        eventListView.addItemDecoration(itemDecoration);
+        // Retrieve events
+        events.clear();
+        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+        events.addAll(currentUser.getEventList().getEvents());
+        // Sort by completedate
+        Collections.sort(events);
 
         eventAdapter = new EventListAdapter(this, events);
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setAutoMeasureEnabled(true);
-
         eventListView.setAdapter(eventAdapter);
-        eventListView.setLayoutManager(layoutManager);
-
-        eventAdapter.notifyDataSetChanged();
 
         eventAdapter.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -127,16 +116,10 @@ public class ViewHabitEventActivity extends BaseActivity {
             @Override
             public void onItemClick(View itemView, int pos) {
                 position = pos;
+                eventAdapter.setPosition(eventListView.getChildAdapterPosition(itemView));
                 goToEditActivity(VIEW_EVENT);
             }
         });
-
-        commentFilter = (EditText) findViewById(R.id.filter_comment);
-        commentFilter.setText("");
-        commentFilter.setOnKeyListener(cFilter);
-
-        // Sort by completedate
-        Collections.sort(events);
 
         // Display if there are no events
         if (events.size() == 0) {
@@ -144,33 +127,26 @@ public class ViewHabitEventActivity extends BaseActivity {
             subHeading.setText("You currently have no habit events.");
         }
 
+        habitTypes = currentUser.getHabitList().getHabits();
+
         // Set up habit type filter spinner
         habitSpinner = (Spinner) findViewById(R.id.filter_habit_spinner);
         final ArrayAdapter<String> habitAdapter = new ArrayAdapter<>(this, R.layout.habit_spinner);
         habitAdapter.add("All Habit Types");
-
         // Set up habit types list
-        ElasticSearchController.GetUserHabitsTask userHabits = new ElasticSearchController.GetUserHabitsTask();
-        userHabits.execute(HabitUpApplication.getCurrentUIDAsString());
-
-        habitTypes = null;
-
-        try {
-            habitTypes = userHabits.get();
-        } catch (Exception e) {
-            Log.i("HabitUpDEBUG", "ViewHabitEvent, couldn't get HabitTypes for user");
-            habitTypes = new ArrayList<>();
-        }
+        habitTypes = currentUser.getHabitList().getHabits();
 
         // Populate spinner with habit type names
         for (Habit habit : habitTypes) {
             habitAdapter.add(habit.getHabitName());
         }
-
         habitSpinner.setAdapter(habitAdapter);
 
         // Spinner select
         habitSpinner.setOnItemSelectedListener(spinnerListener);
+
+        commentFilter = (EditText) findViewById(R.id.filter_comment);
+        commentFilter.setOnKeyListener(cFilter);
 
         // Highlight events row in drawer
         navigationView.setCheckedItem(R.id.events);
@@ -191,7 +167,7 @@ public class ViewHabitEventActivity extends BaseActivity {
                 goToEditActivity(EDIT_EVENT);
                 return true;
             case 2:
-                deleteEvent();
+                deleteEvent(HabitUpApplication.getCurrentUser());
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -221,9 +197,11 @@ public class ViewHabitEventActivity extends BaseActivity {
     private void goToEditActivity(int requestCode) {
         setResult(RESULT_OK);
         Intent editIntent = new Intent(context, EditHabitEventActivity.class);
+
+        int pos = eventAdapter.getPosition();
         int uid = HabitUpApplication.getCurrentUID();
-        int hid = eventAdapter.getItem(position).getHID();
-        String eid = eventAdapter.getItem(position).getEID();
+        int hid = eventAdapter.getItem(pos).getHID();
+        String eid = eventAdapter.getItem(pos).getEID();
 
 //        Log.i("HabitUpDEBUG", "ViewHabitEvent eid " + eid);
 
@@ -232,17 +210,29 @@ public class ViewHabitEventActivity extends BaseActivity {
         editIntent.putExtra(HABIT_EVENT_EID, eid);
         editIntent.putExtra(HABIT_EVENT_ACTION, requestCode);
         editIntent.putExtra("profile", 0);
+        editIntent.putExtra("EVENT POSITION", pos);
         startActivity(editIntent);
     }
 
-    private void deleteEvent() {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        int levelledUp = data.getExtras().getInt("levelled_up");
+
+        if (levelledUp == 1) {
+            displayLevelUp();
+        }
+    }
+
+    private void deleteEvent(final UserAccount currentUser) {
         AlertDialog.Builder alert = new AlertDialog.Builder(ViewHabitEventActivity.this);
         alert.setTitle("Delete");
         alert.setMessage("Are you sure you want to delete this habit event?");
         alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                HabitUpController.deleteHabitEvent(eventAdapter.getItem(position)); // ES delete
+                HabitEvent event = eventAdapter.getItem(position);
+                String habitName = currentUser.getHabitList().getHabitByHID(event.getHID()).getHabitName();
+                HabitUpController.deleteHabitEvent(event, habitName, getApplicationContext()); // ES delete
                 eventAdapter.removeItem(position); // app view delete
                 eventListView.setAdapter(eventAdapter);
                 eventAdapter.notifyDataSetChanged();
@@ -266,48 +256,16 @@ public class ViewHabitEventActivity extends BaseActivity {
             // Reset comment search when filtering by Habit
             commentFilter.setText("");
 
-            // Refactoring...
-//                refreshEvents(); // refreshes through ES re-get
-//                ArrayList<HabitEvent> filtList = new ArrayList<HabitEvent>();
-//                filtList.clear();
-//
-//                if (pos == 0) {
-//                    filtList.addAll(events);
-//                }
-//                else {
-//                    for (HabitEvent e : events) {
-//                        if (e.getHID()==habitTypes.get(pos-1).getHID()) {
-//                            filtList.add(e);
-//                        }
-//                    }
-//                }
-//                Collections.sort(filtList);
-//
-//                events.clear();
-//                events.addAll(filtList);
-//                eventAdapter.notifyDataSetChanged();
-
-            ArrayList<HabitEvent> filteredList = null;
+            ArrayList<HabitEvent> filteredList;
+            UserAccount currentUser = HabitUpApplication.getCurrentUser();
             // pos 0 means All Habits: reset to full habit history view
             if (pos == 0) {
-                ElasticSearchController.GetHabitEventsByUidTask getHabitEvents = new ElasticSearchController.GetHabitEventsByUidTask();
-                getHabitEvents.execute(HabitUpApplication.getCurrentUIDAsString());
-                try {
-                    filteredList = getHabitEvents.get();
-                } catch (Exception e) {
-                    Log.i("HabitUpDEBUG", "ViewHabitEvent - Couldn't get All HabitEvents");
-                }
+                filteredList = currentUser.getEventList().getEvents();
 
                 // Otherwise, a Habit type was selected by which to filter
             } else {
-                ElasticSearchController.GetHabitEventsByHidTask getFilteredHabitEvents = new ElasticSearchController.GetHabitEventsByHidTask();
-                Log.i("HabitUpDEBUG", "Searching for HID " + String.valueOf(habitTypes.get(pos - 1).getHID()));
-                getFilteredHabitEvents.execute(String.valueOf(habitTypes.get(pos - 1).getHID()));
-                try {
-                    filteredList = getFilteredHabitEvents.get();
-                } catch (Exception e) {
-                    Log.i("HabitUpDEBUG", "ViewHabitEvent - Couldn't get filtered HabitEvents");
-                }
+                Habit habitType = habitTypes.get(pos-1);
+                filteredList = currentUser.getEventList().getEventsFromHabit(habitType.getHID());
             }
 
             events.clear();
@@ -357,17 +315,37 @@ public class ViewHabitEventActivity extends BaseActivity {
                 events.addAll(commentMatches);
                 Collections.sort(events);
                 eventAdapter.notifyDataSetChanged();
-
-                // This way lies madness.  Refactoring...
-//                refreshEvents(); // refreshes through ES re-get
-//                ArrayList<HabitEvent> filtEvents = filterComSort(text,events);
-//                events.clear();
-//                events.addAll(filtEvents);
-//                eventAdapter.notifyDataSetChanged();
             }
             return true;
         }
     };
+
+    private void displayLevelUp() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ViewHabitEventActivity.this);
+
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View v = inflater.inflate(R.layout.levelup_dialog, null);
+        builder.setView(v);
+
+        TextView newLevel = v.findViewById(R.id.new_level);
+
+        // Get user's new level
+        int level = HabitUpApplication.getCurrentUser().getLevel();
+        newLevel.setText("Level " + level);
+
+        Button closeButton = v.findViewById(R.id.close_level_dialog);
+
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // Close dialog
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.cancel();
+            }
+        });
+    }
 
 }
 

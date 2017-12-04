@@ -1,15 +1,20 @@
 package com.example.habitup.View;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.TextView;
 
+import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.R;
@@ -59,6 +64,7 @@ public class MainActivity extends BaseActivity {
 
         // Set up the array and adapter
         habitsArrayList = HabitUpController.getTodaysHabits();
+
         Collections.sort(habitsArrayList);
 
         adapter = new ProfileHabitsAdapter(this, habitsArrayList);
@@ -68,6 +74,7 @@ public class MainActivity extends BaseActivity {
         habitListView.setAdapter(adapter);
         habitListView.setLayoutManager(layoutManager);
 
+        navigationView.setCheckedItem(R.id.profile);
     }
 
     @Override
@@ -84,6 +91,8 @@ public class MainActivity extends BaseActivity {
                 startActivity(editIntent);
                 return true;
             case R.id.stats_profile:
+                Intent statsIntent = new Intent(this, HabitStatistics.class);
+                startActivity(statsIntent);
                 return true;
         }
 
@@ -94,13 +103,47 @@ public class MainActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+            int levelledUp = data.getExtras().getInt("levelled_up");
+
+            if (levelledUp == 1) {
+                displayLevelUp();
+            }
+
             int habit_pos = data.getExtras().getInt("habit_pos");
+
             if (resultCode == RESULT_CANCELED && habit_pos >= 0) {
                 View view = habitListView.getChildAt(habit_pos);
                 CheckBox lastChecked = view.findViewById(R.id.today_habit_checkbox);
                 lastChecked.setChecked(false);
                 lastChecked.setClickable(false);
             }
+    }
+
+    private void displayLevelUp() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+        LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
+        View v = inflater.inflate(R.layout.levelup_dialog, null);
+        builder.setView(v);
+
+        TextView newLevel = v.findViewById(R.id.new_level);
+
+        // Get user's new level
+        int level = HabitUpApplication.getCurrentUser().getLevel();
+        newLevel.setText("Level " + level);
+
+        Button closeButton = v.findViewById(R.id.close_level_dialog);
+
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // Close dialog
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.cancel();
+            }
+        });
     }
 
 }

@@ -33,8 +33,13 @@ public class HabitEvent implements Comparable<HabitEvent> {
     private LocalDate completedate;
     private Bitmap photo;
     private String encodedPhoto;
-    private Location location;
+    private Boolean hasLocation;
+    private double latitude;
+    private double longitude;
     private Boolean scheduled;
+
+    private String habitName = "";
+    private String habitAttribute = "";
 
     /**
      * Constructor - needs a uid and hid to uniquely identify it.  eid is set upon transmission to
@@ -45,6 +50,7 @@ public class HabitEvent implements Comparable<HabitEvent> {
     public HabitEvent (int uid, int hid) {
         this.uid = uid;
         this.hid = hid;
+        this.hasLocation = false;
     }
 
     /**
@@ -60,8 +66,16 @@ public class HabitEvent implements Comparable<HabitEvent> {
         this.setComment(e.getComment());
         this.setCompletedate(e.getCompletedate());
         this.setPhoto(e.getPhoto());
-        this.setLocation(e.getLocation());
+        if (e.hasLocation()) {
+            this.setLocation(e.getLocation());
+            this.hasLocation = true;
+        }else {
+            this.hasLocation = false;
+        }
         this.scheduled = e.getScheduled();
+        this.habitName = e.getHabitName();
+        this.habitAttribute = e.getHabitAttribute();
+
     }
 
     /**
@@ -74,7 +88,10 @@ public class HabitEvent implements Comparable<HabitEvent> {
      * Set the Habit the HabitEvent belongs to
      * @param hid int (Habit id)
      */
-    public void setHabit(int hid) { this.hid = hid; }
+    public void setHabit(int hid) {
+
+        this.hid = hid;
+    }
 
     /**
      * Set the unique HabitEvent id
@@ -83,22 +100,24 @@ public class HabitEvent implements Comparable<HabitEvent> {
     public void setEID(String uuid) { this.eid = uuid; }
 
     /**
-     * TODO: IMPLEMENT
-     *
      * Sets whether or not this HabitEvent was completed on a scheduled date.  Used in stats
      * calculations.
      */
-    public void setScheduled() {
+    public void setScheduled(UserAccount user) throws IllegalArgumentException {
+        Habit habit = user.getHabitList().getHabit(this.habitName);
+        int day;
 
-        // Get Habit corresponding to hid from ES
+        if (this.completedate != null) {
+            day = this.completedate.getDayOfWeek().getValue();
+        } else {
+            throw new IllegalArgumentException("Error: This event must have a complete date before setting scheduled.");
+        }
 
-        // Get schedule from Habit
-
-        // Check if completedate is a scheduled date
-
-            // If yes, set TRUE
-
-            // If not, set FALSE
+        try {
+            this.scheduled = habit.getHabitSchedule()[day];
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Error: Could not set scheduled.");
+        }
     }
 
     /**
@@ -132,13 +151,18 @@ public class HabitEvent implements Comparable<HabitEvent> {
      * @param location Location (location of event)
      */
     public void setLocation(Location location){
-        this.location =  location;
+        if (location != null) {
+            this.hasLocation = true;
+            this.longitude = location.getLongitude();
+            this.latitude = location.getLatitude();
+        }
     }
 
     /**
      * Set or update UserAccount photo
      * @param photo Bitmap (photo to set for event)
      */
+
     public void setPhoto(Bitmap photo) {
 
         if (photo != null) {
@@ -232,8 +256,18 @@ public class HabitEvent implements Comparable<HabitEvent> {
      * Get the location of the HabitEvent
      * @return Location (Location of HabitEvent)
      */
-    public Location getLocation(){
-        return location;
+    public Location getLocation() {
+
+        if (hasLocation) {
+
+            Location loc = new Location("");
+            loc.setLatitude(latitude);
+            loc.setLongitude(longitude);
+            return loc;
+
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -285,7 +319,59 @@ public class HabitEvent implements Comparable<HabitEvent> {
      * @return boolean (True if the HabitEvent has a location)
      */
     public boolean hasLocation() {
-        return this.location != null;
+        return hasLocation;
+    }
+
+    public void setHabitStrings(Habit habit) {
+        this.habitName = habit.getHabitName();
+        this.habitAttribute = habit.getHabitAttribute();
+    }
+
+    /**
+     * Get the event's habit name
+     * @return the name of the habit the event belongs to
+     */
+    public String getHabitName() {
+        return this.habitName;
+    }
+
+    /**
+     * Get the event's habit attribute
+     * @return the name of the attribute the event's habit belongs to
+     */
+    public String getHabitAttribute() {
+        return this.habitAttribute;
+    }
+
+    /**
+     * When two events are compared, they should be equal if they have the same EIDs
+     * @param obj the other event to compare with
+     * @return true if the two events have the same EID
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (!HabitEvent.class.isAssignableFrom(obj.getClass())) {
+            return false;
+        }
+
+        final HabitEvent other = (HabitEvent) obj;
+
+        return this.getEID() == other.getEID();
+    }
+
+    /**
+     * Override hash code to include EID
+     * @return the event's hash code
+     */
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 37 * hash + this.getEID().hashCode();
+        return hash;
     }
 
 }

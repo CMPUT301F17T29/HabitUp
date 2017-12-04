@@ -1,9 +1,10 @@
 package com.example.habitup.View;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -12,8 +13,12 @@ import android.widget.Toast;
 
 import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
+import com.example.habitup.Controller.HabitUpController;
+import com.example.habitup.Model.HabitEventCommand;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
+
+import java.util.LinkedList;
 
 /**
  * This is the the start up launch activity where the user can login into the HabitUp
@@ -71,6 +76,21 @@ public class LoginActivity extends AppCompatActivity {
                     if (loggedInUser != null) {
 
                         HabitUpApplication.setCurrentUser(loggedInUser);
+
+                        if (HabitUpApplication.loadUserData(getApplicationContext())){
+
+                            LinkedList<HabitEventCommand> oldQueue = HabitUpApplication.getOldQueue();
+                            int oldUID = HabitUpApplication.getOldUID();
+
+                            if(!oldQueue.isEmpty() &&  loggedInUser.getUID() == oldUID){
+                                try {
+                                    HabitUpController.executeOldCommands(oldQueue, getApplicationContext());
+                                }catch (Exception e){
+                                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+
+                                }
+                            }
+                        }
 
                         Toast.makeText(getApplicationContext(), logInName + " is now logged in.",
                                 Toast.LENGTH_SHORT).show();

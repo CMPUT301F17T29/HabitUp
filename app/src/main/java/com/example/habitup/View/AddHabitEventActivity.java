@@ -1,11 +1,17 @@
 package com.example.habitup.View;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
@@ -24,11 +30,11 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
+import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
 import java.text.DateFormatSymbols;
@@ -36,7 +42,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Locale;
 
 /**
@@ -88,19 +93,8 @@ public class AddHabitEventActivity extends AppCompatActivity {
         Spinner habitSpinner = (Spinner) findViewById(R.id.event_habit_spinner);
 
         // Set up habit types list
-        ArrayList<String> habitNames = new ArrayList<>();
-        final HashMap<String, Integer> hids = new HashMap<>();
-
-        // Retrieve habits from current user
-        ArrayList<Habit> habitList;
-        ElasticSearchController.GetUserHabitsTask getUserHabits = new ElasticSearchController.GetUserHabitsTask();
-        getUserHabits.execute(String.valueOf(HabitUpApplication.getCurrentUID()));
-        try {
-            habitList = getUserHabits.get();
-        } catch (Exception e) {
-            Log.i("HabitUpDEBUG", "AddHabitEvent - couldn't get User Habits");
-            habitList = new ArrayList<>();
-        }
+        final UserAccount currentUser = HabitUpApplication.getCurrentUser();
+        ArrayList<String> habitNames = currentUser.getHabitList().getHabitNames();
 
         // Get the habit's name if coming from the main profile
         String currentName = null;
@@ -114,16 +108,9 @@ public class AddHabitEventActivity extends AppCompatActivity {
         ArrayAdapter adapter = new ArrayAdapter(this, R.layout.spinner_item, habitNames);
         habitSpinner.setAdapter(adapter);
 
-        // Populate habitNames, hids for dropdown menu and back-translation to Habit
-        for (int i = 0; i < habitList.size(); i++) {
-            Habit habit = habitList.get(i);
-            String habitName = habit.getHabitName();
-            adapter.add(habitName);
-            hids.put(habit.getHabitName(), habit.getHID());
-
-            // Selected row in spinner if adding event from profile
+        for (int i = 0; i < habitNames.size(); i++) {
+            String habitName = habitNames.get(i);
             if (currentName != null && currentName.equals(habitName)) {
-                Log.i("Spinner", "Found a match");
                 habitSpinner.setSelection(i);
             }
         }
@@ -132,7 +119,7 @@ public class AddHabitEventActivity extends AppCompatActivity {
         habitSpinner.setOnItemSelectedListener(habitListener);
 
         // Get location checkbox
-        Switch locationSwitch = (Switch) findViewById(R.id.location_switch);
+        final Switch locationSwitch = (Switch) findViewById(R.id.location_switch);
 
         // Get photo icon
         Button imageButton;
@@ -184,7 +171,28 @@ public class AddHabitEventActivity extends AppCompatActivity {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy");
                 LocalDate completeDate = LocalDate.parse(completeDateString, formatter);
 
-                // TODO: M5 get location here
+                Location currentLocation;
+
+                // Get location
+                if (locationSwitch.isChecked()) {
+                    if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                            Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                        currentLocation = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, (long) 100, (float) 1, locationListener);
+                        // DEBUG
+                        Log.i("HabitUpDEBUG", "Location: " + String.valueOf(lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)));
+                        // DEBUG
+                        Log.i("HabitUpDEBUG", "CurrentLocation: " + String.valueOf(currentLocation));
+                    } else {
+                        currentLocation = null;
+                        Toast.makeText(AddHabitEventActivity.this, "Unable to get location.", Toast.LENGTH_SHORT).show();
+                        locationSwitch.setChecked(false);
+                    }
+                } else {
+                    currentLocation = null;
+                }
 
                 // Get the event photo
                 Bitmap photo = null;
@@ -194,11 +202,15 @@ public class AddHabitEventActivity extends AppCompatActivity {
 
                 // Create new habit event
                 int uid = HabitUpApplication.getCurrentUID();
-                int hid = hids.get(habitType);
+
+                Habit eventHabit = currentUser.getHabitList().getHabit(habitType);
+                int hid = eventHabit.getHID();
                 HabitEvent newEvent = new HabitEvent(uid, hid);
                 Boolean eventOK = Boolean.TRUE;
                 newEvent.setHabit(hid);
-                newEvent.setScheduled();
+
+                // Set habit strings
+                newEvent.setHabitStrings(eventHabit);
 
                 // Validation for habit event
                 try {
@@ -222,12 +234,23 @@ public class AddHabitEventActivity extends AppCompatActivity {
                     eventOK = Boolean.FALSE;
                 }
 
+                newEvent.setLocation(currentLocation);
+
                 if (eventOK) {
                     // Pass to the controller
                     try {
-                        HabitUpController.addHabitEvent(newEvent);
+                        HabitUpController.addHabitEvent(newEvent, eventHabit, getApplicationContext());
+
                         Intent result = new Intent();
                         result.putExtra("habit_pos", -1);
+
+                        // Check if user levelled up
+                        int levelledUp = 0;
+                        if (HabitUpController.levelUp(getApplicationContext())) {
+                            levelledUp = 1;
+                        }
+                        result.putExtra("levelled_up", levelledUp);
+
                         setResult(Activity.RESULT_OK, result);
                         finish();
                     } catch (Exception e) {
@@ -304,6 +327,24 @@ public class AddHabitEventActivity extends AppCompatActivity {
 
         @Override
         public void onNothingSelected(AdapterView<?> parent) {}
+    };
+
+    private final LocationListener locationListener = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            Log.i("HabitUpDEBUG", "Location Changed: " + String.valueOf(location));
+        }
+
+        public void onStatusChanged(String s, int i, Bundle b) {
+
+        }
+
+        public void onProviderEnabled(String s) {
+
+        }
+
+        public void onProviderDisabled(String s) {
+
+        }
     };
 
 }

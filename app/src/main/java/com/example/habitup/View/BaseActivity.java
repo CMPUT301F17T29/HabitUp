@@ -3,11 +3,11 @@ package com.example.habitup.View;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.habitup.Controller.HabitUpApplication;
+import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
@@ -75,20 +76,24 @@ public class BaseActivity extends AppCompatActivity {
                         startActivity(eventsIntent);
                         break;
                     case R.id.friends:
-                        drawerLayout.closeDrawers();
+                        Intent friendsIntent = new Intent(context, ViewFriendsActivity.class);
+                        startActivity(friendsIntent);
                         break;
                     case R.id.requests:
-                        drawerLayout.closeDrawers();
+                        Intent requestsIntent = new Intent(context, FollowActivity.class);
+                        startActivity(requestsIntent);
                         break;
                     case R.id.finds:
-                        drawerLayout.closeDrawers();
+                        Intent findIntent = new Intent(context, FindUserActivity.class);
+                        startActivity(findIntent);
                         break;
                     case R.id.map:
-                        drawerLayout.closeDrawers();
+                        Intent mapsIntent = new Intent(context, MapsActivity.class);
+                        startActivity(mapsIntent);
                         break;
                     case R.id.logout:
+                        logoutCleanUp();
                         logout();
-                        drawerLayout.closeDrawers();
                         break;
                 }
 
@@ -111,6 +116,7 @@ public class BaseActivity extends AppCompatActivity {
             }
         };
 
+        drawerLayout.closeDrawers();
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
     }
@@ -135,6 +141,17 @@ public class BaseActivity extends AppCompatActivity {
         if (profilePic != null) {
             ImageView photoView = header.findViewById(R.id.drawer_pic);
             photoView.setImageBitmap(profilePic);
+        }
+    }
+
+    private void logoutCleanUp(){
+        if(!HabitUpApplication.getCurrentUser().getCommandQueue().isEmpty()){
+            if(HabitUpApplication.isOnline(getApplicationContext())){
+                HabitUpController.executeCommands(getApplicationContext());
+            }
+            else{
+                HabitUpApplication.saveUserData(getApplicationContext());
+            }
         }
     }
 

@@ -1,15 +1,25 @@
 package com.example.habitup.View;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+
+import android.os.Bundle;
+
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,18 +35,17 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
 import com.example.habitup.Model.HabitEvent;
+import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
 import java.text.DateFormatSymbols;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * This is the activity for editing a habit event. A user can change the associated habit type.
@@ -49,8 +58,8 @@ import java.util.HashMap;
 public class EditHabitEventActivity extends AppCompatActivity {
 
     private int action;
+    private HabitEvent oldEvent;
     private HabitEvent event;
-
     // Event completion date
     private int year_x, month_x, day_x;
     private static final int DIALOG_ID = 1;
@@ -92,16 +101,21 @@ public class EditHabitEventActivity extends AppCompatActivity {
         // Get the habit from intent
         Intent intent = getIntent();
         action = intent.getExtras().getInt(ViewHabitEventActivity.HABIT_EVENT_ACTION);
-        String eid = intent.getExtras().getString(ViewHabitEventActivity.HABIT_EVENT_EID);
+        final int position = intent.getExtras().getInt("EVENT POSITION");
 
-        ElasticSearchController.GetHabitEventsByEIDTask getHabitEvent = new ElasticSearchController.GetHabitEventsByEIDTask();
-        getHabitEvent.execute(eid);
-
-        try {
-            event = getHabitEvent.get().get(0);
-        } catch (Exception e) {
-            Log.i("HabitUpDEBUG", "EditHabitEvent - couldn't get habit match for eid " + eid);
+        UserAccount user = HabitUpApplication.getCurrentUser();
+        int uid = intent.getExtras().getInt("HABIT_EVENT_UID");
+        if (user.getUID() != uid) {
+            int friendIndex = intent.getExtras().getInt("FRIEND_INDEX");
+            String friendName = user.getFriendsList().getUserList().get(friendIndex);
+            user = HabitUpApplication.getUserAccount(friendName);
         }
+        final UserAccount eventUser = user;
+
+        ArrayList<HabitEvent> eventList = eventUser.getEventList().getEvents();
+
+        oldEvent = eventList.get(position);
+        event = new HabitEvent(oldEvent);
 
         // Get the event's date
         year_x = event.getCompletedate().getYear();
@@ -120,30 +134,17 @@ public class EditHabitEventActivity extends AppCompatActivity {
         habitSpinner = (Spinner) findViewById(R.id.event_edit_spinner);
 
         // Set up habit types list
-        int entryIndex = 0;
+        int entryIndex;
         ArrayList<String> habitNames = new ArrayList<>();
-        final HashMap<String, Integer> hids = new HashMap<>();
 
-        // Retrieve habits from current user
-        ArrayList<Habit> habitList;
-        ElasticSearchController.GetUserHabitsTask getUserHabits = new ElasticSearchController.GetUserHabitsTask();
-        getUserHabits.execute(String.valueOf(HabitUpApplication.getCurrentUID()));
-
-        try {
-            habitList = getUserHabits.get();
-        } catch (Exception e) {
-            Log.i("HabitUpDEBUG", "EditHabitEvent - couldn't get User Habits");
-            habitList = new ArrayList<>();
-        }
-
-        // Populate habitNames, hids for dropdown menu and back-translation to Habit
-        for (Habit habit : habitList) {
-            habitNames.add(habit.getHabitName());
-            hids.put(habit.getHabitName(), habit.getHID());
-            if (event.getHID() == habit.getHID()) {
-                entryIndex = habitList.indexOf(habit);
-                Log.i("HabitUpDEBUG", "EditHabitEvent - matched, " + String.valueOf(event.getHID()) + "; index " + String.valueOf(entryIndex));
-            }
+        if (action == ViewHabitEventActivity.EDIT_EVENT) {
+            // Retrieve habits from current user
+            habitNames = eventUser.getHabitList().getHabitNames();
+            entryIndex = habitNames.indexOf(event.getHabitName());
+        } else {
+            habitNames.clear();
+            habitNames.add(event.getHabitName());
+            entryIndex = 0;
         }
 
         ArrayAdapter adapter = new ArrayAdapter(this, R.layout.spinner_item, habitNames);
@@ -187,7 +188,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
             }
         });
 
-        // Open the date picke dialog when clicking date field
+        // Open the date picker dialog when clicking date field
         dateView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -199,7 +200,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
         saveButton = (Button) findViewById(R.id.save_event);
 
         // Disable edit fields if viewing activity
-        if (action == 2) {
+        if (action == ViewHabitEventActivity.VIEW_EVENT) {
             viewMode();
         }
 
@@ -215,11 +216,34 @@ public class EditHabitEventActivity extends AppCompatActivity {
 
                 // Get all the values
                 String eventType = habitSpinner.getSelectedItem().toString();
+                Habit habit = eventUser.getHabitList().getHabit(eventType);
+
                 String eventComment = commentText.getText().toString();
 
                 String dateString = dateView.getText().toString();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy");
                 LocalDate completeDate = LocalDate.parse(dateString, formatter);
+
+                Location currentLocation;
+
+                // Get location
+                if (locationSwitch.isChecked()) {
+                    if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                            Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                        currentLocation = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, (long) 100, (float) 1, locationListener);
+
+                        Log.i("HabitUpDEBUG", "CurrentLocation: " + String.valueOf(currentLocation));
+                    } else {
+                        currentLocation = null;
+                        Toast.makeText(EditHabitEventActivity.this, "Unable to get location.", Toast.LENGTH_SHORT).show();
+                        locationSwitch.setChecked(false);
+                    }
+                } else {
+                    currentLocation = null;
+                }
 
                 Bitmap photo = imageBitMap;
 
@@ -227,7 +251,7 @@ public class EditHabitEventActivity extends AppCompatActivity {
 
                 // Validation for habit event
                 try {
-                    event.setHabit(hids.get(eventType));
+                    event.setHabit(habit.getHID());
                 } catch (IllegalArgumentException e) {
                     // do stuff
                     Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
@@ -260,12 +284,19 @@ public class EditHabitEventActivity extends AppCompatActivity {
                     }
                 }
 
+                if (locationSwitch.isChecked()) {
+                    event.setLocation(currentLocation);
+                } else {
+                    event.setLocation(null);
+                }
+
                 if (eventOK) {
                     // Pass to the controller
                     try {
-                        HabitUpController.editHabitEvent(event);
+                        HabitUpController.editHabitEvent(originalDate, event, oldEvent, habit, getApplicationContext());
                         finish();
                     } catch (Exception e) {
+                        Log.i("EditDenug", "toast1");
                         Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
@@ -339,10 +370,14 @@ public class EditHabitEventActivity extends AppCompatActivity {
         commentText.setPadding(0, 0, 0, 0);
 
         // Disable photo button
-        // TODO: Check whether event has an image, if it does not, remove all photo labels
         RelativeLayout photoLayout = (RelativeLayout) findViewById(R.id.photo_display);
         photoLayout.setBackgroundColor(getResources().getColor(android.R.color.transparent));
         imageButton.setVisibility(View.INVISIBLE);
+
+        if (!event.hasImage()) {
+            TextView photoLabel = (TextView) findViewById(R.id.photo_label);
+            photoLabel.setVisibility(View.INVISIBLE);
+        }
 
         // Disable save button
         saveButton.setVisibility(View.INVISIBLE);
@@ -368,12 +403,30 @@ public class EditHabitEventActivity extends AppCompatActivity {
             TextView spinnerText = view.findViewById(R.id.spinner_text);
             spinnerText.setTextColor(color);
 
-            if (action == 2) {
+            if (action == ViewHabitEventActivity.VIEW_EVENT) {
                 spinnerText.setPadding(0, 0, 0, 0);
             }
         }
 
         @Override
         public void onNothingSelected(AdapterView<?> parent) {}
+    };
+
+    private final LocationListener locationListener = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            Log.i("HabitUpDEBUG", "Location Changed: " + String.valueOf(location));
+        }
+
+        public void onStatusChanged(String s, int i, Bundle b) {
+
+        }
+
+        public void onProviderEnabled(String s) {
+
+        }
+
+        public void onProviderDisabled(String s) {
+
+        }
     };
 }

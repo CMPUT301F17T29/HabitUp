@@ -9,6 +9,8 @@ import com.example.habitup.Controller.ElasticSearchController;
 import com.example.habitup.Controller.HabitUpApplication;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
+import java.util.LinkedList;
 
 /**
  * @author gojeffcho
@@ -21,7 +23,7 @@ import java.io.ByteArrayOutputStream;
  *
  * Javadoc last updated 2017-11-13 by @gojeffcho.
  */
-public class UserAccount {
+public class UserAccount implements Serializable {
 
     // Members
     private int uid;
@@ -32,6 +34,19 @@ public class UserAccount {
     private int level;
     private int XP;
     private int XPtoNext;
+
+    private HabitEventList eventList;
+    private HabitList habitList;
+    private UserAccountList requestList;
+    private UserAccountList friendsList;
+    private LinkedList<HabitEventCommand> cmdQueue;
+
+    /**
+     * Empty constructor for GSON
+     */
+    public UserAccount() {
+
+    }
 
     /**
      * Constructor for a UserAccount.
@@ -51,6 +66,12 @@ public class UserAccount {
         level = 1;
         XP = 0;
         XPtoNext = 20;
+
+        this.eventList = new HabitEventList();
+        this.habitList = new HabitList();
+        this.friendsList = new UserAccountList();
+        this.requestList = new UserAccountList();
+        this.cmdQueue = new LinkedList<HabitEventCommand>();
     }
 
     /**
@@ -176,12 +197,12 @@ public class UserAccount {
 
         if (photo != null) {
 
-            //Log.i("HabitUpDEBUG", "Photo is " + String.valueOf(photo.getByteCount()) + " bytes.");
+            Log.i("HabitUpDEBUG", "Photo is " + String.valueOf(photo.getByteCount()) + " bytes.");
 
             if (photo.getByteCount() > HabitUpApplication.MAX_PHOTO_BYTECOUNT) {
                 for (int i = 0; i < 3; ++i) {
                     photo = resizeImage(photo);
-                    //Log.i("HabitUpDEBUG", "Resized to " + String.valueOf(photo.getByteCount()) + " bytes.");
+                    Log.i("HabitUpDEBUG", "Resized to " + String.valueOf(photo.getByteCount()) + " bytes.");
                     if (photo.getByteCount() <= HabitUpApplication.MAX_PHOTO_BYTECOUNT) {
                         break;
                     }
@@ -254,6 +275,64 @@ public class UserAccount {
      */
     public void setXPtoNext() {
         this.XPtoNext += HabitUpApplication.XP_INCREASE_AMOUNT;
+    }
+
+    /**
+     * Return the user's list of habits
+     * @return the HabitList model
+     */
+    public HabitList getHabitList() {
+        return this.habitList;
+    }
+
+    /**
+     * Return the user's list of habit events
+     * @return the HabitEventList model
+     */
+    public HabitEventList getEventList() {
+        return this.eventList;
+    }
+
+    /**
+     * Get the user's list of follow requests
+     * @return the UserAccountList array of request user accounts
+     */
+    public UserAccountList getRequestList() {
+        return this.requestList;
+    }
+
+    /**
+     * Get the user's list of friends
+     * @return the UserAccountList array of friend user accounts
+     */
+    public UserAccountList getFriendsList() {
+        return this.friendsList;
+    }
+
+    /**
+     * When two user accounts are compared, they should be equal if they have the same UIDs
+     * @param obj the other user account to compare with
+     * @return true if the two user accounts have the same UID
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        final UserAccount other = (UserAccount) obj;
+
+        return this.getUsername() == other.getUsername();
+    }
+
+    public void setCommandQueue(LinkedList<HabitEventCommand> q){this.cmdQueue = q;}
+
+    public LinkedList<HabitEventCommand> getCommandQueue() { return this.cmdQueue; }
+
+    public void addCommand(HabitEventCommand cmd){ cmdQueue.add(cmd); }
+
+    public void setDemoPhoto(Bitmap photo) {
+        this.photo = photo;
     }
 
 }

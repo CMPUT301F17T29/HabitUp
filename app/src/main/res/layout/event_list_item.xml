@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
     android:background="@color/white"
     android:baselineAligned="false">
 
@@ -23,7 +23,7 @@
         android:id="@+id/event_has_image"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_below="@+id/event_name"
+        app:layout_constraintTop_toBottomOf="@+id/event_name"
         android:contentDescription="Event has image"
         app:srcCompat="@drawable/ic_action_camera" />
 
@@ -31,9 +31,9 @@
         android:id="@+id/event_has_location"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_below="@+id/event_name"
+        app:layout_constraintTop_toBottomOf="@+id/event_name"
         android:layout_marginTop="2dp"
-        android:layout_toRightOf="@+id/event_has_image"
+        app:layout_constraintLeft_toRightOf="@+id/event_has_image"
         android:contentDescription="Event has location"
         app:srcCompat="@drawable/ic_event_marker" />
 
@@ -41,8 +41,8 @@
         android:id="@+id/event_comment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/event_name"
-        android:layout_toEndOf="@+id/event_has_location"
+        app:layout_constraintTop_toBottomOf="@+id/event_name"
+        app:layout_constraintLeft_toRightOf="@+id/event_has_location"
         android:text="This is an event comment..."
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
@@ -52,12 +52,12 @@
         android:id="@+id/event_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
         android:text="Event date"
-        android:textStyle="bold"
         android:textColor="@color/teal"
-        android:textSize="14sp"/>
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/event_name" />
 
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>
