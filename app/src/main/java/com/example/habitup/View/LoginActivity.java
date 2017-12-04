@@ -105,6 +105,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                 }
                             }
+                            HabitUpApplication.deleteLocalUserData(getApplicationContext());
                         }
 
                         // DEBUG for demo
