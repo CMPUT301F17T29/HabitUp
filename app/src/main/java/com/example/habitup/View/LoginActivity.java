@@ -83,8 +83,12 @@ public class LoginActivity extends AppCompatActivity {
                             int oldUID = HabitUpApplication.getOldUID();
 
                             if(!oldQueue.isEmpty() &&  loggedInUser.getUID() == oldUID){
-                                HabitUpController.executeOldCommands(oldQueue,getApplicationContext());
+                                try {
+                                    HabitUpController.executeOldCommands(oldQueue, getApplicationContext());
+                                }catch (Exception e){
+                                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
 
+                                }
                             }
                         }
 
