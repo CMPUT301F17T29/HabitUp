@@ -32,6 +32,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -39,6 +40,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.LocationListener;
@@ -156,7 +158,7 @@ public class MapsActivity extends BaseActivity
     public void onMapReady(GoogleMap googleMap)
     {
         mGoogleMap=googleMap;
-        mGoogleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -245,6 +247,7 @@ public class MapsActivity extends BaseActivity
 
             }
         }
+        zoomFit();
     }
     
     private void updateFriendMap(boolean visible){
@@ -277,6 +280,7 @@ public class MapsActivity extends BaseActivity
                 }
             }
         }
+        zoomFit();
     }
 
     private void highlightMap(Location currentLocation,boolean highlightVisible, boolean myMarkerVisible, boolean friendMarkerVisible){
@@ -345,6 +349,7 @@ public class MapsActivity extends BaseActivity
                 }
             }
         }
+        zoomFit();
 
     }
 
@@ -469,6 +474,34 @@ public class MapsActivity extends BaseActivity
             // permissions this app might request
         }
 
+
+    }
+
+    private void zoomFit() {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+        for (Marker marker : myMarkerList) {
+            builder.include(marker.getPosition());
+        }
+
+        for (Marker marker : friendsMarkerList) {
+            builder.include(marker.getPosition());
+        }
+
+        for (Marker marker : hmyMarkerList) {
+            builder.include(marker.getPosition());
+        }
+
+        for (Marker marker : hfriendsMarkerList) {
+            builder.include(marker.getPosition());
+        }
+
+        LatLngBounds bounds = builder.build();
+
+        int padding = 0; // offset from edges of the map in pixels
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+
+        mGoogleMap.moveCamera(cu);
 
     }
 
