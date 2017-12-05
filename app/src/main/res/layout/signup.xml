@@ -106,7 +106,7 @@
         <ImageView
             android:id="@+id/signup_taken_image"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="75dp"
             android:layout_below="@+id/add_profile_pic"
             android:scaleType="fitCenter"
             android:paddingTop="10dp"
@@ -134,7 +134,7 @@
             android:layout_marginLeft="5dp"
             android:textColor="@color/white"
             android:backgroundTint="@color/lightgray"
-            android:layout_marginTop="35dp" />
+            android:layout_marginTop="15dp" />
 
         <Button
             android:id="@+id/signup_button"
@@ -145,7 +145,7 @@
             android:layout_marginRight="5dp"
             android:textColor="@color/white"
             android:backgroundTint="@color/green"
-            android:layout_marginTop="35dp" />
+            android:layout_marginTop="15dp" />
     </LinearLayout>
 
 </RelativeLayout>

@@ -30,6 +30,8 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
+ * Used for Habit Stats chart.
+ *
  * Created by barboza on 2017-11-29.
  */
 

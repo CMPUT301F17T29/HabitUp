@@ -97,8 +97,8 @@ public class ProfileHabitsAdapter extends RecyclerView.Adapter<RecyclerView.View
             levelUpField.setText("Level up in " + String.valueOf(currentUser.getXPtoNext() - currentUser.getXP()) + " XP");
 
             // Set progress bar
-            progressBar.setProgress(currentUser.getXP(), true);
             progressBar.setMax(currentUser.getXPtoNext());
+            progressBar.setProgress(currentUser.getXP(), true);
 
             // Get user attributes
             Attributes userAttrs = HabitUpApplication.getCurrentAttrs();

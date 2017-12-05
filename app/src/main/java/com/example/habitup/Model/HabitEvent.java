@@ -322,6 +322,10 @@ public class HabitEvent implements Comparable<HabitEvent> {
         return hasLocation;
     }
 
+    /**
+     * Sets the name and attribute for the Habit based on another param Habit
+     * @param habit Habit to copy Name and Attribute from
+     */
     public void setHabitStrings(Habit habit) {
         this.habitName = habit.getHabitName();
         this.habitAttribute = habit.getHabitAttribute();

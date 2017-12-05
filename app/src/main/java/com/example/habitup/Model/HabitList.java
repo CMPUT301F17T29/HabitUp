@@ -90,6 +90,11 @@ public class HabitList {
         return this.habitMap.get(habitName);
     }
 
+    /**
+     * Returns a Habit matched on HID
+     * @param hid (int)
+     * @return Habit match
+     */
     public Habit getHabitByHID(int hid){
         ArrayList<String> habitNames = getHabitNames();
         for (String habitName:habitNames){
