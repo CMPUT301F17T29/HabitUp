@@ -16,6 +16,8 @@ import com.example.habitup.R;
 import java.util.ArrayList;
 
 /**
+ * Used for displaying the Stats for a particular Habit.
+ *
  * Created by barboza on 2017-11-29.
  */
 

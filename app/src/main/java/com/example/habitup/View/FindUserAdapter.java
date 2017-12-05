@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
+ * Used in the Find User view for showing user matches.
+ *
  * Created by barboza on 11/25/17.
  */
 

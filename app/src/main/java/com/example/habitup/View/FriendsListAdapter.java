@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
+ * Used for showing your Friends list and activity.
+ *
  * Created by sharidanbarboza on 2017-11-15.
  */
 

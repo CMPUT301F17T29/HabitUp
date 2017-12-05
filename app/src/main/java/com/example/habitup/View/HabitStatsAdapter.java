@@ -19,6 +19,7 @@ import com.example.habitup.R;
 import java.util.ArrayList;
 
 /**
+ * Used for displaying User's HabitStats.
  * Created by barboza on 11/27/17.
  */
 
