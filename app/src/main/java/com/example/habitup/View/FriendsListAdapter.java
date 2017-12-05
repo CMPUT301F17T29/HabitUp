@@ -39,11 +39,13 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private Context context;
     private ArrayList<Item> data;
+    private ArrayList<String> friends;
 
     private int lastPos = -1;
 
     public FriendsListAdapter(Context context, ArrayList<String> friends) {
         this.context = context;
+        this.friends = friends;
 
         this.data = new ArrayList<>();
         for (int i = 0; i < friends.size(); i++) {
@@ -93,22 +95,13 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 public void onClick(View view) {
                     lastPos = position;
                     if (friendItem.invisibleChildren == null) {
-                        friendItem.invisibleChildren = new ArrayList<>();
-
-                        // Convert habits to items
-                        ArrayList<Item> habitItems = new ArrayList<>();
-                        for (Habit habit : habits) {
-                            Item item = new Item(CHILD, habit, friend, friendItem.friendIndex);
-
-                            habitItems.add(item);
-                        }
-                        friendItem.invisibleChildren.addAll(habitItems);
+                        initializeChildren(friendItem);
                     }
 
                     if (!friendItem.clicked && habits.size() > 0) {
-                        openList(position);
+                        openList(friendItem, data.indexOf(friendItem));
                     } else if (friendItem.clicked) {
-                        closeList(position);
+                        closeList(data.indexOf(friendItem));
                     } else {
                         String noHabitsMsg = friend.getRealname() + " has no habits.";
                         Toast.makeText(context, noHabitsMsg, Toast.LENGTH_LONG).show();
@@ -160,13 +153,30 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return data.get(position).type;
     }
 
-    public void openList(int pos) {
+    public void initializeChildren(Item friendItem) {
+        friendItem.invisibleChildren = new ArrayList<>();
+
+        // Convert habits to items
+        ArrayList<Item> habitItems = new ArrayList<>();
+        ArrayList<Habit> habits = friendItem.friend.getHabitList().getHabits();
+        for (Habit habit : habits) {
+            Item item = new Item(CHILD, habit, friendItem.friend, friendItem.friendIndex);
+
+            habitItems.add(item);
+        }
+        friendItem.invisibleChildren.addAll(habitItems);
+    }
+
+    public void openList(Item friendItem, int pos) {
         Log.i("HabitUpDEBUG", "Opened friend's habits");
         // Habit list is closed and hidden
+
         int index = pos + 1;
 
-        // Remove from adapter
-        Item friendItem = data.get(pos);
+        if (friendItem.invisibleChildren == null) {
+            initializeChildren(friendItem);
+        }
+
         for (Item i : friendItem.invisibleChildren) {
             data.add(index, i);
             index++;
@@ -187,10 +197,6 @@ public class FriendsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
         notifyItemRangeRemoved(pos + 1, count);
         data.get(pos).clicked = false;
-    }
-
-    public int getLastPos() {
-        return this.lastPos;
     }
 
     public class FriendHolder extends RecyclerView.ViewHolder {
