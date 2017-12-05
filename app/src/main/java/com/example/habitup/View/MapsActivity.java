@@ -249,6 +249,11 @@ public class MapsActivity extends BaseActivity
                 for (Marker myMarker:myMarkerList){
                     myMarker.remove();
                 }
+                if (hmyMarkerList.size() != 0) {
+                    for (Marker hmyMarker : hmyMarkerList) {
+                        hmyMarker.remove();
+                    }
+                }
 
             }
         }
@@ -278,9 +283,15 @@ public class MapsActivity extends BaseActivity
                     }
                 }
                 else{
-                    for (Marker friendsMarker:friendsMarkerList){
+                    for (Marker friendsMarker:friendsMarkerList) {
                         friendsMarker.remove();
                     }
+                    if (hfriendsMarkerList.size() != 0){
+                        for (Marker hfriendsMarker:hfriendsMarkerList){
+                            hfriendsMarker.remove();
+                        }
+                    }
+
 
                 }
             }
@@ -291,7 +302,7 @@ public class MapsActivity extends BaseActivity
     private void highlightMap(Location currentLocation,boolean highlightVisible, boolean myMarkerVisible, boolean friendMarkerVisible){
 
 
-        if (myHabitEventList != null && myHabitEventList.size() > 0) {
+        if (myHabitEventList != null && myHabitEventList.size() > 0 && myMarkerVisible) {
             for (HabitEvent habitEvent : myHabitEventList) {
                 myLocation = habitEvent.getLocation();
                 if (myLocation != null) {
@@ -318,18 +329,18 @@ public class MapsActivity extends BaseActivity
             }
             else{
                 for (Marker hmyMarker:hmyMarkerList){
-                    hmyMarker.setVisible(false);
+                    hmyMarker.remove();
                 }
             }
         }
 
-        if (friendsEvents != null && friendsEvents.size() > 0) {
+        if (friendsEvents != null && friendsEvents.size() > 0 && friendMarkerVisible) {
             for (HabitEvent fHabitEvent : friendsEvents) {
                 friendsLocation = fHabitEvent.getLocation();
                 if (friendsLocation != null) {
                     HfriLatLng = new LatLng((friendsLocation.getLatitude()), friendsLocation.getLongitude());
                     Float distance = currentLocation.distanceTo(friendsLocation);
-                    if (distance < 5000 && friendMarkerVisible) {
+                    if (distance < 5000) {
                         hfriendsMarker = mGoogleMap.addMarker(new MarkerOptions()
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                                 .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
@@ -350,7 +361,7 @@ public class MapsActivity extends BaseActivity
             }
             else{
                 for (Marker hfriendsMarker:hfriendsMarkerList){
-                    hfriendsMarker.setVisible(false);
+                    hfriendsMarker.remove();
                 }
             }
         }
