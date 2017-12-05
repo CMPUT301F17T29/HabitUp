@@ -15,6 +15,7 @@ import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * This activity displays a list of the user's friends and their habits.
@@ -42,6 +43,7 @@ public class ViewFriendsActivity extends BaseActivity {
 
         UserAccount currentUser = HabitUpApplication.getCurrentUser();
         friends = currentUser.getFriendsList().getUserList();
+        Collections.sort(friends);
 
         friendsAdapter = new FriendsListAdapter(this, friends);
         friendsListView.setAdapter(friendsAdapter);

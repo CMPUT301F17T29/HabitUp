@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
@@ -88,6 +89,12 @@ public class MainActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.edit_profile:
+                if (!HabitUpApplication.isOnline(getApplicationContext())) {
+                    Toast.makeText(getApplicationContext(),
+                            "Error: No connection to the internet.",
+                            Toast.LENGTH_SHORT).show();
+                    return false;
+                }
                 Intent editIntent = new Intent(this, EditProfileActivity.class);
                 startActivity(editIntent);
                 return true;
