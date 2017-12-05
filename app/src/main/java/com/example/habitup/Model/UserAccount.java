@@ -251,7 +251,6 @@ public class UserAccount implements Serializable {
 
     /**
      * Set level to the next level.
-     * TODO: boundary checking for MAX_INT
      */
     public void incrementLevel() {
         if(this.level < Integer.MAX_VALUE) {
@@ -325,12 +324,28 @@ public class UserAccount implements Serializable {
         return this.getUsername() == other.getUsername();
     }
 
+    /**
+     * Set the Command Queue for this UserAccount
+     * @param q Queue to set
+     */
     public void setCommandQueue(LinkedList<HabitEventCommand> q){this.cmdQueue = q;}
 
+    /**
+     * Getter - Command Queue
+     * @return LinkedList<HabitEventCommand> commandQueue
+     */
     public LinkedList<HabitEventCommand> getCommandQueue() { return this.cmdQueue; }
 
+    /**
+     * Add a command to the user's Command Queue
+     * @param cmd HabitEventCommand
+     */
     public void addCommand(HabitEventCommand cmd){ cmdQueue.add(cmd); }
 
+    /**
+     * Demo function, not used in production
+     * @param photo Bitmap
+     */
     public void setDemoPhoto(Bitmap photo) {
         this.photo = photo;
     }

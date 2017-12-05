@@ -4,6 +4,8 @@ import com.example.habitup.Model.UserAccount;
 import com.example.habitup.Model.UserAccountList;
 
 /**
+ * Controls all of the Follower/Friend logic between UserAccounts.
+ *
  * Created by barboza on 2017-11-26.
  */
 
