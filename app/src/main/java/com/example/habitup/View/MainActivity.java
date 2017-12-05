@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import com.example.habitup.Controller.HabitUpApplication;
 import com.example.habitup.Controller.HabitUpController;
 import com.example.habitup.Model.Habit;
+import com.example.habitup.Model.UserAccount;
 import com.example.habitup.R;
 
 import java.util.ArrayList;
@@ -60,6 +62,21 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+//        UserAccount currentUser = HabitUpApplication.getCurrentUser();
+//        Log.i("HabitUpDEBUG", "Username: " + currentUser.getUsername());
+//        if (currentUser.getUsername().equals("jeff")) {
+//
+//            for (int i = 0; i < 17; ++i) {
+//                currentUser.incrementLevel();
+//            }
+//            currentUser.increaseXP(1);
+//            currentUser.setXPtoNext();
+//
+//
+//            HabitUpApplication.editUserAccount(currentUser);
+//        }
+
 
         // Highlight profile in drawer
         navigationView.setCheckedItem(R.id.profile);
