@@ -210,7 +210,11 @@ public class MapsActivity extends BaseActivity
                 if (mGoogleMap != null) {
                     myMarkerVisible = myCheckbox.isChecked();
                     friendsMarkerVisible = friendCheckbox.isChecked();
-                    highlightMap(currentLocation,isChecked,myMarkerVisible,friendsMarkerVisible);
+                    if (currentLocation != null) {
+                        highlightMap(currentLocation, isChecked, myMarkerVisible, friendsMarkerVisible);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "GPS location not available", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
