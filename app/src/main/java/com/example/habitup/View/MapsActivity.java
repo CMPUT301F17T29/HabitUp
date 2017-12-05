@@ -32,6 +32,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -39,6 +40,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.LocationListener;
@@ -156,7 +158,7 @@ public class MapsActivity extends BaseActivity
     public void onMapReady(GoogleMap googleMap)
     {
         mGoogleMap=googleMap;
-        mGoogleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -213,7 +215,7 @@ public class MapsActivity extends BaseActivity
             }
         });
 
-        //myCheckbox.setChecked(true);
+        myCheckbox.setChecked(true);
     }
 
     private void updateMyMap(boolean visible) {
@@ -245,6 +247,7 @@ public class MapsActivity extends BaseActivity
 
             }
         }
+        zoomFit();
     }
     
     private void updateFriendMap(boolean visible){
@@ -277,6 +280,7 @@ public class MapsActivity extends BaseActivity
                 }
             }
         }
+        zoomFit();
     }
 
     private void highlightMap(Location currentLocation,boolean highlightVisible, boolean myMarkerVisible, boolean friendMarkerVisible){
@@ -345,6 +349,7 @@ public class MapsActivity extends BaseActivity
                 }
             }
         }
+        zoomFit();
 
     }
 
@@ -468,6 +473,44 @@ public class MapsActivity extends BaseActivity
             // other 'case' lines to check for other
             // permissions this app might request
         }
+
+
+    }
+
+    private void zoomFit() {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        ArrayList<Marker> markers = new ArrayList<>();
+
+        for (Marker marker : myMarkerList) {
+            builder.include(marker.getPosition());
+            markers.add(marker);
+        }
+
+        for (Marker marker : friendsMarkerList) {
+            builder.include(marker.getPosition());
+            markers.add(marker);
+        }
+
+        for (Marker marker : hmyMarkerList) {
+            builder.include(marker.getPosition());
+            markers.add(marker);
+        }
+
+        for (Marker marker : hfriendsMarkerList) {
+            builder.include(marker.getPosition());
+            markers.add(marker);
+        }
+
+        LatLngBounds bounds = builder.build();
+
+        CameraUpdate cu;
+        if (markers.size() == 1) {
+            cu = CameraUpdateFactory.newLatLngZoom(markers.get(0).getPosition(), 12f);
+        } else {
+            cu = CameraUpdateFactory.newLatLngBounds(bounds, 500);
+        }
+
+        mGoogleMap.moveCamera(cu);
 
 
     }
