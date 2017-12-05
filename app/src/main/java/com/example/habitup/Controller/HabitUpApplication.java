@@ -14,7 +14,6 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -24,6 +23,8 @@ import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.LinkedList;
+
+import java.util.ArrayList;
 
 /**
  * HabitUpApplication is the controller at the app-level.  It deals with functionality at the
@@ -45,7 +46,7 @@ public class HabitUpApplication {
     public final static int XP_INCREASE_AMOUNT = 25;
     public final static int XP_PER_HABITEVENT = 1;
     public final static int ATTR_INCREMENT_PER_HABITEVENT = 1;
-    public final static String FILENAME = "localUserData.sav";
+    public final static String FILENAME = "localUserData2.sav";
 
     static UserAccount currentUser;
     static UserAccount fileUser;
@@ -253,7 +254,6 @@ public class HabitUpApplication {
             Log.i("debug", "userList is null?"+userList.size());
             fileUser = userList.get(0);
             Log.i("debug", "user is null?"+getOldUID());
-
             return true;
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
@@ -284,12 +284,5 @@ public class HabitUpApplication {
             throw new RuntimeException();
         }
 
-    }
-
-    public static void deleteLocalUserData(Context ctx){
-        File dir = ctx.getFilesDir();
-        File file = new File(dir, FILENAME);
-        boolean deleted = file.delete();
-        Log.i("deletefiledebug","file deleted: " + deleted);
     }
 }
