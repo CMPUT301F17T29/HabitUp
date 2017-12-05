@@ -172,6 +172,7 @@ public class MapsActivity extends BaseActivity
                 mUiSettings.setZoomControlsEnabled(true);
                 LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
                 currentLocation = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, (long) 100, (float) 1, locationListener);
             } else {
                 //Request Location Permission
                 checkLocationPermission();
@@ -518,6 +519,24 @@ public class MapsActivity extends BaseActivity
 
 
     }
+    private final android.location.LocationListener locationListener = new android.location.LocationListener() {
+        public void onLocationChanged(Location location) {
+            currentLocation = location;
+            Log.i("HabitUpDEBUG", "Location Changed: " + String.valueOf(location));
+        }
+
+        public void onStatusChanged(String s, int i, Bundle b) {
+
+        }
+
+        public void onProviderEnabled(String s) {
+
+        }
+
+        public void onProviderDisabled(String s) {
+
+        }
+    };
 
 
 }
